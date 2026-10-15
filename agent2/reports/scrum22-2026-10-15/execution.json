@@ -1,0 +1,60 @@
+{
+  "executed_on": "2026-10-15",
+  "timezone": "Australia/Sydney",
+  "python": "3.13.2",
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "log": "check-1.txt"
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "compileall",
+        "-q",
+        "rental_agent",
+        "tests",
+        "tools"
+      ],
+      "exit_code": 0,
+      "log": "check-2.txt"
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "rental_agent",
+        "--profile",
+        "data/demo/profiles/commute.json",
+        "--listings",
+        "data/demo/listings.json",
+        "--output",
+        "reports/scrum22-2026-10-15/cli-demo"
+      ],
+      "exit_code": 0,
+      "log": "check-3.txt"
+    },
+    {
+      "command": [
+        "python3",
+        "tools/verify_scrum22.py",
+        "--output",
+        "reports/scrum22-2026-10-15"
+      ],
+      "expected_exit": "nonzero (refuse overwrite)",
+      "exit_code": 1,
+      "existing_files_unchanged": true,
+      "log": "check-4.txt"
+    }
+  ]
+}

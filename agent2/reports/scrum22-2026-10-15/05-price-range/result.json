@@ -1,0 +1,18 @@
+{
+  "case": "05-price-range",
+  "status": "PASS",
+  "expected": "原始480–540报价区间和周期/计价对象保留在审计；不取中点，缺精确报价保持pending",
+  "actual": {
+    "counts": {
+      "input": 1,
+      "eligible": 0,
+      "pending": 1,
+      "excluded": 0,
+      "duplicates": 0
+    },
+    "ranked_ids": [],
+    "top5_ids": [],
+    "rules": "rules-1.0",
+    "as_of": "2026-09-17T09:00:00+10:00"
+  }
+}

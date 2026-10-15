@@ -1,0 +1,18 @@
+{
+  "case": "07-missing-positive-weight",
+  "status": "PASS",
+  "expected": "正权重设施输入缺失→pending，总分和排名为空",
+  "actual": {
+    "counts": {
+      "input": 1,
+      "eligible": 0,
+      "pending": 1,
+      "excluded": 0,
+      "duplicates": 0
+    },
+    "ranked_ids": [],
+    "top5_ids": [],
+    "rules": "rules-1.0",
+    "as_of": "2026-09-17T09:00:00+10:00"
+  }
+}

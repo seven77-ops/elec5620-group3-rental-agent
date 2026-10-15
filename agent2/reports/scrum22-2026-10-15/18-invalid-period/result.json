@@ -1,0 +1,9 @@
+{
+  "case": "18-invalid-period",
+  "status": "PASS",
+  "expected": "非法周期字符串拒绝整批并指明字段；不默认为week",
+  "actual": {
+    "rejected": true,
+    "error": "listings[0].rent_period: 不支持的取值"
+  }
+}

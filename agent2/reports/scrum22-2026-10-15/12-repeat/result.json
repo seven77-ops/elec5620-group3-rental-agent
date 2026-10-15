@@ -1,0 +1,40 @@
+{
+  "case": "12-repeat",
+  "status": "PASS",
+  "expected": "固定输入、评估时间、rules-1.0重跑：完整报告及批次ID完全相同",
+  "actual": {
+    "counts": {
+      "input": 30,
+      "eligible": 15,
+      "pending": 9,
+      "excluded": 5,
+      "duplicates": 1
+    },
+    "ranked_ids": [
+      "DEMO-006",
+      "DEMO-012",
+      "DEMO-004",
+      "DEMO-001",
+      "DEMO-011",
+      "DEMO-008",
+      "DEMO-015",
+      "DEMO-013",
+      "DEMO-002",
+      "DEMO-005",
+      "DEMO-009",
+      "DEMO-014",
+      "DEMO-010",
+      "DEMO-003",
+      "DEMO-007"
+    ],
+    "top5_ids": [
+      "DEMO-006",
+      "DEMO-012",
+      "DEMO-004",
+      "DEMO-001",
+      "DEMO-011"
+    ],
+    "rules": "rules-1.0",
+    "as_of": "2026-09-17T09:00:00+10:00"
+  }
+}

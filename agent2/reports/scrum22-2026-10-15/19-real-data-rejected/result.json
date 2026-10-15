@@ -1,0 +1,9 @@
+{
+  "case": "19-real-data-rejected",
+  "status": "PASS",
+  "expected": "当前原型拒绝真实/混合房源模式",
+  "actual": {
+    "rejected": true,
+    "error": "listings[0].data_kind: 只允许 synthetic"
+  }
+}

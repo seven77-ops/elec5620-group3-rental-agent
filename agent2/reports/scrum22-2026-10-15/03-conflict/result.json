@@ -1,0 +1,18 @@
+{
+  "case": "03-conflict",
+  "status": "PASS",
+  "expected": "同源同ID租金冲突→两条pending，不排名；原始两份报价可追溯",
+  "actual": {
+    "counts": {
+      "input": 2,
+      "eligible": 0,
+      "pending": 2,
+      "excluded": 0,
+      "duplicates": 0
+    },
+    "ranked_ids": [],
+    "top5_ids": [],
+    "rules": "rules-1.0",
+    "as_of": "2026-09-17T09:00:00+10:00"
+  }
+}

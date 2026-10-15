@@ -1,0 +1,8 @@
+{
+  "data_mode": "synthetic_demo",
+  "as_of": "2026-09-17T09:00:00+10:00",
+  "dataset_fingerprint": "6ed12ea16662d9fafe5b69b7812d62c00f1e5da867f0f679af1143a197839fc4",
+  "recommendation_run_id": "rr-c55bf9c0e4864802824aeffd91884994b018f5ee1ff0cd722e9cdbf83f5dc709",
+  "source_records": [],
+  "note": "原始价格区间仅保留，不取中点、不推断租金周期；不是已核实的实时房源。"
+}

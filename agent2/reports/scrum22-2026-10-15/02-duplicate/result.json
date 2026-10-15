@@ -1,0 +1,22 @@
+{
+  "case": "02-duplicate",
+  "status": "PASS",
+  "expected": "同源同ID同事实合并；使用最新有效证据；审计保留两份原始引用",
+  "actual": {
+    "counts": {
+      "input": 2,
+      "eligible": 1,
+      "pending": 0,
+      "excluded": 0,
+      "duplicates": 1
+    },
+    "ranked_ids": [
+      "AC-A"
+    ],
+    "top5_ids": [
+      "AC-A"
+    ],
+    "rules": "rules-1.0",
+    "as_of": "2026-09-17T09:00:00+10:00"
+  }
+}

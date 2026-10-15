@@ -1,0 +1,18 @@
+{
+  "case": "11-empty-input",
+  "status": "PASS",
+  "expected": "空房源集→有效零推荐及澄清建议",
+  "actual": {
+    "counts": {
+      "input": 0,
+      "eligible": 0,
+      "pending": 0,
+      "excluded": 0,
+      "duplicates": 0
+    },
+    "ranked_ids": [],
+    "top5_ids": [],
+    "rules": "rules-1.0",
+    "as_of": "2026-09-17T09:00:00+10:00"
+  }
+}

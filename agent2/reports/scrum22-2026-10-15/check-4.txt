@@ -1,0 +1,4 @@
+Command: python3 tools/verify_scrum22.py --output reports/scrum22-2026-10-15
+Expected: nonzero exit; existing evidence unchanged
+Actual exit: 1
+Existing file SHA256 comparison: unchanged

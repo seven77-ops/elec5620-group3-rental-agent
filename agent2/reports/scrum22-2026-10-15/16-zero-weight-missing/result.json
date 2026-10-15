@@ -1,0 +1,22 @@
+{
+  "case": "16-zero-weight-missing",
+  "status": "PASS",
+  "expected": "仅零权重设施未知且其他条件完整→可合格",
+  "actual": {
+    "counts": {
+      "input": 1,
+      "eligible": 1,
+      "pending": 0,
+      "excluded": 0,
+      "duplicates": 0
+    },
+    "ranked_ids": [
+      "AC-A"
+    ],
+    "top5_ids": [
+      "AC-A"
+    ],
+    "rules": "rules-1.0",
+    "as_of": "2026-09-17T09:00:00+10:00"
+  }
+}

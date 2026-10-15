@@ -1,0 +1,4 @@
+{
+  "rejected": true,
+  "error": "listings[0].rent_period: 不支持的取值"
+}

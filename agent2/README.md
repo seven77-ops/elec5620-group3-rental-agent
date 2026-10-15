@@ -36,6 +36,7 @@ python3 -m rental_agent --help
 - [预算优先推荐](reports/budget.md)
 - [居住条件优先推荐](reports/housing.md)
 - [偏好调整前后对比](reports/comparison.md)
+- [SCRUM-22 验收与复现（19个场景及71项测试）](docs/scrum22-acceptance.md)
 - [课程功能与两个 Use Case](docs/course-requirements.md)
 - [三个交接契约与 Schema 说明](docs/data-contracts.md)
 - [明确选房后的证据包（仅本地，未发送）](reports/selection.selection.json)

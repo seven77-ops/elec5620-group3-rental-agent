@@ -1,0 +1,433 @@
+{
+  "schema_version": "1.1",
+  "scoring_version": "rules-1.0",
+  "search_id": "demo-search-001",
+  "recommendation_run_id": "rr-24b0d0e800d1f4a670a45615cd09980f10ef78a1948a25e93c5193999c50d081",
+  "profile_fingerprint": "6a6af2b862177ed975092141cdbf96a0e182fe7808872270153e6d53a91381c5",
+  "profile_version": 1,
+  "data_mode": "synthetic_demo",
+  "as_of": "2026-09-17T09:00:00+10:00",
+  "dataset_fingerprint": "5b183d506fdddb698b55ed990007c74e381d04f05ac46c8d5639f39d8f73bcfa",
+  "profile": {
+    "schema_version": "1.0",
+    "search_id": "demo-search-001",
+    "profile_version": 1,
+    "budget": {
+      "currency": "AUD",
+      "period": "week",
+      "scope": "per_person",
+      "includes_bills": true,
+      "preferred": 450,
+      "maximum": 550,
+      "hard_limit": true
+    },
+    "occupants": 1,
+    "rental_mode": "private_room",
+    "destination_id": "demo-usyd",
+    "arrival_time": "09:00",
+    "timezone": "Australia/Sydney",
+    "commute": {
+      "modes": [
+        "public_transport",
+        "walk"
+      ],
+      "preferred_minutes": 25,
+      "maximum_minutes": 40,
+      "hard_limit": true
+    },
+    "move_in_window": {
+      "from": "2027-02-01",
+      "to": "2027-02-07"
+    },
+    "lease_months": 12,
+    "hard_requirements": [
+      "private_bedroom"
+    ],
+    "soft_preferences": {
+      "furnished": 0.6,
+      "private_bathroom": 0.4
+    },
+    "weights": {
+      "commute": 0.35,
+      "cost": 0.3,
+      "housing": 0.2,
+      "amenities": 0.15
+    }
+  },
+  "effective_weights": {
+    "commute": 0.35,
+    "cost": 0.3,
+    "housing": 0.2,
+    "amenities": 0.15
+  },
+  "report_status": "partial",
+  "counts": {
+    "input": 2,
+    "eligible": 1,
+    "pending": 0,
+    "excluded": 0,
+    "duplicates": 1
+  },
+  "recommendations": [
+    {
+      "listing_id": "AC-A",
+      "status": "eligible",
+      "rank": 1,
+      "score": 88.6,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 100.0,
+        "cost": 72.0,
+        "housing": 100.0,
+        "amenities": 80.0
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 520,
+      "commute_minutes": 22,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 540,
+      "reasons": [
+        "可比周费用 AUD 520.00（per_person；含账单）",
+        "模拟到校通勤 22 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 540 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 70.00/周"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:AC-A#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:AC-A#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:AC-A#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:AC-A#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:AC-A#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:AC-A#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:AC-A#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:AC-A#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:AC-B#rent_amount",
+          "observed_at": "2026-09-17T08:30:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:AC-A#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:AC-A#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:AC-A#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:AC-A#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:AC-A#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:AC-A#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:AC-A#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:AC-A#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:AC-A#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:AC-A#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    }
+  ],
+  "eligible": [
+    {
+      "listing_id": "AC-A",
+      "status": "eligible",
+      "rank": 1,
+      "score": 88.6,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 100.0,
+        "cost": 72.0,
+        "housing": 100.0,
+        "amenities": 80.0
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 520,
+      "commute_minutes": 22,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 540,
+      "reasons": [
+        "可比周费用 AUD 520.00（per_person；含账单）",
+        "模拟到校通勤 22 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 540 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 70.00/周"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:AC-A#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:AC-A#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:AC-A#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:AC-A#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:AC-A#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:AC-A#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:AC-A#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:AC-A#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:AC-B#rent_amount",
+          "observed_at": "2026-09-17T08:30:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:AC-A#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:AC-A#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:AC-A#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:AC-A#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:AC-A#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:AC-A#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:AC-A#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:AC-A#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:AC-A#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:AC-A#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    }
+  ],
+  "pending_confirmation": [],
+  "excluded": [],
+  "duplicates": [
+    {
+      "listing_id": "AC-B",
+      "duplicate_of": "AC-A",
+      "reason": "同来源 ID 且事实相同，仅评估一条"
+    }
+  ],
+  "clarification_requests": [
+    "仅有 1 套符合完整条件；请确认待补信息，或由 Agent 1 询问是否调整指定条件。未自动放宽条件。"
+  ],
+  "data_limitations": [
+    "全部房源、路线、设施和证据均为模拟数据，不可用于真实租房决策。",
+    "本原型仅为 Agent 2 的确定性工具核心，未接入 LLM、房源平台或 TfNSW。",
+    "as_of 是输入快照时点，不代表今天仍可租；分数是偏好匹配，不是房屋安全或签约保证。",
+    "不支持自动换汇、按人数分摊、真实市场租金估值或未来班次保证。"
+  ]
+}

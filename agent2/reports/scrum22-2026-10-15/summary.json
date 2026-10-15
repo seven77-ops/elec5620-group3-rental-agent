@@ -1,0 +1,408 @@
+{
+  "task": "SCRUM-22",
+  "data_mode": "synthetic_demo",
+  "cases": [
+    {
+      "case": "01-baseline",
+      "status": "PASS",
+      "expected": "30输入→15合格/9待确认/5排除/1重复；Top5且保留15条完整排名与解释",
+      "actual": {
+        "counts": {
+          "input": 30,
+          "eligible": 15,
+          "pending": 9,
+          "excluded": 5,
+          "duplicates": 1
+        },
+        "ranked_ids": [
+          "DEMO-006",
+          "DEMO-012",
+          "DEMO-004",
+          "DEMO-001",
+          "DEMO-011",
+          "DEMO-008",
+          "DEMO-015",
+          "DEMO-013",
+          "DEMO-002",
+          "DEMO-005",
+          "DEMO-009",
+          "DEMO-014",
+          "DEMO-010",
+          "DEMO-003",
+          "DEMO-007"
+        ],
+        "top5_ids": [
+          "DEMO-006",
+          "DEMO-012",
+          "DEMO-004",
+          "DEMO-001",
+          "DEMO-011"
+        ],
+        "rules": "rules-1.0",
+        "as_of": "2026-09-17T09:00:00+10:00"
+      }
+    },
+    {
+      "case": "02-duplicate",
+      "status": "PASS",
+      "expected": "同源同ID同事实合并；使用最新有效证据；审计保留两份原始引用",
+      "actual": {
+        "counts": {
+          "input": 2,
+          "eligible": 1,
+          "pending": 0,
+          "excluded": 0,
+          "duplicates": 1
+        },
+        "ranked_ids": [
+          "AC-A"
+        ],
+        "top5_ids": [
+          "AC-A"
+        ],
+        "rules": "rules-1.0",
+        "as_of": "2026-09-17T09:00:00+10:00"
+      }
+    },
+    {
+      "case": "03-conflict",
+      "status": "PASS",
+      "expected": "同源同ID租金冲突→两条pending，不排名；原始两份报价可追溯",
+      "actual": {
+        "counts": {
+          "input": 2,
+          "eligible": 0,
+          "pending": 2,
+          "excluded": 0,
+          "duplicates": 0
+        },
+        "ranked_ids": [],
+        "top5_ids": [],
+        "rules": "rules-1.0",
+        "as_of": "2026-09-17T09:00:00+10:00"
+      }
+    },
+    {
+      "case": "04-unknown-period",
+      "status": "PASS",
+      "expected": "周期未知→pending；周费用为空，不猜测week",
+      "actual": {
+        "counts": {
+          "input": 1,
+          "eligible": 0,
+          "pending": 1,
+          "excluded": 0,
+          "duplicates": 0
+        },
+        "ranked_ids": [],
+        "top5_ids": [],
+        "rules": "rules-1.0",
+        "as_of": "2026-09-17T09:00:00+10:00"
+      }
+    },
+    {
+      "case": "05-price-range",
+      "status": "PASS",
+      "expected": "原始480–540报价区间和周期/计价对象保留在审计；不取中点，缺精确报价保持pending",
+      "actual": {
+        "counts": {
+          "input": 1,
+          "eligible": 0,
+          "pending": 1,
+          "excluded": 0,
+          "duplicates": 0
+        },
+        "ranked_ids": [],
+        "top5_ids": [],
+        "rules": "rules-1.0",
+        "as_of": "2026-09-17T09:00:00+10:00"
+      }
+    },
+    {
+      "case": "06-missing-evidence",
+      "status": "PASS",
+      "expected": "有值但无字段证据→pending，不排名",
+      "actual": {
+        "counts": {
+          "input": 1,
+          "eligible": 0,
+          "pending": 1,
+          "excluded": 0,
+          "duplicates": 0
+        },
+        "ranked_ids": [],
+        "top5_ids": [],
+        "rules": "rules-1.0",
+        "as_of": "2026-09-17T09:00:00+10:00"
+      }
+    },
+    {
+      "case": "07-missing-positive-weight",
+      "status": "PASS",
+      "expected": "正权重设施输入缺失→pending，总分和排名为空",
+      "actual": {
+        "counts": {
+          "input": 1,
+          "eligible": 0,
+          "pending": 1,
+          "excluded": 0,
+          "duplicates": 0
+        },
+        "ranked_ids": [],
+        "top5_ids": [],
+        "rules": "rules-1.0",
+        "as_of": "2026-09-17T09:00:00+10:00"
+      }
+    },
+    {
+      "case": "08-gate-undecided",
+      "status": "PASS",
+      "expected": "权限门禁未明确→pending，不排名",
+      "actual": {
+        "counts": {
+          "input": 1,
+          "eligible": 0,
+          "pending": 1,
+          "excluded": 0,
+          "duplicates": 0
+        },
+        "ranked_ids": [],
+        "top5_ids": [],
+        "rules": "rules-1.0",
+        "as_of": "2026-09-17T09:00:00+10:00"
+      }
+    },
+    {
+      "case": "09-hard-fail-precedence",
+      "status": "PASS",
+      "expected": "硬预算失败且软信息缺失→excluded；硬失败优先",
+      "actual": {
+        "counts": {
+          "input": 1,
+          "eligible": 0,
+          "pending": 0,
+          "excluded": 1,
+          "duplicates": 0
+        },
+        "ranked_ids": [],
+        "top5_ids": [],
+        "rules": "rules-1.0",
+        "as_of": "2026-09-17T09:00:00+10:00"
+      }
+    },
+    {
+      "case": "10-zero-eligible",
+      "status": "PASS",
+      "expected": "全部硬失败→零合格是有效报告；无推荐，不自动放宽条件",
+      "actual": {
+        "counts": {
+          "input": 2,
+          "eligible": 0,
+          "pending": 0,
+          "excluded": 2,
+          "duplicates": 0
+        },
+        "ranked_ids": [],
+        "top5_ids": [],
+        "rules": "rules-1.0",
+        "as_of": "2026-09-17T09:00:00+10:00"
+      }
+    },
+    {
+      "case": "11-empty-input",
+      "status": "PASS",
+      "expected": "空房源集→有效零推荐及澄清建议",
+      "actual": {
+        "counts": {
+          "input": 0,
+          "eligible": 0,
+          "pending": 0,
+          "excluded": 0,
+          "duplicates": 0
+        },
+        "ranked_ids": [],
+        "top5_ids": [],
+        "rules": "rules-1.0",
+        "as_of": "2026-09-17T09:00:00+10:00"
+      }
+    },
+    {
+      "case": "12-repeat",
+      "status": "PASS",
+      "expected": "固定输入、评估时间、rules-1.0重跑：完整报告及批次ID完全相同",
+      "actual": {
+        "counts": {
+          "input": 30,
+          "eligible": 15,
+          "pending": 9,
+          "excluded": 5,
+          "duplicates": 1
+        },
+        "ranked_ids": [
+          "DEMO-006",
+          "DEMO-012",
+          "DEMO-004",
+          "DEMO-001",
+          "DEMO-011",
+          "DEMO-008",
+          "DEMO-015",
+          "DEMO-013",
+          "DEMO-002",
+          "DEMO-005",
+          "DEMO-009",
+          "DEMO-014",
+          "DEMO-010",
+          "DEMO-003",
+          "DEMO-007"
+        ],
+        "top5_ids": [
+          "DEMO-006",
+          "DEMO-012",
+          "DEMO-004",
+          "DEMO-001",
+          "DEMO-011"
+        ],
+        "rules": "rules-1.0",
+        "as_of": "2026-09-17T09:00:00+10:00"
+      }
+    },
+    {
+      "case": "13-stable-ties",
+      "status": "PASS",
+      "expected": "8条同分候选按ID稳定排序；输入倒序不改排名；只展示5条且保留8条",
+      "actual": {
+        "counts": {
+          "input": 8,
+          "eligible": 8,
+          "pending": 0,
+          "excluded": 0,
+          "duplicates": 0
+        },
+        "ranked_ids": [
+          "AC-0",
+          "AC-1",
+          "AC-2",
+          "AC-3",
+          "AC-4",
+          "AC-5",
+          "AC-6",
+          "AC-7"
+        ],
+        "top5_ids": [
+          "AC-0",
+          "AC-1",
+          "AC-2",
+          "AC-3",
+          "AC-4"
+        ],
+        "rules": "rules-1.0",
+        "as_of": "2026-09-17T09:00:00+10:00"
+      }
+    },
+    {
+      "case": "14-period-normalization",
+      "status": "PASS",
+      "expected": "同计价对象下周/双周/月报价均归一为520 AUD/week",
+      "actual": {
+        "counts": {
+          "input": 3,
+          "eligible": 3,
+          "pending": 0,
+          "excluded": 0,
+          "duplicates": 0
+        },
+        "ranked_ids": [
+          "AC-A",
+          "AC-B",
+          "AC-C"
+        ],
+        "top5_ids": [
+          "AC-A",
+          "AC-B",
+          "AC-C"
+        ],
+        "rules": "rules-1.0",
+        "as_of": "2026-09-17T09:00:00+10:00"
+      }
+    },
+    {
+      "case": "15-scope-mismatch",
+      "status": "PASS",
+      "expected": "整租与每人计价不匹配→pending，不按人数平分",
+      "actual": {
+        "counts": {
+          "input": 1,
+          "eligible": 0,
+          "pending": 1,
+          "excluded": 0,
+          "duplicates": 0
+        },
+        "ranked_ids": [],
+        "top5_ids": [],
+        "rules": "rules-1.0",
+        "as_of": "2026-09-17T09:00:00+10:00"
+      }
+    },
+    {
+      "case": "16-zero-weight-missing",
+      "status": "PASS",
+      "expected": "仅零权重设施未知且其他条件完整→可合格",
+      "actual": {
+        "counts": {
+          "input": 1,
+          "eligible": 1,
+          "pending": 0,
+          "excluded": 0,
+          "duplicates": 0
+        },
+        "ranked_ids": [
+          "AC-A"
+        ],
+        "top5_ids": [
+          "AC-A"
+        ],
+        "rules": "rules-1.0",
+        "as_of": "2026-09-17T09:00:00+10:00"
+      }
+    },
+    {
+      "case": "17-stale",
+      "status": "PASS",
+      "expected": "过期快照→pending，不把执行日期当来源刷新时间",
+      "actual": {
+        "counts": {
+          "input": 1,
+          "eligible": 0,
+          "pending": 1,
+          "excluded": 0,
+          "duplicates": 0
+        },
+        "ranked_ids": [],
+        "top5_ids": [],
+        "rules": "rules-1.0",
+        "as_of": "2026-09-17T09:00:00+10:00"
+      }
+    },
+    {
+      "case": "18-invalid-period",
+      "status": "PASS",
+      "expected": "非法周期字符串拒绝整批并指明字段；不默认为week",
+      "actual": {
+        "rejected": true,
+        "error": "listings[0].rent_period: 不支持的取值"
+      }
+    },
+    {
+      "case": "19-real-data-rejected",
+      "status": "PASS",
+      "expected": "当前原型拒绝真实/混合房源模式",
+      "actual": {
+        "rejected": true,
+        "error": "listings[0].data_kind: 只允许 synthetic"
+      }
+    }
+  ],
+  "passed": 19,
+  "total": 19,
+  "integration_status": "未执行 Member 1 真实联调；上游适配代码尚未在共享仓库提供。"
+}

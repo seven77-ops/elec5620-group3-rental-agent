@@ -1,0 +1,33 @@
+{
+  "case": "13-stable-ties",
+  "status": "PASS",
+  "expected": "8条同分候选按ID稳定排序；输入倒序不改排名；只展示5条且保留8条",
+  "actual": {
+    "counts": {
+      "input": 8,
+      "eligible": 8,
+      "pending": 0,
+      "excluded": 0,
+      "duplicates": 0
+    },
+    "ranked_ids": [
+      "AC-0",
+      "AC-1",
+      "AC-2",
+      "AC-3",
+      "AC-4",
+      "AC-5",
+      "AC-6",
+      "AC-7"
+    ],
+    "top5_ids": [
+      "AC-0",
+      "AC-1",
+      "AC-2",
+      "AC-3",
+      "AC-4"
+    ],
+    "rules": "rules-1.0",
+    "as_of": "2026-09-17T09:00:00+10:00"
+  }
+}

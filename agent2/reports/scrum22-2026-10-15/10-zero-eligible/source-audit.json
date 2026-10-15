@@ -1,0 +1,397 @@
+{
+  "data_mode": "synthetic_demo",
+  "as_of": "2026-09-17T09:00:00+10:00",
+  "dataset_fingerprint": "5d648f639945f66c96f8b8039d1511751d3156deb7043baede51917e425e0cae",
+  "recommendation_run_id": "rr-6ead0ad7b490f2f2ccf1e3612efa0598d8cc4cabbfc41511d2e5c88eb8111d8c",
+  "source_records": [
+    {
+      "listing_id": "AC-A",
+      "source": "synthetic-fixture",
+      "source_listing_id": "AC-A",
+      "data_kind": "synthetic",
+      "fixture_category": "complete",
+      "description": "虚构课程样本，非真实在租房源。",
+      "listing_status": "active",
+      "source_permission": true,
+      "last_checked_at": "2026-09-17T08:00:00+10:00",
+      "rental_mode": "private_room",
+      "address": "虚构示例楼 1 号房（不存在的地址）",
+      "suburb": "DEMO-SYDNEY",
+      "postcode": "2000",
+      "location_precision": "building",
+      "rent_amount": 900,
+      "rent_period": "week",
+      "rent_scope": "per_person",
+      "currency": "AUD",
+      "bills_included": true,
+      "bills_weekly": null,
+      "mandatory_fees_weekly": 0,
+      "private_bedroom": true,
+      "private_bathroom": true,
+      "furnished": true,
+      "available_from": "2027-02-01",
+      "latest_start_date": "2027-02-07",
+      "minimum_lease_months": 6,
+      "commute": {
+        "duration_minutes": 22,
+        "destination_id": "demo-usyd",
+        "arrival_time": "09:00",
+        "timezone": "Australia/Sydney",
+        "mode": "public_transport",
+        "queried_at": "2026-09-17T08:00:00+10:00",
+        "data_kind": "synthetic",
+        "walking_minutes": 5,
+        "transfers": 0
+      },
+      "supermarket_distance_m": 540,
+      "conflicts": [],
+      "evidence": {
+        "listing_id": {
+          "source_ref": "fixture:AC-A#listing_id",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source": {
+          "source_ref": "fixture:AC-A#source",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_listing_id": {
+          "source_ref": "fixture:AC-A#source_listing_id",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "data_kind": {
+          "source_ref": "fixture:AC-A#data_kind",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "fixture_category": {
+          "source_ref": "fixture:AC-A#fixture_category",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "description": {
+          "source_ref": "fixture:AC-A#description",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "listing_status": {
+          "source_ref": "fixture:AC-A#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:AC-A#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:AC-A#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:AC-A#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "address": {
+          "source_ref": "fixture:AC-A#address",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "suburb": {
+          "source_ref": "fixture:AC-A#suburb",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "postcode": {
+          "source_ref": "fixture:AC-A#postcode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:AC-A#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:AC-A#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:AC-A#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:AC-A#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:AC-A#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:AC-A#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_weekly": {
+          "source_ref": "fixture:AC-A#bills_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:AC-A#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:AC-A#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:AC-A#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:AC-A#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:AC-A#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:AC-A#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:AC-A#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:AC-A#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:AC-A#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "conflicts": {
+          "source_ref": "fixture:AC-A#conflicts",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      }
+    },
+    {
+      "listing_id": "AC-B",
+      "source": "synthetic-fixture",
+      "source_listing_id": "AC-B",
+      "data_kind": "synthetic",
+      "fixture_category": "complete",
+      "description": "虚构课程样本，非真实在租房源。",
+      "listing_status": "unavailable",
+      "source_permission": true,
+      "last_checked_at": "2026-09-17T08:00:00+10:00",
+      "rental_mode": "private_room",
+      "address": "虚构示例楼 1 号房（不存在的地址）",
+      "suburb": "DEMO-SYDNEY",
+      "postcode": "2000",
+      "location_precision": "building",
+      "rent_amount": 520,
+      "rent_period": "week",
+      "rent_scope": "per_person",
+      "currency": "AUD",
+      "bills_included": true,
+      "bills_weekly": null,
+      "mandatory_fees_weekly": 0,
+      "private_bedroom": true,
+      "private_bathroom": true,
+      "furnished": true,
+      "available_from": "2027-02-01",
+      "latest_start_date": "2027-02-07",
+      "minimum_lease_months": 6,
+      "commute": {
+        "duration_minutes": 22,
+        "destination_id": "demo-usyd",
+        "arrival_time": "09:00",
+        "timezone": "Australia/Sydney",
+        "mode": "public_transport",
+        "queried_at": "2026-09-17T08:00:00+10:00",
+        "data_kind": "synthetic",
+        "walking_minutes": 5,
+        "transfers": 0
+      },
+      "supermarket_distance_m": 540,
+      "conflicts": [],
+      "evidence": {
+        "listing_id": {
+          "source_ref": "fixture:AC-B#listing_id",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source": {
+          "source_ref": "fixture:AC-B#source",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_listing_id": {
+          "source_ref": "fixture:AC-B#source_listing_id",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "data_kind": {
+          "source_ref": "fixture:AC-B#data_kind",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "fixture_category": {
+          "source_ref": "fixture:AC-B#fixture_category",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "description": {
+          "source_ref": "fixture:AC-B#description",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "listing_status": {
+          "source_ref": "fixture:AC-B#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:AC-B#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:AC-B#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:AC-B#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "address": {
+          "source_ref": "fixture:AC-B#address",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "suburb": {
+          "source_ref": "fixture:AC-B#suburb",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "postcode": {
+          "source_ref": "fixture:AC-B#postcode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:AC-B#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:AC-B#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:AC-B#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:AC-B#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:AC-B#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:AC-B#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_weekly": {
+          "source_ref": "fixture:AC-B#bills_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:AC-B#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:AC-B#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:AC-B#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:AC-B#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:AC-B#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:AC-B#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:AC-B#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:AC-B#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:AC-B#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "conflicts": {
+          "source_ref": "fixture:AC-B#conflicts",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      }
+    }
+  ],
+  "note": "原始价格区间仅保留，不取中点、不推断租金周期；不是已核实的实时房源。"
+}

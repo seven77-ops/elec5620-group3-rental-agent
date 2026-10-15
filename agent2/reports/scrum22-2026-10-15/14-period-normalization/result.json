@@ -1,0 +1,26 @@
+{
+  "case": "14-period-normalization",
+  "status": "PASS",
+  "expected": "同计价对象下周/双周/月报价均归一为520 AUD/week",
+  "actual": {
+    "counts": {
+      "input": 3,
+      "eligible": 3,
+      "pending": 0,
+      "excluded": 0,
+      "duplicates": 0
+    },
+    "ranked_ids": [
+      "AC-A",
+      "AC-B",
+      "AC-C"
+    ],
+    "top5_ids": [
+      "AC-A",
+      "AC-B",
+      "AC-C"
+    ],
+    "rules": "rules-1.0",
+    "as_of": "2026-09-17T09:00:00+10:00"
+  }
+}

@@ -1,0 +1,4 @@
+已生成（仅模拟）：reports/scrum22-2026-10-15/cli-demo.md
+结构化报告：reports/scrum22-2026-10-15/cli-demo.json
+推荐批次：rr-416489817d8ef341c02f1a80bc564939f2e105a587dcabcf445dacf411d785be
+结果：input=30, eligible=15, pending=9, excluded=5, duplicates=1

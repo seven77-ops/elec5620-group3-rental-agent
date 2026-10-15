@@ -1,0 +1,4 @@
+{
+  "rejected": true,
+  "error": "listings[0].data_kind: 只允许 synthetic"
+}
