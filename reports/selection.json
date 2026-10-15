@@ -1,0 +1,5881 @@
+{
+  "schema_version": "1.1",
+  "scoring_version": "rules-1.0",
+  "search_id": "demo-search-001",
+  "recommendation_run_id": "rr-416489817d8ef341c02f1a80bc564939f2e105a587dcabcf445dacf411d785be",
+  "profile_fingerprint": "6a6af2b862177ed975092141cdbf96a0e182fe7808872270153e6d53a91381c5",
+  "profile_version": 1,
+  "data_mode": "synthetic_demo",
+  "as_of": "2026-09-17T09:00:00+10:00",
+  "dataset_fingerprint": "32c38e031a258ef5e973d9e25bc8a59e0296cf91f9d402bdc7bfca3fa57acc20",
+  "profile": {
+    "schema_version": "1.0",
+    "search_id": "demo-search-001",
+    "profile_version": 1,
+    "budget": {
+      "currency": "AUD",
+      "period": "week",
+      "scope": "per_person",
+      "includes_bills": true,
+      "preferred": 450,
+      "maximum": 550,
+      "hard_limit": true
+    },
+    "occupants": 1,
+    "rental_mode": "private_room",
+    "destination_id": "demo-usyd",
+    "arrival_time": "09:00",
+    "timezone": "Australia/Sydney",
+    "commute": {
+      "modes": [
+        "public_transport",
+        "walk"
+      ],
+      "preferred_minutes": 25,
+      "maximum_minutes": 40,
+      "hard_limit": true
+    },
+    "move_in_window": {
+      "from": "2027-02-01",
+      "to": "2027-02-07"
+    },
+    "lease_months": 12,
+    "hard_requirements": [
+      "private_bedroom"
+    ],
+    "soft_preferences": {
+      "furnished": 0.6,
+      "private_bathroom": 0.4
+    },
+    "weights": {
+      "commute": 0.35,
+      "cost": 0.3,
+      "housing": 0.2,
+      "amenities": 0.15
+    }
+  },
+  "effective_weights": {
+    "commute": 0.35,
+    "cost": 0.3,
+    "housing": 0.2,
+    "amenities": 0.15
+  },
+  "report_status": "partial",
+  "counts": {
+    "input": 30,
+    "eligible": 15,
+    "pending": 9,
+    "excluded": 5,
+    "duplicates": 1
+  },
+  "recommendations": [
+    {
+      "listing_id": "DEMO-006",
+      "status": "eligible",
+      "rank": 1,
+      "score": 92.75,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 100.0,
+        "cost": 80.0,
+        "housing": 100.0,
+        "amenities": 91.6667
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 500,
+      "commute_minutes": 25,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 400,
+      "reasons": [
+        "可比周费用 AUD 500.00（per_person；含账单）",
+        "模拟到校通勤 25 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 400 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 50.00/周"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-006#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-006#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-006#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-006#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-006#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-006#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-006#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-006#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-006#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-006#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-006#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-006#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-006#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-006#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-006#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-006#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-006#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-006#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-006#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-012",
+      "status": "eligible",
+      "rank": 2,
+      "score": 89.4,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 80.0,
+        "cost": 88.0,
+        "housing": 100.0,
+        "amenities": 100.0
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 480,
+      "commute_minutes": 30,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 200,
+      "reasons": [
+        "可比周费用 AUD 480.00（per_person；含账单）",
+        "模拟到校通勤 30 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 200 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 30.00/周",
+        "比期望通勤多 5 分钟"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-012#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-012#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-012#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-012#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-012#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-012#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-012#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-012#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-012#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-012#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-012#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-012#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-012#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-012#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-012#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-012#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-012#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-012#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-012#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-004",
+      "status": "eligible",
+      "rank": 3,
+      "score": 89.2,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 100.0,
+        "cost": 64.0,
+        "housing": 100.0,
+        "amenities": 100.0
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 540,
+      "commute_minutes": 18,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 250,
+      "reasons": [
+        "可比周费用 AUD 540.00（per_person；含账单）",
+        "模拟到校通勤 18 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 250 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 90.00/周"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-004#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-004#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-004#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-004#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-004#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-004#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-004#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-004#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-004#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-004#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-004#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-004#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-004#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-004#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-004#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-004#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-004#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-004#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-004#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-001",
+      "status": "eligible",
+      "rank": 4,
+      "score": 88.6,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 100.0,
+        "cost": 72.0,
+        "housing": 100.0,
+        "amenities": 80.0
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 520,
+      "commute_minutes": 22,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 540,
+      "reasons": [
+        "可比周费用 AUD 520.00（per_person；含账单）",
+        "模拟到校通勤 22 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 540 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 70.00/周"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-001#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-001#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-001#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-001#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-001#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-001#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-001#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-001#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-001#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-001#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-001#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-001#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-001#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-001#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-001#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-001#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-001#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-001#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-001#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-011",
+      "status": "eligible",
+      "rank": 5,
+      "score": 88.0,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 100.0,
+        "cost": 60.0,
+        "housing": 100.0,
+        "amenities": 100.0
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 550,
+      "commute_minutes": 16,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 300,
+      "reasons": [
+        "可比周费用 AUD 550.00（per_person；含账单）",
+        "模拟到校通勤 16 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 300 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 100.00/周"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-011#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-011#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-011#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-011#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-011#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-011#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-011#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-011#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-011#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-011#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-011#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-011#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-011#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-011#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-011#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-011#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-011#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-011#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-011#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    }
+  ],
+  "eligible": [
+    {
+      "listing_id": "DEMO-006",
+      "status": "eligible",
+      "rank": 1,
+      "score": 92.75,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 100.0,
+        "cost": 80.0,
+        "housing": 100.0,
+        "amenities": 91.6667
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 500,
+      "commute_minutes": 25,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 400,
+      "reasons": [
+        "可比周费用 AUD 500.00（per_person；含账单）",
+        "模拟到校通勤 25 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 400 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 50.00/周"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-006#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-006#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-006#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-006#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-006#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-006#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-006#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-006#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-006#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-006#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-006#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-006#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-006#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-006#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-006#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-006#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-006#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-006#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-006#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-012",
+      "status": "eligible",
+      "rank": 2,
+      "score": 89.4,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 80.0,
+        "cost": 88.0,
+        "housing": 100.0,
+        "amenities": 100.0
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 480,
+      "commute_minutes": 30,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 200,
+      "reasons": [
+        "可比周费用 AUD 480.00（per_person；含账单）",
+        "模拟到校通勤 30 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 200 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 30.00/周",
+        "比期望通勤多 5 分钟"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-012#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-012#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-012#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-012#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-012#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-012#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-012#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-012#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-012#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-012#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-012#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-012#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-012#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-012#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-012#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-012#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-012#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-012#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-012#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-004",
+      "status": "eligible",
+      "rank": 3,
+      "score": 89.2,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 100.0,
+        "cost": 64.0,
+        "housing": 100.0,
+        "amenities": 100.0
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 540,
+      "commute_minutes": 18,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 250,
+      "reasons": [
+        "可比周费用 AUD 540.00（per_person；含账单）",
+        "模拟到校通勤 18 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 250 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 90.00/周"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-004#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-004#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-004#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-004#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-004#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-004#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-004#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-004#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-004#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-004#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-004#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-004#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-004#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-004#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-004#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-004#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-004#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-004#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-004#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-001",
+      "status": "eligible",
+      "rank": 4,
+      "score": 88.6,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 100.0,
+        "cost": 72.0,
+        "housing": 100.0,
+        "amenities": 80.0
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 520,
+      "commute_minutes": 22,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 540,
+      "reasons": [
+        "可比周费用 AUD 520.00（per_person；含账单）",
+        "模拟到校通勤 22 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 540 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 70.00/周"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-001#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-001#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-001#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-001#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-001#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-001#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-001#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-001#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-001#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-001#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-001#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-001#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-001#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-001#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-001#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-001#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-001#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-001#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-001#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-011",
+      "status": "eligible",
+      "rank": 5,
+      "score": 88.0,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 100.0,
+        "cost": 60.0,
+        "housing": 100.0,
+        "amenities": 100.0
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 550,
+      "commute_minutes": 16,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 300,
+      "reasons": [
+        "可比周费用 AUD 550.00（per_person；含账单）",
+        "模拟到校通勤 16 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 300 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 100.00/周"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-011#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-011#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-011#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-011#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-011#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-011#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-011#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-011#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-011#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-011#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-011#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-011#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-011#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-011#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-011#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-011#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-011#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-011#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-011#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-008",
+      "status": "eligible",
+      "rank": 6,
+      "score": 85.4,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 100.0,
+        "cost": 68.0,
+        "housing": 100.0,
+        "amenities": 66.6667
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 530,
+      "commute_minutes": 20,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 700,
+      "reasons": [
+        "可比周费用 AUD 530.00（per_person；含账单）",
+        "模拟到校通勤 20 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 700 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 80.00/周"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-008#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-008#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-008#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-008#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-008#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-008#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-008#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-008#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-008#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-008#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-008#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-008#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-008#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-008#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-008#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-008#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-008#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-008#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-008#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-015",
+      "status": "eligible",
+      "rank": 7,
+      "score": 82.875,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 100.0,
+        "cost": 70.0,
+        "housing": 100.0,
+        "amenities": 45.8333
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 525,
+      "commute_minutes": 21,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 950,
+      "reasons": [
+        "可比周费用 AUD 525.00（per_person；含账单）",
+        "模拟到校通勤 21 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 950 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 75.00/周"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-015#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-015#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-015#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-015#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-015#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-015#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-015#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-015#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-015#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-015#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-015#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-015#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-015#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-015#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-015#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-015#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-015#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-015#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-015#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-013",
+      "status": "eligible",
+      "rank": 8,
+      "score": 80.425,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 100.0,
+        "cost": 76.0,
+        "housing": 60.0,
+        "amenities": 70.8333
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 510,
+      "commute_minutes": 23,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 650,
+      "reasons": [
+        "可比周费用 AUD 510.00（per_person；含账单）",
+        "模拟到校通勤 23 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 650 米，不是步行时长",
+        "满足软偏好 furnished"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 60.00/周",
+        "不满足软偏好 private_bathroom"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-013#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-013#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-013#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-013#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-013#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-013#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-013#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-013#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-013#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-013#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-013#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-013#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-013#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-013#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-013#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-013#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-013#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-013#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-013#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-002",
+      "status": "eligible",
+      "rank": 9,
+      "score": 77.4,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 56.0,
+        "cost": 96.0,
+        "housing": 100.0,
+        "amenities": 60.0
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 460,
+      "commute_minutes": 36,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 780,
+      "reasons": [
+        "可比周费用 AUD 460.00（per_person；含账单）",
+        "模拟到校通勤 36 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 780 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 10.00/周",
+        "比期望通勤多 11 分钟"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-002#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-002#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-002#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-002#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-002#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-002#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-002#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-002#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-002#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-002#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-002#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-002#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-002#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-002#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-002#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-002#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-002#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-002#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-002#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-005",
+      "status": "eligible",
+      "rank": 10,
+      "score": 76.05,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 72.0,
+        "cost": 92.0,
+        "housing": 60.0,
+        "amenities": 75.0
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 470,
+      "commute_minutes": 32,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 600,
+      "reasons": [
+        "可比周费用 AUD 470.00（per_person；含账单）",
+        "模拟到校通勤 32 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 600 米，不是步行时长",
+        "满足软偏好 furnished"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 20.00/周",
+        "比期望通勤多 7 分钟",
+        "不满足软偏好 private_bathroom"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-005#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-005#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-005#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-005#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-005#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-005#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-005#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-005#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-005#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-005#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-005#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-005#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-005#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-005#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-005#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-005#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-005#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-005#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-005#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-009",
+      "status": "eligible",
+      "rank": 11,
+      "score": 75.1,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 84.0,
+        "cost": 84.0,
+        "housing": 40.0,
+        "amenities": 83.3333
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 490,
+      "commute_minutes": 29,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 500,
+      "reasons": [
+        "可比周费用 AUD 490.00（per_person；含账单）",
+        "模拟到校通勤 29 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 500 米，不是步行时长",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 40.00/周",
+        "比期望通勤多 4 分钟",
+        "不满足软偏好 furnished"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-009#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-009#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-009#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-009#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-009#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-009#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-009#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-009#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-009#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-009#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-009#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-009#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-009#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-009#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-009#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-009#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-009#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-009#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-009#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-014",
+      "status": "eligible",
+      "rank": 12,
+      "score": 72.925,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 64.0,
+        "cost": 98.0,
+        "housing": 40.0,
+        "amenities": 87.5
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 455,
+      "commute_minutes": 34,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 450,
+      "reasons": [
+        "可比周费用 AUD 455.00（per_person；含账单）",
+        "模拟到校通勤 34 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 450 米，不是步行时长",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 5.00/周",
+        "比期望通勤多 9 分钟",
+        "不满足软偏好 furnished"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-014#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-014#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-014#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-014#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-014#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-014#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-014#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-014#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-014#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-014#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-014#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-014#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-014#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-014#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-014#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-014#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-014#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-014#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-014#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-010",
+      "status": "eligible",
+      "rank": 13,
+      "score": 68.95,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 52.0,
+        "cost": 100.0,
+        "housing": 60.0,
+        "amenities": 58.3333
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 440,
+      "commute_minutes": 37,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 800,
+      "reasons": [
+        "可比周费用 AUD 440.00（per_person；含账单）",
+        "模拟到校通勤 37 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 800 米，不是步行时长",
+        "满足软偏好 furnished"
+      ],
+      "tradeoffs": [
+        "比期望通勤多 12 分钟",
+        "不满足软偏好 private_bathroom"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-010#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-010#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-010#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-010#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-010#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-010#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-010#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-010#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-010#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-010#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-010#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-010#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-010#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-010#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-010#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-010#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-010#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-010#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-010#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-003",
+      "status": "eligible",
+      "rank": 14,
+      "score": 66.3,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 48.0,
+        "cost": 100.0,
+        "housing": 60.0,
+        "amenities": 50.0
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 450,
+      "commute_minutes": 38,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 900,
+      "reasons": [
+        "可比周费用 AUD 450.00（per_person；含账单）",
+        "模拟到校通勤 38 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 900 米，不是步行时长",
+        "满足软偏好 furnished"
+      ],
+      "tradeoffs": [
+        "比期望通勤多 13 分钟",
+        "不满足软偏好 private_bathroom"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-003#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-003#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-003#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-003#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-003#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-003#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-003#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-003#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-003#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-003#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-003#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-003#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-003#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-003#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-003#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-003#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-003#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-003#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-003#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-007",
+      "status": "eligible",
+      "rank": 15,
+      "score": 59.65,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 44.0,
+        "cost": 100.0,
+        "housing": 40.0,
+        "amenities": 41.6667
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 430,
+      "commute_minutes": 39,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 1000,
+      "reasons": [
+        "可比周费用 AUD 430.00（per_person；含账单）",
+        "模拟到校通勤 39 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 1000 米，不是步行时长",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比期望通勤多 14 分钟",
+        "不满足软偏好 furnished"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-007#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-007#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-007#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-007#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-007#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-007#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-007#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-007#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-007#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-007#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-007#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-007#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-007#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-007#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-007#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-007#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-007#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-007#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-007#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    }
+  ],
+  "pending_confirmation": [
+    {
+      "listing_id": "DEMO-021",
+      "status": "pending",
+      "rank": null,
+      "score": null,
+      "score_range": [
+        68.75,
+        98.75
+      ],
+      "score_breakdown": {
+        "commute": 100.0,
+        "cost": null,
+        "housing": 100.0,
+        "amenities": 91.6667
+      },
+      "evidence_coverage": 0.7,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "unknown",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": null,
+      "commute_minutes": 25,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 400,
+      "reasons": [
+        "模拟到校通勤 25 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 400 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [],
+      "issues": [
+        "bills_included：信息缺失"
+      ],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-021#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-021#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-021#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-021#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-021#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-021#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-021#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-021#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-021#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-021#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-021#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-021#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-021#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-021#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-021#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-021#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-021#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-021#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-022",
+      "status": "pending",
+      "rank": null,
+      "score": null,
+      "score_range": [
+        59.65,
+        59.65
+      ],
+      "score_breakdown": {
+        "commute": 44.0,
+        "cost": 100.0,
+        "housing": 40.0,
+        "amenities": 41.6667
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "unknown",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 430,
+      "commute_minutes": 39,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 1000,
+      "reasons": [
+        "可比周费用 AUD 430.00（per_person；含账单）",
+        "模拟到校通勤 39 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 1000 米，不是步行时长",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比期望通勤多 14 分钟",
+        "不满足软偏好 furnished"
+      ],
+      "issues": [
+        "latest_start_date：信息缺失"
+      ],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-022#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-022#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-022#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-022#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-022#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-022#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-022#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-022#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-022#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-022#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-022#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-022#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-022#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-022#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-022#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-022#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-022#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-022#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-023",
+      "status": "pending",
+      "rank": null,
+      "score": null,
+      "score_range": [
+        50.4,
+        85.4
+      ],
+      "score_breakdown": {
+        "commute": null,
+        "cost": 68.0,
+        "housing": 100.0,
+        "amenities": 66.6667
+      },
+      "evidence_coverage": 0.65,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "unknown",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 530,
+      "commute_minutes": null,
+      "walking_minutes": null,
+      "transfers": null,
+      "supermarket_distance_m": 700,
+      "reasons": [
+        "可比周费用 AUD 530.00（per_person；含账单）",
+        "模拟最近超市直线距离 700 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 80.00/周"
+      ],
+      "issues": [
+        "commute：信息缺失"
+      ],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-023#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-023#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-023#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-023#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-023#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-023#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-023#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-023#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-023#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-023#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-023#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-023#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-023#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-023#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-023#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-023#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-023#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-023#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-024",
+      "status": "pending",
+      "rank": null,
+      "score": null,
+      "score_range": [
+        62.6,
+        77.6
+      ],
+      "score_breakdown": {
+        "commute": 84.0,
+        "cost": 84.0,
+        "housing": 40.0,
+        "amenities": null
+      },
+      "evidence_coverage": 0.85,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 490,
+      "commute_minutes": 29,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": null,
+      "reasons": [
+        "可比周费用 AUD 490.00（per_person；含账单）",
+        "模拟到校通勤 29 分钟；目的地 demo-usyd",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 40.00/周",
+        "比期望通勤多 4 分钟",
+        "不满足软偏好 furnished"
+      ],
+      "issues": [
+        "supermarket_distance_m：信息缺失"
+      ],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-024#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-024#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-024#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-024#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-024#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-024#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-024#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-024#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-024#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-024#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-024#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-024#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-024#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-024#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-024#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-024#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-024#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-024#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-025",
+      "status": "pending",
+      "rank": null,
+      "score": null,
+      "score_range": [
+        68.95,
+        68.95
+      ],
+      "score_breakdown": {
+        "commute": 52.0,
+        "cost": 100.0,
+        "housing": 60.0,
+        "amenities": 58.3333
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "unknown",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 440,
+      "commute_minutes": 37,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 800,
+      "reasons": [
+        "可比周费用 AUD 440.00（per_person；含账单）",
+        "模拟到校通勤 37 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 800 米，不是步行时长",
+        "满足软偏好 furnished"
+      ],
+      "tradeoffs": [
+        "比期望通勤多 12 分钟",
+        "不满足软偏好 private_bathroom"
+      ],
+      "issues": [
+        "private_bedroom：信息缺失"
+      ],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-025#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-025#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-025#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-025#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-025#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-025#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-025#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-025#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-025#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-025#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-025#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-025#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-025#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-025#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-025#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-025#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-025#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-025#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-026",
+      "status": "pending",
+      "rank": null,
+      "score": null,
+      "score_range": [
+        88.0,
+        88.0
+      ],
+      "score_breakdown": {
+        "commute": 100.0,
+        "cost": 60.0,
+        "housing": 100.0,
+        "amenities": 100.0
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "unknown",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 550,
+      "commute_minutes": 16,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 300,
+      "reasons": [
+        "可比周费用 AUD 550.00（per_person；含账单）",
+        "模拟到校通勤 16 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 300 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 100.00/周"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-026#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-026#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-026#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-026#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-026#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-026#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-026#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-026#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-026#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-026#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-026#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-026#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-026#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-026#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-026#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-026#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-026#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-026#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-026#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-15T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-027",
+      "status": "pending",
+      "rank": null,
+      "score": null,
+      "score_range": [
+        63.0,
+        93.0
+      ],
+      "score_breakdown": {
+        "commute": 80.0,
+        "cost": null,
+        "housing": 100.0,
+        "amenities": 100.0
+      },
+      "evidence_coverage": 0.7,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "unknown",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "unknown",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": null,
+      "commute_minutes": 30,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 200,
+      "reasons": [
+        "模拟到校通勤 30 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 200 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比期望通勤多 5 分钟"
+      ],
+      "issues": [
+        "rent_amount：来源信息冲突"
+      ],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-027#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-027#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-027#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-027#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-027#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-027#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-027#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-027#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-027#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-027#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-027#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-027#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-027#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-027#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-027#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-027#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-027#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-029",
+      "status": "pending",
+      "rank": null,
+      "score": null,
+      "score_range": [
+        72.925,
+        72.925
+      ],
+      "score_breakdown": {
+        "commute": 64.0,
+        "cost": 98.0,
+        "housing": 40.0,
+        "amenities": 87.5
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "unknown",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 455,
+      "commute_minutes": 34,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 450,
+      "reasons": [
+        "可比周费用 AUD 455.00（per_person；含账单）",
+        "模拟到校通勤 34 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 450 米，不是步行时长",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 5.00/周",
+        "比期望通勤多 9 分钟",
+        "不满足软偏好 furnished"
+      ],
+      "issues": [
+        "source_permission：信息缺失"
+      ],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-029#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-029#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-029#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-029#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-029#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-029#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-029#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-029#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-029#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-029#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-029#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-029#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-029#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-029#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-029#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-029#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-029#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-029#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-030",
+      "status": "pending",
+      "rank": null,
+      "score": null,
+      "score_range": [
+        47.875,
+        82.875
+      ],
+      "score_breakdown": {
+        "commute": null,
+        "cost": 70.0,
+        "housing": 100.0,
+        "amenities": 45.8333
+      },
+      "evidence_coverage": 0.65,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "unknown",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 525,
+      "commute_minutes": null,
+      "walking_minutes": null,
+      "transfers": null,
+      "supermarket_distance_m": 950,
+      "reasons": [
+        "可比周费用 AUD 525.00（per_person；含账单）",
+        "模拟最近超市直线距离 950 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 75.00/周"
+      ],
+      "issues": [
+        "commute：目的地、时段、交通模式、位置精度或查询时效不匹配"
+      ],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-030#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-030#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-030#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-030#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-030#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-030#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-030#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-030#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-030#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-030#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-030#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-030#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-030#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-030#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-030#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-030#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-030#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-030#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-030#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    }
+  ],
+  "excluded": [
+    {
+      "listing_id": "DEMO-016",
+      "status": "excluded",
+      "rank": null,
+      "score": null,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 100.0,
+        "cost": 20.0,
+        "housing": 100.0,
+        "amenities": 80.0
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "fail",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 650,
+      "commute_minutes": 22,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 540,
+      "reasons": [
+        "可比周费用 AUD 650.00（per_person；含账单）",
+        "模拟到校通勤 22 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 540 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 200.00/周"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-016#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-016#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-016#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-016#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-016#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-016#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-016#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-016#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-016#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-016#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-016#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-016#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-016#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-016#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-016#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-016#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-016#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-016#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-016#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-017",
+      "status": "excluded",
+      "rank": null,
+      "score": null,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 0.0,
+        "cost": 96.0,
+        "housing": 100.0,
+        "amenities": 60.0
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "fail",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 460,
+      "commute_minutes": 55,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 780,
+      "reasons": [
+        "可比周费用 AUD 460.00（per_person；含账单）",
+        "模拟到校通勤 55 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 780 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 10.00/周",
+        "比期望通勤多 30 分钟"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-017#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-017#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-017#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-017#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-017#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-017#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-017#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-017#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-017#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-017#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-017#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-017#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-017#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-017#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-017#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-017#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-017#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-017#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-017#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-018",
+      "status": "excluded",
+      "rank": null,
+      "score": null,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 48.0,
+        "cost": 100.0,
+        "housing": 60.0,
+        "amenities": 50.0
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "fail",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 450,
+      "commute_minutes": 38,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 900,
+      "reasons": [
+        "可比周费用 AUD 450.00（per_person；含账单）",
+        "模拟到校通勤 38 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 900 米，不是步行时长",
+        "满足软偏好 furnished"
+      ],
+      "tradeoffs": [
+        "比期望通勤多 13 分钟",
+        "不满足软偏好 private_bathroom"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-018#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-018#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-018#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-018#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-018#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-018#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-018#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-018#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-018#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-018#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-018#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-018#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-018#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-018#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-018#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-018#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-018#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-018#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-018#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-019",
+      "status": "excluded",
+      "rank": null,
+      "score": null,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 100.0,
+        "cost": 64.0,
+        "housing": 100.0,
+        "amenities": 100.0
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "fail",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "pass",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 540,
+      "commute_minutes": 18,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 250,
+      "reasons": [
+        "可比周费用 AUD 540.00（per_person；含账单）",
+        "模拟到校通勤 18 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 250 米，不是步行时长",
+        "满足软偏好 furnished",
+        "满足软偏好 private_bathroom"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 90.00/周"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-019#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-019#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-019#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-019#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-019#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-019#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-019#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-019#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-019#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-019#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-019#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-019#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-019#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-019#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-019#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-019#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-019#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-019#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-019#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    },
+    {
+      "listing_id": "DEMO-020",
+      "status": "excluded",
+      "rank": null,
+      "score": null,
+      "score_range": null,
+      "score_breakdown": {
+        "commute": 72.0,
+        "cost": 92.0,
+        "housing": 60.0,
+        "amenities": 75.0
+      },
+      "evidence_coverage": 1.0,
+      "hard_checks": {
+        "availability": {
+          "status": "pass",
+          "reason": "房源须为 active（仅模拟状态）"
+        },
+        "freshness": {
+          "status": "pass",
+          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        },
+        "permission": {
+          "status": "pass",
+          "reason": "数据使用权限须明确"
+        },
+        "conflicts": {
+          "status": "pass",
+          "reason": "字段或同来源重复记录冲突须先核对"
+        },
+        "rental_mode": {
+          "status": "pass",
+          "reason": "租赁方式须为 private_room"
+        },
+        "move_in": {
+          "status": "pass",
+          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        },
+        "lease": {
+          "status": "pass",
+          "reason": "须接受 12 个月租期"
+        },
+        "private_bedroom": {
+          "status": "fail",
+          "reason": "必须满足 private_bedroom"
+        },
+        "budget": {
+          "status": "pass",
+          "reason": "周费用须不超过 AUD 550（per_person）"
+        },
+        "commute": {
+          "status": "pass",
+          "reason": "模拟到校时间须不超过 40 分钟"
+        }
+      },
+      "weekly_cost": 470,
+      "commute_minutes": 32,
+      "walking_minutes": 5,
+      "transfers": 0,
+      "supermarket_distance_m": 600,
+      "reasons": [
+        "可比周费用 AUD 470.00（per_person；含账单）",
+        "模拟到校通勤 32 分钟；目的地 demo-usyd",
+        "模拟最近超市直线距离 600 米，不是步行时长",
+        "满足软偏好 furnished"
+      ],
+      "tradeoffs": [
+        "比舒适预算高 AUD 20.00/周",
+        "比期望通勤多 7 分钟",
+        "不满足软偏好 private_bathroom"
+      ],
+      "issues": [],
+      "evidence_refs": {
+        "listing_status": {
+          "source_ref": "fixture:DEMO-020#listing_status",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "last_checked_at": {
+          "source_ref": "fixture:DEMO-020#last_checked_at",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "source_permission": {
+          "source_ref": "fixture:DEMO-020#source_permission",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rental_mode": {
+          "source_ref": "fixture:DEMO-020#rental_mode",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "available_from": {
+          "source_ref": "fixture:DEMO-020#available_from",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "latest_start_date": {
+          "source_ref": "fixture:DEMO-020#latest_start_date",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "minimum_lease_months": {
+          "source_ref": "fixture:DEMO-020#minimum_lease_months",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bedroom": {
+          "source_ref": "fixture:DEMO-020#private_bedroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_amount": {
+          "source_ref": "fixture:DEMO-020#rent_amount",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_period": {
+          "source_ref": "fixture:DEMO-020#rent_period",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "rent_scope": {
+          "source_ref": "fixture:DEMO-020#rent_scope",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "currency": {
+          "source_ref": "fixture:DEMO-020#currency",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "mandatory_fees_weekly": {
+          "source_ref": "fixture:DEMO-020#mandatory_fees_weekly",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "bills_included": {
+          "source_ref": "fixture:DEMO-020#bills_included",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "commute": {
+          "source_ref": "fixture:DEMO-020#commute",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "location_precision": {
+          "source_ref": "fixture:DEMO-020#location_precision",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "furnished": {
+          "source_ref": "fixture:DEMO-020#furnished",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "private_bathroom": {
+          "source_ref": "fixture:DEMO-020#private_bathroom",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        },
+        "supermarket_distance_m": {
+          "source_ref": "fixture:DEMO-020#supermarket_distance_m",
+          "observed_at": "2026-09-17T08:00:00+10:00",
+          "data_kind": "synthetic"
+        }
+      },
+      "last_checked_at": "2026-09-17T08:00:00+10:00"
+    }
+  ],
+  "duplicates": [
+    {
+      "listing_id": "DEMO-028",
+      "duplicate_of": "DEMO-001",
+      "reason": "同来源 ID 且事实相同，仅评估一条"
+    }
+  ],
+  "clarification_requests": [
+    "请逐项确认待确认清单中的未知、过期或冲突字段，再重新评估。"
+  ],
+  "data_limitations": [
+    "全部房源、路线、设施和证据均为模拟数据，不可用于真实租房决策。",
+    "本原型仅为 Agent 2 的确定性工具核心，未接入 LLM、房源平台或 TfNSW。",
+    "as_of 是输入快照时点，不代表今天仍可租；分数是偏好匹配，不是房屋安全或签约保证。",
+    "不支持自动换汇、按人数分摊、真实市场租金估值或未来班次保证。"
+  ]
+}
