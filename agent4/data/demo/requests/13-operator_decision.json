@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "request_id": "demo-13",
+  "case_id": "aftercare-demo-1",
+  "actor_id": "demo-operator",
+  "actor_role": "operator",
+  "expected_version": 11,
+  "as_of": "2026-10-15T10:00:00+11:00",
+  "operation": "operator_decision",
+  "payload": {
+    "review_id": "review-1",
+    "decision": "release",
+    "note": "Synthetic evidence reviewed; factual inquiry may resume. No liability or refund decision is made.",
+    "gate_resolved": true
+  }
+}

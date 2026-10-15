@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "request_id": "demo-10",
+  "case_id": "aftercare-demo-1",
+  "actor_id": "demo-tenant",
+  "actor_role": "tenant",
+  "expected_version": 9,
+  "as_of": "2026-10-15T10:00:00+11:00",
+  "operation": "bond_update",
+  "payload": {
+    "entry": {
+      "text": "Property manager reportedly proposes a wall-mark deduction. Tenant disputes it.",
+      "occurred_at": "2026-10-15T10:00:00+11:00",
+      "evidence_refs": [
+        "baseline-1",
+        "photo-1"
+      ],
+      "tenant_confirmed": true,
+      "claims": [
+        {
+          "claim_id": "claim-wall",
+          "amount_cents": 18000,
+          "reason": "Bedroom wall mark",
+          "evidence_refs": [
+            "photo-1"
+          ],
+          "disputed": true
+        }
+      ],
+      "conflicting_evidence": false
+    }
+  }
+}

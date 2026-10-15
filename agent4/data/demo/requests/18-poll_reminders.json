@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "request_id": "demo-18",
+  "case_id": "aftercare-demo-1",
+  "actor_id": "demo-tenant",
+  "actor_role": "tenant",
+  "expected_version": 16,
+  "as_of": "2026-11-03T09:02:00+11:00",
+  "operation": "poll_reminders",
+  "payload": {}
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "request_id": "demo-14",
+  "case_id": "aftercare-demo-1",
+  "actor_id": "demo-tenant",
+  "actor_role": "tenant",
+  "expected_version": 12,
+  "as_of": "2026-10-15T10:00:00+11:00",
+  "operation": "request_draft",
+  "payload": {
+    "use_model": false,
+    "allow_external_ai": false
+  }
+}

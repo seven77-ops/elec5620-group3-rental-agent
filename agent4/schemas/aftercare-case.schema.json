@@ -1,0 +1,512 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AftercareCase",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+    },
+    "tenant_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "tenancy": {
+      "type": "object",
+      "properties": {
+        "tenancy_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+        },
+        "tenant_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+        },
+        "address": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000,
+          "pattern": "\\S"
+        },
+        "jurisdiction": {
+          "const": "NSW"
+        },
+        "tenancy_type": {
+          "const": "standard_residential"
+        },
+        "confirmed": {
+          "const": true
+        },
+        "source_ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000,
+          "pattern": "\\S"
+        },
+        "source_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "rooms": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,59}$"
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2000,
+                    "pattern": "\\S"
+                  }
+                },
+                "required": [
+                  "id",
+                  "name"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 30,
+              "minItems": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "carpeted": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "outdoor": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "furnished": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "inventory": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,59}$"
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2000,
+                    "pattern": "\\S"
+                  },
+                  "room_id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+                  }
+                },
+                "required": [
+                  "id",
+                  "name",
+                  "room_id"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "inventory_confirmed": {
+          "type": "boolean"
+        },
+        "baseline_evidence_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+          },
+          "uniqueItems": true,
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "tenancy_id",
+        "tenant_id",
+        "address",
+        "jurisdiction",
+        "tenancy_type",
+        "confirmed",
+        "source_ref",
+        "source_version",
+        "rooms",
+        "carpeted",
+        "outdoor",
+        "furnished",
+        "inventory",
+        "inventory_confirmed",
+        "baseline_evidence_refs"
+      ],
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "evidence_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+          },
+          "kind": {
+            "enum": [
+              "photo",
+              "receipt",
+              "condition_report",
+              "deposit_record",
+              "inspection_record",
+              "correspondence",
+              "outcome",
+              "other"
+            ]
+          },
+          "source_ref": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "pattern": "\\S"
+          },
+          "source_version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "recorded_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "pattern": "\\S"
+          }
+        },
+        "required": [
+          "evidence_id",
+          "kind",
+          "source_ref",
+          "source_version",
+          "recorded_at",
+          "summary"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 10000
+    },
+    "plan": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "enum": [
+                "Draft",
+                "Active",
+                "Cancelled"
+              ]
+            },
+            "move_out_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "schedule_confirmed": {
+              "type": "boolean"
+            },
+            "tasks": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              },
+              "maxItems": 100
+            },
+            "evidence_gaps": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000,
+                "pattern": "\\S"
+              },
+              "maxItems": 100
+            },
+            "clarification_requests": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000,
+                "pattern": "\\S"
+              },
+              "maxItems": 100
+            },
+            "pending_schedule": {
+              "anyOf": [
+                {
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "revisions": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              },
+              "maxItems": 100
+            },
+            "created_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "notice_status": {
+              "const": "unverified_no_legal_countdown"
+            },
+            "notice_question": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000,
+              "pattern": "\\S"
+            },
+            "schedule_basis": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000,
+              "pattern": "\\S"
+            },
+            "cancellation": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "state",
+            "move_out_date",
+            "schedule_confirmed",
+            "tasks",
+            "evidence_gaps",
+            "clarification_requests",
+            "pending_schedule",
+            "revisions",
+            "created_at",
+            "notice_status",
+            "notice_question",
+            "schedule_basis"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "bond": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "enum": [
+                "Draft",
+                "AwaitingOutcome",
+                "UnderReview",
+                "Resolved",
+                "Withdrawn"
+              ]
+            },
+            "bond_reference": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2000,
+                  "pattern": "\\S"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "deposit_evidence_ref": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "history": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              },
+              "maxItems": 10000
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              },
+              "maxItems": 10000
+            },
+            "drafts": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              },
+              "maxItems": 10000
+            },
+            "follow_up_at": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "outcome": {
+              "anyOf": [
+                {
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "closed_at": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "state",
+            "bond_reference",
+            "deposit_evidence_ref",
+            "history",
+            "claims",
+            "drafts",
+            "follow_up_at",
+            "outcome",
+            "closed_at"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "reviews": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "maxItems": 10000
+    },
+    "reminders_enabled": {
+      "type": "boolean"
+    },
+    "reminders": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "maxItems": 10000
+    },
+    "audit": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "maxItems": 10000
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "data_mode": {
+      "const": "local_prototype"
+    }
+  },
+  "required": [
+    "schema_version",
+    "case_id",
+    "tenant_id",
+    "version",
+    "tenancy",
+    "evidence",
+    "plan",
+    "bond",
+    "reviews",
+    "reminders_enabled",
+    "reminders",
+    "audit",
+    "created_at",
+    "updated_at",
+    "data_mode"
+  ],
+  "additionalProperties": false
+}

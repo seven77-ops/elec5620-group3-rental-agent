@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "request_id": "demo-08",
+  "case_id": "aftercare-demo-1",
+  "actor_id": "demo-tenant",
+  "actor_role": "tenant",
+  "expected_version": 7,
+  "as_of": "2026-10-15T10:00:00+11:00",
+  "operation": "activate_bond",
+  "payload": {
+    "entry": {
+      "text": "Tenant reports that key return has been arranged; no bond outcome is known.",
+      "occurred_at": "2026-10-15T10:00:00+11:00",
+      "evidence_refs": [],
+      "tenant_confirmed": true,
+      "claims": [],
+      "conflicting_evidence": false
+    }
+  }
+}

@@ -1,0 +1,397 @@
+{
+  "data_kind": "synthetic",
+  "description": "Fixed local M4 demonstration. Synthetic evidence references do not point to real files.",
+  "commands": [
+    {
+      "request": {
+        "schema_version": "1.0",
+        "request_id": "demo-01",
+        "case_id": "aftercare-demo-1",
+        "actor_id": "demo-tenant",
+        "actor_role": "tenant",
+        "expected_version": 0,
+        "as_of": "2026-10-15T10:00:00+11:00",
+        "operation": "create",
+        "payload": {
+          "tenancy": {
+            "tenancy_id": "tenancy-demo-1",
+            "tenant_id": "demo-tenant",
+            "address": "Unit 1, 10 Example Street, Sydney NSW (fictional)",
+            "jurisdiction": "NSW",
+            "tenancy_type": "standard_residential",
+            "confirmed": true,
+            "source_ref": "synthetic://tenant-confirmation",
+            "source_version": 1,
+            "rooms": [
+              {
+                "id": "bedroom",
+                "name": "Bedroom"
+              },
+              {
+                "id": "kitchen",
+                "name": "Kitchen"
+              },
+              {
+                "id": "bathroom",
+                "name": "Bathroom"
+              }
+            ],
+            "carpeted": true,
+            "outdoor": false,
+            "furnished": true,
+            "inventory": [
+              {
+                "id": "desk",
+                "name": "Study desk",
+                "room_id": "bedroom"
+              },
+              {
+                "id": "bed",
+                "name": "Bed frame",
+                "room_id": "bedroom"
+              }
+            ],
+            "inventory_confirmed": true,
+            "baseline_evidence_refs": [
+              "baseline-1"
+            ]
+          },
+          "evidence": [
+            {
+              "evidence_id": "baseline-1",
+              "kind": "condition_report",
+              "source_ref": "synthetic://incoming-condition-report",
+              "source_version": 1,
+              "recorded_at": "2026-09-01T09:00:00+10:00",
+              "summary": "Synthetic incoming report reference; bedroom wall mark is recorded as tenant-reported."
+            },
+            {
+              "evidence_id": "photo-1",
+              "kind": "photo",
+              "source_ref": "synthetic://bedroom-photo",
+              "source_version": 1,
+              "recorded_at": "2026-10-14T14:00:00+11:00",
+              "summary": "Synthetic photo reference; no image analysis or file verification is performed."
+            },
+            {
+              "evidence_id": "receipt-1",
+              "kind": "receipt",
+              "source_ref": "synthetic://cleaning-receipt",
+              "source_version": 1,
+              "recorded_at": "2026-10-14T15:00:00+11:00",
+              "summary": "Synthetic cleaning receipt reference supplied by tenant."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "request": {
+        "schema_version": "1.0",
+        "request_id": "demo-02",
+        "case_id": "aftercare-demo-1",
+        "actor_id": "demo-tenant",
+        "actor_role": "tenant",
+        "expected_version": 1,
+        "as_of": "2026-10-15T10:00:00+11:00",
+        "operation": "create_plan",
+        "payload": {
+          "move_out_date": "2026-10-31",
+          "schedule_confirmed": true
+        }
+      }
+    },
+    {
+      "request": {
+        "schema_version": "1.0",
+        "request_id": "demo-03",
+        "case_id": "aftercare-demo-1",
+        "actor_id": "demo-tenant",
+        "actor_role": "tenant",
+        "expected_version": 2,
+        "as_of": "2026-10-15T10:00:00+11:00",
+        "operation": "edit_task",
+        "payload": {
+          "task_id": "clean-bedroom",
+          "status": "done",
+          "evidence_refs": [
+            "photo-1",
+            "receipt-1"
+          ]
+        }
+      }
+    },
+    {
+      "request": {
+        "schema_version": "1.0",
+        "request_id": "demo-04",
+        "case_id": "aftercare-demo-1",
+        "actor_id": "demo-tenant",
+        "actor_role": "tenant",
+        "expected_version": 3,
+        "as_of": "2026-10-15T10:00:00+11:00",
+        "operation": "reminder_preferences",
+        "payload": {
+          "enabled": true,
+          "follow_up_at": null
+        }
+      },
+      "snapshot": "01-plan"
+    },
+    {
+      "request": {
+        "schema_version": "1.0",
+        "request_id": "demo-05",
+        "case_id": "aftercare-demo-1",
+        "actor_id": "demo-tenant",
+        "actor_role": "tenant",
+        "expected_version": 4,
+        "as_of": "2026-10-15T10:00:00+11:00",
+        "operation": "propose_date",
+        "payload": {
+          "move_out_date": "2026-11-02"
+        }
+      },
+      "snapshot": "02-date-proposed"
+    },
+    {
+      "request": {
+        "schema_version": "1.0",
+        "request_id": "demo-06",
+        "case_id": "aftercare-demo-1",
+        "actor_id": "demo-tenant",
+        "actor_role": "tenant",
+        "expected_version": 5,
+        "as_of": "2026-10-15T10:00:00+11:00",
+        "operation": "confirm_date",
+        "payload": {
+          "accepted": true
+        }
+      },
+      "snapshot": "03-date-confirmed"
+    },
+    {
+      "request": {
+        "schema_version": "1.0",
+        "request_id": "demo-07",
+        "case_id": "aftercare-demo-1",
+        "actor_id": "demo-tenant",
+        "actor_role": "tenant",
+        "expected_version": 6,
+        "as_of": "2026-10-15T10:00:00+11:00",
+        "operation": "open_bond",
+        "payload": {
+          "bond_reference": "SYNTHETIC-RBO-001",
+          "deposit_evidence_ref": null
+        }
+      }
+    },
+    {
+      "request": {
+        "schema_version": "1.0",
+        "request_id": "demo-08",
+        "case_id": "aftercare-demo-1",
+        "actor_id": "demo-tenant",
+        "actor_role": "tenant",
+        "expected_version": 7,
+        "as_of": "2026-10-15T10:00:00+11:00",
+        "operation": "activate_bond",
+        "payload": {
+          "entry": {
+            "text": "Tenant reports that key return has been arranged; no bond outcome is known.",
+            "occurred_at": "2026-10-15T10:00:00+11:00",
+            "evidence_refs": [],
+            "tenant_confirmed": true,
+            "claims": [],
+            "conflicting_evidence": false
+          }
+        }
+      }
+    },
+    {
+      "request": {
+        "schema_version": "1.0",
+        "request_id": "demo-09",
+        "case_id": "aftercare-demo-1",
+        "actor_id": "demo-tenant",
+        "actor_role": "tenant",
+        "expected_version": 8,
+        "as_of": "2026-10-15T10:00:00+11:00",
+        "operation": "request_draft",
+        "payload": {
+          "use_model": false,
+          "allow_external_ai": false
+        }
+      },
+      "snapshot": "04-clear-draft"
+    },
+    {
+      "request": {
+        "schema_version": "1.0",
+        "request_id": "demo-10",
+        "case_id": "aftercare-demo-1",
+        "actor_id": "demo-tenant",
+        "actor_role": "tenant",
+        "expected_version": 9,
+        "as_of": "2026-10-15T10:00:00+11:00",
+        "operation": "bond_update",
+        "payload": {
+          "entry": {
+            "text": "Property manager reportedly proposes a wall-mark deduction. Tenant disputes it.",
+            "occurred_at": "2026-10-15T10:00:00+11:00",
+            "evidence_refs": [
+              "baseline-1",
+              "photo-1"
+            ],
+            "tenant_confirmed": true,
+            "claims": [
+              {
+                "claim_id": "claim-wall",
+                "amount_cents": 18000,
+                "reason": "Bedroom wall mark",
+                "evidence_refs": [
+                  "photo-1"
+                ],
+                "disputed": true
+              }
+            ],
+            "conflicting_evidence": false
+          }
+        }
+      },
+      "snapshot": "05-dispute"
+    },
+    {
+      "request": {
+        "schema_version": "1.0",
+        "request_id": "demo-11",
+        "case_id": "aftercare-demo-1",
+        "actor_id": "demo-tenant",
+        "actor_role": "tenant",
+        "expected_version": 10,
+        "as_of": "2026-10-15T10:00:00+11:00",
+        "operation": "request_draft",
+        "payload": {
+          "use_model": false,
+          "allow_external_ai": false
+        }
+      },
+      "expect_error": "review_required"
+    },
+    {
+      "request": {
+        "schema_version": "1.0",
+        "request_id": "demo-12",
+        "case_id": "aftercare-demo-1",
+        "actor_id": "demo-operator",
+        "actor_role": "operator",
+        "expected_version": 10,
+        "as_of": "2026-10-15T10:00:00+11:00",
+        "operation": "operator_decision",
+        "payload": {
+          "review_id": "review-1",
+          "decision": "refer",
+          "note": "Demo referral recorded. This does not release the gate.",
+          "gate_resolved": false
+        }
+      }
+    },
+    {
+      "request": {
+        "schema_version": "1.0",
+        "request_id": "demo-13",
+        "case_id": "aftercare-demo-1",
+        "actor_id": "demo-operator",
+        "actor_role": "operator",
+        "expected_version": 11,
+        "as_of": "2026-10-15T10:00:00+11:00",
+        "operation": "operator_decision",
+        "payload": {
+          "review_id": "review-1",
+          "decision": "release",
+          "note": "Synthetic evidence reviewed; factual inquiry may resume. No liability or refund decision is made.",
+          "gate_resolved": true
+        }
+      }
+    },
+    {
+      "request": {
+        "schema_version": "1.0",
+        "request_id": "demo-14",
+        "case_id": "aftercare-demo-1",
+        "actor_id": "demo-tenant",
+        "actor_role": "tenant",
+        "expected_version": 12,
+        "as_of": "2026-10-15T10:00:00+11:00",
+        "operation": "request_draft",
+        "payload": {
+          "use_model": false,
+          "allow_external_ai": false
+        }
+      },
+      "snapshot": "06-released-draft"
+    },
+    {
+      "request": {
+        "schema_version": "1.0",
+        "request_id": "demo-15",
+        "case_id": "aftercare-demo-1",
+        "actor_id": "demo-tenant",
+        "actor_role": "tenant",
+        "expected_version": 13,
+        "as_of": "2026-10-15T10:00:00+11:00",
+        "operation": "reminder_preferences",
+        "payload": {
+          "enabled": true,
+          "follow_up_at": "2026-11-03T09:00:00+11:00"
+        }
+      }
+    },
+    {
+      "request": {
+        "schema_version": "1.0",
+        "request_id": "demo-16",
+        "case_id": "aftercare-demo-1",
+        "actor_id": "demo-tenant",
+        "actor_role": "tenant",
+        "expected_version": 14,
+        "as_of": "2026-11-03T09:00:00+11:00",
+        "operation": "poll_reminders",
+        "payload": {}
+      },
+      "snapshot": "07-reminders"
+    },
+    {
+      "request": {
+        "schema_version": "1.0",
+        "request_id": "demo-17",
+        "case_id": "aftercare-demo-1",
+        "actor_id": "demo-tenant",
+        "actor_role": "tenant",
+        "expected_version": 15,
+        "as_of": "2026-11-03T09:01:00+11:00",
+        "operation": "confirm_outcome",
+        "payload": {
+          "outcome": "Synthetic scenario: tenant explicitly confirms an agreed outcome; amount is not inferred.",
+          "evidence_refs": [],
+          "tenant_confirmed": true
+        }
+      },
+      "snapshot": "08-closed"
+    },
+    {
+      "request": {
+        "schema_version": "1.0",
+        "request_id": "demo-18",
+        "case_id": "aftercare-demo-1",
+        "actor_id": "demo-tenant",
+        "actor_role": "tenant",
+        "expected_version": 16,
+        "as_of": "2026-11-03T09:02:00+11:00",
+        "operation": "poll_reminders",
+        "payload": {}
+      },
+      "snapshot": "09-closed-reminders"
+    }
+  ]
+}

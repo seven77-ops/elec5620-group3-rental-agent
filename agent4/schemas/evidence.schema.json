@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EvidenceReference",
+  "type": "object",
+  "properties": {
+    "evidence_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+    },
+    "kind": {
+      "enum": [
+        "photo",
+        "receipt",
+        "condition_report",
+        "deposit_record",
+        "inspection_record",
+        "correspondence",
+        "outcome",
+        "other"
+      ]
+    },
+    "source_ref": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000,
+      "pattern": "\\S"
+    },
+    "source_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "recorded_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000,
+      "pattern": "\\S"
+    }
+  },
+  "required": [
+    "evidence_id",
+    "kind",
+    "source_ref",
+    "source_version",
+    "recorded_at",
+    "summary"
+  ],
+  "additionalProperties": false
+}

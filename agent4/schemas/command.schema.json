@@ -1,0 +1,1239 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AftercareCommand",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "request_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+    },
+    "actor_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+    },
+    "actor_role": {
+      "enum": [
+        "tenant",
+        "operator"
+      ]
+    },
+    "expected_version": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "as_of": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "operation": {
+      "enum": [
+        "create",
+        "revise_tenancy",
+        "add_evidence",
+        "create_plan",
+        "confirm_plan",
+        "edit_task",
+        "propose_date",
+        "confirm_date",
+        "cancel_plan",
+        "open_bond",
+        "activate_bond",
+        "bond_update",
+        "request_draft",
+        "operator_decision",
+        "confirm_outcome",
+        "withdraw",
+        "reminder_preferences",
+        "poll_reminders"
+      ]
+    },
+    "payload": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema_version",
+    "request_id",
+    "case_id",
+    "actor_id",
+    "actor_role",
+    "expected_version",
+    "as_of",
+    "operation",
+    "payload"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "create"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "tenancy": {
+                "type": "object",
+                "properties": {
+                  "tenancy_id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+                  },
+                  "tenant_id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+                  },
+                  "address": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2000,
+                    "pattern": "\\S"
+                  },
+                  "jurisdiction": {
+                    "const": "NSW"
+                  },
+                  "tenancy_type": {
+                    "const": "standard_residential"
+                  },
+                  "confirmed": {
+                    "const": true
+                  },
+                  "source_ref": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2000,
+                    "pattern": "\\S"
+                  },
+                  "source_version": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "rooms": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,59}$"
+                            },
+                            "name": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 2000,
+                              "pattern": "\\S"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "maxItems": 30,
+                        "minItems": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "carpeted": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "outdoor": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "furnished": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "inventory": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,59}$"
+                            },
+                            "name": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 2000,
+                              "pattern": "\\S"
+                            },
+                            "room_id": {
+                              "type": "string",
+                              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name",
+                            "room_id"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "maxItems": 100
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "inventory_confirmed": {
+                    "type": "boolean"
+                  },
+                  "baseline_evidence_refs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+                    },
+                    "uniqueItems": true,
+                    "maxItems": 100
+                  }
+                },
+                "required": [
+                  "tenancy_id",
+                  "tenant_id",
+                  "address",
+                  "jurisdiction",
+                  "tenancy_type",
+                  "confirmed",
+                  "source_ref",
+                  "source_version",
+                  "rooms",
+                  "carpeted",
+                  "outdoor",
+                  "furnished",
+                  "inventory",
+                  "inventory_confirmed",
+                  "baseline_evidence_refs"
+                ],
+                "additionalProperties": false
+              },
+              "evidence": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "evidence_id": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+                    },
+                    "kind": {
+                      "enum": [
+                        "photo",
+                        "receipt",
+                        "condition_report",
+                        "deposit_record",
+                        "inspection_record",
+                        "correspondence",
+                        "outcome",
+                        "other"
+                      ]
+                    },
+                    "source_ref": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000,
+                      "pattern": "\\S"
+                    },
+                    "source_version": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "recorded_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "summary": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000,
+                      "pattern": "\\S"
+                    }
+                  },
+                  "required": [
+                    "evidence_id",
+                    "kind",
+                    "source_ref",
+                    "source_version",
+                    "recorded_at",
+                    "summary"
+                  ],
+                  "additionalProperties": false
+                },
+                "maxItems": 100
+              }
+            },
+            "required": [
+              "tenancy",
+              "evidence"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "revise_tenancy"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "tenancy": {
+                "type": "object",
+                "properties": {
+                  "tenancy_id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+                  },
+                  "tenant_id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+                  },
+                  "address": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2000,
+                    "pattern": "\\S"
+                  },
+                  "jurisdiction": {
+                    "const": "NSW"
+                  },
+                  "tenancy_type": {
+                    "const": "standard_residential"
+                  },
+                  "confirmed": {
+                    "const": true
+                  },
+                  "source_ref": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2000,
+                    "pattern": "\\S"
+                  },
+                  "source_version": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "rooms": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,59}$"
+                            },
+                            "name": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 2000,
+                              "pattern": "\\S"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "maxItems": 30,
+                        "minItems": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "carpeted": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "outdoor": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "furnished": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "inventory": {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,59}$"
+                            },
+                            "name": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 2000,
+                              "pattern": "\\S"
+                            },
+                            "room_id": {
+                              "type": "string",
+                              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name",
+                            "room_id"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "maxItems": 100
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "inventory_confirmed": {
+                    "type": "boolean"
+                  },
+                  "baseline_evidence_refs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+                    },
+                    "uniqueItems": true,
+                    "maxItems": 100
+                  }
+                },
+                "required": [
+                  "tenancy_id",
+                  "tenant_id",
+                  "address",
+                  "jurisdiction",
+                  "tenancy_type",
+                  "confirmed",
+                  "source_ref",
+                  "source_version",
+                  "rooms",
+                  "carpeted",
+                  "outdoor",
+                  "furnished",
+                  "inventory",
+                  "inventory_confirmed",
+                  "baseline_evidence_refs"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "tenancy"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "add_evidence"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "evidence": {
+                "type": "object",
+                "properties": {
+                  "evidence_id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+                  },
+                  "kind": {
+                    "enum": [
+                      "photo",
+                      "receipt",
+                      "condition_report",
+                      "deposit_record",
+                      "inspection_record",
+                      "correspondence",
+                      "outcome",
+                      "other"
+                    ]
+                  },
+                  "source_ref": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2000,
+                    "pattern": "\\S"
+                  },
+                  "source_version": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "recorded_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "summary": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2000,
+                    "pattern": "\\S"
+                  }
+                },
+                "required": [
+                  "evidence_id",
+                  "kind",
+                  "source_ref",
+                  "source_version",
+                  "recorded_at",
+                  "summary"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "evidence"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "create_plan"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "move_out_date": {
+                "type": "string",
+                "format": "date"
+              },
+              "schedule_confirmed": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "move_out_date",
+              "schedule_confirmed"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "confirm_plan"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "tenant_confirmed": {
+                "const": true
+              }
+            },
+            "required": [
+              "tenant_confirmed"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "edit_task"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+              },
+              "status": {
+                "enum": [
+                  "todo",
+                  "done",
+                  "cancelled"
+                ]
+              },
+              "evidence_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+                },
+                "uniqueItems": true,
+                "maxItems": 100
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000,
+                "pattern": "\\S"
+              },
+              "due_date": {
+                "type": "string",
+                "format": "date"
+              },
+              "review_reason": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000,
+                "pattern": "\\S"
+              }
+            },
+            "required": [
+              "task_id",
+              "status",
+              "evidence_refs"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "propose_date"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "move_out_date": {
+                "type": "string",
+                "format": "date"
+              }
+            },
+            "required": [
+              "move_out_date"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "confirm_date"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "accepted": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "accepted"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "cancel_plan"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "tenant_confirmed": {
+                "const": true
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000,
+                "pattern": "\\S"
+              }
+            },
+            "required": [
+              "tenant_confirmed",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "open_bond"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "bond_reference": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2000,
+                    "pattern": "\\S"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "deposit_evidence_ref": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "bond_reference",
+              "deposit_evidence_ref"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "activate_bond"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "entry": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2000,
+                    "pattern": "\\S"
+                  },
+                  "occurred_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "evidence_refs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+                    },
+                    "uniqueItems": true,
+                    "maxItems": 100
+                  },
+                  "tenant_confirmed": {
+                    "const": true
+                  },
+                  "claims": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "claim_id": {
+                          "type": "string",
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+                        },
+                        "amount_cents": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 100000000
+                        },
+                        "reason": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 2000,
+                          "pattern": "\\S"
+                        },
+                        "evidence_refs": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+                          },
+                          "uniqueItems": true,
+                          "maxItems": 100
+                        },
+                        "disputed": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "claim_id",
+                        "amount_cents",
+                        "reason",
+                        "evidence_refs",
+                        "disputed"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "maxItems": 100
+                  },
+                  "conflicting_evidence": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "text",
+                  "occurred_at",
+                  "evidence_refs",
+                  "tenant_confirmed",
+                  "claims",
+                  "conflicting_evidence"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "entry"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "bond_update"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "entry": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2000,
+                    "pattern": "\\S"
+                  },
+                  "occurred_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "evidence_refs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+                    },
+                    "uniqueItems": true,
+                    "maxItems": 100
+                  },
+                  "tenant_confirmed": {
+                    "const": true
+                  },
+                  "claims": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "claim_id": {
+                          "type": "string",
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+                        },
+                        "amount_cents": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 100000000
+                        },
+                        "reason": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 2000,
+                          "pattern": "\\S"
+                        },
+                        "evidence_refs": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+                          },
+                          "uniqueItems": true,
+                          "maxItems": 100
+                        },
+                        "disputed": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "claim_id",
+                        "amount_cents",
+                        "reason",
+                        "evidence_refs",
+                        "disputed"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "maxItems": 100
+                  },
+                  "conflicting_evidence": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "text",
+                  "occurred_at",
+                  "evidence_refs",
+                  "tenant_confirmed",
+                  "claims",
+                  "conflicting_evidence"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "entry"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "request_draft"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "use_model": {
+                "type": "boolean"
+              },
+              "allow_external_ai": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "use_model",
+              "allow_external_ai"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "operator_decision"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "review_id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+              },
+              "decision": {
+                "enum": [
+                  "annotate",
+                  "return",
+                  "hold",
+                  "refer",
+                  "release"
+                ]
+              },
+              "note": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000,
+                "pattern": "\\S"
+              },
+              "gate_resolved": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "review_id",
+              "decision",
+              "note",
+              "gate_resolved"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "confirm_outcome"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "outcome": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000,
+                "pattern": "\\S"
+              },
+              "evidence_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+                },
+                "uniqueItems": true,
+                "maxItems": 100
+              },
+              "tenant_confirmed": {
+                "const": true
+              }
+            },
+            "required": [
+              "outcome",
+              "evidence_refs",
+              "tenant_confirmed"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "withdraw"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000,
+                "pattern": "\\S"
+              },
+              "tenant_confirmed": {
+                "const": true
+              }
+            },
+            "required": [
+              "reason",
+              "tenant_confirmed"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "reminder_preferences"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              },
+              "follow_up_at": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "enabled",
+              "follow_up_at"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "poll_reminders"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0",
+  "request_id": "demo-01",
+  "case_id": "aftercare-demo-1",
+  "actor_id": "demo-tenant",
+  "actor_role": "tenant",
+  "expected_version": 0,
+  "as_of": "2026-10-15T10:00:00+11:00",
+  "operation": "create",
+  "payload": {
+    "tenancy": {
+      "tenancy_id": "tenancy-demo-1",
+      "tenant_id": "demo-tenant",
+      "address": "Unit 1, 10 Example Street, Sydney NSW (fictional)",
+      "jurisdiction": "NSW",
+      "tenancy_type": "standard_residential",
+      "confirmed": true,
+      "source_ref": "synthetic://tenant-confirmation",
+      "source_version": 1,
+      "rooms": [
+        {
+          "id": "bedroom",
+          "name": "Bedroom"
+        },
+        {
+          "id": "kitchen",
+          "name": "Kitchen"
+        },
+        {
+          "id": "bathroom",
+          "name": "Bathroom"
+        }
+      ],
+      "carpeted": true,
+      "outdoor": false,
+      "furnished": true,
+      "inventory": [
+        {
+          "id": "desk",
+          "name": "Study desk",
+          "room_id": "bedroom"
+        },
+        {
+          "id": "bed",
+          "name": "Bed frame",
+          "room_id": "bedroom"
+        }
+      ],
+      "inventory_confirmed": true,
+      "baseline_evidence_refs": [
+        "baseline-1"
+      ]
+    },
+    "evidence": [
+      {
+        "evidence_id": "baseline-1",
+        "kind": "condition_report",
+        "source_ref": "synthetic://incoming-condition-report",
+        "source_version": 1,
+        "recorded_at": "2026-09-01T09:00:00+10:00",
+        "summary": "Synthetic incoming report reference; bedroom wall mark is recorded as tenant-reported."
+      },
+      {
+        "evidence_id": "photo-1",
+        "kind": "photo",
+        "source_ref": "synthetic://bedroom-photo",
+        "source_version": 1,
+        "recorded_at": "2026-10-14T14:00:00+11:00",
+        "summary": "Synthetic photo reference; no image analysis or file verification is performed."
+      },
+      {
+        "evidence_id": "receipt-1",
+        "kind": "receipt",
+        "source_ref": "synthetic://cleaning-receipt",
+        "source_version": 1,
+        "recorded_at": "2026-10-14T15:00:00+11:00",
+        "summary": "Synthetic cleaning receipt reference supplied by tenant."
+      }
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "request_id": "demo-15",
+  "case_id": "aftercare-demo-1",
+  "actor_id": "demo-tenant",
+  "actor_role": "tenant",
+  "expected_version": 13,
+  "as_of": "2026-10-15T10:00:00+11:00",
+  "operation": "reminder_preferences",
+  "payload": {
+    "enabled": true,
+    "follow_up_at": "2026-11-03T09:00:00+11:00"
+  }
+}

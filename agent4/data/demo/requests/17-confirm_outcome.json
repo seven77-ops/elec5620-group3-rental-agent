@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "request_id": "demo-17",
+  "case_id": "aftercare-demo-1",
+  "actor_id": "demo-tenant",
+  "actor_role": "tenant",
+  "expected_version": 15,
+  "as_of": "2026-11-03T09:01:00+11:00",
+  "operation": "confirm_outcome",
+  "payload": {
+    "outcome": "Synthetic scenario: tenant explicitly confirms an agreed outcome; amount is not inferred.",
+    "evidence_refs": [],
+    "tenant_confirmed": true
+  }
+}

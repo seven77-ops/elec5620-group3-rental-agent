@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "request_id": "demo-03",
+  "case_id": "aftercare-demo-1",
+  "actor_id": "demo-tenant",
+  "actor_role": "tenant",
+  "expected_version": 2,
+  "as_of": "2026-10-15T10:00:00+11:00",
+  "operation": "edit_task",
+  "payload": {
+    "task_id": "clean-bedroom",
+    "status": "done",
+    "evidence_refs": [
+      "photo-1",
+      "receipt-1"
+    ]
+  }
+}

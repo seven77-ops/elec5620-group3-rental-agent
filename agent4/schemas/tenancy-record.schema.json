@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TenantConfirmedTenancyRecord",
+  "type": "object",
+  "properties": {
+    "tenancy_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+    },
+    "tenant_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+    },
+    "address": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000,
+      "pattern": "\\S"
+    },
+    "jurisdiction": {
+      "const": "NSW"
+    },
+    "tenancy_type": {
+      "const": "standard_residential"
+    },
+    "confirmed": {
+      "const": true
+    },
+    "source_ref": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000,
+      "pattern": "\\S"
+    },
+    "source_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "rooms": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,59}$"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000,
+                "pattern": "\\S"
+              }
+            },
+            "required": [
+              "id",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 30,
+          "minItems": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "carpeted": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "outdoor": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "furnished": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "inventory": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,59}$"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000,
+                "pattern": "\\S"
+              },
+              "room_id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "room_id"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 100
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "inventory_confirmed": {
+      "type": "boolean"
+    },
+    "baseline_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+      },
+      "uniqueItems": true,
+      "maxItems": 100
+    }
+  },
+  "required": [
+    "tenancy_id",
+    "tenant_id",
+    "address",
+    "jurisdiction",
+    "tenancy_type",
+    "confirmed",
+    "source_ref",
+    "source_version",
+    "rooms",
+    "carpeted",
+    "outdoor",
+    "furnished",
+    "inventory",
+    "inventory_confirmed",
+    "baseline_evidence_refs"
+  ],
+  "additionalProperties": false
+}

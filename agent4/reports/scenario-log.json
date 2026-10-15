@@ -1,0 +1,125 @@
+[
+  {
+    "request_id": "demo-01",
+    "operation": "create",
+    "version": 1,
+    "bond_state": null,
+    "delivered_count": 0
+  },
+  {
+    "request_id": "demo-02",
+    "operation": "create_plan",
+    "version": 2,
+    "bond_state": null,
+    "delivered_count": 0
+  },
+  {
+    "request_id": "demo-03",
+    "operation": "edit_task",
+    "version": 3,
+    "bond_state": null,
+    "delivered_count": 0
+  },
+  {
+    "request_id": "demo-04",
+    "operation": "reminder_preferences",
+    "version": 4,
+    "bond_state": null,
+    "delivered_count": 0
+  },
+  {
+    "request_id": "demo-05",
+    "operation": "propose_date",
+    "version": 5,
+    "bond_state": null,
+    "delivered_count": 0
+  },
+  {
+    "request_id": "demo-06",
+    "operation": "confirm_date",
+    "version": 6,
+    "bond_state": null,
+    "delivered_count": 0
+  },
+  {
+    "request_id": "demo-07",
+    "operation": "open_bond",
+    "version": 7,
+    "bond_state": "Draft",
+    "delivered_count": 0
+  },
+  {
+    "request_id": "demo-08",
+    "operation": "activate_bond",
+    "version": 8,
+    "bond_state": "AwaitingOutcome",
+    "delivered_count": 0
+  },
+  {
+    "request_id": "demo-09",
+    "operation": "request_draft",
+    "version": 9,
+    "bond_state": "AwaitingOutcome",
+    "delivered_count": 0
+  },
+  {
+    "request_id": "demo-10",
+    "operation": "bond_update",
+    "version": 10,
+    "bond_state": "UnderReview",
+    "delivered_count": 0
+  },
+  {
+    "request_id": "demo-11",
+    "expected_error": "review_required"
+  },
+  {
+    "request_id": "demo-12",
+    "operation": "operator_decision",
+    "version": 11,
+    "bond_state": "UnderReview",
+    "delivered_count": 0
+  },
+  {
+    "request_id": "demo-13",
+    "operation": "operator_decision",
+    "version": 12,
+    "bond_state": "AwaitingOutcome",
+    "delivered_count": 0
+  },
+  {
+    "request_id": "demo-14",
+    "operation": "request_draft",
+    "version": 13,
+    "bond_state": "AwaitingOutcome",
+    "delivered_count": 0
+  },
+  {
+    "request_id": "demo-15",
+    "operation": "reminder_preferences",
+    "version": 14,
+    "bond_state": "AwaitingOutcome",
+    "delivered_count": 0
+  },
+  {
+    "request_id": "demo-16",
+    "operation": "poll_reminders",
+    "version": 15,
+    "bond_state": "AwaitingOutcome",
+    "delivered_count": 9
+  },
+  {
+    "request_id": "demo-17",
+    "operation": "confirm_outcome",
+    "version": 16,
+    "bond_state": "Resolved",
+    "delivered_count": 0
+  },
+  {
+    "request_id": "demo-18",
+    "operation": "poll_reminders",
+    "version": 17,
+    "bond_state": "Resolved",
+    "delivered_count": 0
+  }
+]

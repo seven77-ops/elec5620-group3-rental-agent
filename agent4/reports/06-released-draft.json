@@ -1,0 +1,704 @@
+{
+  "audit": [
+    {
+      "actor_id": "demo-tenant",
+      "actor_role": "tenant",
+      "at": "2026-10-15T10:00:00+11:00",
+      "operation": "create",
+      "request_id": "demo-01",
+      "version": 1
+    },
+    {
+      "actor_id": "demo-tenant",
+      "actor_role": "tenant",
+      "at": "2026-10-15T10:00:00+11:00",
+      "operation": "create_plan",
+      "request_id": "demo-02",
+      "version": 2
+    },
+    {
+      "actor_id": "demo-tenant",
+      "actor_role": "tenant",
+      "at": "2026-10-15T10:00:00+11:00",
+      "operation": "edit_task",
+      "request_id": "demo-03",
+      "version": 3
+    },
+    {
+      "actor_id": "demo-tenant",
+      "actor_role": "tenant",
+      "at": "2026-10-15T10:00:00+11:00",
+      "operation": "reminder_preferences",
+      "request_id": "demo-04",
+      "version": 4
+    },
+    {
+      "actor_id": "demo-tenant",
+      "actor_role": "tenant",
+      "at": "2026-10-15T10:00:00+11:00",
+      "operation": "propose_date",
+      "request_id": "demo-05",
+      "version": 5
+    },
+    {
+      "actor_id": "demo-tenant",
+      "actor_role": "tenant",
+      "at": "2026-10-15T10:00:00+11:00",
+      "operation": "confirm_date",
+      "request_id": "demo-06",
+      "version": 6
+    },
+    {
+      "actor_id": "demo-tenant",
+      "actor_role": "tenant",
+      "at": "2026-10-15T10:00:00+11:00",
+      "operation": "open_bond",
+      "request_id": "demo-07",
+      "version": 7
+    },
+    {
+      "actor_id": "demo-tenant",
+      "actor_role": "tenant",
+      "at": "2026-10-15T10:00:00+11:00",
+      "operation": "activate_bond",
+      "request_id": "demo-08",
+      "version": 8
+    },
+    {
+      "actor_id": "demo-tenant",
+      "actor_role": "tenant",
+      "at": "2026-10-15T10:00:00+11:00",
+      "operation": "request_draft",
+      "request_id": "demo-09",
+      "version": 9
+    },
+    {
+      "actor_id": "demo-tenant",
+      "actor_role": "tenant",
+      "at": "2026-10-15T10:00:00+11:00",
+      "operation": "bond_update",
+      "request_id": "demo-10",
+      "version": 10
+    },
+    {
+      "actor_id": "demo-operator",
+      "actor_role": "operator",
+      "at": "2026-10-15T10:00:00+11:00",
+      "operation": "operator_decision",
+      "request_id": "demo-12",
+      "version": 11
+    },
+    {
+      "actor_id": "demo-operator",
+      "actor_role": "operator",
+      "at": "2026-10-15T10:00:00+11:00",
+      "operation": "operator_decision",
+      "request_id": "demo-13",
+      "version": 12
+    },
+    {
+      "request_id": "demo-14",
+      "operation": "request_draft",
+      "actor_id": "demo-tenant",
+      "actor_role": "tenant",
+      "at": "2026-10-15T10:00:00+11:00",
+      "version": 13
+    }
+  ],
+  "bond": {
+    "bond_reference": "SYNTHETIC-RBO-001",
+    "claims": [
+      {
+        "amount_cents": 18000,
+        "claim_id": "claim-wall",
+        "classification": "reported_claim",
+        "currency": "AUD",
+        "disputed": true,
+        "entry_id": "entry-2",
+        "evidence_refs": [
+          "photo-1"
+        ],
+        "reason": "Bedroom wall mark"
+      }
+    ],
+    "closed_at": null,
+    "deposit_evidence_ref": null,
+    "drafts": [
+      {
+        "based_on_version": 8,
+        "blocks": [
+          {
+            "id": "update-1",
+            "mandatory": true,
+            "source_refs": [
+              "history:entry-1"
+            ],
+            "text": "Tenant-reported update (2026-10-15T10:00:00+11:00): Tenant reports that key return has been arranged; no bond outcome is known."
+          }
+        ],
+        "created_at": "2026-10-15T10:00:00+11:00",
+        "delivery_status": "prepared_not_sent",
+        "draft_id": "draft-1",
+        "invalidation_reason": "Review gate opened",
+        "limitations": "Factual template using tenant-reported information; no legal conclusion or refund guarantee.",
+        "mode": "template",
+        "saved_at_version": 9,
+        "source_refs": [
+          "history:entry-1"
+        ],
+        "status": "superseded",
+        "tenant_review_required": true,
+        "text": "Hello,\n\nTenant-reported update (2026-10-15T10:00:00+11:00): Tenant reports that key return has been arranged; no bond outcome is known.\n\nPlease provide an itemised explanation and supporting records for any reported deduction, and confirm the current bond status.\n\nThank you."
+      },
+      {
+        "mode": "template",
+        "delivery_status": "prepared_not_sent",
+        "tenant_review_required": true,
+        "blocks": [
+          {
+            "id": "update-2",
+            "mandatory": true,
+            "text": "Tenant-reported update (2026-10-15T10:00:00+11:00): Property manager reportedly proposes a wall-mark deduction. Tenant disputes it.",
+            "source_refs": [
+              "history:entry-2"
+            ]
+          },
+          {
+            "id": "claim-claim-wall",
+            "mandatory": true,
+            "text": "Reported deduction claim: AUD 180.00; stated reason: Bedroom wall mark. This is a reported claim, not an accepted deduction.",
+            "source_refs": [
+              "claim:claim-wall",
+              "photo-1"
+            ]
+          }
+        ],
+        "source_refs": [
+          "claim:claim-wall",
+          "history:entry-2",
+          "photo-1"
+        ],
+        "text": "Hello,\n\nTenant-reported update (2026-10-15T10:00:00+11:00): Property manager reportedly proposes a wall-mark deduction. Tenant disputes it.\n\nReported deduction claim: AUD 180.00; stated reason: Bedroom wall mark. This is a reported claim, not an accepted deduction.\n\nPlease provide an itemised explanation and supporting records for any reported deduction, and confirm the current bond status.\n\nThank you.",
+        "limitations": "Factual template using tenant-reported information; no legal conclusion or refund guarantee.",
+        "draft_id": "draft-2",
+        "created_at": "2026-10-15T10:00:00+11:00",
+        "based_on_version": 12,
+        "saved_at_version": 13,
+        "status": "current"
+      }
+    ],
+    "follow_up_at": null,
+    "history": [
+      {
+        "claims": [],
+        "conflicting_evidence": false,
+        "entry_id": "entry-1",
+        "evidence_refs": [],
+        "occurred_at": "2026-10-15T10:00:00+11:00",
+        "recorded_at": "2026-10-15T10:00:00+11:00",
+        "tenant_confirmed": true,
+        "text": "Tenant reports that key return has been arranged; no bond outcome is known."
+      },
+      {
+        "claims": [
+          {
+            "amount_cents": 18000,
+            "claim_id": "claim-wall",
+            "disputed": true,
+            "evidence_refs": [
+              "photo-1"
+            ],
+            "reason": "Bedroom wall mark"
+          }
+        ],
+        "conflicting_evidence": false,
+        "entry_id": "entry-2",
+        "evidence_refs": [
+          "baseline-1",
+          "photo-1"
+        ],
+        "occurred_at": "2026-10-15T10:00:00+11:00",
+        "recorded_at": "2026-10-15T10:00:00+11:00",
+        "tenant_confirmed": true,
+        "text": "Property manager reportedly proposes a wall-mark deduction. Tenant disputes it."
+      }
+    ],
+    "outcome": null,
+    "state": "AwaitingOutcome"
+  },
+  "case_id": "aftercare-demo-1",
+  "created_at": "2026-10-15T10:00:00+11:00",
+  "data_mode": "local_prototype",
+  "evidence": [
+    {
+      "evidence_id": "baseline-1",
+      "kind": "condition_report",
+      "recorded_at": "2026-09-01T09:00:00+10:00",
+      "source_ref": "synthetic://incoming-condition-report",
+      "source_version": 1,
+      "summary": "Synthetic incoming report reference; bedroom wall mark is recorded as tenant-reported."
+    },
+    {
+      "evidence_id": "photo-1",
+      "kind": "photo",
+      "recorded_at": "2026-10-14T14:00:00+11:00",
+      "source_ref": "synthetic://bedroom-photo",
+      "source_version": 1,
+      "summary": "Synthetic photo reference; no image analysis or file verification is performed."
+    },
+    {
+      "evidence_id": "receipt-1",
+      "kind": "receipt",
+      "recorded_at": "2026-10-14T15:00:00+11:00",
+      "source_ref": "synthetic://cleaning-receipt",
+      "source_version": 1,
+      "summary": "Synthetic cleaning receipt reference supplied by tenant."
+    }
+  ],
+  "plan": {
+    "clarification_requests": [],
+    "created_at": "2026-10-15T10:00:00+11:00",
+    "evidence_gaps": [],
+    "move_out_date": "2026-11-02",
+    "notice_question": "Check applicable notice requirements and triggering facts against current official guidance.",
+    "notice_status": "unverified_no_legal_countdown",
+    "pending_schedule": null,
+    "revisions": [
+      {
+        "at": "2026-10-15T10:00:00+11:00",
+        "move_out_date": "2026-10-31",
+        "tasks": [
+          {
+            "baseline_refs": [
+              "baseline-1"
+            ],
+            "due_at": "2026-10-29T09:00:00+11:00",
+            "evidence_refs": [
+              "photo-1",
+              "receipt-1"
+            ],
+            "offset_days": -2,
+            "status": "done",
+            "task_id": "clean-bedroom",
+            "title": "Clean Bedroom and record its condition",
+            "zone": "bedroom"
+          },
+          {
+            "baseline_refs": [
+              "baseline-1"
+            ],
+            "due_at": "2026-10-29T09:00:00+11:00",
+            "evidence_refs": [],
+            "offset_days": -2,
+            "status": "todo",
+            "task_id": "clean-kitchen",
+            "title": "Clean Kitchen and record its condition",
+            "zone": "kitchen"
+          },
+          {
+            "baseline_refs": [
+              "baseline-1"
+            ],
+            "due_at": "2026-10-29T09:00:00+11:00",
+            "evidence_refs": [],
+            "offset_days": -2,
+            "status": "todo",
+            "task_id": "clean-bathroom",
+            "title": "Clean Bathroom and record its condition",
+            "zone": "bathroom"
+          },
+          {
+            "baseline_refs": [
+              "baseline-1"
+            ],
+            "due_at": "2026-10-29T09:00:00+11:00",
+            "evidence_refs": [],
+            "offset_days": -2,
+            "status": "todo",
+            "task_id": "carpet",
+            "title": "Check and clean carpet as appropriate; document existing marks",
+            "zone": "property"
+          },
+          {
+            "baseline_refs": [
+              "baseline-1"
+            ],
+            "due_at": "2026-10-29T09:00:00+11:00",
+            "evidence_refs": [],
+            "offset_days": -2,
+            "status": "todo",
+            "task_id": "inventory-desk",
+            "title": "Check supplied inventory: Study desk",
+            "zone": "bedroom"
+          },
+          {
+            "baseline_refs": [
+              "baseline-1"
+            ],
+            "due_at": "2026-10-29T09:00:00+11:00",
+            "evidence_refs": [],
+            "offset_days": -2,
+            "status": "todo",
+            "task_id": "inventory-bed",
+            "title": "Check supplied inventory: Bed frame",
+            "zone": "bedroom"
+          },
+          {
+            "baseline_refs": [],
+            "due_at": "2026-10-30T09:00:00+11:00",
+            "evidence_refs": [],
+            "offset_days": -1,
+            "status": "todo",
+            "task_id": "belongings",
+            "title": "Remove belongings and arrange personal service/address changes",
+            "zone": "property"
+          },
+          {
+            "baseline_refs": [
+              "baseline-1"
+            ],
+            "due_at": "2026-10-30T09:00:00+11:00",
+            "evidence_refs": [],
+            "offset_days": -1,
+            "status": "todo",
+            "task_id": "inspection",
+            "title": "Prepare final inspection photos and compare available condition records",
+            "zone": "property"
+          },
+          {
+            "baseline_refs": [],
+            "due_at": "2026-10-31T09:00:00+11:00",
+            "evidence_refs": [],
+            "offset_days": 0,
+            "status": "todo",
+            "task_id": "keys",
+            "title": "Arrange key return and retain a dated receipt",
+            "zone": "property"
+          }
+        ]
+      }
+    ],
+    "schedule_basis": "User-confirmed practical planning offsets, not statutory deadlines.",
+    "schedule_confirmed": true,
+    "state": "Active",
+    "tasks": [
+      {
+        "baseline_refs": [
+          "baseline-1"
+        ],
+        "due_at": "2026-10-31T09:00:00+11:00",
+        "evidence_refs": [
+          "photo-1",
+          "receipt-1"
+        ],
+        "offset_days": -2,
+        "status": "done",
+        "task_id": "clean-bedroom",
+        "title": "Clean Bedroom and record its condition",
+        "zone": "bedroom"
+      },
+      {
+        "baseline_refs": [
+          "baseline-1"
+        ],
+        "due_at": "2026-10-31T09:00:00+11:00",
+        "evidence_refs": [],
+        "offset_days": -2,
+        "status": "todo",
+        "task_id": "clean-kitchen",
+        "title": "Clean Kitchen and record its condition",
+        "zone": "kitchen"
+      },
+      {
+        "baseline_refs": [
+          "baseline-1"
+        ],
+        "due_at": "2026-10-31T09:00:00+11:00",
+        "evidence_refs": [],
+        "offset_days": -2,
+        "status": "todo",
+        "task_id": "clean-bathroom",
+        "title": "Clean Bathroom and record its condition",
+        "zone": "bathroom"
+      },
+      {
+        "baseline_refs": [
+          "baseline-1"
+        ],
+        "due_at": "2026-10-31T09:00:00+11:00",
+        "evidence_refs": [],
+        "offset_days": -2,
+        "status": "todo",
+        "task_id": "carpet",
+        "title": "Check and clean carpet as appropriate; document existing marks",
+        "zone": "property"
+      },
+      {
+        "baseline_refs": [
+          "baseline-1"
+        ],
+        "due_at": "2026-10-31T09:00:00+11:00",
+        "evidence_refs": [],
+        "offset_days": -2,
+        "status": "todo",
+        "task_id": "inventory-desk",
+        "title": "Check supplied inventory: Study desk",
+        "zone": "bedroom"
+      },
+      {
+        "baseline_refs": [
+          "baseline-1"
+        ],
+        "due_at": "2026-10-31T09:00:00+11:00",
+        "evidence_refs": [],
+        "offset_days": -2,
+        "status": "todo",
+        "task_id": "inventory-bed",
+        "title": "Check supplied inventory: Bed frame",
+        "zone": "bedroom"
+      },
+      {
+        "baseline_refs": [],
+        "due_at": "2026-11-01T09:00:00+11:00",
+        "evidence_refs": [],
+        "offset_days": -1,
+        "status": "todo",
+        "task_id": "belongings",
+        "title": "Remove belongings and arrange personal service/address changes",
+        "zone": "property"
+      },
+      {
+        "baseline_refs": [
+          "baseline-1"
+        ],
+        "due_at": "2026-11-01T09:00:00+11:00",
+        "evidence_refs": [],
+        "offset_days": -1,
+        "status": "todo",
+        "task_id": "inspection",
+        "title": "Prepare final inspection photos and compare available condition records",
+        "zone": "property"
+      },
+      {
+        "baseline_refs": [],
+        "due_at": "2026-11-02T09:00:00+11:00",
+        "evidence_refs": [],
+        "offset_days": 0,
+        "status": "todo",
+        "task_id": "keys",
+        "title": "Arrange key return and retain a dated receipt",
+        "zone": "property"
+      }
+    ]
+  },
+  "reminders": [
+    {
+      "delivered_at": null,
+      "due_at": "2026-10-29T09:00:00+11:00",
+      "owner": "plan:clean-kitchen",
+      "reminder_id": "rm-c04a61838eefe62bee1d",
+      "state": "suppressed",
+      "title": "Clean Kitchen and record its condition"
+    },
+    {
+      "delivered_at": null,
+      "due_at": "2026-10-29T09:00:00+11:00",
+      "owner": "plan:clean-bathroom",
+      "reminder_id": "rm-80ca9a5362a2e15e3632",
+      "state": "suppressed",
+      "title": "Clean Bathroom and record its condition"
+    },
+    {
+      "delivered_at": null,
+      "due_at": "2026-10-29T09:00:00+11:00",
+      "owner": "plan:carpet",
+      "reminder_id": "rm-f9de0c40dd16642ebad7",
+      "state": "suppressed",
+      "title": "Check and clean carpet as appropriate; document existing marks"
+    },
+    {
+      "delivered_at": null,
+      "due_at": "2026-10-29T09:00:00+11:00",
+      "owner": "plan:inventory-desk",
+      "reminder_id": "rm-ce3ebc7aab6daf4c0a67",
+      "state": "suppressed",
+      "title": "Check supplied inventory: Study desk"
+    },
+    {
+      "delivered_at": null,
+      "due_at": "2026-10-29T09:00:00+11:00",
+      "owner": "plan:inventory-bed",
+      "reminder_id": "rm-caf21a979f38695e67d6",
+      "state": "suppressed",
+      "title": "Check supplied inventory: Bed frame"
+    },
+    {
+      "delivered_at": null,
+      "due_at": "2026-10-30T09:00:00+11:00",
+      "owner": "plan:belongings",
+      "reminder_id": "rm-b2b617b659d66b0a815c",
+      "state": "suppressed",
+      "title": "Remove belongings and arrange personal service/address changes"
+    },
+    {
+      "delivered_at": null,
+      "due_at": "2026-10-30T09:00:00+11:00",
+      "owner": "plan:inspection",
+      "reminder_id": "rm-6abb7850e6647508d7d7",
+      "state": "suppressed",
+      "title": "Prepare final inspection photos and compare available condition records"
+    },
+    {
+      "delivered_at": null,
+      "due_at": "2026-10-31T09:00:00+11:00",
+      "owner": "plan:keys",
+      "reminder_id": "rm-53e58f1ac38c411f1b25",
+      "state": "suppressed",
+      "title": "Arrange key return and retain a dated receipt"
+    },
+    {
+      "delivered_at": null,
+      "due_at": "2026-10-31T09:00:00+11:00",
+      "owner": "plan:clean-kitchen",
+      "reminder_id": "rm-ba01b82b3dddf03a1359",
+      "state": "scheduled",
+      "title": "Clean Kitchen and record its condition"
+    },
+    {
+      "delivered_at": null,
+      "due_at": "2026-10-31T09:00:00+11:00",
+      "owner": "plan:clean-bathroom",
+      "reminder_id": "rm-a1c30a5684666749f57e",
+      "state": "scheduled",
+      "title": "Clean Bathroom and record its condition"
+    },
+    {
+      "delivered_at": null,
+      "due_at": "2026-10-31T09:00:00+11:00",
+      "owner": "plan:carpet",
+      "reminder_id": "rm-ab4be535aaf80ce25074",
+      "state": "scheduled",
+      "title": "Check and clean carpet as appropriate; document existing marks"
+    },
+    {
+      "delivered_at": null,
+      "due_at": "2026-10-31T09:00:00+11:00",
+      "owner": "plan:inventory-desk",
+      "reminder_id": "rm-c946ef929128f3c31bc7",
+      "state": "scheduled",
+      "title": "Check supplied inventory: Study desk"
+    },
+    {
+      "delivered_at": null,
+      "due_at": "2026-10-31T09:00:00+11:00",
+      "owner": "plan:inventory-bed",
+      "reminder_id": "rm-dd4929dea3bc4c878876",
+      "state": "scheduled",
+      "title": "Check supplied inventory: Bed frame"
+    },
+    {
+      "delivered_at": null,
+      "due_at": "2026-11-01T09:00:00+11:00",
+      "owner": "plan:belongings",
+      "reminder_id": "rm-87bc78d40f6fc68642bb",
+      "state": "scheduled",
+      "title": "Remove belongings and arrange personal service/address changes"
+    },
+    {
+      "delivered_at": null,
+      "due_at": "2026-11-01T09:00:00+11:00",
+      "owner": "plan:inspection",
+      "reminder_id": "rm-3a63bbf3dfe882cda40a",
+      "state": "scheduled",
+      "title": "Prepare final inspection photos and compare available condition records"
+    },
+    {
+      "delivered_at": null,
+      "due_at": "2026-11-02T09:00:00+11:00",
+      "owner": "plan:keys",
+      "reminder_id": "rm-c09a8e26060857987f5d",
+      "state": "scheduled",
+      "title": "Arrange key return and retain a dated receipt"
+    }
+  ],
+  "reminders_enabled": true,
+  "reviews": [
+    {
+      "closed_at": "2026-10-15T10:00:00+11:00",
+      "created_at": "2026-10-15T10:00:00+11:00",
+      "decisions": [
+        {
+          "at": "2026-10-15T10:00:00+11:00",
+          "decision": "refer",
+          "gate_resolved": false,
+          "note": "Demo referral recorded. This does not release the gate.",
+          "operator_id": "demo-operator",
+          "review_id": "review-1"
+        },
+        {
+          "at": "2026-10-15T10:00:00+11:00",
+          "decision": "release",
+          "gate_resolved": true,
+          "note": "Synthetic evidence reviewed; factual inquiry may resume. No liability or refund decision is made.",
+          "operator_id": "demo-operator",
+          "review_id": "review-1"
+        }
+      ],
+      "reason": "Tenant disputes reported deduction: Bedroom wall mark",
+      "reason_key": "claim:claim-wall",
+      "review_id": "review-1",
+      "source_refs": [
+        "claim:claim-wall",
+        "photo-1"
+      ],
+      "status": "released"
+    }
+  ],
+  "schema_version": "1.0",
+  "tenancy": {
+    "address": "Unit 1, 10 Example Street, Sydney NSW (fictional)",
+    "baseline_evidence_refs": [
+      "baseline-1"
+    ],
+    "carpeted": true,
+    "confirmed": true,
+    "furnished": true,
+    "inventory": [
+      {
+        "id": "desk",
+        "name": "Study desk",
+        "room_id": "bedroom"
+      },
+      {
+        "id": "bed",
+        "name": "Bed frame",
+        "room_id": "bedroom"
+      }
+    ],
+    "inventory_confirmed": true,
+    "jurisdiction": "NSW",
+    "outdoor": false,
+    "rooms": [
+      {
+        "id": "bedroom",
+        "name": "Bedroom"
+      },
+      {
+        "id": "kitchen",
+        "name": "Kitchen"
+      },
+      {
+        "id": "bathroom",
+        "name": "Bathroom"
+      }
+    ],
+    "source_ref": "synthetic://tenant-confirmation",
+    "source_version": 1,
+    "tenancy_id": "tenancy-demo-1",
+    "tenancy_type": "standard_residential",
+    "tenant_id": "demo-tenant"
+  },
+  "tenant_id": "demo-tenant",
+  "updated_at": "2026-10-15T10:00:00+11:00",
+  "version": 13
+}
