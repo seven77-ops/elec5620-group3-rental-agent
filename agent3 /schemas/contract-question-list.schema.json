@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ContractQuestionList",
+  "type": "object",
+  "required": ["schema_version", "recipient", "handoff_status", "review_id", "review_version", "question_version", "generated_at", "questions"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "recipient": {"const": "Tenant"},
+    "handoff_status": {"const": "prepared_not_sent"},
+    "review_id": {"type": "string", "pattern": "^cr-[0-9a-f]{32}$"},
+    "review_version": {"type": "integer", "minimum": 1},
+    "question_version": {"type": "integer", "minimum": 1},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "questions": {"type": "array", "items": {"type": "object", "required": ["finding_id", "review_version", "text", "evidence"], "properties": {"finding_id": {"type": "string", "pattern": "^F[0-9]{2,}$"}, "review_version": {"type": "integer", "minimum": 1}, "text": {"type": "string", "minLength": 1, "maxLength": 1000}, "evidence": {"type": "array"}}, "additionalProperties": false}}
+  },
+  "additionalProperties": false
+}

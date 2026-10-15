@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "recipient": "Tenant",
+  "handoff_status": "prepared_not_sent",
+  "review_id": "cr-447ec668f1e3449eb316f758dc9d0c21",
+  "review_version": 1,
+  "question_version": 1,
+  "generated_at": "2026-10-15T12:47:17+11:00",
+  "questions": [
+    {
+      "finding_id": "F01",
+      "review_version": 1,
+      "text": "Could you clarify: Bond exceeds four weeks of rent? The extracted bond exceeds four times the extracted weekly agreement rent; verify both values and seek qualified help if needed.",
+      "evidence": [
+        {
+          "source_name": "risk-demo.txt",
+          "page": 1,
+          "line": 6,
+          "quote": "Bond: $2500"
+        },
+        {
+          "source_name": "risk-demo.txt",
+          "page": 1,
+          "line": 5,
+          "quote": "Weekly rent: $500 per person"
+        }
+      ]
+    },
+    {
+      "finding_id": "F02",
+      "review_version": 1,
+      "text": "Could you clarify: Agreement and selected listing addresses differ? The listing location may be less precise than the agreement; a human must confirm the actual premises.",
+      "evidence": [
+        {
+          "source_name": "risk-demo.txt",
+          "page": 1,
+          "line": 4,
+          "quote": "Address: Different Example Building 9"
+        },
+        {
+          "source_name": "Agent 2 SelectedListingEvidence",
+          "listing_id": "DEMO-006",
+          "recommendation_run_id": "rr-416489817d8ef341c02f1a80bc564939f2e105a587dcabcf445dacf411d785be",
+          "selected_at": "2026-09-17T10:00:00+10:00",
+          "field": "listing_snapshot.address",
+          "value": "虚构示例楼 6 号房（不存在的地址）",
+          "source_ref": "fixture:DEMO-006#address"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ContractReview",
+  "type": "object",
+  "required": ["schema_version", "review_id", "version", "created_at", "updated_at", "as_of", "status", "status_reason", "document", "consented_at", "fields", "additional_clauses", "extraction_confidence", "selection_evidence", "rule_pack", "findings", "explanations", "mode", "human_review", "questions", "question_version", "revisions", "events", "data_limitations"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "review_id": {"type": "string", "pattern": "^cr-[0-9a-f]{32}$"},
+    "version": {"type": "integer", "minimum": 1},
+    "created_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"},
+    "as_of": {"type": "string", "format": "date"},
+    "status": {"enum": ["Awaiting Resubmission", "Degraded Summary Only", "Awaiting Human Review", "Reviewed", "Questions Ready"]},
+    "status_reason": {"type": ["string", "null"]},
+    "document": {"type": "object", "required": ["source_name", "sha256", "format", "page_count", "extraction_mode"]},
+    "consented_at": {"type": "string", "format": "date-time"},
+    "fields": {"type": "object", "required": ["address", "landlord", "tenant", "rent_amount", "rent_period", "rent_scope", "currency", "bond", "start_date", "end_date", "signed_date"], "additionalProperties": {"$ref": "#/$defs/field"}},
+    "additional_clauses": {"type": "array", "items": {"type": "object"}},
+    "extraction_confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "selection_evidence": {"type": ["object", "null"]},
+    "intake": {"type": "object", "required": ["request_id", "selection_sha256", "document_sha256", "recommendation_run_id", "selection_check_run_id", "search_id", "profile_version", "listing_id", "selected_at", "received_review_version"], "properties": {
+      "request_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+      "selection_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+      "document_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+      "recommendation_run_id": {"type": "string"},
+      "selection_check_run_id": {"type": "string"},
+      "search_id": {"type": "string"},
+      "profile_version": {"type": "integer", "minimum": 1},
+      "listing_id": {"type": "string"},
+      "selected_at": {"type": "string", "format": "date-time"},
+      "received_review_version": {"const": 1}
+    }, "additionalProperties": false},
+    "rule_pack": {"type": "object", "required": ["version", "verified_on", "max_age_days", "source_url"]},
+    "findings": {"type": "array", "items": {"$ref": "#/$defs/finding"}},
+    "explanations": {"type": "array", "items": {"type": "object", "required": ["finding_id", "text"]}},
+    "mode": {"enum": ["none", "rules", "rules_fallback", "model"]},
+    "human_review": {"type": ["object", "null"]},
+    "questions": {"type": "array", "items": {"type": "object", "required": ["finding_id", "review_version", "text", "evidence"]}},
+    "question_version": {"type": "integer", "minimum": 0},
+    "revisions": {"type": "array", "items": {"type": "object"}},
+    "events": {"type": "array", "items": {"type": "object"}},
+    "data_limitations": {"type": "array", "items": {"type": "string"}}
+  },
+  "$defs": {
+    "field": {"type": "object", "required": ["value", "confidence", "evidence"], "properties": {"value": {"type": ["string", "number", "null"]}, "confidence": {"type": "number", "minimum": 0, "maximum": 1}, "evidence": {"type": ["object", "null"]}}, "additionalProperties": false},
+    "finding": {"type": "object", "required": ["id", "code", "severity", "title", "reason", "evidence", "rule_version", "rule_url"], "properties": {"id": {"type": "string", "pattern": "^F[0-9]{2,}$"}, "code": {"type": "string"}, "severity": {"enum": ["high", "needs_review"]}, "title": {"type": "string"}, "reason": {"type": "string"}, "evidence": {"type": "array"}, "rule_version": {"type": ["string", "null"]}, "rule_url": {"type": ["string", "null"]}}, "additionalProperties": false}
+  },
+  "additionalProperties": false
+}

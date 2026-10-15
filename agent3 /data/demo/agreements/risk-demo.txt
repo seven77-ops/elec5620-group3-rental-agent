@@ -1,0 +1,7 @@
+Landlord: Example Housing Pty Ltd
+Tenant: Alex Student
+Address: Different Example Building 9
+Weekly rent: $500 per person
+Bond: $2500
+Start date: 2027-02-01
+End date: 2028-01-31
