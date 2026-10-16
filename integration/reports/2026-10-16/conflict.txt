@@ -1,0 +1,4 @@
+Review: <repo>/integration/reports/2026-10-16/conflict.json
+Readable report: <repo>/integration/reports/2026-10-16/conflict.md
+Status: Awaiting Human Review
+Intake: created

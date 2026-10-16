@@ -1,0 +1,11 @@
+test_agent1_example_keeps_confirmation_outside_profile (test_handoffs.HandoffIntegrationTests.test_agent1_example_keeps_confirmation_outside_profile) ... ok
+test_agent3_readme_directory_runs (test_handoffs.HandoffIntegrationTests.test_agent3_readme_directory_runs) ... ok
+test_changed_contract_cannot_reuse_request_id (test_handoffs.HandoffIntegrationTests.test_changed_contract_cannot_reuse_request_id) ... ok
+test_fresh_agent2_packet_is_received_and_replayed (test_handoffs.HandoffIntegrationTests.test_fresh_agent2_packet_is_received_and_replayed) ... ok
+test_listing_contract_conflict_waits_for_human_and_blocks_questions (test_handoffs.HandoffIntegrationTests.test_listing_contract_conflict_waits_for_human_and_blocks_questions) ... ok
+test_no_consent_rejects_before_receipt_or_review_is_written (test_handoffs.HandoffIntegrationTests.test_no_consent_rejects_before_receipt_or_review_is_written) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 2.444s
+
+OK

@@ -1,0 +1,5 @@
+已生成（仅模拟）：<repo>/integration/reports/2026-10-16/selection.md
+结构化报告：<repo>/integration/reports/2026-10-16/selection.json
+推荐批次：rr-972d841d19dd56e4e14f57beaedf2bcdaaab6a1981a7d0962b1d3785a6a9d603
+选房证据包（未发送）：<repo>/integration/reports/2026-10-16/selection.selection.json
+结果：input=30, eligible=15, pending=9, excluded=5, duplicates=1

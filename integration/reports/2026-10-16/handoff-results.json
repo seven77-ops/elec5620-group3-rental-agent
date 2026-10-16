@@ -1,0 +1,61 @@
+{
+  "data_mode": "synthetic_demo",
+  "first_status": "Reviewed",
+  "request_id": "demo-agent23-20261016-001",
+  "review_id": "cr-a371be74a404483fb8c1f33a437a2904",
+  "same_input_retry_equal": true,
+  "intake": {
+    "request_id": "demo-agent23-20261016-001",
+    "selection_sha256": "87ea1fdf6a7cc2f913a88886557063a1cef2b8e6a19bb3d456fecb1d693bb881",
+    "document_sha256": "31502b925582274322eef97e31ed12cae4f0364902ef56266e3073fd00f7b52d",
+    "recommendation_run_id": "rr-972d841d19dd56e4e14f57beaedf2bcdaaab6a1981a7d0962b1d3785a6a9d603",
+    "selection_check_run_id": "rr-6c467d46870be59b3481cf8c15ee9cd30a39c9926895d1648c54727c08f2bfe8",
+    "search_id": "DEMO-SEARCH-INTEGRATION-001",
+    "profile_version": 1,
+    "listing_id": "DEMO-006",
+    "selected_at": "2026-09-17T10:00:00+10:00",
+    "received_review_version": 1
+  },
+  "conflict_status": "Awaiting Human Review",
+  "conflict_codes": [
+    "rent_difference"
+  ],
+  "questions_before_human_decision": "rejected",
+  "commands": [
+    {
+      "name": "generate-selection",
+      "exit_code": 0,
+      "expected_exit": 0,
+      "log": "generate-selection.txt"
+    },
+    {
+      "name": "receive",
+      "exit_code": 0,
+      "expected_exit": 0,
+      "log": "receive.txt"
+    },
+    {
+      "name": "retry",
+      "exit_code": 0,
+      "expected_exit": 0,
+      "log": "retry.txt"
+    },
+    {
+      "name": "conflict",
+      "exit_code": 0,
+      "expected_exit": 0,
+      "log": "conflict.txt"
+    },
+    {
+      "name": "blocked-questions",
+      "exit_code": 2,
+      "expected_exit": 2,
+      "log": "blocked-questions.txt"
+    }
+  ],
+  "limitations": [
+    "Agent 1 profile and approval are synthetic fixtures, not an implemented service.",
+    "This is local file/CLI testing, not network delivery or teammate joint acceptance.",
+    "Listing observation/selection uses 2026-09-17; contract reference date uses 2026-10-15."
+  ]
+}

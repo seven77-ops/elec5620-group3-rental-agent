@@ -1,0 +1,16 @@
+{
+  "counts": {
+    "input": 30,
+    "eligible": 15,
+    "pending": 9,
+    "excluded": 5,
+    "duplicates": 1
+  },
+  "top1": {
+    "listing_id": "DEMO-006",
+    "score": 92.75
+  },
+  "selectedAt": "2026-09-17T10:00:00+10:00",
+  "contractReferenceDate": "2026-10-15",
+  "note": "Fixed synthetic snapshot, not current listing availability. Agent 3 reference date is separate from listing observation time."
+}

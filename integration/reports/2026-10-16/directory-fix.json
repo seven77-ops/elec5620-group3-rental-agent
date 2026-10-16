@@ -1,0 +1,8 @@
+{
+  "old_directory": "agent3 (trailing space)",
+  "new_directory": "agent3",
+  "moved_tracked_files": 35,
+  "all_moved_file_bytes_unchanged": true,
+  "original_readme_command_result": "No module named contract_agent",
+  "fixed_readme_command_exit": 0
+}
