@@ -1,0 +1,18 @@
+{
+  "exampleOnly": true,
+  "dataMode": "synthetic_demo",
+  "caseId": "DEMO-CASE-INTEGRATION-001",
+  "searchId": "DEMO-SEARCH-INTEGRATION-001",
+  "profileVersion": 1,
+  "taskId": "SCRUM19-handoff-demo-001",
+  "profileFile": "confirmed-profile.json",
+  "profileFingerprint": "ea5f4046e0f804ef33d9fb2227947c61bca8d7a9715d776cc9ea44a62b66e352",
+  "confirmation": {
+    "confirmed": true,
+    "confirmedBy": "DEMO-TENANT-001",
+    "confirmedAt": "2026-09-17T08:55:00+10:00",
+    "sourceDraftId": "DEMO-DRAFT-001",
+    "reviewedDraftRevision": 3
+  },
+  "note": "Synthetic coordination-envelope example only; no Agent 1 service or authenticated user approval is implemented."
+}

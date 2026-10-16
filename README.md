@@ -5,6 +5,7 @@
 | 模块 | 内容 | 运行说明 |
 |---|---|---|
 | [agent2/](agent2/) | Member 2：房源资格评估、评分推荐、偏好版本比较与本地选房证据包 | [Agent 2 README](agent2/README.md) |
+| [agent3/](agent3/) | Member 3：合同读取、选房交叉核对、人工复核与问题清单 | [Agent 3 README](agent3/README.md) |
 
 ## 运行 Agent 2
 
@@ -26,3 +27,7 @@ python3 -m rental_agent --profile data/demo/profiles/commute.json --listings dat
 - [SCRUM-2：偏好确认与房源评估联调](https://breezebee64.atlassian.net/browse/SCRUM-2)
 - [SCRUM-7：偏好比较与排名变化解释](https://breezebee64.atlassian.net/browse/SCRUM-7)
 - [SCRUM-19：Member 1 接口适配与最新推荐版本绑定](https://breezebee64.atlassian.net/browse/SCRUM-19)
+
+## 跨 Agent 对接
+
+[输入约定与本地联调](integration/README.md)：包含 Agent 1 已确认偏好及外层确认/版本/任务样例，以及 Agent 2 → Agent 3 的可复现场景。真实 Agent 1 服务尚待接入。

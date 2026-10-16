@@ -1,0 +1,4 @@
+Review: <repo>/integration/reports/2026-10-16/retry.json
+Readable report: <repo>/integration/reports/2026-10-16/retry.md
+Status: Reviewed
+Intake: duplicate request, original review returned

@@ -89,3 +89,7 @@ tests/              本模块及 Agent 2 样例的联调测试
 可选模型配置仅放在服务器/终端环境：`AGENT3_MODEL_URL`（完整 HTTPS chat completions URL）、`AGENT3_MODEL_NAME`、`AGENT3_MODEL_API_KEY`。只有租客另行同意外部模型处理时才加 `--allow-external-ai`；不要用真实合同做课程演示。
 
 详见 [课程需求追踪](docs/course-requirements.md)、[数据交接契约](docs/data-contracts.md)和[2026-10-15 验证记录](docs/verification-2026-10-15.md)。
+
+## 小组联调入口
+
+代码及文档现统一放在 `agent3/`（目录名末尾无空格）。从仓库根目录运行 `python -m unittest discover -s integration/tests -v` 可验证现场生成的 Agent 2 选房包、重复请求及合同冲突；先安装双方 requirements.txt。样例和逐项说明见 [跨 Agent 联调](../integration/README.md)。本地运行记录不代表 Agent 1 已实现或成员共同验收已完成。
