@@ -22,4 +22,4 @@
 - [x] Add `integration/tests/test_handoffs.py`: verify the documented Agent 3 working directory, fixture references, a fresh selected packet, request replay, and conflict escalation. Run the directory test before moving files and confirm `No module named contract_agent`.
 - [x] Move each tracked file below `agent3 /` to the matching path below `agent3/` with git mv; refuse any destination collision. Update root navigation and Agent 3 documentation.
 - [x] Run Agent 2's 71 tests, Agent 3's 25 tests, repository integration tests, compile checks and diff checks. Record actual results and logs in `integration/reports/2026-10-16/` and confirm original moved file bytes are unchanged.
-- [ ] Review changes, commit, publish a PR, and integrate after checks pass; preserve upstream changes and verify remote state. Supply GitHub links and oral handover points to the user.
+- [x] Review changes, commit and publish PR #1. Independent read-only review approved the change and independently confirmed 71 + 25 + 6 passing checks. Integrate via the PR and verify remote main before reporting completion.
