@@ -1,4 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import closing
 from copy import deepcopy
 from pathlib import Path
 import json
@@ -334,10 +335,10 @@ class Workflows(unittest.TestCase):
     def test_storage_failure_rolls_back_case_and_receipt(self):
         before = self.case()
         command = self.command('create_plan', {'move_out_date': '2026-10-31', 'schedule_confirmed': True})
-        with sqlite3.connect(self.agent.database) as conn:
+        with closing(sqlite3.connect(self.agent.database)) as conn, conn:
             conn.execute("CREATE TRIGGER reject_receipt BEFORE INSERT ON receipts BEGIN SELECT RAISE(ABORT,'simulated storage error'); END")
         self.error('storage_error', self.agent.submit, command)
-        with sqlite3.connect(self.agent.database) as conn:
+        with closing(sqlite3.connect(self.agent.database)) as conn, conn:
             self.assertEqual(conn.execute('SELECT COUNT(*) FROM receipts').fetchone()[0], 1)
             conn.execute('DROP TRIGGER reject_receipt')
         self.agent.submit(command)
@@ -345,7 +346,7 @@ class Workflows(unittest.TestCase):
 
     def test_review_storage_failure_never_reports_routed_success(self):
         self.active_bond()
-        with sqlite3.connect(self.agent.database) as conn:
+        with closing(sqlite3.connect(self.agent.database)) as conn, conn:
             conn.execute("CREATE TRIGGER reject_review BEFORE UPDATE ON cases BEGIN SELECT RAISE(ABORT,'queue storage failed'); END")
         self.error('storage_error', self.run_op, 'bond_update', {'entry': self.entry(conflicting_evidence=True)})
         self.assertEqual(self.case()['reviews'], [])
