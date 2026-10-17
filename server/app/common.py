@@ -46,5 +46,3 @@ def request_id(value):
     require(isinstance(value, str) and re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]{0,79}', value),
             422, 'invalid_request_id', 'Request ID must contain 1–80 letters, digits, dots, underscores or hyphens')
     return value
-
-
