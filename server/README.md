@@ -1,0 +1,59 @@
+# Local rental journey API
+
+Run commands from the repository root. Python 3.11+ is required; verified with Python 3.13.2. This server calls the existing `agent2`, `agent3`, and `agent4` modules directly. Agent 1 is an explicitly simulated editable profile form. All examples are synthetic. No external AI or messaging is enabled.
+
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install -r server/requirements-lock.txt
+.venv/bin/python -m uvicorn server.app.main:app --host 127.0.0.1 --port 8000
+```
+
+API: `http://127.0.0.1:8000/api/v1`; OpenAPI and interactive documentation: `http://127.0.0.1:8000/docs`. The frontend uses its Vite `/api` proxy. Keep this local demo bound to loopback. Runtime databases and uploaded files are under ignored `.runtime/`; set `RENTAL_RUNTIME_DIR` on the server to choose another directory. No HTTP parameter accepts a server filesystem path. To test isolated state, import `create_app(runtime_dir=temporary_directory)`.
+
+## Local operator key
+
+Operator actions are disabled until the human sets a server environment variable before startup:
+
+```sh
+export RENTAL_OPERATOR_KEY="$(.venv/bin/python -c 'import secrets; print(secrets.token_urlsafe(32))')"
+printf '%s\n' "$RENTAL_OPERATOR_KEY"
+.venv/bin/python -m uvicorn server.app.main:app --host 127.0.0.1 --port 8000
+```
+
+Use that value in the frontend's local operator key field, or send `X-Operator-Key` on an operator request. The key is never returned by `/demo-config`, case reads, errors, or any tenant endpoint. It must never be a Vite environment variable or checked-in source value. The server supplies the fixed local tenant/operator IDs. This is local demonstration access control, with no production account/session isolation claim. Operator approval is authorized only by this key, never by a browser role field.
+
+## API flow
+
+The canonical browser interface is `docs/frontend/api-contract.md`. Requests use JSON and reject unknown outer fields, duplicate JSON keys, and non-finite JSON numbers. Errors have `{error:{code,message,request_id,fields?}}`. Saved results remain available after a failed operation.
+
+1. `POST /api/v1/cases` with `{}`. Keep the returned `case_id` as the only persisted browser case reference.
+2. `POST /cases/{id}/profile-drafts` with `{expected_revision,profile}`; the server binds `search_id` and allocates confirmation versions. `POST /cases/{id}/profile-confirmations` with the exact `{draft_revision,fingerprint}`. Editing invalidates confirmation for subsequent mutations; historical versions remain immutable.
+3. `POST /cases/{id}/evaluations` with `{request_id,confirmation_version}`. The original report is returned as `{run_id,report,comparison}`. Same deterministic run never overwrites an earlier saved comparison. `POST /cases/{id}/selections` with `{request_id,run_id,listing_id,confirmed:true}` explicitly selects an eligible current-version listing.
+4. `POST /cases/{id}/contract-consents` with `{confirmed:true}`. Revoke using `{confirmed:false,consent_id}`. Then send raw file bytes to `POST /cases/{id}/contract-reviews` with `Content-Type: application/octet-stream`, `X-Consent-Id`, `X-Request-Id`, and URL-encoded `X-Filename` headers. This is not multipart. TXT/DOCX/PDF only, 2,000,000 bytes maximum, PDF maximum 10 pages. Consent and selection are checked before any ASGI body receive even for a wrong content type, and again before disk writes. Oversized streams leave no partial file. Use synthetic contracts only.
+5. Corrections use `{expected_version,corrections}`; decisions use `{expected_version,decision:"approve"|"return",note}` and the operator header; questions use `{expected_version}`. The responses are unmodified original ContractReview objects. `GET /contract-reviews/{id}/questions/export` additionally exports the original ContractQuestionList with `handoff_status:prepared_not_sent`; no findings produces an empty question array.
+6. Obtain actual editable M4 sample payloads from `GET /aftercare/template-commands`. `GET /demo-config` contains the sample tenancy with `confirmed:false`. Create after explicit confirmation using `POST /aftercare/commands` with `{case_id,request_id,expected_version:0,operation:"create",payload:{tenancy,evidence}}`. Here `case_id` is the **outer rental case**, while the returned case ID is the mapped M4 ID. The server replaces tenancy/tenant IDs with generated/server values. Later operations use the same outer rental case ID and current M4 version. `operator_decision` requires the operator key. For `request_draft`, both `use_model` and `allow_external_ai` must be false.
+
+All paths above after step 1 use the `/api/v1` prefix. Downloads bind saved references: `/cases/{id}/exports/selection`, `/evaluations/{run}/export?format=json|markdown`, `/contract-reviews/{id}/export`, `/contract-reviews/{id}/questions/export`, `/aftercare/cases/{m4id}/export`.
+
+## Clocks and retry identity
+
+- Agent 2 evaluation snapshot: `2026-09-17T09:00:00+10:00`.
+- Agent 2 explicit selection replay: `2026-09-17T10:00:00+10:00`.
+- Agent 3 rule reference date: `2026-10-15`. Actual confirmation/review timestamps remain actual module/server timestamps.
+- M4 starts each case at `2026-10-15T10:00:00+11:00` and advances at least one second per new reserved command. `poll_reminders` advances to the allowlisted scenario checkpoint `2026-11-03T09:00:00+11:00`, and `confirm_outcome` to `09:01`, when later than the current clock. These are disclosed synthetic scenario checkpoints, not wall-clock background delivery. Each original request retains its initial generated time even after other commands.
+
+Retries preserve the entire submitted logical request. Reusing an ID with changed content/consent/selection/version yields a conflict. Adapter receipts and M4 frozen commands are durable before module submission; M4's own atomic receipts recover a lost adapter response. Concurrent tenancy creation reserves its mapping before module submission to prevent duplicate/orphan cases. Original module databases remain separate from the adapter's `web.sqlite3` and are not patched internally. Reviews and each subsequent saved review mutation are retained as separate immutable version snapshots, including operator/questions operations for which Agent 3 retains the same numeric field version.
+
+Synthetic agreement downloads are allowlisted IDs `normal` and `rent_conflict`; the latter changes the sample weekly rent from $500 to $650. User filenames are presentation data only; disk names are generated opaque references under runtime storage. Missing OCR tools or unreadable text return the original resubmission error; no parsing success is fabricated.
+
+## Verification
+
+```sh
+.venv/bin/python -m unittest discover -s server/tests -v
+(cd agent2 && ../.venv/bin/python -m unittest discover -s tests -v)
+(cd agent3 && ../.venv/bin/python -m unittest discover -s tests -v)
+(cd agent4 && ../.venv/bin/python -m unittest discover -s tests -v)
+.venv/bin/python -m unittest discover -s integration/tests -v
+```
+
+The boundary suite covers actual module results, exact confirmation and version gates, durable persistence, stale selection, immutable comparisons, before-read upload authorization, streamed size enforcement, revocation, changed-input retries, operator decisions, original question packets, mapped M4 identity, monotonic/replayed clocks, lost adapter receipts, concurrent create, and the full original M4 scenario through reminder delivery and closure. It does not substitute fake reports for member code. Detailed evidence is in `docs/frontend/backend-report.md`.
