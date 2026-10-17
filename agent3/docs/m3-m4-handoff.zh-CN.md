@@ -29,6 +29,18 @@ M3 向 M4 交付完整的 `ContractReview` JSON，格式以 [`contract-review.sc
 
 `selection_evidence.user_confirmed` 只表示上游选房确认，`consented_at` 只表示合同处理同意；二者都不是 M4 所需的实际租约确认。正常样例的上游 `rental_mode=private_room`，不能自动填成 M4 目前唯一支持的 `tenancy_type=standard_residential`。
 
+## 上游已有的身份与案例上下文
+
+[`integration/agent1-to-agent2/handoff.json`](../../integration/agent1-to-agent2/handoff.json) 的外层协调样例已经有 `caseId=DEMO-CASE-INTEGRATION-001` 和 `confirmation.confirmedBy=DEMO-TENANT-001`。它们没有进入当前 M2 的严格 `SelectedListingEvidence` 正文，因此 M3 的正常复核报告也没有这两项。协调层应保留这份上下文并随 M3 结果交给 M4，不能仅凭下游正文缺字段就重新生成用户或全流程案例身份。
+
+| M4 需要的 ID | 上游现状及建议 |
+|---|---|
+| `tenant_id` | 使用可信用户身份/会话中的稳定 ID。`confirmedBy` 是当前演示里的候选关联标识；真实接入前须验证它与会话租客相同。M1 消费用户身份，不能由 LLM 编造用户 ID。 |
+| `case_id` | 上游已有租房案例 `caseId`。若 M4 的案件与全流程租房案例定义一致，显式映射并复用；若 M4 定义独立的善后案件，则保存两者关联，由 M4/协调层创建善后案件 ID。 |
+| `tenancy_id` | 当前 M1 → M2 外层样例与 M2 → M3 正文都没有。实际租约确认并登记时由租约存储/协调层生成，已有租约记录则复用；不能从房源 ID 或合同复核 ID 推导成已确认租约。 |
+
+拟议的交接应同时携带“可信业务上下文”和原样的 `ContractReview`，由协调层校验归属后交给 M4 适配器。上下文保存在外层，不直接追加到严格的 M2/M3 正文 Schema。当前外层传递及 M4 适配仍待实现，已有演示确认也不构成真实鉴权。
+
 ## M4 创建前必须另行取得的信息
 
 M4 当前 [`TenancyRecord`](../../agent4/schemas/tenancy-record.schema.json) 的 `create` 需要租客确认后的 `tenancy_id`、`tenant_id`、地址、`jurisdiction=NSW`、`tenancy_type=standard_residential`、`confirmed=true`、来源引用和版本、房间/地毯/户外/家具属性、家具清单及基线证据引用。部分属性允许 `null` 或空列表，但应真实表达“未知”，不能把 M3 提取结果冒充租客确认。`case_id`、`actor_id`、`request_id`、`expected_version`、`as_of` 属于 M4 命令外壳，也由 M4/编排层提供。
@@ -53,7 +65,7 @@ M4 当前 [`TenancyRecord`](../../agent4/schemas/tenancy-record.schema.json) 的
 
 ## 请 M4 队员确认的四点
 
-1. `tenant_id`、`case_id`、`tenancy_id` 由谁生成，如何与已认证租客绑定？
+1. 如何保留上游 `caseId` 与确认者关联？M4 `case_id` 是否复用全流程案例，`tenant_id` 如何从可信会话取得，以及租约确认后由哪一层登记 `tenancy_id`？
 2. `TenancyRecord.source_ref/source_version` 指向租客确认记录是否合适？M3 `review_id/version` 保存在 `EvidenceReference` 是否足够？
 3. M4 是否只接受 `Reviewed`，以及 `Questions Ready` 何时可进入租客确认？
 4. M4 还需要哪些 M3 字段或异常码？合同租期是否要进入 M4 数据模型？
