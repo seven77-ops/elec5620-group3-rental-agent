@@ -169,8 +169,9 @@ class ContractsAdapter:
         with repo.transaction() as db:
             saved = get(db, 'review', review_id)
             origin = repo.get(db, 'consent', saved.get('consent_id', ''))
-            require(origin is not None and origin['active'] and origin['case_id'] == saved['case_id'],
-                    403, 'consent_required', 'The originating contract-processing consent must remain active')
+            case = get(db, 'case', saved['case_id'])
+            require(origin is not None and origin['active'] and self.selection_is_current(case, origin),
+                    403, 'consent_required', 'Active originating consent must match the current confirmed selection')
             previous = saved['review']
             require(integer(body['expected_version']) and body['expected_version'] == previous['version'],
                     409, 'version_conflict', 'Reload the current contract review')
@@ -179,7 +180,6 @@ class ContractsAdapter:
             saved['review'] = review
             repo.put(db, 'review', review_id, saved)
             repo.put(db, 'review_version', review_id + ':' + str(review['version']) + ':' + uid('revision'), review)
-            case = get(db, 'case', saved['case_id'])
             for item in case['reviews']:
                 if item['review_id'] == review_id:
                     item.update(version=review['version'], status=review['status'])

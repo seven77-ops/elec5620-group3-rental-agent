@@ -85,3 +85,11 @@ Added `GET /api/v1/cases/{caseId}/contract-consents` with `{consents:[{consent_i
 Targeted RED: both new persistence/context tests failed with 405 before the new read registrations existed. GREEN: **23 backend tests pass**, including restarting app instances to recover a pending consent before upload, recovering its review context after upload, revoking by the restored ID, and retaining historical reads. A second test edits the profile after intake and verifies active stored consent yields `selection_current:false` / context `consent_active:false` rather than bypassing the original current-selection gate.
 
 Server README and canonical API-contract additions describe the read shapes. The canonical contract remains for the parent-owned documentation commit. No frontend or original business module was edited.
+
+## Final integration gate correction
+
+The integrated browser check found a consistency gap: review context correctly reported false after a profile change, but `mutate_review` still permitted writes using active old consent. Two targeted tests first reproduced 200 correction responses for (1) an edited/unconfirmed current profile and (2) a different selection in the same confirmed profile version.
+
+The mutation transaction now loads the saved case and requires active originating consent plus the shared authoritative `selection_is_current(case, origin)` check before invoking any correction/question/operator analysis. The check validates both the current confirmed profile gate and complete selected-evidence equality; it cannot be bypassed by an operator key. Each regression covers all three write endpoints returning 403 `consent_required` and proves current review, export and immutable history remain unchanged/readable. Case lookup and validation occur inside the same SQLite write transaction, so a concurrent profile or selection mutation cannot invalidate the binding between check and save.
+
+Final targeted and complete API suite: **25 tests passed**. `compileall` and `git diff --check` passed. No frontend, API-contract or original member code was modified in this correction.

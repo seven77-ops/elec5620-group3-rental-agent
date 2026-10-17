@@ -365,4 +365,38 @@ class BoundaryTests(unittest.TestCase):
         self.assertFalse(context['consent_active'])
 
 
+    def assert_stale_review_writes_denied(self, review):
+        rid=review['review_id']
+        commands=[('corrections',{'expected_version':1,'corrections':{'rent_amount':500}},{}),
+                  ('questions',{'expected_version':1},{}),
+                  ('decisions',{'expected_version':1,'decision':'approve','note':'Reviewed'},{'X-Operator-Key':'test-private-key'})]
+        for operation,body,headers in commands:
+            response=self.client.post(f'/api/v1/contract-reviews/{rid}/{operation}',json=body,headers=headers)
+            self.assertEqual(response.status_code,403,(operation,response.text))
+            self.assertEqual(response.json()['error']['code'],'consent_required')
+        self.assertEqual(self.client.get(f'/api/v1/contract-reviews/{rid}').json(),review)
+        self.assertEqual(self.client.get(f'/api/v1/contract-reviews/{rid}/export').json(),review)
+        history=self.client.get(f'/api/v1/contract-reviews/{rid}/history').json()['history']
+        self.assertEqual(len(history),1)
+        self.assertEqual(history[0]['review'],review)
+
+    def test_unconfirmed_profile_blocks_all_review_writes_in_same_context(self):
+        result,_,_=self.review(True)
+        case=self.client.get(f'/api/v1/cases/{self.cid}').json()
+        profile=copy.deepcopy(case['draft']['profile']); profile['weights']['commute']+=1
+        saved=self.post(f'cases/{self.cid}/profile-drafts',{'expected_revision':1,'profile':profile})
+        self.assertEqual(saved.status_code,200,saved.text)
+        self.assert_stale_review_writes_denied(result['review'])
+
+    def test_changed_selection_blocks_all_review_writes_in_same_context(self):
+        result,_,_=self.review(True)
+        case=self.client.get(f'/api/v1/cases/{self.cid}').json()
+        run_id=case['evaluations'][-1]['run_id']
+        report=self.client.get(f'/api/v1/evaluations/{run_id}').json()['report']
+        listing_id=next(item['listing_id'] for item in report['eligible'] if item['listing_id']!='DEMO-006')
+        changed=self.post(f'cases/{self.cid}/selections',{'request_id':'reselect','run_id':run_id,'listing_id':listing_id,'confirmed':True})
+        self.assertEqual(changed.status_code,200,changed.text)
+        self.assert_stale_review_writes_denied(result['review'])
+
+
 if __name__=='__main__': unittest.main()
