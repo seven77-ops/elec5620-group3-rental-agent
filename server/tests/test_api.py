@@ -268,4 +268,59 @@ class BoundaryTests(unittest.TestCase):
         self.assertEqual(calls,[])
 
 
+    def test_revocation_blocks_all_review_followups_preserves_reads(self):
+        result,_,headers=self.review(True)
+        review=result['review']; rid=review['review_id']
+        self.post(f'cases/{self.cid}/contract-consents',{'confirmed':False,'consent_id':headers['X-Consent-Id']})
+        commands=[('corrections',{'expected_version':1,'corrections':{'rent_amount':500}},{}),
+                  ('questions',{'expected_version':1},{}),
+                  ('decisions',{'expected_version':1,'decision':'approve','note':'Checked'},{'X-Operator-Key':'test-private-key'})]
+        for operation,body,auth in commands:
+            response=self.client.post(f'/api/v1/contract-reviews/{rid}/{operation}',json=body,headers=auth)
+            self.assertEqual(response.status_code,403,(operation,response.text))
+            self.assertEqual(response.json()['error']['code'],'consent_required')
+        self.assertEqual(self.client.get(f'/api/v1/contract-reviews/{rid}').json(),review)
+        self.assertEqual(self.client.get(f'/api/v1/contract-reviews/{rid}/export').json(),review)
+
+    def test_json_media_type_and_size_limits_are_consistent(self):
+        for media in ('application/json','application/problem+json','application/vnd.demo+json'):
+            duplicate=self.client.post('/api/v1/cases',content=b'{"a":1,"a":2}',headers={'Content-Type':media})
+            self.assertEqual(duplicate.status_code,422,(media,duplicate.text))
+            self.assertEqual(duplicate.json()['error']['code'],'invalid_json')
+            large=self.client.post('/api/v1/cases',content=b' '*256001+b'{}',headers={'Content-Type':media})
+            self.assertEqual(large.status_code,413,(media,large.text))
+        overflow=self.client.post('/api/v1/cases',content=b'{"value":1e999}',headers={'Content-Type':'application/problem+json'})
+        self.assertEqual(overflow.status_code,422)
+        self.assertEqual(overflow.json()['error']['code'],'invalid_json')
+        missing=self.client.post('/api/v1/cases',content=b'{"a":1,"a":2}')
+        self.assertEqual(missing.status_code,422)
+        self.assertEqual(missing.json()['error']['code'],'invalid_json')
+
+    def test_malformed_opaque_refs_return_422(self):
+        self.confirm()
+        for bad in ([],{},42,True,None):
+            selection=self.post(f'cases/{self.cid}/selections',{'request_id':'bad','run_id':bad,'listing_id':'DEMO-006','confirmed':True})
+            self.assertEqual(selection.status_code,422,(bad,selection.text))
+            consent=self.post(f'cases/{self.cid}/contract-consents',{'confirmed':False,'consent_id':bad})
+            self.assertEqual(consent.status_code,422,(bad,consent.text))
+            command={'case_id':bad,'request_id':'bad-case','expected_version':0,'operation':'poll_reminders','payload':{}}
+            response=self.post('aftercare/commands',command)
+            self.assertEqual(response.status_code,422,(bad,response.text))
+
+    def test_history_exposes_immutable_original_snapshots(self):
+        result,_,headers=self.review()
+        rid=result['review']['review_id']
+        first=self.client.get(f'/api/v1/contract-reviews/{rid}/history')
+        self.assertEqual(first.status_code,200,first.text)
+        original=first.json()['history'][0]
+        self.assertEqual(original['review'],result['review'])
+        self.post(f'contract-reviews/{rid}/corrections',{'expected_version':1,'corrections':{'landlord':'Corrected example'}})
+        latest=self.client.get(f'/api/v1/contract-reviews/{rid}/history').json()['history']
+        self.assertEqual(len(latest),2)
+        self.assertEqual(latest[0],original)
+        self.assertEqual(latest[-1]['review']['version'],2)
+        self.post(f'cases/{self.cid}/contract-consents',{'confirmed':False,'consent_id':headers['X-Consent-Id']})
+        self.assertEqual(self.client.get(f'/api/v1/contract-reviews/{rid}/history').json()['history'],latest)
+
+
 if __name__=='__main__': unittest.main()

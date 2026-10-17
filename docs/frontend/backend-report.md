@@ -32,7 +32,7 @@ Further RED/GREEN cycles found and fixed:
 - Original question packet export returned 404 before its route existed; now uses original `question_list`, including empty questions and `prepared_not_sent`.
 - A JSON content type on an unauthorized raw upload caused generic strict parsing to read its body. A direct-ASGI regression captured the receive call; raw upload routes now exclusively own body processing and reject before receiving.
 
-Final boundary suite: **17 tests passed**. No fake agent result fixtures or mocked business outputs. One concurrency test pauses the real module submit with an event to force the unsafe interleaving; it then invokes the actual submit and inspects SQLite case count.
+Initial implementation boundary suite: **17 tests passed**. No fake agent result fixtures or mocked business outputs. One concurrency test pauses the real module submit with an event to force the unsafe interleaving; it then invokes the actual submit and inspects SQLite case count.
 
 ## Executed verification
 
@@ -40,7 +40,7 @@ All commands executed from the isolated frontend-demo worktree using its `.venv`
 
 | Command | Actual result |
 |---|---|
-| `.venv/bin/python -m unittest discover -s server/tests -v` | 17 passed |
+| `.venv/bin/python -m unittest discover -s server/tests -v` | 21 passed after review fixes |
 | `(cd agent2 && ../.venv/bin/python -m unittest discover -s tests -v)` | 71 passed |
 | `(cd agent3 && ../.venv/bin/python -m unittest discover -s tests -v)` | 25 passed |
 | `(cd agent4 && ../.venv/bin/python -m unittest discover -s tests -v)` | 57 passed |
@@ -63,3 +63,17 @@ Raw uploaded contracts are retained under ignored runtime storage until the user
 Original module receipts and adapter coordination use separate databases; they are not one cross-database transaction. Recovery uses the original frozen commands and stable intake IDs. New M4 logical requests with failed business validations may reserve a receipt identity; retrying changed input requires a new request ID, as documented. A crash during create leaves a pending marker recoverable by retrying the original request.
 
 Startup, operator setup and exact request/download examples: `server/README.md`. Browser UI acceptance and performance/user-study claims belong to parent integration verification, not this backend report.
+
+## Review follow-up: consent, parser, references and responsibility separation
+
+Read the completed review at `/private/tmp/elec5620-backend-review.md`. Targeted new tests first reproduced the revoked-consent follow-up, structured JSON media type bypass and malformed saved-reference defects, plus the absent immutable history route. The initial follow-up run failed three assertions and errored on the unhandled SQLite list reference. A further numeric-overflow test (`1e999`) failed before finite float parsing was added.
+
+Corrections/questions/operator decisions now resolve the review's saved `consent_id` and require active originating case-bound consent inside the same serialized adapter transaction before analyzing/writing. Revocation still permits raw read/download/history. Existing pre-binding legacy reviews fail closed for future mutations. The strict parser applies to every supported JSON media type (including structured `+json` and absent type), rejects unsupported types, enforces its cap while streaming before parsing, and rejects nonfinite numeric overflow. Opaque saved refs are checked before SQLite access; malformed run/listing/case/consent refs return semantic 422 errors.
+
+`GET /api/v1/contract-reviews/{reviewId}/history` returns `{history:[{snapshot_id,review}]}` in insertion order. Every `review` is an original ContractReview snapshot. The test checks the initial snapshot remains byte-equivalent after correction and history remains readable after revocation.
+
+The former large entry-point closure was split into a 19-line application wiring module, shared settings/fixtures, strict HTTP parsing/errors, explicit route registration, and cohesive profile/contracts/aftercare/system adapters with shared authorization/storage services and original-business imports. This preserves original APIs and module business functions; no member module was modified.
+
+Follow-up GREEN: **21 backend boundary tests pass**, including all previous 17 tests and the four added review findings/history tests. Compileall and diff whitespace checks pass after extraction. Original module and handoff suites are rerun after the structural change below.
+
+After-extraction regressions: Agent 2 **71 passed**, Agent 3 **25 passed**, Agent 4 **57 passed**, integration **6 passed**. OpenAPI generation returned 200 with **25 paths**, including the new history endpoint.
