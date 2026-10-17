@@ -102,7 +102,7 @@ def new_case(command):
     return case
 
 
-def apply(case, command, *, gateway=None):
+def apply(case, command, *, gateway=None, property_only=False):
     """Mutate an in-memory transaction copy; never persist partially completed work."""
     op, p, now = command['operation'], command['payload'], command['as_of']
     require(instant(now) >= instant(case['updated_at']), 'stale_time', 'as_of precedes the last committed command')
@@ -119,7 +119,9 @@ def apply(case, command, *, gateway=None):
         require(case['bond'] is None or case['bond']['state'] == 'Draft', 'invalid_state', 'Active bond context cannot be replaced')
         check_tenancy(case, p['tenancy'])
         require(p['tenancy']['tenancy_id'] == case['tenancy']['tenancy_id'] and
-                p['tenancy']['source_version'] > case['tenancy']['source_version'], 'case_mismatch', 'Keep tenancy_id and increase source_version')
+                (p['tenancy']['source_version'] > case['tenancy']['source_version'] or
+                 property_only and p['tenancy']['source_version'] == case['tenancy']['source_version']),
+                'case_mismatch', 'Keep tenancy_id and increase source_version (M3 property-only enrichment preserves confirmation version)')
         case['tenancy'] = deepcopy(p['tenancy'])
         if case['plan']:
             old = case['plan']
