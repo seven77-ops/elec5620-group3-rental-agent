@@ -97,3 +97,8 @@ npm --prefix frontend run build
 - 最终开发服务浏览器回归：**12 / 12 通过，58.3 秒**。[实际日志](logs/browser-tests.log)。其中正常旅程同时断言无 pageerror、console error 和错误覆盖层；故障注入测试按预期验证错误恢复，不将这些故意触发的 HTTP 错误归为正常路径错误。
 
 - 真实组合启动器已启动：5173 首页、5173 代理 `/api/v1/health`、8000 `/docs` 均返回 200；自动生成的本机操作员密钥非空且权限为 0600。测试 API 已停止，预览服务改用随机密钥。
+
+
+## 提交与评审入口
+
+草稿 [PR #4](https://github.com/seven77-ops/elec5620-group3-rental-agent/pull/4)，核心前端提交 `35211fd`，最终后端门禁修复 `860bfad`；分支 `codex/frontend-demo`。创建前重新 fetch，main 仍为本文基线。PR 未合并，Jira 未更改。
