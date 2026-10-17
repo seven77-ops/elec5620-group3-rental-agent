@@ -1,0 +1,19 @@
+{
+  "request_id": "date-explicitly-confirmed",
+  "case_id": "aftercare-e6ce3e06166944dbab250910b93d6e8c",
+  "version": 3,
+  "task": {
+    "task_id": "date-explicitly-confirmed",
+    "responsible_role": "AftercareAgent",
+    "case_id": "aftercare-e6ce3e06166944dbab250910b93d6e8c",
+    "input_version": 2,
+    "output_version": 3,
+    "status": "completed",
+    "output_refs": [
+      "case:aftercare-e6ce3e06166944dbab250910b93d6e8c@3"
+    ]
+  },
+  "result": {
+    "operation": "create_plan"
+  }
+}

@@ -1,0 +1,1 @@
+{"error": {"code": "move_out_confirmation_required", "message": "Confirm the move-out date separately before creating a plan"}}

@@ -1,0 +1,187 @@
+{
+  "type": "object",
+  "properties": {
+    "confirmation_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+    },
+    "confirmation_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "tenant_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+    },
+    "tenancy_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "confirmed_by": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$"
+    },
+    "confirmed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "review_id": {
+      "type": "string",
+      "pattern": "^cr-[0-9a-f]{32}$"
+    },
+    "review_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "document_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "review_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "actual_tenancy_confirmed": {
+      "type": "boolean"
+    },
+    "confirmed_fields": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": [
+            "string",
+            "number",
+            "null"
+          ]
+        },
+        "landlord": {
+          "type": [
+            "string",
+            "number",
+            "null"
+          ]
+        },
+        "tenant": {
+          "type": [
+            "string",
+            "number",
+            "null"
+          ]
+        },
+        "rent_amount": {
+          "type": [
+            "string",
+            "number",
+            "null"
+          ]
+        },
+        "rent_period": {
+          "type": [
+            "string",
+            "number",
+            "null"
+          ]
+        },
+        "rent_scope": {
+          "type": [
+            "string",
+            "number",
+            "null"
+          ]
+        },
+        "currency": {
+          "type": [
+            "string",
+            "number",
+            "null"
+          ]
+        },
+        "bond": {
+          "type": [
+            "string",
+            "number",
+            "null"
+          ]
+        },
+        "start_date": {
+          "type": [
+            "string",
+            "number",
+            "null"
+          ]
+        },
+        "end_date": {
+          "type": [
+            "string",
+            "number",
+            "null"
+          ]
+        },
+        "signed_date": {
+          "type": [
+            "string",
+            "number",
+            "null"
+          ]
+        },
+        "jurisdiction": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000,
+          "pattern": "\\S"
+        },
+        "tenancy_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "address",
+        "landlord",
+        "tenant",
+        "rent_amount",
+        "rent_period",
+        "rent_scope",
+        "currency",
+        "bond",
+        "start_date",
+        "end_date",
+        "signed_date",
+        "jurisdiction",
+        "tenancy_type"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "confirmation_id",
+    "confirmation_version",
+    "tenant_id",
+    "case_id",
+    "tenancy_id",
+    "confirmed_by",
+    "confirmed_at",
+    "review_id",
+    "review_version",
+    "document_sha256",
+    "review_sha256",
+    "actual_tenancy_confirmed",
+    "confirmed_fields"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ProposedM3TenancyConfirmation"
+}

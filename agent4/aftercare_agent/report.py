@@ -53,7 +53,7 @@ def render_markdown(case):
               '- [NSW bond information](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-your-bond-back)',
               '- [NSW bond dispute information](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-rental-bonds/dealing-bond-disputes-for-tenants)',
               '', '## Limits', '', 'This initial version organises tenant-reported information. It does not verify the contents of referenced files, determine legal liability, guarantee a refund, or send messages/claims.',
-              'Actor IDs and the operator allowlist are local demonstration controls. Production authentication and M3 handoff adaptation remain future work.', '']
+              'Actor IDs and the operator allowlist are local demonstration controls. M3 handoffs require a saved actual-tenancy confirmation; production authentication remains future work.', '']
     return '\n'.join(lines)
 
 
@@ -67,10 +67,14 @@ def check_output(prefix):
 
 
 def export_case(case, prefix):
+    return export_document(case, render_markdown(case), prefix)
+
+
+def export_document(document, markdown, prefix):
     check_output(prefix)
     paths = output_paths(prefix)
     paths[0].parent.mkdir(parents=True, exist_ok=True)
-    contents = [json.dumps(case, ensure_ascii=False, indent=2, allow_nan=False) + '\n', render_markdown(case)]
+    contents = [json.dumps(document, ensure_ascii=False, indent=2, allow_nan=False) + '\n', markdown]
     opened = []
     try:
         # Reserve both paths exclusively before writing either; clean only files created by this call.

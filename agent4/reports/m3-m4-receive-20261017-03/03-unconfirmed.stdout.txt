@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0",
+  "status": "paused",
+  "code": "confirmation_required",
+  "message": "M3 must persist an explicit actual-tenancy confirmation first",
+  "upstream_case_id": "DEMO-CASE-INTEGRATION-001",
+  "review_id": "cr-4329de3190c6404b96e74c7f3e4b3d6a",
+  "review_version": 1,
+  "newly_created": false
+}
