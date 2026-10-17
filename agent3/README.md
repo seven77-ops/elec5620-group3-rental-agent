@@ -88,7 +88,7 @@ tests/              本模块及 Agent 2 样例的联调测试
 
 可选模型配置仅放在服务器/终端环境：`AGENT3_MODEL_URL`（完整 HTTPS chat completions URL）、`AGENT3_MODEL_NAME`、`AGENT3_MODEL_API_KEY`。只有租客另行同意外部模型处理时才加 `--allow-external-ai`；不要用真实合同做课程演示。
 
-详见 [课程需求追踪](docs/course-requirements.md)、[数据交接契约](docs/data-contracts.md)和[2026-10-15 验证记录](docs/verification-2026-10-15.md)。
+详见 [课程需求追踪](docs/course-requirements.md)、[数据交接契约](docs/data-contracts.md)、[M3 → M4 交接包](docs/m3-m4-handoff.zh-CN.md)和[2026-10-15 验证记录](docs/verification-2026-10-15.md)。
 
 ## 小组联调入口
 
