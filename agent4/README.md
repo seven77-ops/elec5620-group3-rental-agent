@@ -4,6 +4,10 @@ Member 4 的独立 Python 原型，对应 Stage 1 的 **UC07 / FR07 退租计划
 
 已实现：按房间/家具生成可编辑退租任务、证据引用、改期提案与确认、押金状态机、争议审核、跟进草稿、Sydney 时区提醒收件箱、SQLite 持久化、版本检查、请求重试去重，以及 JSON/Markdown 导出。默认离线，不需要模型密钥。
 
+2026-10-17 新增 M3 消费端：`AftercareAgent.receive` / `python -m aftercare_agent receive` 验证业务上下文、当前 ContractReview 和持久化实际租约确认，原子创建租约/案件并保存来源；拦截缺确认、人工复核、版本/指纹不匹配及重复创建。退租日期仍独立确认。M3 确认生产入口尚待组员实现，本次用明确标记的测试替身验证。[字段核对、接入说明和待统一项](docs/m3-m4-receive.zh-CN.md)。
+
+本次验证：[报告与五场景结果](reports/m3-m4-receive-20261017-03/README.md)、[命令/环境/来源/返回码](reports/m3-m4-receive-20261017-03/execution.json)。M4 87 项、M3 25 项、上游集成 6 项，共 118 项通过。
+
 ## 先跑起来
 
 从仓库根目录进入 `agent4/`，需要 Python 3.10+：
@@ -100,7 +104,7 @@ PowerShell 对应 `$env:AGENT4_OPERATOR_IDS='demo-operator'`，然后运行同�
 - 关闭需要租客明确确认或撤回。数据库保留历史、收据与证据；本版不提供自动清理或保留期任务。
 - 没有 RBO/NCAT API、外发消息、申诉提交、支付或服务预订。草稿始终为 `prepared_not_sent`。
 - 本地 CLI 与单 SQLite 库不是生产鉴权/部署方案；模型调用时会占用该库的写事务，当前适合单机课程原型。
-- M3 尚无双方确认的 `TenancyRecord` 输出，不能把“合同已审查”自动当作“租约已签订且租客已确认”。M4 的独立输入契约和后续适配边界见 [数据契约](docs/data-contracts.md)。
+- M3 尚无可运行的实际租约确认入口；M4 已实现消费适配提案，必须收到有效持久化确认才创建租约。当前合成验证不等于真实入口已联调。独立输入契约见 [数据契约](docs/data-contracts.md)，新增适配见 [M3 接收说明](docs/m3-m4-receive.zh-CN.md)。
 
 上传时将 **整个 `agent4/` 目录**保留在仓库根目录，保留包目录层级。不要只上传 ZIP 文件并认为 GitHub 会自动解压。`runs/`、数据库、虚拟环境和密钥不属于源码提交。
 
