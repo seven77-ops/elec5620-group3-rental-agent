@@ -22,6 +22,7 @@ def register_routes(app, services):
     app.get('/api/v1/cases/{case_id}/exports/selection')(profiles.export_selection)
     contracts = ContractsAdapter(services)
     app.post('/api/v1/cases/{case_id}/contract-consents')(contracts.consent)
+    app.get('/api/v1/cases/{case_id}/contract-consents')(contracts.list_consents)
     app.post('/api/v1/cases/{case_id}/contract-reviews', openapi_extra={
         'requestBody': {'required': True, 'content': {
             'application/octet-stream': {'schema': {'type': 'string', 'format': 'binary'}}}},
@@ -29,6 +30,7 @@ def register_routes(app, services):
                        for key in ('X-Consent-Id', 'X-Request-Id', 'X-Filename')],
     })(contracts.upload)
     app.get('/api/v1/contract-reviews/{review_id}')(contracts.read_review)
+    app.get('/api/v1/contract-reviews/{review_id}/context')(contracts.review_context)
     app.get('/api/v1/contract-reviews/{review_id}/export')(contracts.export_review)
     app.get('/api/v1/contract-reviews/{review_id}/questions/export')(contracts.export_questions)
     app.get('/api/v1/contract-reviews/{review_id}/history')(contracts.review_history)

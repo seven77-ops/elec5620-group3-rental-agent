@@ -5,7 +5,7 @@ from urllib.parse import unquote
 import json
 
 from fastapi import Request
-from ..common import require, now, uid, shape, integer, request_id
+from ..common import ApiError, require, now, uid, shape, integer, request_id
 from ..settings import OPERATOR
 from .business import load_document, MAX_BYTES, receive_review, validate_review, question_list, correct_review, approve_review, generate_questions
 
@@ -35,6 +35,41 @@ class ContractsAdapter:
                 value.update(active=False, revoked_at=now())
                 repo.put(db, 'consent', consent_id, value)
             return {'consent_id': consent_id, 'active': body['confirmed']}
+
+    def selection_is_current(self, case, consent):
+        if consent is None or consent['case_id'] != case['case_id']:
+            return False
+        try:
+            return self.ctx.selected(case) == consent['selection']
+        except ApiError:
+            # Saved consent remains readable while its former selection is historical.
+            return False
+
+    def list_consents(self, case_id: str):
+        with self.ctx.repo.transaction() as db:
+            case = self.ctx.get(db, 'case', case_id)
+            consents = []
+            for consent_id, raw in db.execute(
+                    'SELECT id,body FROM objects WHERE kind=? ORDER BY rowid', ('consent',)):
+                consent = json.loads(raw)
+                if consent['case_id'] != case_id:
+                    continue
+                item = {'consent_id': consent_id, 'active': consent['active'],
+                        'recorded_at': consent['recorded_at'],
+                        'selection_current': self.selection_is_current(case, consent)}
+                if 'revoked_at' in consent:
+                    item['revoked_at'] = consent['revoked_at']
+                consents.append(item)
+            return {'consents': consents}
+
+    def review_context(self, review_id: str):
+        with self.ctx.repo.transaction() as db:
+            saved = self.ctx.get(db, 'review', review_id)
+            case = self.ctx.get(db, 'case', saved['case_id'])
+            consent_id = saved.get('consent_id')
+            consent = self.ctx.repo.get(db, 'consent', consent_id) if consent_id else None
+            return {'case_id': saved['case_id'], 'consent_id': consent_id,
+                    'consent_active': bool(consent and consent['active'] and self.selection_is_current(case, consent))}
 
     def upload_authorized(self, db, case_id, consent_id):
         get = self.ctx.get

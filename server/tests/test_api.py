@@ -323,4 +323,46 @@ class BoundaryTests(unittest.TestCase):
         self.assertEqual(self.client.get(f'/api/v1/contract-reviews/{rid}/history').json()['history'],latest)
 
 
+    def test_consent_references_restore_after_restart_and_remain_revocable(self):
+        self.selected()
+        consent=self.post(f'cases/{self.cid}/contract-consents',{'confirmed':True}).json()
+        from server.app.main import create_app
+        resumed=TestClient(create_app(runtime_dir=self.temp.name))
+        pending=resumed.get(f'/api/v1/cases/{self.cid}/contract-consents')
+        self.assertEqual(pending.status_code,200,pending.text)
+        records=pending.json()['consents']
+        self.assertEqual(len(records),1)
+        self.assertEqual(records[0]['consent_id'],consent['consent_id'])
+        self.assertTrue(records[0]['active']); self.assertTrue(records[0]['selection_current'])
+        self.assertEqual(set(records[0]),{'consent_id','active','recorded_at','selection_current'})
+        data=self.client.get('/api/v1/demo-agreements/normal').content
+        headers={'X-Consent-Id':consent['consent_id'],'X-Request-Id':'restore-upload',
+                 'X-Filename':'agreement.txt','Content-Type':'application/octet-stream'}
+        review=resumed.post(f'/api/v1/cases/{self.cid}/contract-reviews',content=data,headers=headers).json()['review']
+        rid=review['review_id']
+        reloaded=TestClient(create_app(runtime_dir=self.temp.name))
+        context=reloaded.get(f'/api/v1/contract-reviews/{rid}/context')
+        self.assertEqual(context.status_code,200,context.text)
+        self.assertEqual(context.json(),{'case_id':self.cid,'consent_id':consent['consent_id'],'consent_active':True})
+        revoked=reloaded.post(f'/api/v1/cases/{self.cid}/contract-consents',json={'confirmed':False,'consent_id':consent['consent_id']})
+        self.assertEqual(revoked.status_code,200,revoked.text)
+        self.assertFalse(reloaded.get(f'/api/v1/contract-reviews/{rid}/context').json()['consent_active'])
+        record=reloaded.get(f'/api/v1/cases/{self.cid}/contract-consents').json()['consents'][0]
+        self.assertFalse(record['active']); self.assertIn('revoked_at',record)
+        self.assertEqual(reloaded.get(f'/api/v1/contract-reviews/{rid}').json(),review)
+
+    def test_consent_read_context_rechecks_current_confirmed_selection(self):
+        result,_,_=self.review()
+        rid=result['review']['review_id']
+        case=self.client.get(f'/api/v1/cases/{self.cid}').json()
+        profile=copy.deepcopy(case['draft']['profile']); profile['weights']['commute']+=1
+        self.assertEqual(self.post(f'cases/{self.cid}/profile-drafts',{'expected_revision':1,'profile':profile}).status_code,200)
+        record=self.client.get(f'/api/v1/cases/{self.cid}/contract-consents')
+        self.assertEqual(record.status_code,200,record.text)
+        self.assertTrue(record.json()['consents'][0]['active'])
+        self.assertFalse(record.json()['consents'][0]['selection_current'])
+        context=self.client.get(f'/api/v1/contract-reviews/{rid}/context').json()
+        self.assertFalse(context['consent_active'])
+
+
 if __name__=='__main__': unittest.main()

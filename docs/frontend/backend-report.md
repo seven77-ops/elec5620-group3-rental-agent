@@ -77,3 +77,11 @@ The former large entry-point closure was split into a 19-line application wiring
 Follow-up GREEN: **21 backend boundary tests pass**, including all previous 17 tests and the four added review findings/history tests. Compileall and diff whitespace checks pass after extraction. Original module and handoff suites are rerun after the structural change below.
 
 After-extraction regressions: Agent 2 **71 passed**, Agent 3 **25 passed**, Agent 4 **57 passed**, integration **6 passed**. OpenAPI generation returned 200 with **25 paths**, including the new history endpoint.
+
+## Consent recovery reads for browser refresh
+
+Added `GET /api/v1/cases/{caseId}/contract-consents` with `{consents:[{consent_id,active,recorded_at,revoked_at?,selection_current}]}` and `GET /api/v1/contract-reviews/{reviewId}/context` with `{case_id,consent_id,consent_active}`. Only safe reference/status metadata is returned, never filenames, original documents or keys. List records are case-bound and ordered by insertion. `selection_current` reuses the authoritative current confirmed profile/selection guard and compares the complete saved evidence; a stale or unconfirmed draft makes it false even if the consent record itself remains active. Review context's `consent_active` also requires this exact current binding. A legacy review without a stored consent ID remains readable and returns null/false.
+
+Targeted RED: both new persistence/context tests failed with 405 before the new read registrations existed. GREEN: **23 backend tests pass**, including restarting app instances to recover a pending consent before upload, recovering its review context after upload, revoking by the restored ID, and retaining historical reads. A second test edits the profile after intake and verifies active stored consent yields `selection_current:false` / context `consent_active:false` rather than bypassing the original current-selection gate.
+
+Server README and canonical API-contract additions describe the read shapes. The canonical contract remains for the parent-owned documentation commit. No frontend or original business module was edited.
