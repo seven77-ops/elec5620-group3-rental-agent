@@ -18,4 +18,6 @@
 
 `ContractQuestionList` 只从 Reviewed 版本生成，每个问题关联 `finding_id`、`review_version` 和原发现证据。无需要澄清的发现时返回空数组，不编造问题；可以本地编辑并导出，不自动联系房东或中介。输出的 `handoff_status=prepared_not_sent` 表示尚未投递给租客界面。
 
-M4 只可将合同地址视作预填候选值；租客必须确认租约资料和退租日期后才能创建退租计划。当前代码没有自动 M3→M4 API。
+M3 下一步负责收集用户对实际租约信息的显式确认，持久化独立的 `TenancyConfirmation`，绑定租客/案例、`review_id/version` 和合同指纹，再连同 `ContractReview` 交给 M4。合同处理同意、字段修正、人工复核放行和 `Reviewed` 均不能代替实际租约确认。此确认入口、记录 Schema/CLI 和外层上下文传递尚未实现，现有报告没有该确认。
+
+M4 验证 M3 确认记录并补齐退租资料，退租日期仍由用户另行确认后才能创建退租计划。当前代码没有自动 M3→M4 API。详细流程、拟定字段和分工见 [M3 → M4 交接包](m3-m4-handoff.zh-CN.md)。
