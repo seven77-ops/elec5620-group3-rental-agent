@@ -1,0 +1,10 @@
+
+> elec5620-rental-workspace@0.1.0 test:e2e
+> playwright test --grep tenant completes confirmed profile
+
+
+Running 1 test using 1 worker
+
+  ✓  1 e2e/journey.spec.ts:35:1 › tenant completes confirmed profile, true recommendation, selection, contract review and restoration (12.2s)
+
+  1 passed (12.9s)
