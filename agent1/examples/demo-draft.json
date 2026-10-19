@@ -1,0 +1,38 @@
+{
+  "budget.currency": "AUD",
+  "budget.period": "week",
+  "budget.scope": "per_person",
+  "budget.includes_bills": true,
+  "budget.preferred": 450,
+  "budget.maximum": 550,
+  "budget.hard_limit": true,
+  "occupants": 1,
+  "rental_mode": "private_room",
+  "destination_id": "demo-usyd",
+  "arrival_time": "09:00",
+  "timezone": "Australia/Sydney",
+  "commute.modes": [
+    "public_transport",
+    "walk"
+  ],
+  "commute.preferred_minutes": 25,
+  "commute.maximum_minutes": 40,
+  "commute.hard_limit": true,
+  "move_in_window.from": "2027-02-01",
+  "move_in_window.to": "2027-02-07",
+  "lease_months": 12,
+  "hard_requirements": [
+    "private_bedroom"
+  ],
+  "soft_preferences": {
+    "furnished": 0.6,
+    "private_bathroom": 0.4
+  },
+  "weights.commute": 0.35,
+  "weights.cost": 0.3,
+  "weights.housing": 0.2,
+  "weights.amenities": 0.15,
+  "preferred_locations": null,
+  "location_priority": null,
+  "additional_requirements": null
+}
