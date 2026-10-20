@@ -1,0 +1,2 @@
+# Same dependency/version as the supplied Agent2. Other modules use stdlib.
+jsonschema==4.25.1

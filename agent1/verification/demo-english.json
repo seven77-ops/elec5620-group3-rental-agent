@@ -1,0 +1,71 @@
+{
+  "mode": "scripted_demo_no_live_llm",
+  "case_id": "case-35fb429f0e644fac981346e4d03e915c",
+  "first_turn_state": "AwaitingClarification",
+  "clarified_state": "DraftReady",
+  "v1_task": {
+    "task_id": "task-0718eb7022f9481286a64ace402ec8e1",
+    "status": "completed",
+    "receipt_acknowledged": true,
+    "attempts": 1,
+    "counts": {
+      "input": 30,
+      "eligible": 15,
+      "pending": 9,
+      "excluded": 5,
+      "duplicates": 1
+    },
+    "recommendations": [
+      {
+        "listing_id": "DEMO-006",
+        "score": 92.75
+      },
+      {
+        "listing_id": "DEMO-012",
+        "score": 89.4
+      },
+      {
+        "listing_id": "DEMO-004",
+        "score": 89.2
+      },
+      {
+        "listing_id": "DEMO-001",
+        "score": 88.6
+      },
+      {
+        "listing_id": "DEMO-011",
+        "score": 88.0
+      }
+    ]
+  },
+  "v2_task": {
+    "task_id": "task-3f32226655ee4e8591d30ffef80ce2f5",
+    "status": "completed",
+    "receipt_acknowledged": true,
+    "attempts": 1,
+    "counts": {
+      "input": 30,
+      "eligible": 0,
+      "pending": 2,
+      "excluded": 27,
+      "duplicates": 1
+    },
+    "recommendations": []
+  },
+  "no_match_feedback": {
+    "message": "No confirmed eligible candidates were found in the supplied dataset. This does not show that no suitable properties exist in the wider rental market.",
+    "pending_count": 2,
+    "failed_check_counts": {
+      "budget": 27,
+      "commute": 1,
+      "rental_mode": 1,
+      "move_in": 1,
+      "private_bedroom": 1
+    },
+    "explanation": "These are counts of failed checks among excluded listings. A listing may appear under several checks; the counts do not identify a single cause.",
+    "offer": "Would you like to reconsider negotiable preferences first? Hard constraints require your explicit changes and renewed confirmation.",
+    "revision_started": true
+  },
+  "original_version_preserved": true,
+  "output_directory": "Generated locally by --demo; rerun to create your own output files."
+}

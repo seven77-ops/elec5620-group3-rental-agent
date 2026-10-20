@@ -1,6 +1,6 @@
 # Agent 1 输入约定与 Agent 2 → Agent 3 本地联调
 
-本目录准备上游输入和跨模块可运行样例。**Agent 1 的真实对话、用户确认、版本存储和投递服务尚未实现/联调。** 所有 ID、偏好、房源及合同均为合成数据；模拟确认不能证明真人已批准。
+本目录准备上游输入和跨模块可运行样例。**截至 2026-10-20，PR #6 中的 Agent 1 已实现偏好澄清适配、显式确认、不可变版本存储、Agent 2 本地调用和推荐版本比较；独立脚本已跑通 Agent 1 → Agent 2 → Agent 3。** 所有 ID、偏好、房源及合同均为合成数据；脚本确认不能证明真人已批准。实际 LLM 对话质量、组员共同验收、统一前端接入与跨机器投递仍待验证。实现与审核入口：[PR #6](https://github.com/seven77-ops/elec5620-group3-rental-agent/pull/6)；[Agent 1 验证说明](../agent1/VALIDATION.md)。
 
 ## 1. 给 Yirui 的输入样例
 
@@ -24,7 +24,7 @@ Agent 1 提供偏好，房源快照由 Agent 2/协调层另行提供。不要把
 |confirmation.sourceDraftId / reviewedDraftRevision|被用户确认的草稿及其修订号；草稿修订3与确认后profile版本1不是同一计数器|
 |exampleOnly / dataMode|本例为true / synthetic_demo，提醒调用方这是演示样例|
 
-拟接入的适配器应先确认保存版本存在、用户确实确认、必填信息有效且无未决硬冲突，再验证外层搜索/版本/指纹与正文一致，最后把**正文**交给 Agent 2。JSON Schema 校验只能证明形状，不能替代用户确认。`handoff.json` 是供双方确认的样例；本次没有新建生产适配器。
+Agent 1 的本地适配器现已检查保存的确认版本、必填信息及未决硬冲突，绑定搜索/版本/指纹后把**正文**交给 Agent 2；确认信息留在协调外层。`handoff.json` 仍保留为固定接口样例，Agent 1 的 `/export` 则生成实际本地运行对应的交接文件。JSON Schema 校验只能证明形状，不能替代用户确认；这里的本地适配器不代表生产网络投递服务。
 
 版本和异常规则：
 
@@ -56,7 +56,7 @@ Agent 3 已统一到无尾随空格的 `agent3/`。原来的 `agent3 /` 文件�
 ```sh
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install -r agent2/requirements.txt -r agent3/requirements.txt
+python -m pip install -r agent1/requirements.txt -r agent2/requirements.txt -r agent3/requirements.txt
 python -m unittest discover -s integration/tests -v
 ```
 
@@ -76,4 +76,20 @@ cd ..
 
 预期：30输入→15合格/9待确认/5排除/1重复；Top1=DEMO-006、92.75分；合同无对应冲突时为 Reviewed。同一 receive 命令重试得到相同 review_id。Reviewed 表示原型复核流程状态，不是批准签约。
 
-[本次实际执行记录](reports/2026-10-16/README.md)保存测试日志、正常交接、重复请求及冲突场景的证据。真实 Agent 1 联调、网络投递与 Chenyang 的共同确认仍待执行。
+[2026-10-16 执行记录](reports/2026-10-16/README.md)保存原有测试日志、正常交接、重复请求及冲突场景证据。2026-10-20 又使用 PR #6 的 Agent 1 实现生成已确认偏好，跑通后续推荐、选房包和 Agent 3 接收，详见下节。组员共同验收、网络投递与 Chenyang 的共同确认仍待按实际执行记录。
+
+## 4. PR #6：使用 Agent 1 实现的本地交接复跑（2026-10-20）
+
+仓库根目录执行：
+
+```sh
+python3 -m unittest discover -s agent1/tests -v
+python3 agent1/main.py --db /tmp/agent1-acceptance.sqlite3 --acceptance-demo
+python3 integration/reports/2026-10-20/verify_agent123.py
+```
+
+Windows 可把 `python3` 替换为自己的 Python 解释器；数据库路径也应改为本机路径。验收演示会保存新的合成案例，并在 `agent1/reports/` 下生成输出。
+
+独立复跑：Agent 1 单元/边界测试 52/52、脚本验收 14/14、Agent 2 回归 71/71、原有集成测试 6/6。新增独立交接脚本 9/9：Agent 1 未确认时拒绝搜索，确认后调用 Agent 2 并复用重复任务；核对导出正文；显式脚本选择 DEMO-006 后新生成证据包；Agent 3 接收为 `Reviewed`，绑定的搜索/偏好版本及批次一致；重复请求返回原复核，无合同处理同意时拒绝。
+
+执行环境与原始日志见 [2026-10-20 结构化执行记录](reports/2026-10-20/review-summary.json)。Windows 14 项通过来自 Yirui 的反馈及 PR 描述，独立复跑环境为 macOS；两者分别记录。此次仅为合成数据下的本地自动检查，不替代真人选择/同意、真实 LLM 验证、组员共同验收或 Sprint Review。

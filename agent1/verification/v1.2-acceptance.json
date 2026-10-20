@@ -1,0 +1,143 @@
+{
+  "mode": "scripted_acceptance_no_live_llm",
+  "case_id": "case-d1d0b0d8df79487289c831435c786b11",
+  "checks": {
+    "unconfirmed_search_blocked": "passed",
+    "normal_counts": "passed",
+    "commute_top1": "passed",
+    "pasted_prompt_rejected": "passed",
+    "offline_text_preserves_session": "passed",
+    "duplicate_request_reused": "passed",
+    "revision_requires_confirmation": "passed",
+    "old_result_marked_outdated": "passed",
+    "budget_top1": "passed",
+    "demo002_rank_9_to_3": "passed",
+    "all_candidates_compared": "passed",
+    "tight_budget_loses_eligibility": "passed",
+    "missing_route_becomes_pending": "passed",
+    "original_version_preserved": "passed"
+  },
+  "tasks": [
+    {
+      "task_id": "task-50c45c2f0e4e4bfa8ec9e945ea1df9c2",
+      "status": "completed",
+      "receipt_acknowledged": true,
+      "attempts": 1,
+      "counts": {
+        "input": 30,
+        "eligible": 15,
+        "pending": 9,
+        "excluded": 5,
+        "duplicates": 1
+      },
+      "recommendations": [
+        {
+          "listing_id": "DEMO-006",
+          "score": 92.75
+        },
+        {
+          "listing_id": "DEMO-012",
+          "score": 89.4
+        },
+        {
+          "listing_id": "DEMO-004",
+          "score": 89.2
+        },
+        {
+          "listing_id": "DEMO-001",
+          "score": 88.6
+        },
+        {
+          "listing_id": "DEMO-011",
+          "score": 88.0
+        }
+      ]
+    },
+    {
+      "task_id": "task-4df45e7275734239a7e47f4cfa6adb9d",
+      "status": "completed",
+      "receipt_acknowledged": true,
+      "attempts": 1,
+      "counts": {
+        "input": 30,
+        "eligible": 15,
+        "pending": 9,
+        "excluded": 5,
+        "duplicates": 1
+      },
+      "recommendations": [
+        {
+          "listing_id": "DEMO-012",
+          "score": 89.8
+        },
+        {
+          "listing_id": "DEMO-006",
+          "score": 87.1667
+        },
+        {
+          "listing_id": "DEMO-002",
+          "score": 87.0
+        },
+        {
+          "listing_id": "DEMO-014",
+          "score": 83.15
+        },
+        {
+          "listing_id": "DEMO-010",
+          "score": 82.6333
+        }
+      ]
+    },
+    {
+      "task_id": "task-d1407f35281748a7acd738fe2a5dd8a5",
+      "status": "completed",
+      "receipt_acknowledged": true,
+      "attempts": 1,
+      "counts": {
+        "input": 30,
+        "eligible": 9,
+        "pending": 6,
+        "excluded": 14,
+        "duplicates": 1
+      },
+      "recommendations": [
+        {
+          "listing_id": "DEMO-002",
+          "score": 84.6
+        },
+        {
+          "listing_id": "DEMO-010",
+          "score": 82.6333
+        },
+        {
+          "listing_id": "DEMO-012",
+          "score": 82.6
+        },
+        {
+          "listing_id": "DEMO-014",
+          "score": 81.95
+        },
+        {
+          "listing_id": "DEMO-003",
+          "score": 81.2
+        }
+      ]
+    },
+    {
+      "task_id": "task-b9de8e6bfb064fb48de69b7ea6a85cef",
+      "status": "completed",
+      "receipt_acknowledged": true,
+      "attempts": 1,
+      "counts": {
+        "input": 30,
+        "eligible": 0,
+        "pending": 16,
+        "excluded": 13,
+        "duplicates": 1
+      },
+      "recommendations": []
+    }
+  ],
+  "output_directory": "/workspace/scratch/706c1a364cdd/updated/elec5620-group3-rental-agent/agent1/reports/acceptance-case-d1d0b0d8df79487289c831435c786b11",
+  "scope": "Local synthetic scenario only. Joint testing and Sprint Review remain pending."
+}

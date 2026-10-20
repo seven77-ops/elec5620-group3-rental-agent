@@ -1,0 +1,41 @@
+test_acceptance_is_persisted_before_evaluation (test_agent1.AgentTests.test_acceptance_is_persisted_before_evaluation) ... ok
+test_actual_agent2_integration_and_idempotent_retry (test_agent1.AgentTests.test_actual_agent2_integration_and_idempotent_retry) ... ok
+test_cancel_blocks_collect_confirm_and_retry (test_agent1.AgentTests.test_cancel_blocks_collect_confirm_and_retry) ... ok
+test_cli_review_confirm_search_and_export (test_agent1.AgentTests.test_cli_review_confirm_search_and_export) ... ok
+test_cross_field_conflicts_are_blocked (test_agent1.AgentTests.test_cross_field_conflicts_are_blocked) ... ok
+test_database_prevents_profile_update_and_survives_reopen (test_agent1.AgentTests.test_database_prevents_profile_update_and_survives_reopen) ... ok
+test_draft_mutation_preserves_confirmed_version_and_requires_reconfirm (test_agent1.AgentTests.test_draft_mutation_preserves_confirmed_version_and_requires_reconfirm) ... ok
+test_empty_dataset_does_not_invent_reasons (test_agent1.AgentTests.test_empty_dataset_does_not_invent_reasons) ... ok
+test_evaluation_failure_is_not_no_match_and_retry_preserves_identity (test_agent1.AgentTests.test_evaluation_failure_is_not_no_match_and_retry_preserves_identity) ... ok
+test_failed_llm_after_confirmation_still_forks_on_correction (test_agent1.AgentTests.test_failed_llm_after_confirmation_still_forks_on_correction) ... ok
+test_issue_stays_until_explicit_field_correction (test_agent1.AgentTests.test_issue_stays_until_explicit_field_correction) ... ok
+test_lost_reply_reconciles_persisted_completed_result (test_agent1.AgentTests.test_lost_reply_reconciles_persisted_completed_result) ... ok
+test_malformed_or_protected_model_output_is_atomic (test_agent1.AgentTests.test_malformed_or_protected_model_output_is_atomic) ... ok
+test_manual_bad_type_and_nonfinite_are_atomic (test_agent1.AgentTests.test_manual_bad_type_and_nonfinite_are_atomic) ... ok
+test_missing_budget_period_blocks_confirmation_and_search (test_agent1.AgentTests.test_missing_budget_period_blocks_confirmation_and_search) ... ok
+test_model_error_preserves_draft_and_invalidates_review (test_agent1.AgentTests.test_model_error_preserves_draft_and_invalidates_review) ... ok
+test_monthly_conversion_is_reviewed_and_original_preserved (test_agent1.AgentTests.test_monthly_conversion_is_reviewed_and_original_preserved) ... ok
+test_multiturn_extraction_and_correction_with_evidence (test_agent1.AgentTests.test_multiturn_extraction_and_correction_with_evidence) ... ok
+test_no_match_revision_requires_valid_current_feedback_and_preserves_profile (test_agent1.AgentTests.test_no_match_revision_requires_valid_current_feedback_and_preserves_profile) ... ok
+test_optimistic_session_conflict (test_agent1.AgentTests.test_optimistic_session_conflict) ... ok
+test_report_reference_mismatch_is_rejected (test_agent1.AgentTests.test_report_reference_mismatch_is_rejected) ... ok
+test_saving_failure_rolls_back_profile_and_session (test_agent1.AgentTests.test_saving_failure_rolls_back_profile_and_session) ... ok
+test_stale_review_and_duplicate_confirmation_rejected (test_agent1.AgentTests.test_stale_review_and_duplicate_confirmation_rejected) ... ok
+test_tampered_feedback_not_used_to_justify_revision (test_agent1.AgentTests.test_tampered_feedback_not_used_to_justify_revision) ... ok
+test_unacknowledged_delivery_retained_and_retryable (test_agent1.AgentTests.test_unacknowledged_delivery_retained_and_retryable) ... ok
+test_undecided_required_value_is_not_invented (test_agent1.AgentTests.test_undecided_required_value_is_not_invented) ... ok
+test_unspecified_optional_information_does_not_block (test_agent1.AgentTests.test_unspecified_optional_information_does_not_block) ... ok
+test_unsupported_extra_requires_priority_and_blocks_hard (test_agent1.AgentTests.test_unsupported_extra_requires_priority_and_blocks_hard) ... ok
+test_unsupported_hard_requirement_not_silently_dropped (test_agent1.AgentTests.test_unsupported_hard_requirement_not_silently_dropped) ... ok
+test_missing_configuration_does_not_pretend_to_extract (test_agent1.LLMTransportTests.test_missing_configuration_does_not_pretend_to_extract) ... ok
+test_network_timeout_has_actionable_error (test_agent1.LLMTransportTests.test_network_timeout_has_actionable_error) ... ok
+test_request_and_valid_json_response (test_agent1.LLMTransportTests.test_request_and_valid_json_response) ... ok
+test_truncated_malformed_refusal_and_nonfinite_response (test_agent1.LLMTransportTests.test_truncated_malformed_refusal_and_nonfinite_response) ... ok
+test_export_before_search_has_no_fabricated_handoff (test_updated_repository.UpdatedRepositoryTests.test_export_before_search_has_no_fabricated_handoff) ... ok
+test_export_matches_team_envelope_and_actual_agent2 (test_updated_repository.UpdatedRepositoryTests.test_export_matches_team_envelope_and_actual_agent2) ... ok
+test_mismatched_task_cannot_be_exported_as_valid_envelope (test_updated_repository.UpdatedRepositoryTests.test_mismatched_task_cannot_be_exported_as_valid_envelope) ... ok
+
+----------------------------------------------------------------------
+Ran 36 tests in 5.391s
+
+OK
