@@ -1,6 +1,7 @@
 import asyncio
 import json
 from pathlib import Path
+from threading import Event
 from time import monotonic, sleep
 import unittest
 import httpx
@@ -76,7 +77,8 @@ class ProviderTests(unittest.TestCase):
         # Both interfaces let the regression exercise the old synchronous transport too.
         # Every chunk arrives well within the per-I/O timeout; the full body takes 3s.
         class DripStream(httpx.AsyncByteStream, httpx.SyncByteStream):
-            closed = False
+            def __init__(self):
+                self.closed = Event()
 
             def __iter__(self):
                 for _ in range(30):
@@ -91,10 +93,10 @@ class ProviderTests(unittest.TestCase):
                 yield b'{"choices":[{"message":{"content":"{\\"fields\\":[]}"}}]}'
 
             def close(self):
-                self.closed = True
+                self.closed.set()
 
             async def aclose(self):
-                self.closed = True
+                self.closed.set()
 
         stream = DripStream()
         provider = self.provider(lambda r: httpx.Response(200, stream=stream), RENTAL_AI_TIMEOUT_SECONDS='1')
@@ -107,7 +109,7 @@ class ProviderTests(unittest.TestCase):
         self.assertEqual(error.exception.call['status'], 'failed')
         self.assertLess(elapsed, 2)
         self.assertGreaterEqual(error.exception.call['duration_ms'], 900)
-        self.assertTrue(stream.closed)
+        self.assertTrue(stream.closed.wait(.5))
         self.assertNotIn('private-test-secret', str(error.exception))
 
     def test_response_id_does_not_invent_request_id(self):
@@ -116,6 +118,45 @@ class ProviderTests(unittest.TestCase):
         _, call = provider.call({'task': 'contract_extract'})
         self.assertEqual(call.get('provider_response_id'), 'completion-only')
         self.assertNotIn('provider_request_id', call)
+
+    def test_total_deadline_does_not_join_slow_resolver_executor(self):
+        from server.app.ai.provider import ProviderError
+        resolved, cancelled, closed = Event(), Event(), Event()
+        sent = []
+
+        def resolve():
+            sleep(2.3)
+            resolved.set()
+
+        class ResolverTransport(httpx.AsyncBaseTransport):
+            async def handle_async_request(self, request):
+                try:
+                    # asyncio's real DNS resolver also uses the default executor.
+                    await asyncio.to_thread(resolve)
+                except asyncio.CancelledError:
+                    cancelled.set()
+                    raise
+                sent.append(request)
+                return httpx.Response(200, json={'choices': [{'message': {'content': '{"fields":[]}'}}]})
+
+            async def aclose(self):
+                closed.set()
+
+        provider = self.provider(RENTAL_AI_TIMEOUT_SECONDS='1')
+        provider.transport = ResolverTransport()
+        start = monotonic()
+        with self.assertRaises(ProviderError) as error:
+            provider.call({'task': 'contract_extract'})
+        elapsed = monotonic() - start
+        self.assertEqual(error.exception.code, 'ai_timeout')
+        self.assertTrue(error.exception.call['attempted'])
+        self.assertEqual(error.exception.call['status'], 'failed')
+        self.assertTrue(cancelled.wait(.5), 'request coroutine must be cancelled')
+        self.assertTrue(closed.wait(.5), 'client transport must close on cancellation')
+        self.assertTrue(resolved.wait(3), 'test resolver worker must finish')
+        self.assertEqual(sent, [], 'a late DNS result must never resume transmission')
+        self.assertLess(elapsed, 1.8, 'caller must not join the resolver executor')
+        self.assertLess(error.exception.call['duration_ms'], 1800)
 
     def test_duplicate_nonfinite_and_oversized_responses_rejected(self):
         for content in ('{"fields":[],"fields":[]}', '{"score":1e999}', '{"score":NaN}'):

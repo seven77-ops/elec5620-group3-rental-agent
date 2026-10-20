@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 import json
 import math
 import os
+from threading import Lock, Thread
 from time import monotonic
 from urllib.parse import urlsplit
 
@@ -15,6 +16,28 @@ TASKS = {
     'contract_explain': 'Explain only the supplied deterministic findings. Return {"explanations":[{"finding_id":"F01","text":"..."}]}, exactly one short explanation per supplied finding ID, no new facts, legal conclusions or approval decisions.',
     'recommendation_explain': 'Explain only the provided saved eligible recommendations, their scores, reasons and tradeoffs. Return {"items":[{"listing_id":"DEMO-006","text":"...","evidence_refs":["exact supplied source_ref"]}]}, exactly one item per recommendation in the supplied order. Do not change scores, eligibility or rank, invent evidence, or introduce unsupported facts. Use Chinese text for explanations.',
 }
+
+_transport_loop = None
+_transport_loop_lock = Lock()
+
+
+def run_transport(coroutine, timeout):
+    """Share one loop so a request never joins an outstanding DNS worker."""
+    global _transport_loop
+    with _transport_loop_lock:
+        if _transport_loop is None:
+            _transport_loop = asyncio.new_event_loop()
+            Thread(target=_transport_loop.run_forever, name='rental-ai-transport', daemon=True).start()
+        loop = _transport_loop
+    future = asyncio.run_coroutine_threadsafe(coroutine, loop)
+    try:
+        return future.result(timeout=timeout)
+    except TimeoutError:
+        # Cancel the request, including its awaited resolver future. A blocking
+        # resolver may finish later, but cannot resume this request or send HTTP.
+        # The running loop lets the coroutine close its client/stream normally.
+        future.cancel()
+        raise
 
 
 def strict_json(raw):
@@ -111,7 +134,7 @@ class ModelProvider:
 
         try:
             # AI HTTP routes are synchronous and execute in FastAPI's worker pool.
-            content, provider_request_id = asyncio.run(fetch())
+            content, provider_request_id = run_transport(fetch(), self.timeout)
             envelope = strict_json(bytes(content).decode('utf-8'))
             result = strict_json(envelope['choices'][0]['message']['content'])
             if not isinstance(result, dict):
