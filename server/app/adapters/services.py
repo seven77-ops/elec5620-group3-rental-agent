@@ -9,12 +9,14 @@ from ..settings import OPERATOR
 from .business import AftercareAgent
 from ..repository import Repository
 from .agent1 import Agent1Bridge
+from ..ai.provider import ModelProvider
 
 
 class Services:
     """Shared saved-object authorization, identity, gates and durable receipt helpers."""
-    def __init__(self, settings):
+    def __init__(self, settings, ai_provider=None):
         self.settings = settings
+        self.ai_provider = ai_provider if ai_provider is not None else ModelProvider()
         self.repo = Repository(settings.runtime_dir)
         self.preferences = Agent1Bridge(self.repo)
         self.aftercare = AftercareAgent(self.repo.directory / 'aftercare.sqlite3', operator_ids={OPERATOR}, gateway=None)

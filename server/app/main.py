@@ -6,8 +6,8 @@ from .http import strict_route, install_error_handlers
 from .routes import register_routes
 
 
-def create_app(runtime_dir=None, operator_key=None):
-    services = Services(Settings(runtime_dir=runtime_dir, operator_key=operator_key))
+def create_app(runtime_dir=None, operator_key=None, ai_provider=None):
+    services = Services(Settings(runtime_dir=runtime_dir, operator_key=operator_key), ai_provider=ai_provider)
     app = FastAPI(title='Rental journey synthetic demo', version='1.0')
     app.router.route_class = strict_route(services.operator)
     app.state.repository = services.repo

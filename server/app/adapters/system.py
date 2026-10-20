@@ -26,7 +26,7 @@ class SystemAdapter:
                 'profile_template': template, 'tenancy_template': tenancy_template,
                 'agreement_examples': [{'id': key, 'name': key + '.txt'} for key in examples],
                 'capabilities': {'agent1': 'local_service', 'agent2': True, 'agent3': True, 'agent4': True,
-                                 'external_ai': False, 'synthetic_contract_only': True, 'max_upload_bytes': MAX_BYTES,
+                                 'external_ai': self.ctx.ai_provider.public_config()['configured'], 'external_ai_opt_in': True, 'synthetic_contract_only': True, 'max_upload_bytes': MAX_BYTES,
                                  'aftercare_evidence_template': templates['create']['evidence'],
                                  'aftercare_clock_policy': 'Per-case monotonic; poll advances to 2026-11-03T09:00:00+11:00; close to 09:01; original retries retain original time'}}
 

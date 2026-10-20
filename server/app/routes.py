@@ -42,3 +42,6 @@ def register_routes(app, services):
     app.post('/api/v1/aftercare/commands')(aftercare.aftercare_command)
     app.get('/api/v1/aftercare/cases/{aftercare_id}')(aftercare.read_aftercare)
     app.get('/api/v1/aftercare/cases/{aftercare_id}/export')(aftercare.export_aftercare)
+
+    from .ai.routes import register_ai_routes
+    register_ai_routes(app, services, contracts)

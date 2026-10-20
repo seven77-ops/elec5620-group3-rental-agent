@@ -177,14 +177,21 @@ class ContractsAdapter:
                     409, 'version_conflict', 'Reload the current contract review')
             review = action(previous)
             validate_review(review)
-            saved['review'] = review
-            repo.put(db, 'review', review_id, saved)
-            repo.put(db, 'review_version', review_id + ':' + str(review['version']) + ':' + uid('revision'), review)
-            for item in case['reviews']:
-                if item['review_id'] == review_id:
-                    item.update(version=review['version'], status=review['status'])
-            repo.put(db, 'case', case['case_id'], case)
+            self.save_review(db, saved, review)
             return review
+
+    def save_review(self, db, saved, review):
+        """Persist original module output and immutable history inside caller transaction."""
+        validate_review(review)
+        saved['review'] = review
+        review_id = review['review_id']
+        self.ctx.repo.put(db, 'review', review_id, saved)
+        self.ctx.repo.put(db, 'review_version', review_id + ':' + str(review['version']) + ':' + uid('revision'), review)
+        case = self.ctx.get(db, 'case', saved['case_id'])
+        for item in case['reviews']:
+            if item['review_id'] == review_id:
+                item.update(version=review['version'], status=review['status'])
+        self.ctx.repo.put(db, 'case', case['case_id'], case)
 
     def correction(self, review_id: str, body: dict):
         mutate_review = self.mutate_review
