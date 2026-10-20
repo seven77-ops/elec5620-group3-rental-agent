@@ -192,7 +192,9 @@ export default function Contract() {
                 selectedContext.current.reviewId !== next.review_id
               )
                 return;
-              setReview(next);
+              // A reload or another saved action may have replaced this exact
+              // source object, including changes that keep the same version.
+              setReview((previous) => (previous === review ? next : previous));
               await refresh();
             }}
           />

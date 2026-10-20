@@ -250,6 +250,172 @@ test("obsolete AI apply completion does not refresh a departed case page", async
   }
 });
 
+for (const update of ["newer correction", "same-version questions"] as const) {
+  test(`same-review AI apply completion preserves ${update}`, async ({
+    page,
+    request,
+  }) => {
+    const { c, review } = await contract(request);
+    await page.goto(`/cases/${c.case_id}/contract`);
+    await page
+      .getByRole("checkbox", {
+        name: "我同意将本合同文本及选房核对资料发送到配置的模型，用于本次 AI 辅助分析。",
+        exact: true,
+      })
+      .check();
+    await page
+      .getByRole("button", { name: "AI 辅助分析合同", exact: true })
+      .click();
+    const field = update === "newer correction" ? "合同租金" : "合同地址";
+    await page
+      .getByRole("checkbox", { name: `选择 AI 字段：${field}`, exact: true })
+      .check();
+    await page
+      .getByRole("checkbox", {
+        name: "我已逐项核对所选字段的原文，确认应用到当前复核。",
+        exact: true,
+      })
+      .check();
+
+    let release!: () => void;
+    const heldResponse = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    let written!: (version: number) => void;
+    const serverWritten = new Promise<number>((resolve) => {
+      written = resolve;
+    });
+    await page.route(
+      `**/contract-reviews/${review.review_id}/ai-analyses/*/apply`,
+      async (route) => {
+        const response = await route.fetch();
+        expect(response.ok()).toBeTruthy();
+        written((await response.json()).review.version);
+        await heldResponse;
+        await route.fulfill({ response });
+      },
+    );
+    await page
+      .getByRole("button", { name: "确认应用所选字段", exact: true })
+      .click();
+    expect(await serverWritten).toBe(update === "newer correction" ? 2 : 1);
+
+    const pendingGets = new Set();
+    page.on("request", (r) => {
+      if (r.method() === "GET" && r.url().includes("/api/v1/"))
+        pendingGets.add(r);
+    });
+    page.on("requestfinished", (r) => pendingGets.delete(r));
+    page.on("requestfailed", (r) => pendingGets.delete(r));
+    const readLatest = async () => {
+      const loaded = page.waitForResponse(
+        (r) =>
+          r.request().method() === "GET" &&
+          r.url().endsWith(`/contract-reviews/${review.review_id}`),
+      );
+      const context = page.waitForResponse(
+        (r) =>
+          r.request().method() === "GET" &&
+          r.url().endsWith(`/contract-reviews/${review.review_id}/context`),
+      );
+      await page
+        .getByRole("button", { name: "读取最新复核状态", exact: true })
+        .click();
+      await Promise.all([
+        loaded.then((r) => r.finished()),
+        context.then((r) => r.finished()),
+      ]);
+      await expect.poll(() => pendingGets.size).toBe(0);
+    };
+    try {
+      await readLatest();
+      if (update === "newer correction") {
+        await expect(
+          page.getByText("复核版本 v2", { exact: true }),
+        ).toBeVisible();
+        await page
+          .getByRole("button", { name: "修正提取字段", exact: true })
+          .click();
+        await page
+          .getByRole("spinbutton", { name: "合同租金（AUD）" })
+          .fill("510");
+        await page
+          .getByRole("button", { name: "保存为新复核版本", exact: true })
+          .click();
+        await expect(
+          page.getByText("新复核版本已保存，旧问题已失效。", { exact: true }),
+        ).toBeVisible();
+        await expect(
+          page.locator(".ant-select").filter({
+            has: page.getByRole("combobox", { name: "选择合同复核记录" }),
+          }),
+        ).toContainText("合同 1 · v3");
+      } else {
+        await page
+          .getByRole("button", { name: "准备问题清单", exact: true })
+          .click();
+        await expect(
+          page.getByRole("heading", {
+            name: "问题清单 · 尚未发送",
+            exact: true,
+          }),
+        ).toBeVisible();
+      }
+      // Finish all summary-driven reads and explicitly load the latest object
+      // before releasing the older apply response for this same review.
+      await readLatest();
+      const latest = await (
+        await request.get(`/api/v1/contract-reviews/${review.review_id}`)
+      ).json();
+      expect(latest.version).toBe(update === "newer correction" ? 3 : 1);
+      if (update === "same-version questions") {
+        expect(latest.questions.length).toBeGreaterThan(0);
+        expect(latest.status).toBe("Questions Ready");
+      }
+      const completed = page.waitForResponse(
+        (r) => r.request().method() === "POST" && r.url().endsWith("/apply"),
+      );
+      release();
+      await completed;
+      await expect(
+        page.getByText(
+          update === "newer correction"
+            ? "已应用核对字段并保存新复核版本。"
+            : "所选字段与现有值一致，无需新增版本。",
+          { exact: true },
+        ),
+      ).toBeVisible();
+      await expect.poll(() => pendingGets.size).toBe(0);
+      await expect(
+        page.getByText(`复核版本 v${latest.version}`, { exact: true }),
+      ).toBeVisible();
+      if (update === "newer correction") {
+        await expect(
+          page.getByRole("cell", { name: /合同租金 : 510/ }),
+        ).toBeVisible();
+      } else {
+        await expect(
+          page.getByRole("heading", {
+            name: "问题清单 · 尚未发送",
+            exact: true,
+          }),
+        ).toBeVisible();
+        for (const question of latest.questions)
+          await expect(
+            page.getByText(question.text, { exact: true }),
+          ).toBeVisible();
+      }
+      expect(
+        await (
+          await request.get(`/api/v1/contract-reviews/${review.review_id}`)
+        ).json(),
+      ).toEqual(latest);
+    } finally {
+      release();
+    }
+  });
+}
+
 test("recommendation AI requires separate consent, displays test source and preserves actual ranking", async ({
   page,
   request,
