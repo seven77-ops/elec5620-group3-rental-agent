@@ -164,6 +164,11 @@
         "tenancy_type"
       ],
       "additionalProperties": false
+    },
+    "review_snapshot_revision": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9223372036854775807
     }
   },
   "required": [
@@ -179,7 +184,8 @@
     "document_sha256",
     "review_sha256",
     "actual_tenancy_confirmed",
-    "confirmed_fields"
+    "confirmed_fields",
+    "review_snapshot_revision"
   ],
   "additionalProperties": false,
   "$schema": "https://json-schema.org/draft/2020-12/schema",
