@@ -1,5 +1,7 @@
 # M3 参考与 M4 消费端合成输入
 
+2026-10-20：本目录原包保留为历史，未添加序号，不能直接提交给新版 receive。当前可运行的合成测试包见 [snapshots](snapshots/README.md)；序号由明确标注的 M3 持久化测试替身提供，不能把任意历史 review 补 1 作为真实输入。
+
 原始三份 ContractReview 按字节复制自 M3 PR #3 分支 `codex/m3-m4-handoff-20261017`，commit `a4d9f2ed85f82d65310e15954d54c1849729b9b0`：
 
 | 本目录文件 | 原 agent3/reports 文件 |
