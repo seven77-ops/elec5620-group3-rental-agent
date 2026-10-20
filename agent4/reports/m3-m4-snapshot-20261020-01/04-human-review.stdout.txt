@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "status": "paused",
+  "code": "review_blocked",
+  "message": "High-severity finding requires human escalation decision",
+  "upstream_case_id": "DEMO-CASE-INTEGRATION-001",
+  "review_id": "cr-863153f6518f460588d76fbbfcd63754",
+  "review_version": 1,
+  "review_snapshot_revision": 1,
+  "newly_created": false
+}

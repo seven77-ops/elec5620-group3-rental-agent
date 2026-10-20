@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "request_id": "date-explicitly-confirmed",
+  "case_id": "aftercare-8fcaa64b1bcd48759ce912eebd6c9911",
+  "actor_id": "DEMO-TENANT-001",
+  "actor_role": "tenant",
+  "expected_version": 2,
+  "as_of": "2026-10-17T19:01:00+11:00",
+  "operation": "create_plan",
+  "payload": {
+    "move_out_date": "2028-02-02",
+    "schedule_confirmed": true
+  }
+}

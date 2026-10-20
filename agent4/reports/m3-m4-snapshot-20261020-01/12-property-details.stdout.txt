@@ -1,0 +1,19 @@
+{
+  "request_id": "property-details",
+  "case_id": "aftercare-8fcaa64b1bcd48759ce912eebd6c9911",
+  "version": 2,
+  "task": {
+    "task_id": "property-details",
+    "responsible_role": "AftercareAgent",
+    "case_id": "aftercare-8fcaa64b1bcd48759ce912eebd6c9911",
+    "input_version": 1,
+    "output_version": 2,
+    "status": "completed",
+    "output_refs": [
+      "case:aftercare-8fcaa64b1bcd48759ce912eebd6c9911@2"
+    ]
+  },
+  "result": {
+    "operation": "revise_tenancy"
+  }
+}
