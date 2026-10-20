@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "status": "paused",
+  "code": "review_snapshot_revision_mismatch",
+  "message": "Reconfirm the current saved review snapshot",
+  "upstream_case_id": "DEMO-CASE-INTEGRATION-001",
+  "review_id": "cr-254978e01f014edea4c6dcfe9789e0f6",
+  "review_version": 1,
+  "review_snapshot_revision": 2,
+  "newly_created": false
+}

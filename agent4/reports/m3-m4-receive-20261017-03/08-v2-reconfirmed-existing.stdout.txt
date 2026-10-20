@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "status": "paused",
+  "code": "existing_tenancy_requires_reconciliation",
+  "message": "Keep the existing tenancy/case; reconcile changed lease facts explicitly",
+  "newly_created": false,
+  "case_id": "aftercare-b298cdd88922407795ac28be644590e9",
+  "upstream_case_id": "DEMO-CASE-INTEGRATION-001"
+}

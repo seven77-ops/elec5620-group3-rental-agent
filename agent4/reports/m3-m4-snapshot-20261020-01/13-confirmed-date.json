@@ -1,0 +1,146 @@
+{
+  "audit": [
+    {
+      "actor_id": "DEMO-TENANT-001",
+      "actor_role": "tenant",
+      "at": "2026-10-17T19:01:00+11:00",
+      "operation": "create",
+      "request_id": "m3-954609b04a6e7b20c442d4a9c74bcf269bf22b3ff129bebe7c2f0dbee3185e9c",
+      "version": 1
+    },
+    {
+      "actor_id": "DEMO-TENANT-001",
+      "actor_role": "tenant",
+      "at": "2026-10-17T19:01:00+11:00",
+      "operation": "revise_tenancy",
+      "request_id": "property-details",
+      "version": 2
+    },
+    {
+      "request_id": "date-explicitly-confirmed",
+      "operation": "create_plan",
+      "actor_id": "DEMO-TENANT-001",
+      "actor_role": "tenant",
+      "at": "2026-10-17T19:01:00+11:00",
+      "version": 3
+    }
+  ],
+  "bond": null,
+  "case_id": "aftercare-8fcaa64b1bcd48759ce912eebd6c9911",
+  "created_at": "2026-10-17T19:01:00+11:00",
+  "data_mode": "local_prototype",
+  "evidence": [
+    {
+      "evidence_id": "m3-review-801eaf32887f9961f6566350b979c5e1",
+      "kind": "other",
+      "recorded_at": "2026-10-17T11:07:28+11:00",
+      "source_ref": "cr-4329de3190c6404b96e74c7f3e4b3d6a",
+      "source_version": 1,
+      "summary": "M3 ContractReview; snapshot_revision=1; document_sha256=31502b925582274322eef97e31ed12cae4f0364902ef56266e3073fd00f7b52d; review_sha256=df1bd27cfad8fc063cf9bdc4816ccfd578edd1e15c9b979ec642c2686f9806ab"
+    },
+    {
+      "evidence_id": "m3-confirmation-ea03c22c8964e1a2b1eff396080d1407",
+      "kind": "other",
+      "recorded_at": "2026-10-17T19:00:00+11:00",
+      "source_ref": "DEMO-M3-CONFIRMATION-STUB-001",
+      "source_version": 1,
+      "summary": "M3 actual tenancy declaration; upstream_case_id=DEMO-CASE-INTEGRATION-001; not payment or move-out confirmation"
+    }
+  ],
+  "plan": {
+    "state": "Active",
+    "move_out_date": "2028-02-02",
+    "schedule_confirmed": true,
+    "tasks": [
+      {
+        "task_id": "baseline",
+        "title": "Locate incoming condition records; record missing evidence",
+        "zone": "property",
+        "offset_days": -14,
+        "due_at": "2028-01-19T09:00:00+11:00",
+        "status": "todo",
+        "evidence_refs": [],
+        "baseline_refs": []
+      },
+      {
+        "task_id": "clean-demo-room",
+        "title": "Clean User-confirmed synthetic room and record its condition",
+        "zone": "demo-room",
+        "offset_days": -2,
+        "due_at": "2028-01-31T09:00:00+11:00",
+        "status": "todo",
+        "evidence_refs": [],
+        "baseline_refs": []
+      },
+      {
+        "task_id": "belongings",
+        "title": "Remove belongings and arrange personal service/address changes",
+        "zone": "property",
+        "offset_days": -1,
+        "due_at": "2028-02-01T09:00:00+11:00",
+        "status": "todo",
+        "evidence_refs": [],
+        "baseline_refs": []
+      },
+      {
+        "task_id": "inspection",
+        "title": "Prepare final inspection photos and compare available condition records",
+        "zone": "property",
+        "offset_days": -1,
+        "due_at": "2028-02-01T09:00:00+11:00",
+        "status": "todo",
+        "evidence_refs": [],
+        "baseline_refs": []
+      },
+      {
+        "task_id": "keys",
+        "title": "Arrange key return and retain a dated receipt",
+        "zone": "property",
+        "offset_days": 0,
+        "due_at": "2028-02-02T09:00:00+11:00",
+        "status": "todo",
+        "evidence_refs": [],
+        "baseline_refs": []
+      }
+    ],
+    "evidence_gaps": [
+      "Baseline condition report unavailable: supply records or document current condition."
+    ],
+    "clarification_requests": [],
+    "pending_schedule": null,
+    "revisions": [],
+    "created_at": "2026-10-17T19:01:00+11:00",
+    "notice_status": "unverified_no_legal_countdown",
+    "notice_question": "Check applicable notice requirements and triggering facts against current official guidance.",
+    "schedule_basis": "User-confirmed practical planning offsets, not statutory deadlines."
+  },
+  "reminders": [],
+  "reminders_enabled": false,
+  "reviews": [],
+  "schema_version": "1.0",
+  "tenancy": {
+    "address": "虚构示例楼 6 号房（不存在的地址）",
+    "baseline_evidence_refs": [],
+    "carpeted": false,
+    "confirmed": true,
+    "furnished": false,
+    "inventory": [],
+    "inventory_confirmed": true,
+    "jurisdiction": "NSW",
+    "outdoor": false,
+    "rooms": [
+      {
+        "id": "demo-room",
+        "name": "User-confirmed synthetic room"
+      }
+    ],
+    "source_ref": "DEMO-M3-CONFIRMATION-STUB-001",
+    "source_version": 1,
+    "tenancy_id": "tenancy-ec907af37b914b929d9790fbf875a893",
+    "tenancy_type": "standard_residential",
+    "tenant_id": "DEMO-TENANT-001"
+  },
+  "tenant_id": "DEMO-TENANT-001",
+  "updated_at": "2026-10-17T19:01:00+11:00",
+  "version": 3
+}

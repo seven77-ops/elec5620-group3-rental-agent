@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0",
+  "status": "created",
+  "newly_created": true,
+  "upstream_case_id": "DEMO-CASE-INTEGRATION-001",
+  "case_id": "aftercare-d04fb5dcd43646debdba72821ddd495a",
+  "tenancy_id": "tenancy-99c9a8bba2b842fcaa57ea18bc952da9",
+  "review_id": "cr-254978e01f014edea4c6dcfe9789e0f6",
+  "review_version": 1,
+  "review_snapshot_revision": 2,
+  "confirmation_id": "DEMO-SAME-SECOND-CONFIRMATION",
+  "confirmation_version": 1,
+  "next_action": "confirm_property_details_and_move_out_date",
+  "receipt": {
+    "schema_version": "1.0",
+    "request_id": "m3-be12ce731285c88a6f5834760311b522f485f8048211aca86f3d07b2b6305cbe",
+    "case_id": "aftercare-d04fb5dcd43646debdba72821ddd495a",
+    "version": 1,
+    "result": {
+      "operation": "create"
+    },
+    "case": {
+      "schema_version": "1.0",
+      "case_id": "aftercare-d04fb5dcd43646debdba72821ddd495a",
+      "tenant_id": "DEMO-TENANT-001",
+      "version": 1,
+      "tenancy": {
+        "tenancy_id": "tenancy-99c9a8bba2b842fcaa57ea18bc952da9",
+        "tenant_id": "DEMO-TENANT-001",
+        "address": "虚构示例楼 6 号房（不存在的地址）",
+        "jurisdiction": "NSW",
+        "tenancy_type": "standard_residential",
+        "confirmed": true,
+        "source_ref": "DEMO-SAME-SECOND-CONFIRMATION",
+        "source_version": 1,
+        "rooms": null,
+        "carpeted": null,
+        "outdoor": null,
+        "furnished": null,
+        "inventory": null,
+        "inventory_confirmed": false,
+        "baseline_evidence_refs": []
+      },
+      "evidence": [
+        {
+          "evidence_id": "m3-review-438cffea54450301cf670ddb24115031",
+          "kind": "other",
+          "source_ref": "cr-254978e01f014edea4c6dcfe9789e0f6",
+          "source_version": 1,
+          "recorded_at": "2026-10-17T18:00:00+11:00",
+          "summary": "M3 ContractReview; snapshot_revision=2; document_sha256=d001c7280a6ede5252c5637fd57904a232e2c43e746afb4d4a5f7b2a09708910; review_sha256=48fc064a1f7b248caba0c22cc62cd8b9ce57bccd7b33800c5b5be6cf01366000"
+        },
+        {
+          "evidence_id": "m3-confirmation-278d654cd4a4aea98641b5b13efc576a",
+          "kind": "other",
+          "source_ref": "DEMO-SAME-SECOND-CONFIRMATION",
+          "source_version": 1,
+          "recorded_at": "2026-10-17T19:00:00+11:00",
+          "summary": "M3 actual tenancy declaration; upstream_case_id=DEMO-CASE-INTEGRATION-001; not payment or move-out confirmation"
+        }
+      ],
+      "plan": null,
+      "bond": null,
+      "reviews": [],
+      "reminders_enabled": false,
+      "reminders": [],
+      "audit": [
+        {
+          "request_id": "m3-be12ce731285c88a6f5834760311b522f485f8048211aca86f3d07b2b6305cbe",
+          "operation": "create",
+          "actor_id": "DEMO-TENANT-001",
+          "actor_role": "tenant",
+          "at": "2026-10-17T19:01:00+11:00",
+          "version": 1
+        }
+      ],
+      "created_at": "2026-10-17T19:01:00+11:00",
+      "updated_at": "2026-10-17T19:01:00+11:00",
+      "data_mode": "local_prototype"
+    },
+    "task": {
+      "task_id": "m3-be12ce731285c88a6f5834760311b522f485f8048211aca86f3d07b2b6305cbe",
+      "responsible_role": "AftercareAgent",
+      "case_id": "aftercare-d04fb5dcd43646debdba72821ddd495a",
+      "input_version": 0,
+      "output_version": 1,
+      "status": "completed",
+      "output_refs": [
+        "case:aftercare-d04fb5dcd43646debdba72821ddd495a@1"
+      ]
+    }
+  }
+}

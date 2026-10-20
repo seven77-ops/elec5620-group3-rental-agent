@@ -1,0 +1,512 @@
+{
+  "data_mode": "synthetic_demo",
+  "confirmation_producer": "explicit_test_double_not_implemented_M3_entry",
+  "executed_at": "2026-10-17T07:37:51.118478+00:00",
+  "scenario_clock": "2026-10-17T19:01:00+11:00",
+  "base_main": "b06614de1c7825d7fbc4bcc773a75efa4eb1da97",
+  "m3_reference_commit": "a4d9f2ed85f82d65310e15954d54c1849729b9b0",
+  "frontend_reference_commit": "5163bfb96dfb6467a80db80ca99f8313fe86359d",
+  "python": "3.13.9 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 19:09:58) [MSC v.1929 64 bit (AMD64)]",
+  "dependencies": {
+    "jsonschema": "4.25.1",
+    "pypdf": "6.21.0",
+    "tzdata": "2026.5"
+  },
+  "source_sha256": {
+    "agent4/aftercare_agent/__init__.py": "0de6263714ea60d3d278cd67fe83e06e3a1d5b0abb7176debf4f2826c5bcef05",
+    "agent4/aftercare_agent/__main__.py": "121902dbe9a3fa4725bf7d944f604b3d859c03cb0477fb562a6ac043ef77478c",
+    "agent4/aftercare_agent/contracts.py": "963cc6c4050f976b5871a76d46224acca1831e8e3d93ad5abc3fecc30a97383a",
+    "agent4/aftercare_agent/demo.py": "5d46e02909f6d1e379c17135999587176839b0532d2beb2946cb1131b36b4646",
+    "agent4/aftercare_agent/errors.py": "85a366e94133ebe3af4685408d13ce84e7ad4fe436aa78d6d6c05e773bae5f00",
+    "agent4/aftercare_agent/handoff.py": "ea46f611bd5dc1eeb6733454491ed9f16c36e3bd984d042f25620562f31571fc",
+    "agent4/aftercare_agent/model_gateway.py": "52fdaeba73ea7d258d7b5dde784e7870425897494537d73c323a22ad815b06c0",
+    "agent4/aftercare_agent/planner.py": "a3a44320080990b900d2d328d0a20182c93f7dbd82ba68c51114b867ac73c796",
+    "agent4/aftercare_agent/reminders.py": "7f98230d37d73378641c18c8a453a03cf89aa13ca3df9f4873c37b1c12cb8d01",
+    "agent4/aftercare_agent/report.py": "0e0d257b260da917ffd1b8b209ff496c5f3e1a4b0c2e6d550d4625f375029acd",
+    "agent4/aftercare_agent/services.py": "9b19f90707439067a5194f3a483f1ae4da0bff51bb05a9d69fa514a238e8c898",
+    "agent4/aftercare_agent/store.py": "546f9f1aa5350fd50bd1855e21ce7dfea4a0c5c2e30af848fdb37832cde05856",
+    "agent4/tests/test_cli.py": "1c6e9a99b96bea4f02bdf3dee489df27814f7c5b9f8fa55649de98cd73557f13",
+    "agent4/tests/test_m3_handoff.py": "44e6b6e445154e7c624a15c35a945f2ad91d6f082205b760155e42a9c36cf33c",
+    "agent4/tests/test_model_gateway.py": "db7efb6bcb446c37fa7c0e370ef80262131e44aee63c786e04738bdc3f9a441a",
+    "agent4/tests/test_workflows.py": "37c00e88a512e27ed511ba838e172f7cbb2505167b5be41770b5b5b9780a7bfe",
+    "agent4/tools/verify_m3_handoff.py": "abb533ac2d7514b292facb2137317161df82a738be828cc168311179a5335e15",
+    "agent4/schemas/aftercare-case.schema.json": "e0710525ce483326cc3f7b45cbf5a91e9c6874a59c89652b2fa57d2f4cfab81a",
+    "agent4/schemas/command.schema.json": "da9821763fd1b5938e1619b1d9c9e2027d15e4b42b59dd1415687e59f9ef9152",
+    "agent4/schemas/evidence.schema.json": "5375bdf12d17d59e4f6730dddd915214ba8526e1728b6c7f4d1e5c80cf6bea35",
+    "agent4/schemas/m3-handoff.schema.json": "bdf8492294b3174999d5e341f0a39bc10779864efc6dc8de452b17a3dc1e8eb5",
+    "agent4/schemas/tenancy-confirmation.schema.json": "6ca1a4dd9bce9ab59cc05443934892d46fe32a2ceb522bc35512c83bd6efffdf",
+    "agent4/schemas/tenancy-record.schema.json": "def29421a9a505b08183799bb1623f995062c5a7abbbdbad22c26ab8eca7f93f"
+  },
+  "m3_fixture_sha256": {
+    "corrected-v2-review.json": "1b8d702cd738114ceb1647e3eba9dce0d371fe4705f3aa176f401e69317d19e7",
+    "human-review.json": "80548f46aa715d092f971cc660de572494a5b3c42f889e702e717796f601d0e5",
+    "normal-review.json": "45c8a0662cce4ae9dd60c832260eec433eed71889490f1bcbe02175c189d8117"
+  },
+  "environment": {
+    "PYTHONPATH": "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4;C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent3;C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent2;C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent",
+    "PYTHONUTF8": "1",
+    "PYTHONIOENCODING": "utf-8",
+    "TEMP": "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\temp",
+    "TMP": "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\temp"
+  },
+  "scenarios": [
+    {
+      "name": "01-normal-stub",
+      "status": "created",
+      "code": null,
+      "case_id": "aftercare-b298cdd88922407795ac28be644590e9",
+      "tenancy_id": "tenancy-46d99b8d597b445ea131a301ce7937b1",
+      "review_id": "cr-4329de3190c6404b96e74c7f3e4b3d6a",
+      "review_version": 1,
+      "confirmation_id": "DEMO-M3-CONFIRMATION-STUB-001",
+      "confirmation_version": 1,
+      "case_count": 1,
+      "mapping_count": 1,
+      "newly_created": true
+    },
+    {
+      "name": "02-repeat",
+      "status": "duplicate",
+      "code": null,
+      "case_id": "aftercare-b298cdd88922407795ac28be644590e9",
+      "tenancy_id": "tenancy-46d99b8d597b445ea131a301ce7937b1",
+      "review_id": "cr-4329de3190c6404b96e74c7f3e4b3d6a",
+      "review_version": 1,
+      "confirmation_id": "DEMO-M3-CONFIRMATION-STUB-001",
+      "confirmation_version": 1,
+      "case_count": 1,
+      "mapping_count": 1,
+      "newly_created": false
+    },
+    {
+      "name": "03-unconfirmed",
+      "status": "paused",
+      "code": "confirmation_required",
+      "case_id": null,
+      "tenancy_id": null,
+      "review_id": "cr-4329de3190c6404b96e74c7f3e4b3d6a",
+      "review_version": 1,
+      "confirmation_id": null,
+      "confirmation_version": null,
+      "case_count": 0,
+      "mapping_count": 0,
+      "newly_created": false
+    },
+    {
+      "name": "04-human-review",
+      "status": "paused",
+      "code": "review_blocked",
+      "case_id": null,
+      "tenancy_id": null,
+      "review_id": "cr-863153f6518f460588d76fbbfcd63754",
+      "review_version": 1,
+      "confirmation_id": null,
+      "confirmation_version": null,
+      "case_count": 0,
+      "mapping_count": 0,
+      "newly_created": false
+    },
+    {
+      "name": "05-version-change",
+      "status": "paused",
+      "code": "review_version_mismatch",
+      "case_id": null,
+      "tenancy_id": null,
+      "review_id": "cr-4329de3190c6404b96e74c7f3e4b3d6a",
+      "review_version": 2,
+      "confirmation_id": "DEMO-M3-CONFIRMATION-STUB-001",
+      "confirmation_version": 1,
+      "case_count": 1,
+      "mapping_count": 1,
+      "newly_created": false
+    },
+    {
+      "name": "06-old-version-replay",
+      "status": "paused",
+      "code": "stale_review",
+      "case_id": null,
+      "tenancy_id": null,
+      "review_id": "cr-4329de3190c6404b96e74c7f3e4b3d6a",
+      "review_version": 1,
+      "confirmation_id": "DEMO-M3-CONFIRMATION-STUB-001",
+      "confirmation_version": 1,
+      "case_count": 1,
+      "mapping_count": 1,
+      "newly_created": false
+    },
+    {
+      "name": "07-v2-reconfirmed-fresh",
+      "status": "created",
+      "code": null,
+      "case_id": "aftercare-edfc28fe708d490b8e94abb958e5be3c",
+      "tenancy_id": "tenancy-23b6f5422bb4403980722938300c01b6",
+      "review_id": "cr-4329de3190c6404b96e74c7f3e4b3d6a",
+      "review_version": 2,
+      "confirmation_id": "DEMO-M3-CONFIRMATION-STUB-V2",
+      "confirmation_version": 1,
+      "case_count": 1,
+      "mapping_count": 1,
+      "newly_created": true
+    },
+    {
+      "name": "08-v2-reconfirmed-existing",
+      "status": "paused",
+      "code": "existing_tenancy_requires_reconciliation",
+      "case_id": "aftercare-b298cdd88922407795ac28be644590e9",
+      "tenancy_id": null,
+      "review_id": "cr-4329de3190c6404b96e74c7f3e4b3d6a",
+      "review_version": 2,
+      "confirmation_id": "DEMO-M3-CONFIRMATION-STUB-V2",
+      "confirmation_version": 1,
+      "case_count": 1,
+      "mapping_count": 1,
+      "newly_created": false
+    },
+    {
+      "name": "09-separate-date-setup",
+      "status": "created",
+      "code": null,
+      "case_id": "aftercare-e6ce3e06166944dbab250910b93d6e8c",
+      "tenancy_id": "tenancy-06377f43b94b442db3a9573f494a173b",
+      "review_id": "cr-4329de3190c6404b96e74c7f3e4b3d6a",
+      "review_version": 1,
+      "confirmation_id": "DEMO-M3-CONFIRMATION-STUB-001",
+      "confirmation_version": 1,
+      "case_count": 1,
+      "mapping_count": 1,
+      "newly_created": true
+    }
+  ],
+  "suites": [
+    {
+      "suite": "m4-tests",
+      "tests": 87,
+      "status": "passed"
+    },
+    {
+      "suite": "m3-tests",
+      "tests": 25,
+      "status": "passed"
+    },
+    {
+      "suite": "upstream-integration-tests",
+      "tests": 6,
+      "status": "passed"
+    }
+  ],
+  "commands": [
+    {
+      "name": "01-normal-stub",
+      "argv": [
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "aftercare_agent",
+        "receive",
+        "--packet",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\01-normal-stub.input.json",
+        "--store",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\five-scenarios.sqlite3",
+        "--actor-id",
+        "DEMO-TENANT-001",
+        "--as-of",
+        "2026-10-17T19:01:00+11:00",
+        "--output",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\01-normal-stub"
+      ],
+      "cwd": "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent",
+      "command": "'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe' -m aftercare_agent receive --packet 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\01-normal-stub.input.json' --store 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\five-scenarios.sqlite3' --actor-id DEMO-TENANT-001 --as-of 2026-10-17T19:01:00+11:00 --output 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\01-normal-stub'",
+      "exit_code": 0,
+      "expected_exit_code": 0
+    },
+    {
+      "name": "02-repeat",
+      "argv": [
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "aftercare_agent",
+        "receive",
+        "--packet",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\02-repeat.input.json",
+        "--store",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\five-scenarios.sqlite3",
+        "--actor-id",
+        "DEMO-TENANT-001",
+        "--as-of",
+        "2026-10-17T19:01:00+11:00",
+        "--output",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\02-repeat"
+      ],
+      "cwd": "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent",
+      "command": "'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe' -m aftercare_agent receive --packet 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\02-repeat.input.json' --store 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\five-scenarios.sqlite3' --actor-id DEMO-TENANT-001 --as-of 2026-10-17T19:01:00+11:00 --output 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\02-repeat'",
+      "exit_code": 0,
+      "expected_exit_code": 0
+    },
+    {
+      "name": "03-unconfirmed",
+      "argv": [
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "aftercare_agent",
+        "receive",
+        "--packet",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\03-unconfirmed.input.json",
+        "--store",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\unconfirmed.sqlite3",
+        "--actor-id",
+        "DEMO-TENANT-001",
+        "--as-of",
+        "2026-10-17T19:01:00+11:00",
+        "--output",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\03-unconfirmed"
+      ],
+      "cwd": "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent",
+      "command": "'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe' -m aftercare_agent receive --packet 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\03-unconfirmed.input.json' --store 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\unconfirmed.sqlite3' --actor-id DEMO-TENANT-001 --as-of 2026-10-17T19:01:00+11:00 --output 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\03-unconfirmed'",
+      "exit_code": 3,
+      "expected_exit_code": 3
+    },
+    {
+      "name": "04-human-review",
+      "argv": [
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "aftercare_agent",
+        "receive",
+        "--packet",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\04-human-review.input.json",
+        "--store",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\human-review.sqlite3",
+        "--actor-id",
+        "DEMO-TENANT-001",
+        "--as-of",
+        "2026-10-17T19:01:00+11:00",
+        "--output",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\04-human-review"
+      ],
+      "cwd": "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent",
+      "command": "'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe' -m aftercare_agent receive --packet 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\04-human-review.input.json' --store 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\human-review.sqlite3' --actor-id DEMO-TENANT-001 --as-of 2026-10-17T19:01:00+11:00 --output 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\04-human-review'",
+      "exit_code": 3,
+      "expected_exit_code": 3
+    },
+    {
+      "name": "05-version-change",
+      "argv": [
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "aftercare_agent",
+        "receive",
+        "--packet",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\05-version-change.input.json",
+        "--store",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\five-scenarios.sqlite3",
+        "--actor-id",
+        "DEMO-TENANT-001",
+        "--as-of",
+        "2026-10-17T19:01:00+11:00",
+        "--output",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\05-version-change"
+      ],
+      "cwd": "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent",
+      "command": "'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe' -m aftercare_agent receive --packet 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\05-version-change.input.json' --store 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\five-scenarios.sqlite3' --actor-id DEMO-TENANT-001 --as-of 2026-10-17T19:01:00+11:00 --output 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\05-version-change'",
+      "exit_code": 3,
+      "expected_exit_code": 3
+    },
+    {
+      "name": "06-old-version-replay",
+      "argv": [
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "aftercare_agent",
+        "receive",
+        "--packet",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\06-old-version-replay.input.json",
+        "--store",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\five-scenarios.sqlite3",
+        "--actor-id",
+        "DEMO-TENANT-001",
+        "--as-of",
+        "2026-10-17T19:01:00+11:00",
+        "--output",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\06-old-version-replay"
+      ],
+      "cwd": "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent",
+      "command": "'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe' -m aftercare_agent receive --packet 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\06-old-version-replay.input.json' --store 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\five-scenarios.sqlite3' --actor-id DEMO-TENANT-001 --as-of 2026-10-17T19:01:00+11:00 --output 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\06-old-version-replay'",
+      "exit_code": 3,
+      "expected_exit_code": 3
+    },
+    {
+      "name": "07-v2-reconfirmed-fresh",
+      "argv": [
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "aftercare_agent",
+        "receive",
+        "--packet",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\07-v2-reconfirmed-fresh.input.json",
+        "--store",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\v2-fresh.sqlite3",
+        "--actor-id",
+        "DEMO-TENANT-001",
+        "--as-of",
+        "2026-10-17T19:01:00+11:00",
+        "--output",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\07-v2-reconfirmed-fresh"
+      ],
+      "cwd": "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent",
+      "command": "'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe' -m aftercare_agent receive --packet 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\07-v2-reconfirmed-fresh.input.json' --store 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\v2-fresh.sqlite3' --actor-id DEMO-TENANT-001 --as-of 2026-10-17T19:01:00+11:00 --output 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\07-v2-reconfirmed-fresh'",
+      "exit_code": 0,
+      "expected_exit_code": 0
+    },
+    {
+      "name": "08-v2-reconfirmed-existing",
+      "argv": [
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "aftercare_agent",
+        "receive",
+        "--packet",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\08-v2-reconfirmed-existing.input.json",
+        "--store",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\five-scenarios.sqlite3",
+        "--actor-id",
+        "DEMO-TENANT-001",
+        "--as-of",
+        "2026-10-17T19:01:00+11:00",
+        "--output",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\08-v2-reconfirmed-existing"
+      ],
+      "cwd": "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent",
+      "command": "'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe' -m aftercare_agent receive --packet 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\08-v2-reconfirmed-existing.input.json' --store 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\five-scenarios.sqlite3' --actor-id DEMO-TENANT-001 --as-of 2026-10-17T19:01:00+11:00 --output 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\08-v2-reconfirmed-existing'",
+      "exit_code": 3,
+      "expected_exit_code": 3
+    },
+    {
+      "name": "09-separate-date-setup",
+      "argv": [
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "aftercare_agent",
+        "receive",
+        "--packet",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\09-separate-date-setup.input.json",
+        "--store",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\separate-date.sqlite3",
+        "--actor-id",
+        "DEMO-TENANT-001",
+        "--as-of",
+        "2026-10-17T19:01:00+11:00",
+        "--output",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\09-separate-date-setup"
+      ],
+      "cwd": "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent",
+      "command": "'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe' -m aftercare_agent receive --packet 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\09-separate-date-setup.input.json' --store 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\separate-date.sqlite3' --actor-id DEMO-TENANT-001 --as-of 2026-10-17T19:01:00+11:00 --output 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\09-separate-date-setup'",
+      "exit_code": 0,
+      "expected_exit_code": 0
+    },
+    {
+      "name": "11-unconfirmed-date",
+      "argv": [
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "aftercare_agent",
+        "run",
+        "--store",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\separate-date.sqlite3",
+        "--request",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\11-unconfirmed-date.input.json"
+      ],
+      "cwd": "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent",
+      "command": "'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe' -m aftercare_agent run --store 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\separate-date.sqlite3' --request 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\11-unconfirmed-date.input.json'",
+      "exit_code": 2,
+      "expected_exit_code": 2
+    },
+    {
+      "name": "12-property-details",
+      "argv": [
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "aftercare_agent",
+        "run",
+        "--store",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\separate-date.sqlite3",
+        "--request",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\12-property-details.input.json"
+      ],
+      "cwd": "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent",
+      "command": "'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe' -m aftercare_agent run --store 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\separate-date.sqlite3' --request 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\12-property-details.input.json'",
+      "exit_code": 0,
+      "expected_exit_code": 0
+    },
+    {
+      "name": "13-confirmed-date",
+      "argv": [
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "aftercare_agent",
+        "run",
+        "--store",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\separate-date.sqlite3",
+        "--request",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\13-confirmed-date.input.json",
+        "--output",
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\13-confirmed-date"
+      ],
+      "cwd": "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent",
+      "command": "'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe' -m aftercare_agent run --store 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\runs\\m3-m4-receive-20261017-03\\separate-date.sqlite3' --request 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\13-confirmed-date.input.json' --output 'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\agent4\\reports\\m3-m4-receive-20261017-03\\13-confirmed-date'",
+      "exit_code": 0,
+      "expected_exit_code": 0
+    },
+    {
+      "name": "m4-tests",
+      "argv": [
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "agent4/tests",
+        "-v"
+      ],
+      "cwd": "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent",
+      "command": "'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe' -m unittest discover -s agent4/tests -v",
+      "exit_code": 0,
+      "expected_exit_code": 0
+    },
+    {
+      "name": "m3-tests",
+      "argv": [
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "agent3/tests",
+        "-v"
+      ],
+      "cwd": "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent",
+      "command": "'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe' -m unittest discover -s agent3/tests -v",
+      "exit_code": 0,
+      "expected_exit_code": 0
+    },
+    {
+      "name": "upstream-integration-tests",
+      "argv": [
+        "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "integration/tests",
+        "-v"
+      ],
+      "cwd": "C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent",
+      "command": "'C:\\Users\\43516\\.codex\\.chatgpt-projects\\g-p-6a8653c764b88191bf0882367cc07c4e\\rental-agent\\.venv\\Scripts\\python.exe' -m unittest discover -s integration/tests -v",
+      "exit_code": 0,
+      "expected_exit_code": 0
+    }
+  ],
+  "limits": [
+    "M3 actual confirmation producer remains unimplemented; synthetic doubles only.",
+    "HTTP/frontend adapter was inspected but not changed; no browser end-to-end claim.",
+    "Existing tenancy with new confirmed review pauses for explicit reconciliation."
+  ]
+}

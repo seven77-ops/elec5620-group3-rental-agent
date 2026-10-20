@@ -1,0 +1,30 @@
+test_no_consent_and_no_overwrite (test_cli.CliTests.test_no_consent_and_no_overwrite) ... ok
+test_receive_is_idempotent_and_rejects_changed_payload (test_cli.CliTests.test_receive_is_idempotent_and_rejects_changed_payload) ... ok
+test_receive_needs_consent_and_valid_selection (test_cli.CliTests.test_receive_needs_consent_and_valid_selection) ... ok
+test_review_decide_questions_roundtrip (test_cli.CliTests.test_review_decide_questions_roundtrip) ... ok
+test_docx_text_and_source_are_extracted (test_document.DocumentTests.test_docx_text_and_source_are_extracted) ... ok
+test_image_only_pdf_requests_ocr_or_resubmission (test_document.DocumentTests.test_image_only_pdf_requests_ocr_or_resubmission) ... ok
+test_ocr_text_is_marked_lower_confidence (test_document.DocumentTests.test_ocr_text_is_marked_lower_confidence) ... ok
+test_text_pdf_is_read_with_page_evidence (test_document.DocumentTests.test_text_pdf_is_read_with_page_evidence) ... ok
+test_actual_agent2_packet_is_accepted (test_handoff.HandoffTests.test_actual_agent2_packet_is_accepted) ... ok
+test_bundled_contract_matches_sibling_agent2_when_present (test_handoff.HandoffTests.test_bundled_contract_matches_sibling_agent2_when_present) ... ok
+test_mismatched_identity_is_rejected (test_handoff.HandoffTests.test_mismatched_identity_is_rejected) ... ok
+test_profile_fingerprint_and_snapshot_must_be_consistent (test_handoff.HandoffTests.test_profile_fingerprint_and_snapshot_must_be_consistent) ... ok
+test_selection_must_be_confirmed_and_eligible (test_handoff.HandoffTests.test_selection_must_be_confirmed_and_eligible) ... ok
+test_agent2_selection_and_evidence (test_review.ReviewTests.test_agent2_selection_and_evidence) ... ok
+test_building_precision_address_difference_requires_human_review (test_review.ReviewTests.test_building_precision_address_difference_requires_human_review) ... ok
+test_consent_before_document_read (test_review.ReviewTests.test_consent_before_document_read) ... ok
+test_correction_creates_revision_and_invalidates_questions (test_review.ReviewTests.test_correction_creates_revision_and_invalidates_questions) ... ok
+test_edited_questions_preserve_finding_ids (test_review.ReviewTests.test_edited_questions_preserve_finding_ids) ... ok
+test_high_risk_blocks_questions_until_human_decision (test_review.ReviewTests.test_high_risk_blocks_questions_until_human_decision) ... ok
+test_listing_rent_conflict_requires_human_review (test_review.ReviewTests.test_listing_rent_conflict_requires_human_review) ... ok
+test_missing_fields_requests_resubmission (test_review.ReviewTests.test_missing_fields_requests_resubmission) ... ok
+test_model_failure_retries_once_then_uses_rule_explanation (test_review.ReviewTests.test_model_failure_retries_once_then_uses_rule_explanation) ... ok
+test_no_listing_still_reviews (test_review.ReviewTests.test_no_listing_still_reviews) ... ok
+test_rent_scope_mismatch_is_not_a_numeric_mismatch (test_review.ReviewTests.test_rent_scope_mismatch_is_not_a_numeric_mismatch) ... ok
+test_stale_rule_pack_suspends_conclusions (test_review.ReviewTests.test_stale_rule_pack_suspends_conclusions) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 3.617s
+
+OK

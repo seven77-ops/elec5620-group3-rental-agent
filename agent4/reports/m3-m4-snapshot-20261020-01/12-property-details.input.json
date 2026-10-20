@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "request_id": "property-details",
+  "case_id": "aftercare-8fcaa64b1bcd48759ce912eebd6c9911",
+  "actor_id": "DEMO-TENANT-001",
+  "actor_role": "tenant",
+  "expected_version": 1,
+  "as_of": "2026-10-17T19:01:00+11:00",
+  "operation": "revise_tenancy",
+  "payload": {
+    "tenancy": {
+      "address": "虚构示例楼 6 号房（不存在的地址）",
+      "baseline_evidence_refs": [],
+      "carpeted": false,
+      "confirmed": true,
+      "furnished": false,
+      "inventory": [],
+      "inventory_confirmed": true,
+      "jurisdiction": "NSW",
+      "outdoor": false,
+      "rooms": [
+        {
+          "id": "demo-room",
+          "name": "User-confirmed synthetic room"
+        }
+      ],
+      "source_ref": "DEMO-M3-CONFIRMATION-STUB-001",
+      "source_version": 1,
+      "tenancy_id": "tenancy-ec907af37b914b929d9790fbf875a893",
+      "tenancy_type": "standard_residential",
+      "tenant_id": "DEMO-TENANT-001"
+    }
+  }
+}

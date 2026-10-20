@@ -6,7 +6,7 @@ import sqlite3
 import sys
 from .contracts import load_json
 from .errors import AftercareError
-from .report import check_output, export_case
+from .report import check_output, export_case, export_document, safe
 from .store import AftercareAgent
 
 
@@ -17,6 +17,12 @@ def main(argv=None):
     run.add_argument('--request', required=True)
     run.add_argument('--store', required=True)
     run.add_argument('--output', help='Optional JSON/Markdown export prefix; refuses overwrite')
+    receive = sub.add_parser('receive', help='Consume a saved M3 review + tenancy confirmation (local demo identity)')
+    receive.add_argument('--packet', required=True)
+    receive.add_argument('--store', required=True)
+    receive.add_argument('--actor-id', required=True, help='Coordinator/session tenant, simulated in CLI')
+    receive.add_argument('--as-of', required=True, help='Coordinator clock with timezone')
+    receive.add_argument('--output', help='NEW JSON/Markdown receipt and source snapshot prefix')
     show = sub.add_parser('show', help='Read a committed case without modifying it')
     show.add_argument('--store', required=True)
     show.add_argument('--case-id', required=True)
@@ -34,7 +40,25 @@ def main(argv=None):
             if args.output:
                 check_output(args.output)
             agent = AftercareAgent(args.store, operator_ids=[s.strip() for s in os.getenv('AGENT4_OPERATOR_IDS', '').split(',') if s.strip()])
-            if args.command == 'run':
+            if args.command == 'receive':
+                packet = load_json(args.packet)
+                summary = agent.receive(packet, actor_id=args.actor_id, as_of=args.as_of)
+                if args.output:
+                    markdown = '\n'.join(['# M3 → M4 接收结果', '',
+                        '本地原型 / 模拟身份；请核对 JSON 中的确认来源。演示 stub 文件不是 M3 已实现的确认入口输出。', '',
+                        f"状态：{safe(summary['status'])}", '',
+                        f"结果码：{safe(summary.get('code', 'ok'))}", '',
+                        f"上游案例：{safe(packet['context']['case_id'])}", '',
+                        f"复核：{safe(packet['review']['review_id'])} / v{packet['review']['version']}", '',
+                        f"快照序号：{packet['review']['snapshot_revision']}", '',
+                        f"M4 案件：{safe(summary.get('case_id', '未创建'))}", '',
+                        f"租约：{safe(summary.get('tenancy_id', '未创建'))}", '',
+                        f"说明：{safe(summary.get('message', summary.get('next_action', '')))}", '',
+                        'JSON 保存完整输入、确认来源与原子提交收据。租约确认不确认退租日期，也不证明押金已支付。', ''])
+                    export_document({'input': packet, 'response': summary}, markdown, args.output)
+                print(json.dumps(summary, ensure_ascii=False, indent=2, allow_nan=False))
+                return 3 if summary['status'] == 'paused' else 0
+            elif args.command == 'run':
                 response = agent.submit(load_json(args.request))
                 case = response['case']
                 summary = {k: response[k] for k in ('request_id', 'case_id', 'version', 'task', 'result')}
