@@ -114,7 +114,8 @@ export default function ContractUpload({
     <section className="panel upload-panel">
       <h2>独立同意与合同上传</h2>
       <p className="muted">
-        仅处理合成合同，在本地提取字段并与已选房源核对。外部模型关闭；文件不会发送给房东。
+        仅处理合成合同，上传后先在本地提取字段并核对。AI
+        辅助分析需另行同意并配置模型；不会向房东发送文件或消息。
       </p>
       <Failure
         error={action.error || loadError}

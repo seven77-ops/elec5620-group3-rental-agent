@@ -27,6 +27,7 @@ import {
 } from "../components/Common";
 import { useAction } from "../components/useAction";
 import ContractUpload from "./ContractUpload";
+import ContractAi from "./ai/ContractAi";
 import ReviewHistory from "./ReviewHistory";
 export default function Contract() {
   const { current, refresh, go } = useCase();
@@ -128,7 +129,10 @@ export default function Contract() {
           ) : undefined
         }
       />
-      <Failure error={action.error || error} retry={error ? consentChanged : action.retry} />
+      <Failure
+        error={action.error || error}
+        retry={error ? consentChanged : action.retry}
+      />
       {current.selection ? (
         <section className="selection-strip">
           <div>
@@ -166,6 +170,15 @@ export default function Contract() {
       )}
       {review && (
         <>
+          <ContractAi
+            key={`${review.review_id}:${review.version}:${Boolean(reviewConsent?.consent_active)}`}
+            review={review}
+            active={Boolean(reviewConsent?.consent_active)}
+            onApplied={async (next) => {
+              setReview(next);
+              await refresh();
+            }}
+          />
           <section className="review-status">
             <div>
               <Status value={review.status} />

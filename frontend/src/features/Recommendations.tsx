@@ -26,6 +26,7 @@ import {
   text,
 } from "../components/Common";
 import { useAction } from "../components/useAction";
+import RecommendationAi from "./ai/RecommendationAi";
 export default function Recommendations() {
   const { current, refresh, go, config } = useCase();
   const { modal, message } = App.useApp();
@@ -92,9 +93,12 @@ export default function Recommendations() {
     reportBound &&
     confirmed?.version === report.profile_version &&
     confirmed.fingerprint === report.profile_fingerprint;
-  const selectionCurrent = Boolean(current.selection && confirmed &&
+  const selectionCurrent = Boolean(
+    current.selection &&
+    confirmed &&
     current.selection.profile_version === confirmed.version &&
-    current.selection.profile_fingerprint === confirmed.fingerprint);
+    current.selection.profile_fingerprint === confirmed.fingerprint,
+  );
   const p = report.profile;
   const select = (item: Listing) => {
     const body = {
@@ -182,10 +186,18 @@ export default function Recommendations() {
         <Alert
           type={selectionCurrent ? "success" : "warning"}
           showIcon
-          title={selectionCurrent ? `已选择 ${current.selection.listing_id}` : `历史选择 ${current.selection.listing_id} · 需重新选择`}
+          title={
+            selectionCurrent
+              ? `已选择 ${current.selection.listing_id}`
+              : `历史选择 ${current.selection.listing_id} · 需重新选择`
+          }
           description={
             <Space wrap>
-              <span>{selectionCurrent ? "选房证据包已保存，尚未对外发送。" : "偏好版本已变化。历史证据包保留，继续合同复核前需按当前偏好重新选择。"}</span>
+              <span>
+                {selectionCurrent
+                  ? "选房证据包已保存，尚未对外发送。"
+                  : "偏好版本已变化。历史证据包保留，继续合同复核前需按当前偏好重新选择。"}
+              </span>
               <a
                 href={downloadUrl(
                   `/cases/${current.case_id}/exports/selection`,
@@ -193,13 +205,22 @@ export default function Recommendations() {
               >
                 下载选房证据包
               </a>
-              <Button size="small" disabled={!selectionCurrent} onClick={() => go("contract")}>
+              <Button
+                size="small"
+                disabled={!selectionCurrent}
+                onClick={() => go("contract")}
+              >
                 继续合同复核
               </Button>
             </Space>
           }
         />
       )}
+      <RecommendationAi
+        key={result.run_id}
+        runId={result.run_id}
+        active={Boolean(isCurrent)}
+      />
       <div className="recommendation-layout">
         <div className="recommendation-main">
           <section className="preference-band">
@@ -505,7 +526,8 @@ export default function Recommendations() {
         onClose={() => setCompare(false)}
       >
         <p>
-          比较由 Agent1 核对已保存版本，并复用 Agent2 的同搜索、同快照与规则版本比较。名次同时受其他合格候选变化影响。
+          比较由 Agent1 核对已保存版本，并复用 Agent2
+          的同搜索、同快照与规则版本比较。名次同时受其他合格候选变化影响。
         </p>
         <h3>偏好变化</h3>
         <JsonDetails value={result.comparison?.changed_fields} />

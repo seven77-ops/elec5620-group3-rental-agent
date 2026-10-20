@@ -1096,3 +1096,70 @@ li {
   overflow: auto;
   padding-right: 8px;
 }
+
+/* Optional AI assistance shares the existing evidence-first workspace style. */
+.ai-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 24px 0;
+}
+.ai-panel h2,
+.ai-panel h3,
+.ai-panel p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.ai-title,
+.ai-candidate-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.ai-candidates {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.ai-candidate,
+.ai-recommendation,
+.ai-call,
+.ai-finding {
+  padding: 16px;
+  border: 1px solid var(--border, #e4eaf1);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.ai-candidate-value {
+  font-weight: 600;
+  color: #172b4d;
+}
+.ai-quote {
+  margin: 0;
+  border-left: 3px solid #087f8c;
+  padding: 10px 12px;
+  background: #f5f7fa;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.ai-panel .ant-checkbox-wrapper {
+  align-items: flex-start;
+}
+.ai-panel .ant-collapse {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 768px) {
+  .ai-candidates {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ai-panel {
+    padding: 16px;
+  }
+}

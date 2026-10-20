@@ -15,10 +15,17 @@ export class ApiError extends Error {
   }
 }
 export const newRequestId = () => `web-${crypto.randomUUID()}`;
-export async function api<T>(path: string, init?: RequestInit): Promise<T> {
+export async function api<T>(
+  path: string,
+  init?: RequestInit,
+  options?: { timeoutMs?: number; allowNull?: boolean },
+): Promise<T> {
   let response: Response;
   const controller = new AbortController();
-  const timeout = window.setTimeout(() => controller.abort(), 30_000);
+  const timeout = window.setTimeout(
+    () => controller.abort(),
+    options?.timeoutMs ?? 30_000,
+  );
   try {
     response = await fetch(`/api/v1${path}`, {
       ...init,
@@ -46,7 +53,7 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
       error?.fields,
     );
   }
-  if (result === null)
+  if (result === null && !options?.allowNull)
     throw new ApiError(
       "服务返回的内容无法读取，请读取最新状态后重试。",
       "invalid_response",
