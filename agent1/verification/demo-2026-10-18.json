@@ -1,0 +1,71 @@
+{
+  "mode": "scripted_demo_no_live_llm",
+  "case_id": "case-87c72b435ef34a5ba88ec61eded662e8",
+  "first_turn_state": "AwaitingClarification",
+  "clarified_state": "DraftReady",
+  "v1_task": {
+    "task_id": "task-477408d4352c4bfaac10204208e88bd8",
+    "status": "completed",
+    "receipt_acknowledged": true,
+    "attempts": 1,
+    "counts": {
+      "input": 30,
+      "eligible": 15,
+      "pending": 9,
+      "excluded": 5,
+      "duplicates": 1
+    },
+    "recommendations": [
+      {
+        "listing_id": "DEMO-006",
+        "score": 92.75
+      },
+      {
+        "listing_id": "DEMO-012",
+        "score": 89.4
+      },
+      {
+        "listing_id": "DEMO-004",
+        "score": 89.2
+      },
+      {
+        "listing_id": "DEMO-001",
+        "score": 88.6
+      },
+      {
+        "listing_id": "DEMO-011",
+        "score": 88.0
+      }
+    ]
+  },
+  "v2_task": {
+    "task_id": "task-fef64b02b59340919e7ee17d50ce7282",
+    "status": "completed",
+    "receipt_acknowledged": true,
+    "attempts": 1,
+    "counts": {
+      "input": 30,
+      "eligible": 0,
+      "pending": 2,
+      "excluded": 27,
+      "duplicates": 1
+    },
+    "recommendations": []
+  },
+  "no_match_feedback": {
+    "message": "本次提供的数据中没有已确认合格的候选；这不能证明整个租房市场没有合适房源。",
+    "pending_count": 2,
+    "failed_check_counts": {
+      "budget": 27,
+      "commute": 1,
+      "rental_mode": 1,
+      "move_in": 1,
+      "private_bedroom": 1
+    },
+    "explanation": "上列仅为排除项中各失败检查的计数，同一房源可能重复计入；不代表单一因果。",
+    "offer": "是否愿意先考虑调整可协商偏好？硬条件仅由你明确修改并重新确认。",
+    "revision_started": true
+  },
+  "original_version_preserved": true,
+  "output_directory": "Local generated output; rerun --demo to produce your own files."
+}

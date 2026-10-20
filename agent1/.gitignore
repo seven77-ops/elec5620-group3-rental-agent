@@ -1,0 +1,9 @@
+# Generated local state and model credentials; safe to add only this module.
+state/
+reports/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+.venv/
