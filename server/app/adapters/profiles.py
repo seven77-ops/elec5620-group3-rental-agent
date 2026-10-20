@@ -4,7 +4,7 @@ from copy import deepcopy
 from fastapi.responses import Response
 from ..common import require, now, uid, shape, integer, request_id, opaque_ref
 from ..settings import TENANT
-from .business import evaluate, fingerprint, validate_profile, compare_reports, render_markdown, build_selected_listing_evidence
+from .business import validate_profile, render_markdown, build_selected_listing_evidence
 
 
 class ProfilesAdapter:
@@ -13,94 +13,94 @@ class ProfilesAdapter:
         self.ctx = ctx
 
     def create_case(self, body: dict):
-        repo = self.ctx.repo
-        template = self.ctx.settings.template
         shape(body, ())
-        case_id = uid('rental')
-        profile = deepcopy(template)
-        profile.update(search_id=uid('search'), profile_version=1)
-        case = {'case_id': case_id, 'search_id': profile['search_id'],
-                'draft': {'draft_id': uid('draft'), 'revision': 1, 'profile': profile, 'fingerprint': fingerprint(profile)},
-                'confirmations': [], 'evaluations': [], 'selection': None, 'reviews': [], 'aftercare_case_id': None}
-        with repo.transaction() as db:
-            repo.put(db, 'case', case_id, case)
-        return case
+        with self.ctx.repo.transaction() as db, self.ctx.preferences.store.join(db):
+            case = self.ctx.preferences.start(uid('rental'), self.ctx.settings.template)
+            self.ctx.repo.put(db, 'case', case['case_id'], case)
+            return case
 
     def read_case(self, case_id: str):
-        get = self.ctx.get
-        repo = self.ctx.repo
-        with repo.transaction() as db:
-            return get(db, 'case', case_id)
+        with self.ctx.repo.transaction() as db:
+            return self.ctx.get(db, 'case', case_id)
 
     def draft(self, case_id: str, body: dict):
-        get = self.ctx.get
-        repo = self.ctx.repo
         shape(body, ('expected_revision', 'profile'))
-        with repo.transaction() as db:
-            case = get(db, 'case', case_id)
+        with self.ctx.repo.transaction() as db, self.ctx.preferences.store.join(db):
+            case = self.ctx.get(db, 'case', case_id)
+            self.ctx.preferences.require_case(case)
             require(integer(body['expected_revision']) and body['expected_revision'] == case['draft']['revision'],
                     409, 'version_conflict', 'Reload the current saved draft')
             require(isinstance(body['profile'], dict), 422, 'invalid_profile', 'Profile must be an object')
             profile = deepcopy(body['profile'])
             profile.update(search_id=case['search_id'], profile_version=len(case['confirmations']) + 1)
             validate_profile(profile)
-            case['draft'] = {'draft_id': uid('draft'), 'revision': case['draft']['revision'] + 1,
-                             'profile': profile, 'fingerprint': fingerprint(profile)}
-            repo.put(db, 'case', case_id, case)
+            case = self.ctx.preferences.draft(case, profile, revision=case['draft']['revision'] + 1)
+            self.ctx.repo.put(db, 'case', case_id, case)
             return case
 
     def confirm(self, case_id: str, body: dict):
-        get = self.ctx.get
-        repo = self.ctx.repo
-        shape(body, ('draft_revision', 'fingerprint'))
-        with repo.transaction() as db:
-            case = get(db, 'case', case_id)
-            draft = case['draft']
-            require(integer(body['draft_revision']) and body['draft_revision'] == draft['revision'] and body['fingerprint'] == draft['fingerprint'],
-                    409, 'draft_conflict', 'Confirmation must match the exact saved draft')
-            validate_profile(draft['profile'])
-            if not case['confirmations'] or case['confirmations'][-1]['draft_revision'] != draft['revision']:
-                case['confirmations'].append({'version': len(case['confirmations']) + 1, 'fingerprint': draft['fingerprint'],
-                    'profile': deepcopy(draft['profile']), 'confirmed_at': now(), 'draft_revision': draft['revision'], 'actor_id': TENANT})
-                repo.put(db, 'case', case_id, case)
+        shape(body, ('draft_revision', 'fingerprint', 'review_token'))
+        require(integer(body['draft_revision']), 422, 'invalid_input', 'Draft revision must be an integer')
+        with self.ctx.repo.transaction() as db, self.ctx.preferences.store.join(db):
+            case = self.ctx.get(db, 'case', case_id)
+            case = self.ctx.preferences.confirm(case, body)
+            self.ctx.repo.put(db, 'case', case_id, case)
             return case
 
     def evaluation(self, case_id: str, body: dict):
-        current = self.ctx.current
-        dataset = self.ctx.settings.dataset
-        get = self.ctx.get
-        receipt = self.ctx.receipt
-        repo = self.ctx.repo
-        safe_message = self.ctx.safe_message
-        save_receipt = self.ctx.save_receipt
         shape(body, ('request_id', 'confirmation_version'))
-        require(integer(body['confirmation_version']) and body['confirmation_version'] > 0, 422, 'invalid_input', 'Confirmation version must be a positive integer')
+        require(integer(body['confirmation_version']) and body['confirmation_version'] > 0,
+                422, 'invalid_input', 'Confirmation version must be a positive integer')
         key = case_id + ':' + request_id(body['request_id'])
-        with repo.transaction() as db:
-            case = get(db, 'case', case_id)
-            old = receipt(db, 'evaluation_receipt', key, body)
-            if old:
+        repo, bridge = self.ctx.repo, self.ctx.preferences
+        # Reserve the member-owned task and HTTP identity atomically, before execution.
+        with repo.transaction() as db, bridge.store.join(db):
+            case = self.ctx.get(db, 'case', case_id)
+            bridge.require_case(case)
+            old = self.ctx.receipt(db, 'evaluation_receipt', key, body)
+            if old and 'result' in old:
                 return old['result']
-            confirmation = current(case, body['confirmation_version'])
-            report = evaluate(confirmation['profile'], dataset, as_of=dataset['as_of'])
+            self.ctx.current(case, body['confirmation_version'])
+            if old:
+                task_id = old['agent1_task_id']
+            else:
+                task = bridge.prepare(case, self.ctx.settings.dataset)
+                task_id = task['task_id']
+                repo.put(db, 'evaluation_receipt', key, {'input': body, 'agent1_task_id': task_id})
+        # Agent1 independently commits acceptance and completion; no adapter lock is held.
+        try:
+            task = bridge.execute(task_id)
+        except ValueError as exc:
+            require(False, 409, 'stale_evaluation', self.ctx.safe_message(exc))
+        require(task['status'] == 'completed', 503, 'evaluation_failed',
+                'Agent1 evaluation has not completed. Retry the same request; saved versions are retained.')
+        with repo.transaction() as db, bridge.store.join(db):
+            case = self.ctx.get(db, 'case', case_id)
+            confirmation = self.ctx.current(case, body['confirmation_version'])
+            session, _ = bridge.store.load(case['agent1_case_id'])
+            require(task['version'] == confirmation['version'] and session['latest_task_id'] == task_id,
+                    409, 'stale_evaluation', 'A newer confirmed task exists. Read the current version.')
+            report = task['report']
             existing = repo.get(db, 'evaluation', report['recommendation_run_id'])
             if existing:
                 result = existing['response']
-                save_receipt(db, 'evaluation_receipt', key, body, result)
-                return result
-            result = {'run_id': report['recommendation_run_id'], 'report': report, 'comparison': None}
-            if case['evaluations']:
-                previous = get(db, 'evaluation', case['evaluations'][-1]['run_id'])['response']['report']
+            else:
+                result = {'run_id': report['recommendation_run_id'], 'report': report,
+                          'comparison': None, 'agent1_task_id': task_id,
+                          'comparison_source': 'agent1_verified_versions'}
                 try:
-                    result['comparison'] = compare_reports(previous, report)
+                    result['comparison'] = bridge.comparison(case)
                 except ValueError as exc:
-                    result['comparison_error'] = safe_message(exc)
-            repo.put(db, 'evaluation', result['run_id'], {'case_id': case_id, 'response': result, 'dataset': dataset,
-                                                       'profile': confirmation['profile']})
+                    result['comparison_error'] = self.ctx.safe_message(exc)
+                repo.put(db, 'evaluation', result['run_id'], {
+                    'case_id': case_id, 'response': result, 'dataset': task['dataset'],
+                    'profile': report['profile']})
             if not any(item['run_id'] == result['run_id'] for item in case['evaluations']):
-                case['evaluations'].append({'run_id': result['run_id'], 'profile_version': confirmation['version'], 'created_at': now()})
+                case['evaluations'].append({'run_id': result['run_id'], 'profile_version': confirmation['version'],
+                    'created_at': now(), 'agent1_task_id': task_id})
+            bridge.metadata(case)
             repo.put(db, 'case', case_id, case)
-            save_receipt(db, 'evaluation_receipt', key, body, result)
+            self.ctx.save_receipt(db, 'evaluation_receipt', key, body, result)
             return result
 
     def read_evaluation(self, run_id: str):

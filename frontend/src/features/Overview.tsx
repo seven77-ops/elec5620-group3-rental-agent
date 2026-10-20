@@ -6,14 +6,17 @@ export default function Overview() {
   const { current, go } = useCase();
   const confirmed = currentConfirmation(current);
   const review = current.reviews.at(-1);
+  const selected = Boolean(confirmed && current.selection &&
+    current.selection.profile_version === confirmed.version &&
+    current.selection.profile_fingerprint === confirmed.fingerprint);
   const next = !confirmed
     ? "preferences"
-    : !current.selection
+    : !selected
       ? "recommendations"
       : !review
         ? "contract"
         : "aftercare";
-  const index = !confirmed ? 0 : !current.selection ? 1 : !review ? 2 : 3;
+  const index = !confirmed ? 0 : !selected ? 1 : !review ? 2 : 3;
   return (
     <>
       <PageTitle
@@ -32,7 +35,7 @@ export default function Overview() {
             },
             {
               title: "选择房源",
-              content: current.selection?.listing_id ?? "查看推荐与取舍",
+              content: selected ? current.selection!.listing_id : "按当前偏好选择房源",
             },
             {
               title: "合同复核",
@@ -91,7 +94,7 @@ export default function Overview() {
             </div>
             <div>
               <dt>所选房源</dt>
-              <dd>{current.selection?.listing_id ?? "尚未选择"}</dd>
+              <dd>{selected ? current.selection!.listing_id : current.selection ? "历史选择，需按当前偏好重新选择" : "尚未选择"}</dd>
             </div>
             <div>
               <dt>合同</dt>

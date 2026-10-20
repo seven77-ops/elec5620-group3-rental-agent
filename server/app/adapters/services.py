@@ -8,6 +8,7 @@ from ..repository import canonical
 from ..settings import OPERATOR
 from .business import AftercareAgent
 from ..repository import Repository
+from .agent1 import Agent1Bridge
 
 
 class Services:
@@ -15,6 +16,7 @@ class Services:
     def __init__(self, settings):
         self.settings = settings
         self.repo = Repository(settings.runtime_dir)
+        self.preferences = Agent1Bridge(self.repo)
         self.aftercare = AftercareAgent(self.repo.directory / 'aftercare.sqlite3', operator_ids={OPERATOR}, gateway=None)
 
     def safe_message(self, message):
@@ -40,6 +42,7 @@ class Services:
         require(latest is not None and latest['fingerprint'] == case['draft']['fingerprint'] and
                 latest['draft_revision'] == case['draft']['revision'] and (version is None or latest['version'] == version),
                 409, 'unconfirmed_profile', 'Confirm the exact current saved draft before continuing')
+        self.preferences.current(case, latest)
         return latest
 
     def selected(self, case):

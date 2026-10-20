@@ -92,6 +92,9 @@ export default function Recommendations() {
     reportBound &&
     confirmed?.version === report.profile_version &&
     confirmed.fingerprint === report.profile_fingerprint;
+  const selectionCurrent = Boolean(current.selection && confirmed &&
+    current.selection.profile_version === confirmed.version &&
+    current.selection.profile_fingerprint === confirmed.fingerprint);
   const p = report.profile;
   const select = (item: Listing) => {
     const body = {
@@ -177,12 +180,12 @@ export default function Recommendations() {
       )}
       {current.selection && (
         <Alert
-          type="success"
+          type={selectionCurrent ? "success" : "warning"}
           showIcon
-          title={`已选择 ${current.selection.listing_id}`}
+          title={selectionCurrent ? `已选择 ${current.selection.listing_id}` : `历史选择 ${current.selection.listing_id} · 需重新选择`}
           description={
             <Space wrap>
-              <span>选房证据包已保存，尚未对外发送。</span>
+              <span>{selectionCurrent ? "选房证据包已保存，尚未对外发送。" : "偏好版本已变化。历史证据包保留，继续合同复核前需按当前偏好重新选择。"}</span>
               <a
                 href={downloadUrl(
                   `/cases/${current.case_id}/exports/selection`,
@@ -190,7 +193,7 @@ export default function Recommendations() {
               >
                 下载选房证据包
               </a>
-              <Button size="small" onClick={() => go("contract")}>
+              <Button size="small" disabled={!selectionCurrent} onClick={() => go("contract")}>
                 继续合同复核
               </Button>
             </Space>
@@ -409,7 +412,7 @@ export default function Recommendations() {
           <h2>当前流程</h2>
           <Steps
             orientation="vertical"
-            current={current.selection ? 2 : 1}
+            current={selectionCurrent ? 2 : 1}
             items={[
               {
                 title: "确认偏好",
@@ -417,7 +420,11 @@ export default function Recommendations() {
               },
               {
                 title: "选择房源",
-                content: current.selection ? "已选择" : "进行中",
+                content: selectionCurrent
+                  ? "已选择"
+                  : current.selection
+                    ? "历史选择待重新确认"
+                    : "进行中",
               },
               {
                 title: "合同复核",
@@ -498,7 +505,7 @@ export default function Recommendations() {
         onClose={() => setCompare(false)}
       >
         <p>
-          比较只基于后端允许的同搜索、同快照与规则版本。名次同时受其他合格候选变化影响。
+          比较由 Agent1 核对已保存版本，并复用 Agent2 的同搜索、同快照与规则版本比较。名次同时受其他合格候选变化影响。
         </p>
         <h3>偏好变化</h3>
         <JsonDetails value={result.comparison?.changed_fields} />

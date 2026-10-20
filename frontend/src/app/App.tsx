@@ -238,7 +238,7 @@ export default function App() {
                     <h1>从你的租房偏好开始</h1>
                     <p>确认需求、查看推荐依据，再由你决定下一步。</p>
                     <p className="muted">
-                      本地课程演示使用合成数据，Agent 1 通过可编辑表单模拟输入。
+                      本地课程演示使用合成数据，表单通过 Agent1 保存并确认偏好版本。
                     </p>
                     <Button
                       type="primary"
@@ -283,7 +283,7 @@ export default function App() {
           <Alert
             type="info"
             title="本地合成场景回放"
-            description="Agent 1 为模拟表单；Agent 2、3、4 调用原 Python 业务实现。未接入真实房源、外部模型或外发消息。"
+            description="Agent1、2、3、4 均调用原 Python 业务实现。Agent1 当前使用表单输入，未启用 LLM 对话提取；房源和合同仍为合成数据，无外发消息。"
             showIcon
           />
           <h3>独立的业务参考时间</h3>
@@ -295,6 +295,7 @@ export default function App() {
                 ? {
                     case_id: current.case_id,
                     search_id: current.search_id,
+                    agent1: current.agent1,
                     draft_revision: current.draft.revision,
                     confirmations: current.confirmations.map((c) => ({
                       version: c.version,

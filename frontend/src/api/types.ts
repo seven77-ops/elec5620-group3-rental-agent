@@ -36,6 +36,8 @@ export interface Confirmation {
   fingerprint: string;
   profile: Profile;
   confirmed_at: string;
+  draft_revision: number;
+  source?: string;
 }
 export interface CaseState {
   case_id: string;
@@ -55,6 +57,17 @@ export interface CaseState {
   selection: Selection | null;
   reviews: { review_id: string; version: number; status: string }[];
   aftercare_case_id: string | null;
+  agent1?: {
+    case_id: string;
+    session_id: string;
+    state: string;
+    latest_version: number;
+    review_token: string | null;
+    draft_revision: number;
+    warnings: string[];
+    input_mode: string;
+    live_llm: boolean;
+  };
 }
 export interface Selection {
   listing_id: string;
@@ -112,6 +125,8 @@ export interface Evaluation {
   report: Report;
   comparison: Dict | null;
   comparison_error?: string | Dict;
+  agent1_task_id?: string;
+  comparison_source?: string;
 }
 export interface Review {
   review_id: string;

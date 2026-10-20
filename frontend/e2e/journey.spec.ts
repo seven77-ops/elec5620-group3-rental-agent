@@ -15,6 +15,7 @@ async function seed(request: APIRequestContext) {
     data: {
       draft_revision: c.draft.revision,
       fingerprint: c.draft.fingerprint,
+      review_token: c.agent1.review_token,
     },
   });
   const e = await (
@@ -47,7 +48,9 @@ test("tenant completes confirmed profile, true recommendation, selection, contra
   await expect(
     page.getByRole("button", { name: "生成推荐", exact: true }),
   ).toBeDisabled();
+  await expect(page.getByText("Agent1 本地偏好服务已接入", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "确认当前偏好", exact: true }).click();
+  await expect(page.getByText("房源为固定时点的合成数据。居住人数会被记录，但当前不检查房源可容纳人数。", { exact: true })).toHaveCount(2);
   await page.getByRole("button", { name: "确认这些条件", exact: true }).click();
   await expect(
     page.getByText("当前草稿已确认 · v1", { exact: true }),
@@ -137,6 +140,9 @@ test("tenant completes confirmed profile, true recommendation, selection, contra
     await request.get(`/api/v1/cases/${caseId}/exports/selection`)
   ).json();
   expect(selection.listing_id).toBe("DEMO-006");
+  expect(c.agent1.state).toBe("Confirmed");
+  expect(c.confirmations[0].source).toBe("agent1");
+  expect(c.evaluations[0].agent1_task_id).toMatch(/^task-/);
   expect(c.aftercare_case_id).toBeNull();
   await page.reload();
   await expect(page.getByText("复核完成", { exact: true })).toBeVisible();
@@ -516,6 +522,7 @@ test("failed report selection preserves clearly labeled prior data and disables 
     data: {
       draft_revision: current.draft.revision,
       fingerprint: current.draft.fingerprint,
+      review_token: current.agent1.review_token,
     },
   });
   await request.post(`/api/v1/cases/${c.case_id}/evaluations`, {

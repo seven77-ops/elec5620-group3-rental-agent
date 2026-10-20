@@ -9,7 +9,7 @@
 
 ## 运行统一前端演示
 
-使用 React/TypeScript/Ant Design 页面与 FastAPI 本地接口，直接调用 Agent 2、3、4。Agent 1 为明确标注的模拟偏好表单，默认只用合成数据，不调用外部模型或外发消息。
+使用 React/TypeScript/Ant Design 页面与 FastAPI 本地接口，直接调用 Agent 1、2、3、4 的本地服务。偏好表单复用 Agent 1 的草稿校验、确认版本、任务交接和版本比较；默认只用合成数据，当前不启用 LLM 对话提取或外发消息。
 
 ```sh
 python3 -m venv .venv
@@ -43,4 +43,4 @@ python3 -m rental_agent --profile data/demo/profiles/commute.json --listings dat
 
 ## 跨 Agent 对接
 
-[输入约定与本地联调](integration/README.md)：包含 Agent 1 已确认偏好及外层确认/版本/任务样例，以及 Agent 2 → Agent 3 的可复现场景。真实 Agent 1 服务尚待接入。
+[输入约定与本地联调](integration/README.md)：包含 Agent 1 已确认偏好及外层确认/版本/任务样例，以及 Agent 2 → Agent 3 的可复现场景。Agent 1 已通过 PR #6 合入 main；统一前端的实际服务接入及验证见 [最新验证记录](docs/frontend/verification.md#2026-10-20agent1-实际服务接入)。

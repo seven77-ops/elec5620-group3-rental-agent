@@ -1,6 +1,6 @@
 # 统一前端验证记录
 
-验证日期：2026-10-17。基线：`b06614de1c7825d7fbc4bcc773a75efa4eb1da97`；分支：`codex/frontend-demo`。这是开发验证记录，尚未进行教师验收或目标用户测试。
+下列原始记录验证日期：2026-10-17；最新 Agent1 接入结果见本文件末尾。基线：`b06614de1c7825d7fbc4bcc773a75efa4eb1da97`；分支：`codex/frontend-demo`。这是开发验证记录，尚未进行教师验收或目标用户测试。
 
 ## 实现与验证范围
 
@@ -102,3 +102,37 @@ npm --prefix frontend run build
 ## 提交与评审入口
 
 草稿 [PR #4](https://github.com/seven77-ops/elec5620-group3-rental-agent/pull/4)，核心前端提交 `35211fd`，最终后端门禁修复 `860bfad`；分支 `codex/frontend-demo`。创建前重新 fetch，main 仍为本文基线。PR 未合并，Jira 未更改。
+
+
+## 2026-10-20：Agent1 实际服务接入
+
+PR #6 已合入 main（合并提交 `4701fa1b099b2e752b29a54a68af924b44b3061a`）。前端分支已合并此基线，API 复用 Agent1 的 PreferenceAgent、Store、HandoverService 和 compare_current；保留表单与合成默认值，当前未启用 LLM 提取。上文“模拟 Agent1”、184 项及 12 项 Playwright 结果属于 10 月 17 日旧基线，不代表本次结果。
+
+本次实际执行：
+
+```sh
+.venv/bin/python -m unittest discover -s server/tests -v
+(cd agent1 && ../.venv/bin/python -m unittest discover -s tests -v)
+(cd agent2 && ../.venv/bin/python -m unittest discover -s tests -v)
+(cd agent3 && ../.venv/bin/python -m unittest discover -s tests -v)
+(cd agent4 && ../.venv/bin/python -m unittest discover -s tests -v)
+.venv/bin/python -m unittest discover -s integration/tests -v
+npm --prefix frontend run build
+```
+
+| 检查 | 本次实际结果 |
+|---|---|
+| API | 34/34，通过，含 9 项新增实际 Agent1 集成检查 |
+| Agent1 / Agent2 / Agent3 / Agent4 | 52/52、71/71、25/25、57/57，通过 |
+| 既有交接集成 | 6/6，通过 |
+| Python 合计 | **245 项通过** |
+| TypeScript + Vite | 通过；保留既有约 1.14 MB vendor 大块提示 |
+| Chrome 实际浏览器 | 确认 v1 → 真实 Agent2 推荐 → 明确选择 → 独立合同同意门禁；修改权重后先保存、重新确认 v2，再生成推荐并打开 Agent1 版本比较；刷新仍保留 v2。DEMO-002 合格排名由 9 变为 3，v2 最高为 DEMO-012。旧选择显示历史且禁止直接继续合同复核。 |
+| 手机布局 | 显式请求窄屏，浏览器实际 CSS 宽度 383px；文档 scrollWidth 与 clientWidth 均 383，无横向文档溢出；已恢复桌面视口 |
+| 页面健康 | 最终刷新后未捕获 console error/warn，无错误覆盖层 |
+
+新增检查包括严格 review_token、原确认重试、不可变版本、实际任务复用、响应丢失恢复、共享事务回滚、并发确认、旧请求晚返回防覆盖，以及旧表单案例只读。独立代码复查未发现发布阻塞项；已修复确认限制提示和历史选择流程栏状态。
+
+本次通过 CUA 操作真实 Chrome 检查上述浏览器流程，**未重新运行原 12 项 Playwright 套件**；其请求样例已同步新增 review_token。截图保留在本地验收目录，不提交运行数据库、上传文件或密钥。
+
+本次仍是本地合成数据开发验证，尚未进行全组共同验收、真实对话模型接入或生产身份权限配置。M3 → M4 的租约资料确认边界保持原有流程。关联 [SCRUM-35](https://breezebee64.atlassian.net/browse/SCRUM-35) 与 [PR #4](https://github.com/seven77-ops/elec5620-group3-rental-agent/pull/4)。

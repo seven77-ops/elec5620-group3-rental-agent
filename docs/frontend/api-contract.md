@@ -12,7 +12,7 @@ CaseState: `{case_id,search_id,draft:{draft_id,revision,profile,fingerprint},con
 `GET /demo-config` gives `{mode:'synthetic_demo',clocks:{evaluation,selection,contract,aftercare},profile_template,tenancy_template,agreement_examples:[{id,name}],capabilities}`. Tenancy template is the actual M4 sample tenancy with confirmed false and source labels; do not create automatically. `GET /demo-agreements/{id}` downloads allowlisted synthetic examples normal and rent_conflict.
 `POST /cases {}` and `GET /cases/{caseId}` return CaseState.
 `POST /cases/{caseId}/profile-drafts {expected_revision,profile}` returns CaseState. Validate saved drafts conservatively; field validation errors may be returned without mutating old state. Server sets search and confirmation version, does not trust client changes to them.
-`POST /cases/{caseId}/profile-confirmations {draft_revision,fingerprint}` returns CaseState. Only exact saved draft can be confirmed. Editing invalidates current-draft confirmation.
+`POST /cases/{caseId}/profile-confirmations {draft_revision,fingerprint,review_token}` returns CaseState. Only exact saved draft can be confirmed. Editing invalidates current-draft confirmation.
 `POST /cases/{caseId}/evaluations {request_id,confirmation_version}` returns `{run_id,report,comparison}`. Refuse if current draft is unconfirmed. comparison null if incompatible or no prior run; optional comparison_error describes why. Store immutable inputs and results.
 `GET /evaluations/{runId}` returns `{run_id,report,comparison}` with optional comparison_error. Bind to saved case/input.
 `POST /cases/{caseId}/selections {request_id,run_id,listing_id,confirmed:true}` returns SelectedListingEvidence. Reject stale/current-version mismatches, rebuild evidence using original snapshot and fixed disclosed selection clock.
@@ -42,3 +42,11 @@ CaseState: `{case_id,search_id,draft:{draft_id,revision,profile,fingerprint},con
 `GET /contract-reviews/{reviewId}/export` returns saved review JSON.
 `GET /aftercare/cases/{aftercareCaseId}/export` returns saved M4 case JSON.
 All paths bind server-saved refs, no arbitrary paths. Browser mutations refresh CaseState, review or M4 current state as appropriate. localStorage stores case reference only.
+
+## Agent1-backed cases (2026-10-20)
+
+New CaseState adds `agent1:{case_id,session_id,state,latest_version,review_token,draft_revision,warnings,input_mode,live_llm}` and server-owned agent1_case_id. Agent1's per-draft revision is separate from monotonic draft.revision. Form edits/confirmation call the actual member services. Confirmation must include the currently displayed review token; exact retries reuse the original confirmation. Returned warnings must be visible before approval.
+
+Evaluation adds `agent1_task_id` and `comparison_source:"agent1_verified_versions"` to the unchanged report/comparison response. Agent1 tasks are durably reserved before actual receiver execution; retry/restart/lost-response reconciliation and current-version checks apply. Historical completed HTTP retries return their original result; an unfinished old task cannot publish over a new version.
+
+Legacy cases without Agent1 provenance remain readable and exportable; preference/search/selection writes require a new case (`409 agent1_upgrade_required`, or the existing unconfirmed gate). Existing separately confirmed aftercare records remain available. Do not fabricate historical confirmations during upgrade. Input remains a form; live LLM extraction is disabled.

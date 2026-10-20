@@ -26,7 +26,8 @@ class BoundaryTests(unittest.TestCase):
 
     def confirm(self):
         self.case = self.post(f'cases/{self.cid}/profile-confirmations', {
-            'draft_revision': self.case['draft']['revision'], 'fingerprint': self.case['draft']['fingerprint']}).json()
+            'draft_revision': self.case['draft']['revision'], 'fingerprint': self.case['draft']['fingerprint'],
+            'review_token': self.case['agent1']['review_token']}).json()
         return self.case['confirmations'][-1]['version']
 
     def selected(self):

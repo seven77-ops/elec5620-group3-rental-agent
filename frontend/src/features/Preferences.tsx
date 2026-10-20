@@ -101,6 +101,27 @@ function Summary({ profile }: { profile: Profile }) {
     </dl>
   );
 }
+function Agent1Warnings({ warnings }: { warnings: string[] }) {
+  if (!warnings.length) return null;
+  return (
+    <Alert
+      type="warning"
+      showIcon
+      title="确认前请核对服务限制"
+      description={
+        <ul>
+          {warnings.map((warning) => (
+            <li key={warning}>
+              {warning.startsWith("Agent2 uses fictional listings")
+                ? "房源为固定时点的合成数据。居住人数会被记录，但当前不检查房源可容纳人数。"
+                : warning}
+            </li>
+          ))}
+        </ul>
+      }
+    />
+  );
+}
 export default function Preferences() {
   const { current, refresh, go } = useCase();
   const [form] = Form.useForm<Profile>();
@@ -108,6 +129,7 @@ export default function Preferences() {
   const [dirty, setDirty] = useState(false);
   const action = useAction();
   const confirmation = currentConfirmation(current);
+  const legacy = !current.agent1;
   const values = Form.useWatch([], form) as Profile | undefined;
   const profile = values ?? current.draft.profile;
   const save = async () => {
@@ -144,6 +166,7 @@ export default function Preferences() {
       content: (
         <>
           <p>你将批准当前保存的草稿修订 {current.draft.revision}。</p>
+          <Agent1Warnings warnings={current.agent1?.warnings ?? []} />
           <Summary profile={current.draft.profile} />
         </>
       ),
@@ -154,6 +177,7 @@ export default function Preferences() {
           await post(`/cases/${current.case_id}/profile-confirmations`, {
             draft_revision: current.draft.revision,
             fingerprint: current.draft.fingerprint,
+            review_token: current.agent1?.review_token,
           });
           await refresh();
           message.success("当前偏好已确认。");
@@ -184,13 +208,16 @@ export default function Preferences() {
       <Alert
         type="info"
         showIcon
-        title="模拟 Agent 1 输入"
-        description="以下初始值来自合成偏好样例，可编辑后确认。当前未接入真实对话或模型提取。"
+        title={legacy ? "旧版案例：偏好记录只读" : "Agent1 本地偏好服务已接入"}
+        description={legacy
+          ? "历史资料和报告保留。请从顶部新建案例，使用 Agent1 保存和确认新的偏好。"
+          : "表单由 Agent1 校验并保存确认版本，再调用 Agent2 生成推荐。初始值和房源均为合成演示；当前未启用 LLM 对话提取。"}
       />
       <Failure error={action.error} retry={action.retry} />
       <div className="preference-layout">
         <Form
           form={form}
+          disabled={legacy}
           name="preferences"
           initialValues={current.draft.profile}
           layout="vertical"
@@ -391,7 +418,7 @@ export default function Preferences() {
                   label={`${label(key)} · 软偏好`}
                 >
                   <InputNumber
-                    disabled={profile.hard_requirements?.includes(key)}
+                    disabled={legacy || profile.hard_requirements?.includes(key)}
                     min={0}
                     step={0.1}
                   />
@@ -439,6 +466,7 @@ export default function Preferences() {
         <aside className="preference-summary">
           <section className="panel">
             <h2>你的偏好摘要</h2>
+            <Agent1Warnings warnings={current.agent1?.warnings ?? []} />
             <Summary profile={profile} />
             <div className="summary-state">
               {dirty
@@ -451,6 +479,7 @@ export default function Preferences() {
               <Button
                 block
                 onClick={save}
+                disabled={legacy}
                 loading={action.busy}
                 aria-label="保存草稿"
               >
@@ -458,7 +487,7 @@ export default function Preferences() {
               </Button>
               <Button
                 block
-                disabled={dirty || Boolean(confirmation)}
+                disabled={legacy || dirty || Boolean(confirmation) || !current.agent1?.review_token}
                 onClick={confirm}
                 loading={action.busy}
                 aria-label="确认当前偏好"
@@ -468,7 +497,7 @@ export default function Preferences() {
               <Button
                 block
                 type="primary"
-                disabled={dirty || !confirmation}
+                disabled={legacy || dirty || !confirmation}
                 onClick={evaluate}
                 loading={action.busy}
                 aria-label="生成推荐"
