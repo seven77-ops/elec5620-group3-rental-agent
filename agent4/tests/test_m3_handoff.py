@@ -2,18 +2,28 @@ from concurrent.futures import ThreadPoolExecutor
 from contextlib import closing
 from copy import deepcopy
 import os
+import importlib
 from pathlib import Path
 import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from aftercare_agent.contracts import ROOT, load_json, validate
 from aftercare_agent.errors import AftercareError
 from aftercare_agent.handoff import FIELDS, fingerprint
 from aftercare_agent.store import AftercareAgent
 
-FIXTURES = ROOT / 'data/demo/m3-handoff'
+RAW = ROOT / 'data/demo/m3-handoff'
+FIXTURES = RAW / 'snapshots'
+
+def human_fixture():
+    # Test double of M3's first persisted snapshot; never applied to production inputs.
+    review = load_json(RAW / 'human-review.json')
+    review['snapshot_revision'] = 1
+    return review
+
 NOW = '2026-10-17T19:01:00+11:00'
 TENANT = 'DEMO-TENANT-001'
 
@@ -42,7 +52,7 @@ class M3Handoff(unittest.TestCase):
 
     def reconfirm(self, packet):
         r, c = packet['review'], packet['confirmation']
-        c.update(review_id=r['review_id'], review_version=r['version'], document_sha256=r['document']['sha256'],
+        c.update(review_id=r['review_id'], review_version=r['version'], review_snapshot_revision=r['snapshot_revision'], document_sha256=r['document']['sha256'],
                  review_sha256=fingerprint(r), confirmation_id='DEMO-NEW-CONFIRMATION', confirmation_version=1)
         c['confirmed_fields'].update({k: r['fields'][k]['value'] for k in FIELDS})
         return packet
@@ -103,7 +113,7 @@ class M3Handoff(unittest.TestCase):
         self.assertEqual(self.count(), 0)
 
     def test_human_review_blocks_even_with_a_confirmation(self):
-        self.packet['review'] = load_json(FIXTURES / 'human-review.json')
+        self.packet['review'] = human_fixture()
         self.reconfirm(self.packet)
         self.assertEqual(self.receive()['code'], 'review_blocked')
         self.assertEqual(self.count(), 0)
@@ -124,7 +134,7 @@ class M3Handoff(unittest.TestCase):
         packet = load_json(FIXTURES / 'v2-old-confirmation-packet.json')
         self.assertEqual(self.receive(packet)['code'], 'review_version_mismatch')
         # An original successful receipt must not bypass newly known current state.
-        self.assertEqual(self.receive()['code'], 'stale_review')
+        self.assertEqual(self.receive()['code'], 'stale_snapshot')
         self.assertEqual(self.count(), 1)
         self.assertEqual(self.agent.get(first['case_id'], TENANT)['version'], 1)
         self.assertEqual(self.agent.get_handoff(first['case_id'], TENANT)['review']['version'], 1)
@@ -169,9 +179,10 @@ class M3Handoff(unittest.TestCase):
     def test_same_version_changed_snapshot_requires_reconfirmation(self):
         self.receive()
         self.packet['request_id'] = 'new-snapshot'
+        self.packet['review']['snapshot_revision'] = 2
         self.packet['review']['updated_at'] = '2026-10-17T18:30:00+11:00'
         self.packet['review']['status_reason'] = 'New same-version metadata'
-        self.assertEqual(self.receive()['code'], 'review_fingerprint_mismatch')
+        self.assertEqual(self.receive()['code'], 'review_snapshot_revision_mismatch')
 
     def test_conflicting_same_version_snapshot_does_not_replace_current(self):
         self.receive()
@@ -202,6 +213,7 @@ class M3Handoff(unittest.TestCase):
             packet['confirmation']['confirmed_fields'][key] = value
             self.assertEqual(self.receive(packet)['code'], 'unsupported_tenancy')
         self.packet['review']['fields']['address']['value'] = None
+        self.packet['review']['snapshot_revision'] = 2
         self.packet['review']['updated_at'] = '2026-10-17T18:30:00+11:00'
         self.reconfirm(self.packet)
         self.assertEqual(self.receive()['code'], 'tenancy_fields_missing')
@@ -240,7 +252,7 @@ class M3Handoff(unittest.TestCase):
         self.assertEqual(self.count(), 1)
 
     def test_human_release_does_not_substitute_actual_tenancy_confirmation(self):
-        self.packet['review'] = load_json(FIXTURES / 'human-review.json')
+        self.packet['review'] = human_fixture()
         review = self.packet['review']
         review['status'] = 'Reviewed'
         review['human_review'].update(status='approved', review_version=review['version'])
@@ -249,7 +261,7 @@ class M3Handoff(unittest.TestCase):
         self.assertEqual(self.count(), 0)
 
     def test_malformed_human_finding_references_pause_without_crash(self):
-        self.packet['review'] = load_json(FIXTURES / 'human-review.json')
+        self.packet['review'] = human_fixture()
         self.packet['review']['status'] = 'Reviewed'
         self.packet['review']['human_review'].update(status='approved', review_version=1, finding_ids=None)
         self.reconfirm(self.packet)
@@ -309,6 +321,151 @@ class M3Handoff(unittest.TestCase):
     def test_handoff_snapshot_read_requires_owner(self):
         result = self.receive()
         self.error('access_denied', self.agent.get_handoff, result['case_id'], 'another-tenant')
+
+    def high_water(self):
+        with closing(self.agent.connect()) as db:
+            return db.execute('SELECT version,snapshot_revision,fingerprint FROM m3_reviews WHERE review_id=?',
+                              (self.packet['review']['review_id'],)).fetchone()
+
+    def test_real_m3_human_approval_in_same_second_with_explicit_sequence_double(self):
+        from agent3.contract_agent.document import load_document
+        m3 = importlib.import_module('agent3.contract_agent.review')
+        agreement = Path(self.tmp.name) / 'risk.txt'
+        text = (ROOT.parent / 'agent3/data/demo/agreements/selection-demo.txt').read_text(encoding='utf-8')
+        agreement.write_text(text.replace('Bond: $2000', 'Bond: $2500'), encoding='utf-8')
+        with patch.object(m3, '_now', return_value='2026-10-17T18:00:00+11:00'):
+            pending = m3.review_agreement(load_document(agreement, consent=True), consent=True,
+                                          selection=self.packet['review']['selection_evidence'], as_of='2026-10-15')
+            approved = m3.approve_review(pending, reviewer='DEMO-OPERATOR', decision='approve', note='Synthetic test')
+        self.assertEqual(pending['updated_at'], approved['updated_at'])
+        self.assertEqual(pending['version'], approved['version'])
+        # Explicit persistence double; M4 never assigns these sequence numbers.
+        pending['snapshot_revision'], approved['snapshot_revision'] = 1, 2
+        packet = deepcopy(self.packet)
+        packet.update(request_id='pending', review=pending, confirmation=None)
+        self.assertEqual(self.receive(packet)['code'], 'review_blocked')
+        self.packet.update(request_id='approved', review=approved)
+        self.reconfirm(self.packet)
+        result = self.receive()
+        self.assertEqual(result['status'], 'created')
+        self.assertEqual(result['review_snapshot_revision'], 2)
+        self.assertEqual(self.high_water()[:2], (1, 2))
+        self.assertEqual(self.receive(packet)['code'], 'stale_snapshot')
+        self.assertEqual(self.count(), 1)
+
+    def test_same_sequence_conflict_even_with_later_time_does_not_replace_baseline(self):
+        self.receive()
+        baseline = self.high_water()
+        self.packet['request_id'] = 'later-conflict'
+        self.packet['review']['updated_at'] = '2026-10-17T18:30:00+11:00'
+        self.reconfirm(self.packet)
+        self.assertEqual(self.receive()['code'], 'review_snapshot_conflict')
+        self.assertEqual(self.high_water(), baseline)
+
+    def test_sequence_not_wall_clock_orders_snapshots_and_survives_restart(self):
+        self.packet['confirmation'] = None
+        self.assertEqual(self.receive()['code'], 'confirmation_required')
+        later = deepcopy(self.packet)
+        later['request_id'] = 'newer-sequence-earlier-wall-clock'
+        later['review'].update(snapshot_revision=2, updated_at='2026-10-17T17:00:00+11:00')
+        self.assertEqual(self.receive(later)['code'], 'confirmation_required')
+        self.agent = AftercareAgent(self.database)
+        self.assertEqual(self.high_water()[:2], (1, 2))
+        old = deepcopy(self.packet)
+        old['request_id'] = 'older-sequence-later-clock'
+        old['review']['updated_at'] = '2026-10-17T19:00:00+11:00'
+        self.assertEqual(self.receive(old)['code'], 'stale_snapshot')
+        self.assertEqual(self.high_water()[:2], (1, 2))
+
+    def test_newer_blocked_snapshot_invalidates_success_receipt_and_plan(self):
+        created = self.receive()
+        newer = deepcopy(self.packet)
+        newer['request_id'] = 'new-questions'
+        newer['review'].update(snapshot_revision=2, status='Questions Ready')
+        self.assertEqual(self.receive(newer)['code'], 'review_blocked')
+        self.assertEqual(self.receive()['code'], 'stale_snapshot')
+        self.error('handoff_review_stale', self.agent.submit,
+                   self.command(created, 'create_plan', {'move_out_date': '2028-02-02', 'schedule_confirmed': True}))
+        self.assertEqual(self.count(), 1)
+
+    def test_confirmation_sequence_must_equal_review_sequence(self):
+        self.packet['confirmation']['review_snapshot_revision'] = 2
+        self.assertEqual(self.receive()['code'], 'review_snapshot_revision_mismatch')
+        self.assertEqual(self.count(), 0)
+
+    def test_sequence_is_inside_full_snapshot_fingerprint(self):
+        self.packet['review']['snapshot_revision'] = 2
+        self.packet['confirmation']['review_snapshot_revision'] = 2
+        self.assertEqual(self.receive()['code'], 'review_fingerprint_mismatch')
+        self.assertEqual(self.count(), 0)
+
+    def test_missing_invalid_or_fabricated_sequence_is_rejected_without_state(self):
+        for container, field in (('review', 'snapshot_revision'), ('confirmation', 'review_snapshot_revision')):
+            for value in (None, True, 0, -1, '1', 1.0, 9223372036854775808):
+                with self.subTest(container=container, value=value):
+                    packet = deepcopy(self.packet)
+                    if value is None:
+                        del packet[container][field]
+                    else:
+                        packet[container][field] = value
+                    with self.assertRaises(AftercareError):
+                        self.receive(packet)
+        self.assertEqual(self.count('m3_reviews'), 0)
+        self.assertEqual(self.count('m3_receipts'), 0)
+
+    def test_compatibility_validator_rejects_unrecognized_review_extensions(self):
+        self.packet['review']['untrusted_extension'] = True
+        self.error('invalid_review', self.receive)
+
+    def test_contract_version_cannot_reset_sequence_or_regress(self):
+        self.packet['confirmation'] = None
+        self.packet['review'].update(version=2, snapshot_revision=3)
+        self.receive()
+        for version, sequence, expected in ((3, 1, 'stale_snapshot'), (3, 3, 'review_snapshot_conflict'), (1, 4, 'review_version_regression')):
+            packet = deepcopy(self.packet)
+            packet['request_id'] = f'regression-{version}-{sequence}'
+            packet['review'].update(version=version, snapshot_revision=sequence)
+            self.assertEqual(self.receive(packet)['code'], expected)
+            self.assertEqual(self.high_water()[:2], (2, 3))
+
+    def test_reads_exports_and_duplicate_delivery_do_not_change_sequence(self):
+        from aftercare_agent.report import export_case
+        first = self.receive()
+        original = self.high_water()
+        self.agent.get_handoff(first['case_id'], TENANT)
+        export_case(self.agent.get(first['case_id'], TENANT), Path(self.tmp.name) / 'read-export')
+        self.assertEqual(self.receive()['status'], 'duplicate')
+        self.packet['request_id'] = 'another-delivery'
+        self.assertEqual(self.receive()['status'], 'duplicate')
+        self.assertEqual(self.high_water(), original)
+
+    def test_racing_newer_snapshots_never_reduce_high_water(self):
+        packets = [deepcopy(self.packet) for _ in range(3)]
+        for sequence, packet in enumerate(packets, 1):
+            packet['request_id'] = 'parallel-snapshot-' + str(sequence)
+            packet['review']['snapshot_revision'] = sequence
+            packet['confirmation'] = None
+        with ThreadPoolExecutor(max_workers=3) as pool:
+            results = list(pool.map(self.receive, packets))
+        self.assertTrue(all(r['status'] == 'paused' for r in results))
+        self.assertEqual(self.high_water()[:2], (1, 3))
+        self.assertEqual(self.count(), 0)
+
+    def test_legacy_database_migration_preserves_history_and_never_invents_baseline(self):
+        import sqlite3
+        legacy = Path(self.tmp.name) / 'legacy.sqlite3'
+        with closing(sqlite3.connect(legacy)) as db:
+            db.execute('CREATE TABLE m3_reviews (review_id TEXT PRIMARY KEY, tenant_id TEXT, upstream_case_id TEXT, version INTEGER, fingerprint TEXT, updated_at TEXT)')
+            raw = deepcopy(self.packet['review'])
+            del raw['snapshot_revision']
+            db.execute('INSERT INTO m3_reviews VALUES(?,?,?,?,?,?)', (raw['review_id'], TENANT,
+                       self.packet['context']['case_id'], raw['version'], fingerprint(raw), raw['updated_at']))
+            db.commit()
+        self.agent = AftercareAgent(legacy)
+        result = self.receive()
+        self.assertEqual(result['code'], 'snapshot_migration_required')
+        self.assertEqual(self.high_water(), (raw['version'], None, fingerprint(raw)))
+        self.assertEqual(self.count(), 0)
 
     def test_cli_exports_paused_json_and_markdown_without_overwrite(self):
         prefix = Path(self.tmp.name) / 'missing'
