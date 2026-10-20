@@ -64,6 +64,6 @@ Files: create frontend/src/features/ai/{AiCallDetails,RecommendationAi,ContractA
 Files: docs/frontend/2026-10-20-ai-verification.md, docs/frontend/agent3-ai-handoff.md; root docs/frontend pointer to local plan/run guide. `.runtime/ai-qa/` ignored for test artifacts.
 
 - [x] Run current Agent 1/2/3/4, integration and server suites; build and browser tests. Save actual counts and logs.
-- [ ] Review complete local diff and fix important issues with covering tests; no duplicate full-suite rerun without changes.
+- [x] Review complete local diff and fix important issues with covering tests; no duplicate full-suite rerun without changes.
 - [x] Document backend .env sample, enable/restart steps, no-config behavior, real-provider test pending if key absent, and Agent 3 source/modified files/compatibility checklist.
-- [ ] Keep local commits on codex/local-ai-integration, verify no new remote branch/push/Jira mutation, leave local app running, open Markdown guide and report final results to user.
+- [x] Keep local commits on codex/local-ai-integration, verify no new remote branch/push/Jira mutation, leave local app running, open Markdown guide and report final results to user.

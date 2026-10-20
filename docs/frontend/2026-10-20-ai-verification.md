@@ -6,7 +6,7 @@
 
 Agent 3 使用 GitHub main `4701fa1` 中已发布的代码（与前端基线内目录树一致）。新增候选提取模块和测试，原命令行、Schema、提取/复核流程保持兼容。Agent 2 新增辅助推荐解读模块，原资格、分数、排序与报告不被模型修改。
 
-正式启动使用原 `server.app.main` 和独立本地存储 `.runtime/ai-local`。页面自动化另启动 `server.tests.ai_demo_app`，返回来源明确标为 `test_stub`，存储为 `.runtime/ai-browser`。测试替身只用于验证协议、展示与确认流程；本次没有真实 API 凭据，真实模型成功及输出质量尚未验证。
+正式启动使用原 `server.app.main` 和独立本地存储 `.runtime/ai-local`。页面自动化另启动 `server.tests.ai_demo_app`，返回来源明确标为 `test_stub`，初始存储为 `.runtime/ai-browser`，最终复查使用 `/tmp/rental-ai-final-review` 及8007/5187端口（生产预览4187）。测试替身只用于验证协议、展示与确认流程；本次没有真实 API 凭据，真实模型成功及输出质量尚未验证。
 
 ## 已执行验证
 
@@ -19,17 +19,28 @@ Agent 3 使用 GitHub main `4701fa1` 中已发布的代码（与前端基线内�
 | 服务端完整回归 | 57 通过 | server-final.log |
 | 原跨 Agent 集成 | 6 通过 | integration-tests.log |
 | 前端请求工具 | 9 通过 | frontend-api-final.log |
-| 浏览器完整流程 | 19 通过 | browser-final.log |
-| 生产构建上的 AI 流程 | 7 通过 | production-browser.log |
+| 浏览器完整流程 | 21 通过 | browser-final.log |
+| 生产构建上的 AI 流程 | 9 通过 | production-browser.log |
 | TypeScript / Vite 构建 | 通过 | build-final.log |
 
 Python 合计 301 项。前端请求测试使用 Node 内置 test runner，实际导入 TypeScript API 客户端；浏览器测试使用实际本地 HTTP 服务。服务端57项覆盖最新超时修复；Agent1/4与原跨Agent套件在本轮集成中执行，后续仅修改AI传输及前端边界时没有重复无关套件。
 
-执行方式：各模块在自己的目录执行 `../.venv/bin/python -m unittest discover -s tests -v`；服务端在仓库根执行 `.venv/bin/python -m unittest discover -s server/tests -v`。前端执行 `npm --prefix frontend run test:api`、`npm --prefix frontend run build` 和 `WEB_TEST_BASE_URL=http://127.0.0.1:5183 npm --prefix frontend run test:e2e`；生产AI检查将地址改为4183并限定 `e2e/ai.spec.ts`。本机 Playwright 显式指定已安装 Chromium 路径。
+执行方式：各模块在自己的目录执行 `../.venv/bin/python -m unittest discover -s tests -v`；服务端在仓库根执行 `.venv/bin/python -m unittest discover -s server/tests -v`。前端执行 `npm --prefix frontend run test:api`、`npm --prefix frontend run build` 和 `WEB_TEST_BASE_URL=http://127.0.0.1:5187 npm --prefix frontend run test:e2e`；生产AI检查将地址改为4187并限定 `e2e/ai.spec.ts`。本机 Playwright 显式指定已安装 Chromium 路径。
 
-额外实际页面检查：生产预览无 pageerror / console.error，360px时 document宽度360px。桌面/手机截图为 `contract-ai-production-desktop.png`、`contract-ai-production-mobile.png`，均来自显式 test_stub 测试服务。生产构建通过，仍有基线已有的1.14MB vendor包体积警告。
+复跑页面测试时，先在不同终端启动独立的测试替身服务（不是正式启动方式）：
 
-独立模块与集成复查已通过，复查发现的以下问题均有先失败、后通过的回归：总超时覆盖慢响应体及DNS executor等待、过期pending请求不重绑定变化后的输入、服务请求ID与响应ID区分、浏览器超时覆盖正文读取、JSON null与非法正文区分、迟到应用响应不覆盖其他合同或刷新已离开的案例。完整分支最终复查结论在收尾时补记。
+```sh
+RENTAL_AI_TEST_RUNTIME=/tmp/rental-ai-qa .venv/bin/python -m uvicorn server.tests.ai_demo_app:app --host 127.0.0.1 --port 8007
+RENTAL_DEV_API_PORT=8007 npm --prefix frontend run dev -- --port 5187
+# 先完成 build，再启动生产预览
+RENTAL_DEV_API_PORT=8007 npm --prefix frontend run preview -- --port 4187
+```
+
+最后一次完整回归中，原租后用例曾在新案例创建完成前点击导航，20项通过、1项初始化失败；已经为该用例增加明确的“租房偏好”标题就绪等待，保留原有全部流程断言。失败记录另存 `browser-before-ready-wait.log`；修正后完整21项通过（1.3分钟），生产AI9项通过。
+
+额外实际页面检查：生产预览的合成合同成功流程无 pageerror / console.error，360px时 document宽度360px。桌面/手机截图为 `contract-ai-production-desktop.png`、`contract-ai-production-mobile.png`，均来自显式 test_stub 测试服务。生产构建通过，仍有基线已有的1.14MB vendor包体积警告。
+
+独立模块与集成复查已通过，复查发现的以下问题均有先失败、后通过的回归：总超时覆盖慢响应体及DNS executor等待、过期pending请求不重绑定变化后的输入、服务请求ID与响应ID区分、浏览器超时覆盖正文读取、JSON null与非法正文区分、迟到应用响应不覆盖其他合同或刷新已离开的案例。最终全分支复查通过；最后发现的同一合同迟到AI应用响应覆盖新版本/同版本问题清单的缺陷已修复，两条回归均验证先失败后通过，独立复查关闭该发现。
 
 Agent3单独补丁已在临时导出的GitHub基线 `2e375bb` 上执行 `git apply --check`，退出0。补丁路径见交接单。
 
@@ -54,3 +65,7 @@ Agent3单独补丁已在临时导出的GitHub基线 `2e375bb` 上执行 `git app
 3. 模型解释的语义正确性仍需人工核对：引用存在及结构合法不能证明每句解释都由证据充分推出。
 4. 已发送给外部服务的内容不能收回；进程崩溃恢复不承诺外部计费严格只发生一次。
 5. 给 Agent 3 同学核对 [交接单](agent3-ai-handoff.md) 后，再决定如何同步，当前没有上传。
+
+非阻塞界面细节：手动读取最新AI结果与生成同时进行时，较慢读取可能先显示较早分析；分析切换会清除确认，服务端绑定校验仍有效，可重新读取。后续可增加读取中的状态与请求顺序控制。
+
+收尾状态：代码保留在本地 `codex/local-ai-integration`，没有上游跟踪分支，远端前端跟踪引用仍为2e375bb。正式本地5185/8005以未配置的真实provider启动，生成推荐正常、AI按钮禁用且无页面异常；最终验证完成后停止独立测试服务，保留正式本地预览。

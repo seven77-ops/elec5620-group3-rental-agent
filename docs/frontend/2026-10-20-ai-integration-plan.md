@@ -38,7 +38,7 @@
 - `GET /contract-reviews/{review_id}/ai-analyses/latest` → 最近一次结果或 null，附当前 `can_apply`。
 - `POST /contract-reviews/{review_id}/ai-analyses/{analysis_id}/apply` 请求 `{request_id,expected_version,confirmed:true,fields:[字段名]}`，返回 `{review,analysis_id}`。
 
-AI 结果 envelope：`{analysis_id,kind,status,created_at,binding,result,calls,error?,can_apply?}`。status 为 success / partial / failed / skipped / stale；binding 为服务端保存的 case/run/review/version/内容指纹关联。每项 calls 记录 task/provider/model/status/started_at/duration_ms，可选 usage / provider_request_id / error_code。未配置时写明 not_configured 且没有伪造 provider 请求；拒绝同意时零调用。
+AI 结果 envelope：`{analysis_id,kind,status,created_at,binding,result,calls,error?,can_apply?}`。status 为 success / partial / failed / skipped / stale；binding 为服务端保存的 case/run/review/version/内容指纹关联。每项 calls 记录 task/provider/model/status/started_at/duration_ms，可选 usage / provider_request_id / provider_response_id / error_code。未配置时写明 not_configured 且没有伪造 provider 请求；拒绝同意时零调用。
 
 外部网络请求在 SQLite 写事务之外执行。先保存原请求与 pending reservation，相同逻辑请求重试返回原结果，变更输入冲突；并发重复请求提示进行中。调用后重新检查同意与上下文再保存可应用结果，期间发生撤销/变更则拒绝应用。崩溃遗留 reservation 可在超时后重试；不承诺外部服务在崩溃情况下严格只计费一次。
 
