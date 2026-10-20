@@ -98,6 +98,8 @@ PowerShell 对应 `$env:AGENT4_OPERATOR_IDS='demo-operator'`，然后运行同�
 
 ## 边界与交付
 
+2026-10-20：M3 接收已改用 `snapshot_revision` 排序，确认绑定同一序号与完整指纹；同秒人工放行可接收，旧快照/同号异内容暂停。新示例见 [序号测试包](data/demo/m3-handoff/snapshots/README.md)，新验证见 [快照验证报告](reports/m3-m4-snapshot-20261020-01/README.md)。旧报告保留；M3 真实序号和确认持久化入口仍待接入。
+
 - 证据按 `source_ref + source_version` 引用并保留。可以登记照片、收据等元数据，但不上传文件、不做视觉识别或 OCR，也不把有引用当作事实已核实。
 - 扣款始终标为 `reported_claim`；即使有附件或操作员放行，也不自动变成租客接受的扣款。金额用 AUD 整数分。
 - 未验证通知触发事实和适用规则，不输出法定倒计时。官方路径见 [来源说明](docs/reference-sources.md)。
