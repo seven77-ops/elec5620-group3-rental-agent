@@ -25,7 +25,8 @@ class AftercareAgent:
                     response TEXT NOT NULL, PRIMARY KEY(actor_id, request_id));
                 CREATE TABLE IF NOT EXISTS m3_reviews (
                     review_id TEXT PRIMARY KEY, tenant_id TEXT NOT NULL, upstream_case_id TEXT NOT NULL,
-                    version INTEGER NOT NULL, fingerprint TEXT NOT NULL, updated_at TEXT NOT NULL);
+                    version INTEGER NOT NULL, fingerprint TEXT NOT NULL, updated_at TEXT NOT NULL,
+                    snapshot_revision INTEGER);
                 CREATE TABLE IF NOT EXISTS m3_handoffs (
                     upstream_case_id TEXT PRIMARY KEY, tenant_id TEXT NOT NULL,
                     tenancy_id TEXT NOT NULL UNIQUE, case_id TEXT NOT NULL UNIQUE,
@@ -38,6 +39,11 @@ class AftercareAgent:
                     tenant_id TEXT NOT NULL, upstream_case_id TEXT NOT NULL,
                     PRIMARY KEY(confirmation_id, version));
             ''')
+        # Leave legacy rows unnumbered. Only M3 can assign an authoritative sequence.
+        with self.transaction() as conn:
+            columns = {row[1] for row in conn.execute('PRAGMA table_info(m3_reviews)')}
+            if 'snapshot_revision' not in columns:
+                conn.execute('ALTER TABLE m3_reviews ADD COLUMN snapshot_revision INTEGER')
 
     def connect(self):
         return sqlite3.connect(self.database, timeout=25, isolation_level=None)
@@ -111,8 +117,9 @@ class AftercareAgent:
         if binding and command['operation'] in {'create_plan', 'confirm_plan', 'revise_tenancy'}:
             from .handoff import fingerprint
             original = json.loads(binding[0])['review']
-            latest = conn.execute('SELECT version,fingerprint FROM m3_reviews WHERE review_id=?', (original['review_id'],)).fetchone()
-            require(latest == (original['version'], fingerprint(original)), 'handoff_review_stale',
+            latest = conn.execute('SELECT version,fingerprint,snapshot_revision FROM m3_reviews WHERE review_id=?', (original['review_id'],)).fetchone()
+            require(type(original.get('snapshot_revision')) is int and
+                    latest == (original['version'], fingerprint(original), original['snapshot_revision']), 'handoff_review_stale',
                     'A newer M3 review is known; reconcile the lease before creating a plan or revising context')
         if binding and command['operation'] == 'create_plan':
             require(command['payload']['schedule_confirmed'] is True, 'move_out_confirmation_required',

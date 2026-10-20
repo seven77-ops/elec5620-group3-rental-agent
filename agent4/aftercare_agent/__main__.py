@@ -50,6 +50,7 @@ def main(argv=None):
                         f"结果码：{safe(summary.get('code', 'ok'))}", '',
                         f"上游案例：{safe(packet['context']['case_id'])}", '',
                         f"复核：{safe(packet['review']['review_id'])} / v{packet['review']['version']}", '',
+                        f"快照序号：{packet['review']['snapshot_revision']}", '',
                         f"M4 案件：{safe(summary.get('case_id', '未创建'))}", '',
                         f"租约：{safe(summary.get('tenancy_id', '未创建'))}", '',
                         f"说明：{safe(summary.get('message', summary.get('next_action', '')))}", '',

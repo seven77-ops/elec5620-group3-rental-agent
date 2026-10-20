@@ -28,12 +28,20 @@ def validate_review(review):
     # Import via package path, without changing sys.path or creating a second schema.
     try:
         from agent3.contract_agent.contracts import validate_review as m3_validate
+        from agent3.contract_agent.contracts import SCHEMA as m3_schema
         from agent3.contract_agent.errors import ContractError
     except ImportError as exc:
         raise AftercareError('missing_dependency', 'M3 validation is required: run from repository root with PYTHONPATH=agent4') from exc
     else:
         try:
-            m3_validate(review)
+            require(type(review.get('snapshot_revision')) is int and review['snapshot_revision'] >= 1,
+                    'invalid_review', 'M3 must supply a positive integer snapshot_revision')
+            # PR #3 has agreed the field but its older validator does not declare it yet.
+            # Remove only this known extension for that validator; hash/store the full input.
+            validated = deepcopy(review)
+            if 'snapshot_revision' not in json.loads(m3_schema.read_text(encoding='utf-8'))['properties']:
+                del validated['snapshot_revision']
+            m3_validate(validated)
         except (ContractError, KeyError, TypeError, ValueError) as exc:
             raise AftercareError('invalid_review', str(exc)) from exc
     require(isinstance(review.get('document', {}).get('sha256'), str) and
@@ -63,6 +71,8 @@ def confirmation_gate(packet, as_of):
         return 'confirmation_ownership_mismatch', 'Confirmation tenant, case and confirmer must match trusted context'
     if c['review_id'] != r['review_id'] or c['review_version'] != r['version']:
         return 'review_version_mismatch', 'Reconfirm the current review version'
+    if c['review_snapshot_revision'] != r['snapshot_revision']:
+        return 'review_snapshot_revision_mismatch', 'Reconfirm the current saved review snapshot'
     if c['document_sha256'] != r['document']['sha256'] or c['review_sha256'] != fingerprint(r):
         return 'review_fingerprint_mismatch', 'Confirmation does not bind this exact review/document snapshot'
     if not instant(r['updated_at']) <= instant(c['confirmed_at']) <= instant(as_of):
@@ -95,6 +105,9 @@ def receive(agent, packet, *, actor_id, as_of):
     canonical(packet)
     instant(as_of)
     context, review = packet['context'], packet['review']
+    if packet['confirmation'] is not None:
+        require(type(packet['confirmation']['review_snapshot_revision']) is int,
+                'invalid_input', 'review_snapshot_revision must be an integer')
     require(actor_id == context['tenant_id'], 'access_denied', 'Trusted tenant does not own this handoff')
     validate_review(review)
     require(instant(review['updated_at']) <= instant(as_of), 'invalid_review', 'Review is dated in the future')
@@ -103,19 +116,24 @@ def receive(agent, packet, *, actor_id, as_of):
         old = conn.execute('SELECT fingerprint,response FROM m3_receipts WHERE actor_id=? AND request_id=?',
                            (actor_id, packet['request_id'])).fetchone()
         require(not old or old[0] == digest, 'request_conflict', 'Handoff request ID was reused with different input')
-        latest = conn.execute('SELECT tenant_id,upstream_case_id,version,fingerprint,updated_at FROM m3_reviews WHERE review_id=?',
+        latest = conn.execute('SELECT tenant_id,upstream_case_id,version,fingerprint,snapshot_revision FROM m3_reviews WHERE review_id=?',
                               (review['review_id'],)).fetchone()
         require(not latest or latest[:2] == (actor_id, context['case_id']),
                 'context_conflict', 'This review is already bound to another tenant/case')
         pause = None
-        if latest and review['version'] < latest[2]:
-            pause = ('stale_review', 'A newer review is known; old confirmations cannot create or update a tenancy')
-        elif latest and review['version'] == latest[2] and review_digest != latest[3] and instant(review['updated_at']) <= instant(latest[4]):
-            pause = ('review_snapshot_conflict', 'Same-version snapshots require a later updated_at; reload M3 current state')
+        if latest and latest[4] is None:
+            pause = ('snapshot_migration_required', 'Legacy review has no ordering baseline; reconcile with the M3 registered current snapshot explicitly')
+        elif latest and review['snapshot_revision'] < latest[4]:
+            pause = ('stale_snapshot', 'A newer snapshot is known; old successful receipts cannot bypass it')
+        elif latest and review['snapshot_revision'] == latest[4] and review_digest != latest[3]:
+            pause = ('review_snapshot_conflict', 'One snapshot revision cannot identify different review content')
+        elif latest and review['version'] < latest[2]:
+            pause = ('review_version_regression', 'Contract version cannot decrease as the snapshot revision increases')
         else:
-            conn.execute('INSERT INTO m3_reviews VALUES(?,?,?,?,?,?) ON CONFLICT(review_id) DO UPDATE SET '
-                         'version=excluded.version,fingerprint=excluded.fingerprint,updated_at=excluded.updated_at',
-                         (review['review_id'], actor_id, context['case_id'], review['version'], review_digest, review['updated_at']))
+            conn.execute('INSERT INTO m3_reviews(review_id,tenant_id,upstream_case_id,version,fingerprint,updated_at,snapshot_revision) '
+                         'VALUES(?,?,?,?,?,?,?) ON CONFLICT(review_id) DO UPDATE SET '
+                         'version=excluded.version,fingerprint=excluded.fingerprint,updated_at=excluded.updated_at,snapshot_revision=excluded.snapshot_revision',
+                         (review['review_id'], actor_id, context['case_id'], review['version'], review_digest, review['updated_at'], review['snapshot_revision']))
         if pause is None:
             pause = confirmation_gate(packet, as_of)
         if pause is None:
@@ -136,7 +154,7 @@ def receive(agent, packet, *, actor_id, as_of):
         if pause:
             response = {'schema_version': '1.0', 'status': 'paused', 'code': pause[0], 'message': pause[1],
                         'upstream_case_id': context['case_id'], 'review_id': review['review_id'],
-                        'review_version': review['version'], 'newly_created': False}
+                        'review_version': review['version'], 'review_snapshot_revision': review['snapshot_revision'], 'newly_created': False}
             if not old:
                 conn.execute('INSERT INTO m3_receipts VALUES(?,?,?,?)', (actor_id, packet['request_id'], digest, canonical(response)))
             return response
@@ -171,10 +189,11 @@ def receive(agent, packet, *, actor_id, as_of):
             evidence = deepcopy(packet['evidence'])
             for kind, ref, version, stamp, summary in (
                     ('review', review['review_id'], review['version'], review['updated_at'],
-                     'M3 ContractReview; document_sha256=' + review['document']['sha256'] + '; review_sha256=' + review_digest),
+                     'M3 ContractReview; snapshot_revision=' + str(review['snapshot_revision']) + '; document_sha256=' + review['document']['sha256'] + '; review_sha256=' + review_digest),
                     ('confirmation', confirmation['confirmation_id'], confirmation['confirmation_version'], confirmation['confirmed_at'],
                      'M3 actual tenancy declaration; upstream_case_id=' + context['case_id'] + '; not payment or move-out confirmation')):
-                evidence.append({'evidence_id': 'm3-' + kind + '-' + fingerprint([ref, version])[:32], 'kind': 'other',
+                identity = [ref, version, review['snapshot_revision']] if kind == 'review' else [ref, version]
+                evidence.append({'evidence_id': 'm3-' + kind + '-' + fingerprint(identity)[:32], 'kind': 'other',
                                  'source_ref': ref, 'source_version': version, 'recorded_at': stamp, 'summary': summary})
             require(len({e['evidence_id'] for e in evidence}) == len(evidence), 'evidence_conflict', 'Duplicate/reserved evidence ID')
             command = {'schema_version': '1.0', 'request_id': 'm3-' + fingerprint([actor_id, packet['request_id']]),
@@ -185,6 +204,7 @@ def receive(agent, packet, *, actor_id, as_of):
             response = {'schema_version': '1.0', 'status': 'created', 'newly_created': True,
                         'upstream_case_id': context['case_id'], 'case_id': case_id, 'tenancy_id': tenancy_id,
                         'review_id': review['review_id'], 'review_version': review['version'],
+                        'review_snapshot_revision': review['snapshot_revision'],
                         'confirmation_id': confirmation['confirmation_id'], 'confirmation_version': confirmation['confirmation_version'],
                         'next_action': 'confirm_property_details_and_move_out_date', 'receipt': receipt}
             conn.execute('INSERT INTO m3_handoffs VALUES(?,?,?,?,?,?,?)',
