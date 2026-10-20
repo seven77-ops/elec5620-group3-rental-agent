@@ -198,6 +198,9 @@ test("independent aftercare requires confirmation and supports tasks, dispute ga
 }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "新建演示案例", exact: true }).click();
+  await expect(
+    page.getByRole("heading", { name: "租房偏好", exact: true }),
+  ).toBeVisible();
   await navigate(page, "租后服务");
   await expect(
     page.getByRole("button", { name: "确认资料并创建租后案件", exact: true }),
