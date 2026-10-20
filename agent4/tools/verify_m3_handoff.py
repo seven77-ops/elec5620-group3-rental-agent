@@ -8,6 +8,7 @@ from copy import deepcopy
 from datetime import datetime, timezone
 from hashlib import sha256
 import importlib.metadata
+import importlib
 import json
 import os
 from pathlib import Path
@@ -15,9 +16,11 @@ import re
 import shlex
 import subprocess
 import sys
+from unittest.mock import patch
 
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO / 'agent4'))
+sys.path.insert(0, str(REPO))
 from aftercare_agent.contracts import load_json
 from aftercare_agent.handoff import FIELDS, fingerprint
 from aftercare_agent.report import export_document, export_case
@@ -45,7 +48,7 @@ def main():
     env = {**os.environ, 'PYTHONUTF8': '1', 'PYTHONIOENCODING': 'utf-8',
            'PYTHONPATH': os.pathsep.join(str(REPO / name) for name in ('agent4', 'agent3', 'agent2')) + os.pathsep + str(REPO),
            'TEMP': str(runtime / 'temp'), 'TMP': str(runtime / 'temp')}
-    fixtures = REPO / 'agent4/data/demo/m3-handoff'
+    fixtures = REPO / 'agent4/data/demo/m3-handoff/snapshots'
     execution, scenarios, suites = [], [], []
 
     def run(name, argv, expected=0):
@@ -80,6 +83,8 @@ def main():
         scenarios.append({'name': name, 'status': response['status'], 'code': response.get('code'),
                           'case_id': response.get('case_id'), 'tenancy_id': response.get('tenancy_id'),
                           'review_id': packet['review']['review_id'], 'review_version': packet['review']['version'],
+                          'snapshot_revision': packet['review']['snapshot_revision'],
+                          'confirmation_snapshot_revision': (packet['confirmation'] or {}).get('review_snapshot_revision'),
                           'confirmation_id': (packet['confirmation'] or {}).get('confirmation_id'),
                           'confirmation_version': (packet['confirmation'] or {}).get('confirmation_version'),
                           'case_count': count, 'mapping_count': mappings, 'newly_created': response['newly_created']})
@@ -95,14 +100,15 @@ def main():
             runtime / 'human-review.sqlite3', 'paused', 'review_blocked')
     version_packet = load_json(fixtures / 'v2-old-confirmation-packet.json')
     receive('05-version-change', version_packet, database, 'paused', 'review_version_mismatch')
-    receive('06-old-version-replay', normal, database, 'paused', 'stale_review')
+    receive('06-old-version-replay', normal, database, 'paused', 'stale_snapshot')
     assert scenarios[-1]['case_count'] == 1
     # Reconfirmation is a test double too; M3 has not implemented the real producer.
     v2 = deepcopy(version_packet)
     v2['request_id'] = 'm3:confirmation-stub:v2-reconfirmed'
     c, r = v2['confirmation'], v2['review']
     c.update(confirmation_id='DEMO-M3-CONFIRMATION-STUB-V2', confirmation_version=1,
-             review_id=r['review_id'], review_version=r['version'], review_sha256=fingerprint(r), document_sha256=r['document']['sha256'])
+             review_id=r['review_id'], review_version=r['version'], review_snapshot_revision=r['snapshot_revision'],
+             review_sha256=fingerprint(r), document_sha256=r['document']['sha256'])
     c['confirmed_fields'].update({k: r['fields'][k]['value'] for k in FIELDS})
     receive('07-v2-reconfirmed-fresh', v2, runtime / 'v2-fresh.sqlite3', 'created')
     receive('08-v2-reconfirmed-existing', v2, database, 'paused', 'existing_tenancy_requires_reconciliation')
@@ -137,21 +143,67 @@ def main():
     assert final['bond'] is None
     write_json(output / '14-saved-handoff-snapshot.json', agent.get_handoff(case['case_id'], TENANT))
 
+    # Real M3 state transitions at one fixed second. Sequence/confirmation assignment
+    # is an explicitly synthetic persistence double until M3 implements that entry.
+    from agent3.contract_agent.document import load_document
+    m3 = importlib.import_module('agent3.contract_agent.review')
+    agreement = runtime / 'synthetic-risk-with-signed-date.txt'
+    agreement.write_text((REPO / 'agent3/data/demo/agreements/selection-demo.txt').read_text(encoding='utf-8')
+                         .replace('Bond: $2000', 'Bond: $2500'), encoding='utf-8')
+    with patch.object(m3, '_now', return_value='2026-10-17T18:00:00+11:00'):
+        pending = m3.review_agreement(load_document(agreement, consent=True), consent=True,
+                                     selection=normal['review']['selection_evidence'], as_of='2026-10-15')
+        approved = m3.approve_review(pending, reviewer='DEMO-OPERATOR', decision='approve', note='Synthetic same-second test')
+    assert pending['version'] == approved['version'] == 1
+    assert pending['updated_at'] == approved['updated_at']
+    pending['snapshot_revision'], approved['snapshot_revision'] = 1, 2
+    before, after = deepcopy(normal), deepcopy(normal)
+    before.update(request_id='same-second:pending', review=pending, confirmation=None)
+    after.update(request_id='same-second:approved', review=approved)
+    after['confirmation'].update(confirmation_id='DEMO-SAME-SECOND-CONFIRMATION', review_id=approved['review_id'],
+                                review_snapshot_revision=2, review_sha256=fingerprint(approved), document_sha256=approved['document']['sha256'])
+    after['confirmation']['confirmed_fields'].update({k: approved['fields'][k]['value'] for k in FIELDS})
+    same_db = runtime / 'same-second.sqlite3'
+    receive('15-same-second-pending', before, same_db, 'paused', 'review_blocked')
+    released = receive('16-same-second-approved', after, same_db, 'created')
+    receive('17-old-pending-replay', before, same_db, 'paused', 'stale_snapshot')
+    conflict = deepcopy(after)
+    conflict['request_id'] = 'same-revision:changed-content'
+    conflict['review']['status_reason'] = 'Different content with the same snapshot revision'
+    conflict['confirmation']['review_sha256'] = fingerprint(conflict['review'])
+    receive('18-same-revision-conflict', conflict, same_db, 'paused', 'review_snapshot_conflict')
+    mismatch = deepcopy(after)
+    mismatch['request_id'] = 'wrong-confirmation-revision'
+    mismatch['confirmation']['review_snapshot_revision'] = 1
+    receive('19-confirmation-revision-mismatch', mismatch, runtime / 'mismatch.sqlite3', 'paused', 'review_snapshot_revision_mismatch')
+    questions = deepcopy(after)
+    questions.update(request_id='newer:questions', confirmation=None)
+    questions['review'].update(snapshot_revision=3, status='Questions Ready')
+    receive('20-newer-blocked-snapshot', questions, same_db, 'paused', 'review_blocked')
+    receive('21-old-success-replay', after, same_db, 'paused', 'stale_snapshot')
+    assert scenarios[-1]['case_count'] == 1
+    assert AftercareAgent(same_db).get_handoff(released['case_id'], TENANT)['review']['snapshot_revision'] == 2
+
     for name, folder in (('m4-tests', 'agent4/tests'), ('m3-tests', 'agent3/tests'), ('upstream-integration-tests', 'integration/tests')):
         result = run(name, [sys.executable, '-m', 'unittest', 'discover', '-s', folder, '-v'])
         match = re.search(r'Ran (\d+) tests?', result.stderr)
         suites.append({'suite': name, 'tests': int(match[1]) if match else None, 'status': 'passed'})
 
+    historical = REPO / 'agent4/reports/m3-m4-receive-20261017-03'
+    previous_hashes = load_json(historical / 'sha256.json')
+    assert all(sha256((historical / name).read_bytes()).hexdigest() == digest for name, digest in previous_hashes.items())
+    refs = {name: subprocess.check_output(['git', 'rev-parse', name], cwd=REPO).decode().strip() for name in (
+        'HEAD', 'origin/main', 'origin/codex/m3-m4-handoff-20261017', 'origin/codex/frontend-demo', 'origin/codex/m4-m3-receive-20261017')}
     metadata = {'data_mode': 'synthetic_demo', 'confirmation_producer': 'explicit_test_double_not_implemented_M3_entry',
+                'sequence_producer': 'explicit_test_double_not_implemented_M3_persistence',
                 'executed_at': datetime.now(timezone.utc).isoformat(), 'scenario_clock': NOW,
-                'base_main': 'b06614de1c7825d7fbc4bcc773a75efa4eb1da97',
-                'm3_reference_commit': 'a4d9f2ed85f82d65310e15954d54c1849729b9b0',
-                'frontend_reference_commit': '5163bfb96dfb6467a80db80ca99f8313fe86359d',
+                'refs': refs, 'historical_report_hashes_verified': len(previous_hashes),
                 'python': sys.version, 'dependencies': {n: importlib.metadata.version(n) for n in ('jsonschema', 'pypdf', 'tzdata')},
                 'source_sha256': {p.relative_to(REPO).as_posix(): sha256(p.read_bytes()).hexdigest()
                                   for folder in ('aftercare_agent', 'tests', 'tools', 'schemas')
                                   for p in sorted((REPO / 'agent4' / folder).glob('*')) if p.is_file()},
-                'm3_fixture_sha256': {p.name: sha256(p.read_bytes()).hexdigest() for p in fixtures.glob('*-review.json')},
+                'fixture_sha256': {p.relative_to(fixtures.parent).as_posix(): sha256(p.read_bytes()).hexdigest()
+                                   for p in fixtures.parent.rglob('*.json')},
                 'environment': {k: env[k] for k in ('PYTHONPATH', 'PYTHONUTF8', 'PYTHONIOENCODING', 'TEMP', 'TMP')},
                 'scenarios': scenarios, 'suites': suites, 'commands': execution,
                 'limits': ['M3 actual confirmation producer remains unimplemented; synthetic doubles only.',
@@ -159,11 +211,14 @@ def main():
                            'Existing tenancy with new confirmed review pauses for explicit reconciliation.']}
     write_json(output / 'execution.json', metadata)
     rows = ['# M3 → M4 接收验证', '', '本次为 M4 消费端的合成数据预联调。M3 实际租约确认入口未实现，确认记录由明确标注的测试替身提供。', '',
-            '| 场景 | 结果 | 结果码 | 案件数 |', '|---|---|---|---|']
-    rows += [f"| {s['name']} | {s['status']} | {s['code'] or 'ok'} | {s['case_count']} |" for s in scenarios]
+            '快照序号同样由测试替身显式分配；同秒复核/人工放行调用真实 M3 状态函数。尚未验证 M3 事务计数器和确认持久化入口。', '',
+            '| 场景 | 版本/序号 | 结果 | 结果码 | 案件数 |', '|---|---|---|---|---|']
+    rows += [f"| {s['name']} | {s['review_version']}/{s['snapshot_revision']} | {s['status']} | {s['code'] or 'ok'} | {s['case_count']} |" for s in scenarios]
     rows += ['', '## 回归', ''] + [f"- {s['suite']}: {s['tests']} 项通过。" for s in suites]
     rows += ['', '## ID 与来源', '', f"- 正常 M4 案件：`{first['case_id']}`。", f"- 正常租约：`{first['tenancy_id']}`。",
              '- `02-repeat` 与 `01-normal-stub` 的案件和租约 ID 相同；数据库仍为一个案件。',
+             '- `15/16` 在同一秒从序号 1 人工待审变为序号 2 放行，可创建；`17/21` 的旧包被拦截，`18` 同号异内容冲突，`19` 确认序号不匹配暂停。',
+             '- 已核对旧报告 67 个文件的指纹，全部保持原样。',
              '- `05-version-change` 保存已知 v2，旧确认被拒绝；随后 v1 原请求重放也被拒绝。',
              '- 原租约来源仍为 v1，不自动覆盖、不创建第二案件；新版重新确认在新库可创建，在既有库要求明确核对。',
              '- `10-before-date-confirmation` 的 plan/bond 均为 null；第 11 步未确认日期被拦截，第 13 步独立确认后创建 Active 计划。',
