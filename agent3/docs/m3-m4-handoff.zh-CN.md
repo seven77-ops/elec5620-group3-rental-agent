@@ -2,6 +2,8 @@
 
 日期：2026-10-17。范围：课程原型的本地 JSON/CLI 交接；当前没有自动投递给 M4 的 API。本文件是 M3 提供给 M4 队员的接口提案，不表示双方已经完成联调。**用户确认实际租约信息纳入 M3 的下一步开发职责；本节描述的确认入口、确认记录与租约登记尚未实现。**
 
+2026-10-20 补充：以下 `snapshot_revision` 为 M3 侧明确提出的生成与传递约定；当前 M3/M4 分支尚未实现该字段，需同步双方 Schema、持久化入口及样例后联调。
+
 ## 先用这三份样例
 
 | 场景 | M3 输出 | M4 预期 |
@@ -61,10 +63,49 @@ M3 向 M4 交付完整的 `ContractReview` JSON，格式以 [`contract-review.sc
 | `tenant_id`, `case_id`, `tenancy_id` | 绑定租客、全流程案例及已登记租约；如 M4 使用独立案件 ID，另存案例映射 |
 | `confirmed_by`, `confirmed_at` | 从可信用户会话取得的确认人及带时区的确认时间；演示阶段明确标为模拟身份 |
 | `review_id`, `review_version`, `document_sha256` | 绑定用户实际核对的复核版本与合同文件 |
+| `review_snapshot_revision`, `review_sha256` | 分别匹配当前 `ContractReview.snapshot_revision` 与完整复核快照指纹；具体生成规则见下节 |
 | `actual_tenancy_confirmed` | 仅在用户显式确认后保存为 `true` |
 | `confirmed_fields` | 用户核对后的租约字段快照，以及明确确认的辖区和实际租赁类型；保留未知值，不能自动补事实 |
 
 确认与当前复核版本、合同指纹必须一致。字段修正或合同换版后，旧确认仅作历史记录，M3 要求用户重新确认；M4 拒绝过期、缺失或归属不一致的确认。相同请求重试应复用原确认和租约 ID，内容变化使用新请求并保留历史。这些属于下一步需要实现并测试的验收条件。
+
+## snapshot_revision 的生成与传递（2026-10-20，待实现）
+
+`ContractReview.version` 继续表示现有合同字段修订版本；新增顶层 `snapshot_revision` 表示完整复核快照的保存次序。人工决定和问题清单操作可能不改变 `version`，也必须有新的快照序号。二者独立计数。
+
+**生成职责与事务规则：**
+
+- 由 M3 的唯一持久化入口生成，类型为大于等于 1 的整数，计数范围是同一个 `review_id`。首次保存为 1，后续每次完整快照变化加 1；`version` 增长时序号继续递增。
+- 初次复核、有效字段修正、人工批准/退回、生成或编辑问题清单，凡实际改变持久化的 ContractReview，均产生一个新序号。纯读取、JSON/Markdown 导出、没有字段变化的修正和相同请求重试复用原快照、序号和指纹。
+- M3 在事务内先核对请求收据和预期快照序号，再分配新序号、保存完整快照及收据。并发修改遇到旧的预期序号时返回冲突，重新读取后处理；不能让多个调用方各自对旧值加 1，也不能用时间戳代替计数器。新 `review_id` 独立从 1 开始。
+- 先把 `snapshot_revision` 写入将要保存的完整 ContractReview，再计算 `review_sha256`。用户确认必须绑定其实际核对的已保存快照；持久化确认审计使用独立记录，不向被确认的旧 ContractReview 追加事件而改变其指纹。
+
+**传递字段约定：**
+
+```text
+packet.review.review_id                  = M3 复核 ID
+packet.review.version                    = 合同字段修订版本
+packet.review.snapshot_revision          = M3 完整快照序号
+packet.confirmation.review_id            = 同一复核 ID
+packet.confirmation.review_version       = 同一合同字段修订版本
+packet.confirmation.review_snapshot_revision = 同一完整快照序号
+packet.confirmation.review_sha256        = 包含 snapshot_revision 的完整快照指纹
+```
+
+确认记录使用 `review_snapshot_revision` 这个字段名，以区分自身的 `confirmation_version`。两份 Schema 均需显式定义为整数且最小值为 1。交接外层原样传递当前完整快照及其持久化确认；前端显示/提交确认时带回所见序号，M3 服务端与当前保存值比较，旧快照须重新展示并由用户确认。实际序号由 M3 服务端分配。
+
+指纹算法沿用 M4 PR #5 的约定：
+
+```python
+sha256(json.dumps(review, sort_keys=True, ensure_ascii=False,
+                  separators=(',', ':'), allow_nan=False).encode('utf-8')).hexdigest()
+```
+
+同一 `review_id` 的时间先后以 `snapshot_revision` 判定，`updated_at` 用于显示和审计。M4 保存已观察的最大序号：更小序号暂停为旧快照；相同序号与相同指纹表示同一快照（创建还需满足当前确认/案件门禁）；相同序号与不同指纹返回冲突；更大序号作为新快照处理，并要求当前确认的序号和指纹均匹配。新的暂停快照仍须保留已知序号，旧成功收据不能绕过门禁。
+
+示例：初次复核 `(version=1, snapshot_revision=1)` → 人工放行 `(1,2)` → 字段修正 `(2,3)` → 问题清单 `(2,4)`。重复导出/重试仍为 `(2,4)`，即使两次状态变化发生在同一秒也能排序。
+
+旧报告没有该字段时保留原始历史。迁移由 M3 在存储内将唯一当前快照登记为初始序号，再重新生成确认；M4 对新接入不能为每份旧报告自行补 1。需要新增的验证包括：同秒人工放行、同版本不同序号、相同序号不同指纹、字段版本变化、重复请求及并发修改。
 
 ## M4 创建时补齐的退租资料
 
