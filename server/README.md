@@ -73,3 +73,7 @@ Evaluation is two-phase: atomically reserve the HTTP request and member task thr
 Legacy form-only cases retain read-only history/exports. New preference confirmations, searches and selection mutations require a new Agent1 case; historical confirmations are never invented or rewritten. Separately confirmed existing aftercare cases remain available. Old HTTP clients must read the case and include its review_token when confirming new cases.
 
 The editable form is a supported local entry mode. LLM extraction is not enabled; the browser accepts no model credentials. Synthetic fixtures and clocks remain unchanged. After changing preferences, previous selections are explicitly historical and cannot continue contract intake until reselected.
+
+## Optional local AI sidecars
+
+The new `/api/v1/ai/config`, saved-evaluation `/ai-explanations`, saved-review `/ai-analyses` and explicit `/apply` endpoints are opt-in. Original rule-only endpoints stay unchanged. Configure backend-only settings using root `.env.example` and `scripts/dev.py`; see [local AI guide](../docs/frontend/2026-10-20-ai-local-run.md). No provider is enabled by default and test_stub is injected only by the isolated test app. AI candidates do not alter ContractReview until the user explicitly applies selected, cited values.
