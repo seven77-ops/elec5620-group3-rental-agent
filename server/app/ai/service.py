@@ -72,8 +72,9 @@ class AiService:
         with repo.transaction() as db:
             binding,saved=self.source(db,kind,ref,body)
             old=self.ctx.receipt(db,'ai_receipt',key,body)
-            if old and 'result' in old:
+            if old:
                 require(old['binding']==binding,409,'ai_context_changed','原请求绑定的输入已变化，请按当前版本新建分析。')
+            if old and 'result' in old:
                 completed=old['result']
             else:
                 completed=None

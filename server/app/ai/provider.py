@@ -1,4 +1,5 @@
 """Server-only bounded JSON model transport. No provider secret enters public traces."""
+import asyncio
 from datetime import datetime, timezone
 import json
 import math
@@ -90,23 +91,35 @@ class ModelProvider:
         if len(raw) > 768_000:
             fail('ai_input_too_large')
         call['attempted'] = True
+
+        async def fetch():
+            # httpx timeouts bound individual I/O waits. One cancellable deadline
+            # also bounds connection, headers and the entire streamed body together.
+            async with asyncio.timeout(self.timeout):
+                async with httpx.AsyncClient(transport=self.transport, timeout=self.timeout,
+                                            follow_redirects=False, trust_env=False) as client:
+                    async with client.stream('POST', self.url, content=raw,
+                                             headers={'Authorization': 'Bearer ' + self.key, 'Content-Type': 'application/json'}) as response:
+                        if response.status_code != 200:
+                            fail('ai_http_error')
+                        content = bytearray()
+                        async for chunk in response.aiter_bytes():
+                            if len(content) + len(chunk) > LIMIT:
+                                fail('ai_response_too_large')
+                            content.extend(chunk)
+                        return content, response.headers.get('x-request-id')
+
         try:
-            with httpx.Client(transport=self.transport, timeout=self.timeout, follow_redirects=False, trust_env=False) as client:
-                with client.stream('POST', self.url, content=raw,
-                                   headers={'Authorization': 'Bearer ' + self.key, 'Content-Type': 'application/json'}) as response:
-                    if response.status_code != 200:
-                        fail('ai_http_error')
-                    content = bytearray()
-                    for chunk in response.iter_bytes():
-                        if len(content) + len(chunk) > LIMIT:
-                            fail('ai_response_too_large')
-                        content.extend(chunk)
+            # AI HTTP routes are synchronous and execute in FastAPI's worker pool.
+            content, provider_request_id = asyncio.run(fetch())
             envelope = strict_json(bytes(content).decode('utf-8'))
             result = strict_json(envelope['choices'][0]['message']['content'])
             if not isinstance(result, dict):
                 fail('ai_invalid_response')
             if isinstance(envelope.get('id'), str):
-                call['provider_request_id'] = envelope['id'][:200]
+                call['provider_response_id'] = envelope['id'][:200]
+            if provider_request_id:
+                call['provider_request_id'] = provider_request_id[:200]
             if isinstance(envelope.get('model'), str):
                 call['response_model'] = envelope['model'][:160]
             usage = envelope.get('usage')
@@ -118,7 +131,7 @@ class ModelProvider:
             return result, call
         except ProviderError:
             raise
-        except httpx.TimeoutException:
+        except (TimeoutError, httpx.TimeoutException):
             fail('ai_timeout')
         except httpx.HTTPError:
             fail('ai_connection_error')

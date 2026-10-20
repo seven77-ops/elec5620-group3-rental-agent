@@ -1,5 +1,7 @@
+import asyncio
 import json
 from pathlib import Path
+from time import monotonic, sleep
 import unittest
 import httpx
 
@@ -38,7 +40,7 @@ class ProviderTests(unittest.TestCase):
             body = json.loads(request.content)
             self.assertEqual(body['model'], 'test-model')
             self.assertIn('untrusted', body['messages'][0]['content'])
-            return httpx.Response(200, json={'id': 'provider-request-123', 'model': 'actual-model',
+            return httpx.Response(200, headers={'x-request-id': 'provider-request-123'}, json={'id': 'completion-456', 'model': 'actual-model',
                 'usage': {'prompt_tokens': 20, 'completion_tokens': 5, 'total_tokens': 25},
                 'choices': [{'message': {'content': '{"fields": []}'}}]})
         data, call = self.provider(respond).call({'task': 'contract_extract', 'document': 'synthetic'})
@@ -46,6 +48,7 @@ class ProviderTests(unittest.TestCase):
         self.assertTrue(call['attempted'])
         self.assertEqual(call['status'], 'succeeded')
         self.assertEqual(call['provider_request_id'], 'provider-request-123')
+        self.assertEqual(call['provider_response_id'], 'completion-456')
         self.assertEqual(call['usage']['total_tokens'], 25)
         self.assertGreaterEqual(call['duration_ms'], 0)
         self.assertNotIn('private-test-secret', json.dumps(call))
@@ -69,6 +72,51 @@ class ProviderTests(unittest.TestCase):
         self.assertNotIn('private-test-secret', str(error.exception))
         self.assertNotIn('raw contract', str(error.exception))
 
+    def test_total_deadline_stops_trickled_response_and_closes_stream(self):
+        # Both interfaces let the regression exercise the old synchronous transport too.
+        # Every chunk arrives well within the per-I/O timeout; the full body takes 3s.
+        class DripStream(httpx.AsyncByteStream, httpx.SyncByteStream):
+            closed = False
+
+            def __iter__(self):
+                for _ in range(30):
+                    sleep(.1)
+                    yield b' '
+                yield b'{"choices":[{"message":{"content":"{\\"fields\\":[]}"}}]}'
+
+            async def __aiter__(self):
+                for _ in range(30):
+                    await asyncio.sleep(.1)
+                    yield b' '
+                yield b'{"choices":[{"message":{"content":"{\\"fields\\":[]}"}}]}'
+
+            def close(self):
+                self.closed = True
+
+            async def aclose(self):
+                self.closed = True
+
+        stream = DripStream()
+        provider = self.provider(lambda r: httpx.Response(200, stream=stream), RENTAL_AI_TIMEOUT_SECONDS='1')
+        start = monotonic()
+        with self.assertRaises(Exception) as error:
+            provider.call({'task': 'contract_extract'})
+        elapsed = monotonic() - start
+        self.assertEqual(error.exception.code, 'ai_timeout')
+        self.assertTrue(error.exception.call['attempted'])
+        self.assertEqual(error.exception.call['status'], 'failed')
+        self.assertLess(elapsed, 2)
+        self.assertGreaterEqual(error.exception.call['duration_ms'], 900)
+        self.assertTrue(stream.closed)
+        self.assertNotIn('private-test-secret', str(error.exception))
+
+    def test_response_id_does_not_invent_request_id(self):
+        provider = self.provider(lambda r: httpx.Response(200, json={'id': 'completion-only',
+            'choices': [{'message': {'content': '{"fields":[]}'}}]}))
+        _, call = provider.call({'task': 'contract_extract'})
+        self.assertEqual(call.get('provider_response_id'), 'completion-only')
+        self.assertNotIn('provider_request_id', call)
+
     def test_duplicate_nonfinite_and_oversized_responses_rejected(self):
         for content in ('{"fields":[],"fields":[]}', '{"score":1e999}', '{"score":NaN}'):
             with self.subTest(content=content):
@@ -88,6 +136,7 @@ class ProviderTests(unittest.TestCase):
         _, call = provider.call({'task':'contract_extract'})
         self.assertNotIn('usage',call)
         self.assertNotIn('provider_request_id',call)
+        self.assertNotIn('provider_response_id',call)
 
 
 if __name__ == '__main__':

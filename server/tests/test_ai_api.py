@@ -90,6 +90,52 @@ class AiApiTests(unittest.TestCase):
         response=self.post(path,{'request_id':'apply','expected_version':1,'confirmed':True,'fields':['address']})
         self.assertEqual(response.status_code,409,response.text)
 
+    def test_changed_review_same_version_rejects_pending_and_completed_receipt(self):
+        self.review(free_text=False)
+        self.assertEqual(self.analyze().status_code, 200)
+        repo = self.app.state.repository
+        key = 'contract:' + self.review_id + ':a1'
+        with repo.transaction() as db:
+            completed = repo.get(db, 'ai_receipt', key)
+        pending = copy.deepcopy(completed)
+        del pending['result']
+        pending['lease_until'] = 0
+        response = self.post(f'/contract-reviews/{self.review_id}/questions', {'expected_version': 1})
+        self.assertEqual(response.status_code, 200, response.text)
+        current = self.client.get(f'/api/v1/contract-reviews/{self.review_id}').json()
+        self.assertEqual(current['version'], 1)
+        self.assertNotEqual(current, self.original)
+        for receipt in (pending, completed):
+            with self.subTest(completed='result' in receipt):
+                before = len(self.provider.inputs)
+                with repo.transaction() as db:
+                    repo.put(db, 'ai_receipt', key, receipt)
+                response = self.analyze()
+                self.assertEqual(response.status_code, 409, response.text)
+                self.assertEqual(response.json()['error']['code'], 'ai_context_changed')
+                self.assertEqual(len(self.provider.inputs), before)
+                with repo.transaction() as db:
+                    self.assertEqual(repo.get(db, 'ai_receipt', key), receipt)
+
+    def test_expired_pending_same_binding_recovers_original_analysis_id(self):
+        self.review()
+        response = self.analyze()
+        self.assertEqual(response.status_code, 200, response.text)
+        repo = self.app.state.repository
+        key = 'contract:' + self.review_id + ':a1'
+        with repo.transaction() as db:
+            receipt = repo.get(db, 'ai_receipt', key)
+            del receipt['result']
+            receipt['lease_until'] = 0
+            repo.put(db, 'ai_receipt', key, receipt)
+        before = len(self.provider.inputs)
+        recovered = self.analyze()
+        self.assertEqual(recovered.status_code, 200, recovered.text)
+        self.assertGreater(len(self.provider.inputs), before)
+        self.assertEqual(recovered.json()['analysis_id'], receipt['analysis_id'])
+        self.assertEqual(recovered.json()['created_at'], receipt['created_at'])
+        self.assertEqual(recovered.json()['binding'], receipt['binding'])
+
     def test_provider_failure_preserves_original_and_records_truthful_failure(self):
         self.review(); self.provider.mode='error'; response=self.analyze()
         self.assertEqual(response.status_code,200,response.text)
