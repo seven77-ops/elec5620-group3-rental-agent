@@ -56,8 +56,199 @@ async function contract(request: APIRequestContext) {
     data: Buffer.from(agreement),
   });
   expect(r.ok()).toBeTruthy();
-  return { c, e, review: (await r.json()).review, consent };
+  return { c, e, review: (await r.json()).review, consent, agreement };
 }
+
+test("obsolete AI apply completion preserves a different selected review", async ({
+  page,
+  request,
+}) => {
+  const { c, review: first, consent, agreement } = await contract(request);
+  const upload = await request.post(
+    `/api/v1/cases/${c.case_id}/contract-reviews`,
+    {
+      headers: {
+        "Content-Type": "application/octet-stream",
+        "X-Consent-Id": consent.consent_id,
+        "X-Request-Id": crypto.randomUUID(),
+        "X-Filename": "review-b.txt",
+      },
+      data: Buffer.from(`${agreement}\nSynthetic review B note.\n`),
+    },
+  );
+  expect(upload.ok()).toBeTruthy();
+  const second = (await upload.json()).review;
+  expect(second.review_id).not.toBe(first.review_id);
+  await page.goto(`/cases/${c.case_id}/contract`);
+  const selector = page.getByRole("combobox", { name: "选择合同复核记录" });
+  await selector.click();
+  await page.getByTitle("合同 1 · v1", { exact: true }).click();
+  await expect(page.locator(".review-status")).toContainText("复核版本 v1");
+  await page
+    .getByRole("checkbox", {
+      name: "我同意将本合同文本及选房核对资料发送到配置的模型，用于本次 AI 辅助分析。",
+      exact: true,
+    })
+    .check();
+  await page
+    .getByRole("button", { name: "AI 辅助分析合同", exact: true })
+    .click();
+  await page
+    .getByRole("checkbox", { name: "选择 AI 字段：合同租金", exact: true })
+    .check();
+  await page
+    .getByRole("checkbox", {
+      name: "我已逐项核对所选字段的原文，确认应用到当前复核。",
+      exact: true,
+    })
+    .check();
+
+  let release!: () => void;
+  const heldResponse = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  let written!: () => void;
+  const serverWritten = new Promise<void>((resolve) => {
+    written = resolve;
+  });
+  await page.route(
+    `**/contract-reviews/${first.review_id}/ai-analyses/*/apply`,
+    async (route) => {
+      // Execute the real write before holding only the browser response.
+      const response = await route.fetch();
+      expect(response.ok()).toBeTruthy();
+      written();
+      await heldResponse;
+      await route.fulfill({ response });
+    },
+  );
+  await page
+    .getByRole("button", { name: "确认应用所选字段", exact: true })
+    .click();
+  await serverWritten;
+  expect(
+    (
+      await (
+        await request.get(`/api/v1/contract-reviews/${first.review_id}`)
+      ).json()
+    ).version,
+  ).toBe(2);
+  try {
+    const loadedB = page.waitForResponse(
+      (r) =>
+        r.url().endsWith(`/contract-reviews/${second.review_id}`) &&
+        r.request().method() === "GET",
+    );
+    await selector.click();
+    await page.getByTitle("合同 2 · v1", { exact: true }).click();
+    await loadedB;
+    await expect(
+      page.getByRole("link", { name: "下载复核 JSON", exact: true }),
+    ).toHaveAttribute(
+      "href",
+      `/api/v1/contract-reviews/${second.review_id}/export`,
+    );
+    const completed = page.waitForResponse(
+      (r) => r.url().endsWith("/apply") && r.request().method() === "POST",
+    );
+    release();
+    await completed;
+    // The success message is emitted after onApplied has completed.
+    await expect(
+      page.getByText("已应用核对字段并保存新复核版本。", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "下载复核 JSON", exact: true }),
+    ).toHaveAttribute(
+      "href",
+      `/api/v1/contract-reviews/${second.review_id}/export`,
+    );
+    await expect(
+      page.locator(".ant-select").filter({ has: selector }),
+    ).toContainText("合同 2 · v1");
+    await expect(
+      page.getByRole("heading", { name: "合同提取字段", exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "AI 合同辅助分析", exact: true }),
+    ).toBeVisible();
+  } finally {
+    release();
+  }
+});
+
+test("obsolete AI apply completion does not refresh a departed case page", async ({
+  page,
+  request,
+}) => {
+  const { c, review } = await contract(request);
+  await page.goto(`/cases/${c.case_id}/contract`);
+  await page
+    .getByRole("checkbox", {
+      name: "我同意将本合同文本及选房核对资料发送到配置的模型，用于本次 AI 辅助分析。",
+      exact: true,
+    })
+    .check();
+  await page
+    .getByRole("button", { name: "AI 辅助分析合同", exact: true })
+    .click();
+  await page
+    .getByRole("checkbox", { name: "选择 AI 字段：合同租金", exact: true })
+    .check();
+  await page
+    .getByRole("checkbox", {
+      name: "我已逐项核对所选字段的原文，确认应用到当前复核。",
+      exact: true,
+    })
+    .check();
+  let release!: () => void;
+  const heldResponse = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  let written!: () => void;
+  const serverWritten = new Promise<void>((resolve) => {
+    written = resolve;
+  });
+  await page.route(
+    `**/contract-reviews/${review.review_id}/ai-analyses/*/apply`,
+    async (route) => {
+      const response = await route.fetch();
+      expect(response.ok()).toBeTruthy();
+      written();
+      await heldResponse;
+      await route.fulfill({ response });
+    },
+  );
+  await page
+    .getByRole("button", { name: "确认应用所选字段", exact: true })
+    .click();
+  await serverWritten;
+  try {
+    // The app refresh callback reads the current case ref; leaving this page
+    // makes the old Contract callback obsolete even if the app stays mounted.
+    await page.getByRole("button", { name: "新建案例", exact: true }).click();
+    await expect(page).not.toHaveURL(new RegExp(c.case_id));
+    await expect(
+      page.getByRole("heading", { name: "租房偏好", exact: true }),
+    ).toBeVisible();
+    let caseReads = 0;
+    page.on("request", (r) => {
+      if (r.method() === "GET" && /\/api\/v1\/cases\/[^/]+$/.test(r.url()))
+        caseReads++;
+    });
+    const completed = page.waitForResponse(
+      (r) => r.url().endsWith("/apply") && r.request().method() === "POST",
+    );
+    release();
+    await completed;
+    await expect(
+      page.getByText("已应用核对字段并保存新复核版本。", { exact: true }),
+    ).toBeVisible();
+    expect(caseReads).toBe(0);
+  } finally {
+    release();
+  }
+});
 
 test("recommendation AI requires separate consent, displays test source and preserves actual ranking", async ({
   page,

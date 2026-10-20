@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Alert,
   App,
@@ -40,6 +40,15 @@ export default function Contract() {
   const [correct, setCorrect] = useState(false);
   const [correctionForm] = Form.useForm();
   const ref = selectedReview ?? current.reviews.at(-1)?.review_id;
+  const selectedContext = useRef({ caseId: current.case_id, reviewId: ref });
+  selectedContext.current = { caseId: current.case_id, reviewId: ref };
+  const mounted = useRef(false);
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
   const review = loadedReview?.review_id === ref ? loadedReview : null;
   const [consentRevision, setConsentRevision] = useState(0);
   const [reviewConsent, setReviewConsent] = useState<{
@@ -175,6 +184,14 @@ export default function Contract() {
             review={review}
             active={Boolean(reviewConsent?.consent_active)}
             onApplied={async (next) => {
+              // Apply can finish after selecting another review or leaving this
+              // page. Only the current owner may update its view or refresh.
+              if (
+                !mounted.current ||
+                selectedContext.current.caseId !== current.case_id ||
+                selectedContext.current.reviewId !== next.review_id
+              )
+                return;
               setReview(next);
               await refresh();
             }}
