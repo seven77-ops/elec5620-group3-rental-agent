@@ -99,7 +99,7 @@ npm --prefix frontend run build
 - 真实组合启动器已启动：5173 首页、5173 代理 `/api/v1/health`、8000 `/docs` 均返回 200；自动生成的本机操作员密钥非空且权限为 0600。测试 API 已停止，预览服务改用随机密钥。
 
 
-## 提交与评审入口
+## 原始提交与评审入口（10 月 17 日历史）
 
 草稿 [PR #4](https://github.com/seven77-ops/elec5620-group3-rental-agent/pull/4)，核心前端提交 `35211fd`，最终后端门禁修复 `860bfad`；分支 `codex/frontend-demo`。创建前重新 fetch，main 仍为本文基线。PR 未合并，Jira 未更改。
 
@@ -135,4 +135,4 @@ npm --prefix frontend run build
 
 本次通过 CUA 操作真实 Chrome 检查上述浏览器流程，**未重新运行原 12 项 Playwright 套件**；其请求样例已同步新增 review_token。截图保留在本地验收目录，不提交运行数据库、上传文件或密钥。
 
-本次仍是本地合成数据开发验证，尚未进行全组共同验收、真实对话模型接入或生产身份权限配置。M3 → M4 的租约资料确认边界保持原有流程。关联 [SCRUM-35](https://breezebee64.atlassian.net/browse/SCRUM-35) 与 [PR #4](https://github.com/seven77-ops/elec5620-group3-rental-agent/pull/4)。
+本次仍是本地合成数据开发验证，尚未进行全组共同验收、真实对话模型接入或生产身份权限配置。M3 → M4 的租约资料确认边界保持原有流程。接入提交 `b1d11a039776cedc467e9ebb8574d3cd7f02ba74` 已推送；[PR #4](https://github.com/seven77-ops/elec5620-group3-rental-agent/pull/4) 已转为正式可评审，尚未合并。工作记录已同步至 [SCRUM-35](https://breezebee64.atlassian.net/browse/SCRUM-35)、SCRUM-19 和 SCRUM-34，保持共同验收待完成。

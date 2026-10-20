@@ -29,5 +29,12 @@ Files: `frontend/src/api/types.ts`, `app/context.tsx`, `app/App.tsx`, `features/
 
 ## Task 3: Review and publication
 - [x] Independently review diff against the spec and fix important defects; rerun affected checks.
-- [ ] Update API/run documentation, commit named paths and push existing PR4 branch; update PR description with actual validation.
-- [ ] Record PR6 merge and Agent1 browser integration evidence in SCRUM35/19/34, retaining team/live-LLM acceptance as pending.
+- [x] Update API/run documentation, commit named paths and push existing PR4 branch; update PR description with actual validation.
+- [x] Record PR6 merge and Agent1 browser integration evidence in SCRUM35/19/34, retaining team/live-LLM acceptance as pending.
+
+## Completion record
+
+- PR6 merged to main: `4701fa1b099b2e752b29a54a68af924b44b3061a`.
+- Implementation published on existing PR4 branch: `b1d11a039776cedc467e9ebb8574d3cd7f02ba74`; PR4 is ready for review and remains unmerged.
+- Actual results: 245 Python tests, successful build, Chrome v1/v2 comparison and narrow-layout checks. No new Playwright-suite result is claimed.
+- SCRUM35, SCRUM19 and SCRUM34 received dated implementation/validation comments. Their wider acceptance status remains in progress.
