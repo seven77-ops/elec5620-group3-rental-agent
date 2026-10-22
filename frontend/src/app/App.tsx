@@ -10,13 +10,13 @@ import {
 import type { ReactNode } from "react";
 import { Alert, Button, Drawer, Layout, Menu, Space } from "antd";
 import {
-  AppstoreOutlined,
   CheckSquareOutlined,
   FileTextOutlined,
   FormOutlined,
   HomeOutlined,
   InfoCircleOutlined,
   MenuOutlined,
+  CommentOutlined,
 } from "@ant-design/icons";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { api, post } from "../api/client";
@@ -29,11 +29,13 @@ import {
 } from "../components/Common";
 import { useAction } from "../components/useAction";
 import { CaseContext } from "./context";
-import Overview from "../features/Overview";
+const Assistant = lazy(() => import("../features/assistant/Assistant"));
 const Preferences = lazy(() => import("../features/Preferences"));
-const Recommendations = lazy(() => import("../features/Recommendations"));
-const Contract = lazy(() => import("../features/Contract"));
+const LegacyRecommendations = lazy(() => import("../features/Recommendations"));
+const Recommendations = lazy(() => import("../features/RealRecommendations"));
+const Contract = lazy(() => import("../features/contracts/ContractAssistant"));
 const Aftercare = lazy(() => import("../features/Aftercare"));
+const LivingHub = lazy(() => import("../features/living/LivingHub"));
 const Operator = lazy(() => import("../features/Operator"));
 
 class ErrorBoundary extends Component<
@@ -57,11 +59,31 @@ class ErrorBoundary extends Component<
   }
 }
 const nav = [
-  { key: "overview", label: "我的进度", icon: <AppstoreOutlined /> },
-  { key: "preferences", label: "租房偏好", icon: <FormOutlined /> },
-  { key: "recommendations", label: "房源推荐", icon: <HomeOutlined /> },
-  { key: "contract", label: "合同复核", icon: <FileTextOutlined /> },
-  { key: "aftercare", label: "租后服务", icon: <CheckSquareOutlined /> },
+  {
+    key: "assistant",
+    label: "AI租房助手",
+    icon: <CommentOutlined aria-hidden="true" />,
+  },
+  {
+    key: "preferences",
+    label: "租房偏好",
+    icon: <FormOutlined aria-hidden="true" />,
+  },
+  {
+    key: "recommendations",
+    label: "房源推荐",
+    icon: <HomeOutlined aria-hidden="true" />,
+  },
+  {
+    key: "contract",
+    label: "合同复核",
+    icon: <FileTextOutlined aria-hidden="true" />,
+  },
+  {
+    key: "aftercare",
+    label: "租后服务",
+    icon: <CheckSquareOutlined aria-hidden="true" />,
+  },
 ];
 export default function App() {
   const [config, setConfig] = useState<DemoConfig | null>(null);
@@ -78,7 +100,9 @@ export default function App() {
   const caseId = routeCase ?? localStorage.getItem("rental-case-v1");
   const idRef = useRef(caseId);
   idRef.current = caseId;
-  const page = parts[1] === "operator" ? "operator" : (parts[3] ?? "overview");
+  const routePage =
+    parts[1] === "operator" ? "operator" : (parts[3] ?? "assistant");
+  const page = routePage === "overview" ? "assistant" : routePage;
   useEffect(() => {
     let valid = true;
     setLoading(true);
@@ -116,6 +140,12 @@ export default function App() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
+  useEffect(() => {
+    if (routePage === "overview" && caseId)
+      navigate(`/cases/${caseId}/assistant`, { replace: true });
+    if (page === "real-data" && caseId)
+      navigate(`/cases/${caseId}/recommendations`, { replace: true });
+  }, [page, routePage, caseId, navigate]);
   const go = (target: string) => {
     setMobile(false);
     navigate(
@@ -131,14 +161,24 @@ export default function App() {
       const c = await post<CaseState>("/cases", {});
       localStorage.setItem("rental-case-v1", c.case_id);
       setCurrent(c);
-      navigate(`/cases/${c.case_id}/preferences`);
+      navigate(`/cases/${c.case_id}/assistant`);
     });
   const navigation = (
     <>
       <Menu
         mode="inline"
         selectedKeys={[page]}
-        items={nav}
+        items={
+          config?.mode === "real_listings"
+            ? nav
+                .filter((item) => item.key !== "preferences")
+                .map((item) =>
+                  item.key === "contract"
+                    ? { ...item, label: "合同助手" }
+                    : item,
+                )
+            : nav
+        }
         onClick={({ key }) => go(key)}
       />
       <div className="sidebar-bottom">
@@ -168,11 +208,16 @@ export default function App() {
     </>
   );
   const pages: Record<string, ReactNode> = {
-    overview: <Overview />,
+    assistant: <Assistant />,
     preferences: <Preferences />,
-    recommendations: <Recommendations />,
+    recommendations:
+      config?.mode === "real_listings" ? (
+        <Recommendations />
+      ) : (
+        <LegacyRecommendations />
+      ),
     contract: <Contract />,
-    aftercare: <Aftercare />,
+    aftercare: config?.mode === "real_listings" ? <LivingHub /> : <Aftercare />,
     operator: <Operator />,
   };
   return (
@@ -184,7 +229,11 @@ export default function App() {
             <span>租房助手</span>
           </div>
           <Space>
-            <span className="demo-label">合成数据演示</span>
+            <span className="demo-label">
+              {config?.mode === "real_listings"
+                ? "真实房源 · 参考快照"
+                : "合成数据演示"}
+            </span>
             {current && (
               <Button
                 className="new-case"
@@ -216,7 +265,10 @@ export default function App() {
           >
             {navigation}
           </Drawer>
-          <main id="main-content" className="main-content">
+          <main
+            id="main-content"
+            className={`main-content ${page === "assistant" ? "assistant-page" : ""}`}
+          >
             <a className="skip-link" href="#page-content">
               跳至内容
             </a>
@@ -235,12 +287,9 @@ export default function App() {
                 {!current || !config || current.case_id !== caseId ? (
                   <div className="welcome panel">
                     <HomeOutlined className="welcome-icon" />
-                    <h1>从你的租房偏好开始</h1>
-                    <p>确认需求、查看推荐依据，再由你决定下一步。</p>
-                    <p className="muted">
-                      本地课程演示使用合成数据，表单通过 Agent1
-                      保存并确认偏好版本。
-                    </p>
+                    <h1>找到适合你的下一个家</h1>
+                    <p>从一句话开始，让租房助手陪你理清需求。</p>
+
                     <Button
                       type="primary"
                       size="large"
@@ -255,18 +304,20 @@ export default function App() {
                   <CaseContext.Provider
                     value={{ current, config, refresh, go }}
                   >
-                    <div className="case-caption">
-                      当前案例 <span>{current.case_id}</span>
-                      <span>
-                        {page === "operator"
-                          ? "本地演示操作员视图"
-                          : "本地演示身份 · 租客"}
-                      </span>
-                    </div>
+                    {page !== "assistant" && (
+                      <div className="case-caption">
+                        当前案例 <span>{current.case_id}</span>
+                        <span>
+                          {page === "operator"
+                            ? "本地演示操作员视图"
+                            : "本地演示身份 · 租客"}
+                        </span>
+                      </div>
+                    )}
                     <div id="page-content" key={`${current.case_id}:${page}`}>
                       <ErrorBoundary>
                         <Suspense fallback={<Loading />}>
-                          {pages[page] ?? pages.overview}
+                          {pages[page] ?? pages.assistant}
                         </Suspense>
                       </ErrorBoundary>
                     </div>
@@ -283,8 +334,8 @@ export default function App() {
         >
           <Alert
             type="info"
-            title="本地合成场景回放"
-            description="Agent1、2、3、4 均调用原 Python 业务实现。Agent1 当前使用表单输入，未启用 LLM 对话提取；房源和合同仍为合成数据，不会向房东或中介发送消息。Agent2 推荐解读和 Agent3 AI 候选分析需单独同意并配置后端模型；调用记录会明确显示真实或测试来源。"
+            title="真实房源与业务能力"
+            description="Agent1 保存偏好，Agent2 使用真实房源库进行事实筛选和候选保存；是否仍在租、费用与租期尚待核实。可记录看房与中介回复，由 Agent3 生成未签署租约草稿，或独立同意上传真实合同后提取与比对。房源和用户记录不视为已核实交接证明；Agent4 需要另行确认租约资料。不会向房东或中介发送消息。"
             showIcon
           />
           <h3>独立的业务参考时间</h3>

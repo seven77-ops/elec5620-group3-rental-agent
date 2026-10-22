@@ -14,6 +14,13 @@ export interface Profile {
     maximum: number;
     hard_limit: boolean;
   };
+  housing_preferences?: {
+    suburb?: string | null;
+    min_bedrooms?: number | null;
+    min_bathrooms?: number | null;
+    min_car_spaces?: number | null;
+    budget_match_mode?: "advertised_amount" | "matching_scope";
+  };
   occupants: number;
   rental_mode: string;
   destination_id: string;
@@ -110,6 +117,12 @@ export interface Report {
   dataset_fingerprint: string;
   as_of: string;
   report_status: string;
+  data_mode?: string;
+  filters?: import("./catalog").HousingFilters;
+  profile_filters?: import("./catalog").HousingFilters;
+  filter_source?: "confirmed_profile" | "manual";
+  mapping_policy?: string;
+  unverified_preferences?: string[];
   counts: Record<string, number>;
   recommendations: Listing[];
   eligible: Listing[];
@@ -156,6 +169,7 @@ export interface DemoConfig {
   tenancy_template: Dict;
   agreement_examples: { id: string; name: string }[];
   capabilities: Json;
+  catalog?: import("./catalog").HousingCatalog;
 }
 export interface AftercareCase {
   case_id: string;

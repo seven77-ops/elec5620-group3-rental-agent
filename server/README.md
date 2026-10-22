@@ -1,6 +1,6 @@
 # Local rental journey API
 
-Run commands from the repository root. Python 3.11+ is required; verified with Python 3.13.2. This server calls the existing `agent1`, `agent2`, `agent3`, and `agent4` modules directly. The editable preference form now uses Agent1 validation, revision-bound review tokens, immutable confirmed versions, HandoverService and verified version comparison. Form/example data is synthetic; live LLM extraction remains disabled. All examples are synthetic. No external AI or messaging is enabled.
+Run commands from the repository root. Python 3.11+ is required; verified with Python 3.13.2. This server integrates the existing `agent1`, `agent2`, `agent3`, and `agent4` modules. The default website now queries 500 sourced advertisements through the real-catalogue adapter. Agent1 owns confirmed preference versions; candidate follow-up, consented contract review, unsigned lease drafts and living-service records are integrated around the member modules. External AI is optional and disabled until configured on the server. No messages, bookings or payments are sent automatically. See the [2026-10-22 group trial guide](../docs/frontend/2026-10-22-group-trial.md) for current setup and the full browser flow.
 
 ```sh
 python3 -m venv .venv
@@ -22,7 +22,9 @@ printf '%s\n' "$RENTAL_OPERATOR_KEY"
 
 Use that value in the frontend's local operator key field, or send `X-Operator-Key` on an operator request. The key is never returned by `/demo-config`, case reads, errors, or any tenant endpoint. It must never be a Vite environment variable or checked-in source value. The server supplies the fixed local tenant/operator IDs. This is local demonstration access control, with no production account/session isolation claim. Operator approval is authorized only by this key, never by a browser role field.
 
-## API flow
+## Historical synthetic API flow
+
+The numbered flow below documents the original synthetic regression endpoints and fixtures. It is not the default real-advertisement website journey. Current real-catalogue reports retain unverified candidate status and cannot become certified `SelectedListingEvidence` merely by selecting an advertisement. See [real Agent2](../docs/frontend/2026-10-21-agent2-real-catalog.md), [candidate follow-up and real contracts](../docs/frontend/2026-10-22-candidate-followup.md), [lease drafts](../docs/frontend/2026-10-22-lease-draft.md), and [living services](../docs/frontend/2026-10-22-living-services.md) for their distinct endpoints and confirmation boundaries. Real contract intake allows text-based PDFs up to 30 pages; image-only OCR and the historical CLI retain a 10-page limit.
 
 The canonical browser interface is `docs/frontend/api-contract.md`. Requests use bounded strict JSON, including application/json, application/*+json, and absent content type; other media types are rejected. Parsing caps streamed bytes at 256,000 and rejects unknown outer fields, duplicate JSON keys, and non-finite numbers (including numeric overflow). Errors have `{error:{code,message,request_id,fields?}}`. Saved results remain available after a failed operation.
 
@@ -72,7 +74,7 @@ Evaluation is two-phase: atomically reserve the HTTP request and member task thr
 
 Legacy form-only cases retain read-only history/exports. New preference confirmations, searches and selection mutations require a new Agent1 case; historical confirmations are never invented or rewritten. Separately confirmed existing aftercare cases remain available. Old HTTP clients must read the case and include its review_token when confirming new cases.
 
-The editable form is a supported local entry mode. LLM extraction is not enabled; the browser accepts no model credentials. Synthetic fixtures and clocks remain unchanged. After changing preferences, previous selections are explicitly historical and cannot continue contract intake until reselected.
+The editable form is a supported local entry mode. Optional external-AI assistance now requires backend configuration and explicit consent; the browser accepts no model credentials. Historical synthetic fixtures and clocks remain unchanged. After changing preferences, previous selections are explicitly historical and cannot continue contract intake until reselected.
 
 ## Optional local AI sidecars
 

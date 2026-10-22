@@ -29,7 +29,9 @@ import { useAction } from "../components/useAction";
 import ContractUpload from "./ContractUpload";
 import ContractAi from "./ai/ContractAi";
 import ReviewHistory from "./ReviewHistory";
-export default function Contract() {
+import ContractComparison from "./candidate/ContractComparison";
+import type { RealContractContext } from "../api/followup";
+export default function Contract({ embedded = false }: { embedded?: boolean }) {
   const { current, refresh, go } = useCase();
   const { message } = App.useApp();
   const action = useAction();
@@ -54,6 +56,7 @@ export default function Contract() {
   const [reviewConsent, setReviewConsent] = useState<{
     consent_id: string | null;
     consent_active: boolean;
+    real_context?: RealContractContext | null;
   } | null>(null);
   const [historyOpen, setHistoryOpen] = useState(false);
   const consentChanged = () => setConsentRevision((v) => v + 1);
@@ -69,9 +72,11 @@ export default function Contract() {
     setSource(null);
     Promise.all([
       api<Review>(`/contract-reviews/${ref}`),
-      api<{ consent_id: string | null; consent_active: boolean }>(
-        `/contract-reviews/${ref}/context`,
-      ),
+      api<{
+        consent_id: string | null;
+        consent_active: boolean;
+        real_context?: RealContractContext | null;
+      }>(`/contract-reviews/${ref}/context`),
     ])
       .then(([r, context]) => {
         if (valid) {
@@ -121,23 +126,36 @@ export default function Contract() {
   const questionList = Array.isArray(review?.questions) ? review.questions : [];
   return (
     <>
-      <PageTitle
-        title="合同复核"
-        description="将合同事实与所选房源交叉核对，查看每项结果的原文依据。"
-        extra={
-          current.reviews.length > 0 ? (
-            <Select
-              aria-label="选择合同复核记录"
-              value={ref}
-              onChange={setSelectedReview}
-              options={current.reviews.map((r, i) => ({
-                value: r.review_id,
-                label: `合同 ${i + 1} · v${r.version}`,
-              }))}
-            />
-          ) : undefined
-        }
-      />
+      {!embedded && (
+        <PageTitle
+          title="合同复核"
+          description="将合同事实与所选房源交叉核对，查看每项结果的原文依据。"
+          extra={
+            current.reviews.length > 0 ? (
+              <Select
+                aria-label="选择合同复核记录"
+                value={ref}
+                onChange={setSelectedReview}
+                options={current.reviews.map((r, i) => ({
+                  value: r.review_id,
+                  label: `合同 ${i + 1} · v${r.version}`,
+                }))}
+              />
+            ) : undefined
+          }
+        />
+      )}
+      {embedded && current.reviews.length > 0 && (
+        <Select
+          aria-label="选择合同复核记录"
+          value={ref}
+          onChange={setSelectedReview}
+          options={current.reviews.map((r, i) => ({
+            value: r.review_id,
+            label: `合同 ${i + 1} · v${r.version}`,
+          }))}
+        />
+      )}
       <Failure
         error={action.error || error}
         retry={error ? consentChanged : action.retry}
@@ -146,14 +164,22 @@ export default function Contract() {
         <section className="selection-strip">
           <div>
             <span>已选房源</span>
-            <strong>{current.selection.listing_id}</strong>
-            <p>{text(current.selection.listing_snapshot.address)}</p>
+            <strong>
+              {current.selection.data_mode === "real_listings"
+                ? text(current.selection.listing_snapshot.address)
+                : current.selection.listing_id}
+            </strong>
+            <p>
+              {current.selection.data_mode === "real_listings"
+                ? `房源 AUD ${text(current.selection.listing_snapshot.weekly_rent)}/周 · 计价对象待确认`
+                : text(current.selection.listing_snapshot.address)}
+            </p>
           </div>
           <Button onClick={() => go("recommendations")}>查看选房依据</Button>
         </section>
       ) : (
         <Blank
-          text="请先明确选择合格房源，再进入合同交叉核对。"
+          text="请先保存一套房源候选，再上传合同核对。"
           action={
             <Button onClick={() => go("recommendations")}>前往房源推荐</Button>
           }
@@ -167,6 +193,14 @@ export default function Contract() {
           description="请先按当前确认偏好重新评估并选择房源。历史合同结果仍然保留。"
         />
       )}
+      {current.selection?.data_mode === "real_listings" && (
+        <Alert
+          type="info"
+          showIcon
+          title="可以直接复核已有合同"
+          description="房源房源仍是待核实快照。合同先在本地提取，与房源及补充记录分别比对。"
+        />
+      )}
       {current.selection && (
         <ContractUpload
           revision={consentRevision}
@@ -174,6 +208,7 @@ export default function Contract() {
           onReview={(r) => {
             setReview(r);
             setSelectedReview(r.review_id);
+            consentChanged();
           }}
         />
       )}
@@ -270,6 +305,9 @@ export default function Contract() {
                 撤销本次复核处理同意
               </Button>
             </div>
+          )}
+          {reviewConsent?.real_context && (
+            <ContractComparison context={reviewConsent.real_context} />
           )}
           <div className="contract-result">
             <section className="panel">

@@ -29,7 +29,15 @@ import { useAction } from "../components/useAction";
 import TenancyForm from "./TenancyForm";
 import AftercarePlan, { CommandRecovery } from "./AftercarePlan";
 import AftercareBond from "./AftercareBond";
-export default function Aftercare() {
+export default function Aftercare({
+  embedded = false,
+  initialTab = "plan",
+  initialMoveOutDate,
+}: {
+  embedded?: boolean;
+  initialTab?: "plan" | "bond";
+  initialMoveOutDate?: string;
+}) {
   const { current, refresh, config } = useCase();
   const action = useAction();
   const { message } = App.useApp();
@@ -150,30 +158,50 @@ export default function Aftercare() {
   };
   return (
     <>
-      <PageTitle
-        title="租后服务"
-        description="确认租约资料，安排退租事项，保留每一步的事实与证据。"
-        extra={
-          record ? (
-            <Space wrap>
-              <span className="revision-label">案件版本 {record.version}</span>
-              <Button
-                loading={refreshing}
-                disabled={action.busy}
-                aria-label="读取最新状态"
-                onClick={() => void refreshCurrent()}
-              >
-                读取最新状态
-              </Button>
-              <a
-                href={downloadUrl(`/aftercare/cases/${record.case_id}/export`)}
-              >
-                下载案件 JSON
-              </a>
-            </Space>
-          ) : undefined
-        }
-      />
+      {!embedded && (
+        <PageTitle
+          title="租后服务"
+          description="确认租约资料，安排退租事项，保留每一步的事实与证据。"
+          extra={
+            record ? (
+              <Space wrap>
+                <span className="revision-label">
+                  案件版本 {record.version}
+                </span>
+                <Button
+                  loading={refreshing}
+                  disabled={action.busy}
+                  aria-label="读取最新状态"
+                  onClick={() => void refreshCurrent()}
+                >
+                  读取最新状态
+                </Button>
+                <a
+                  href={downloadUrl(
+                    `/aftercare/cases/${record.case_id}/export`,
+                  )}
+                >
+                  下载案件 JSON
+                </a>
+              </Space>
+            ) : undefined
+          }
+        />
+      )}
+      {embedded && record && (
+        <Space wrap className="section-actions">
+          <Button
+            loading={refreshing}
+            disabled={action.busy}
+            onClick={() => void refreshCurrent()}
+          >
+            读取最新退租状态
+          </Button>
+          <a href={downloadUrl(`/aftercare/cases/${record.case_id}/export`)}>
+            下载案件记录
+          </a>
+        </Space>
+      )}
       <Failure error={action.error || error} retry={action.retry} />
       {!record ? (
         current.aftercare_case_id ? (
@@ -214,12 +242,19 @@ export default function Aftercare() {
             </Button>
           </section>
           <Tabs
+            defaultActiveKey={initialTab}
             items={[
               {
                 key: "plan",
                 label: "退租计划与任务",
                 children: (
                   <AftercarePlan
+                    initialDate={
+                      config.mode === "real_listings"
+                        ? initialMoveOutDate ||
+                          config.clocks.aftercare.slice(0, 10)
+                        : undefined
+                    }
                     plan={(record.plan ?? null) as Dict | null}
                     evidence={evidence}
                     send={send}
@@ -262,8 +297,9 @@ export default function Aftercare() {
                   <section className="panel">
                     <h2>可选本地提醒</h2>
                     <p className="muted">
-                      默认关闭，开启后只在活跃页面每 30
-                      秒查询。本次固定合成回放会在查询时推进至样例提醒检查点；页面关闭后不保证投递。
+                      {config.mode === "real_listings"
+                        ? "默认关闭，开启后只在活跃页面每30秒查询。页面关闭后不保证提醒投递。"
+                        : "默认关闭，开启后只在活跃页面每30秒查询。本次固定合成回放会在查询时推进至样例提醒检查点；页面关闭后不保证投递。"}
                     </p>
                     <Space wrap>
                       <Switch
@@ -382,7 +418,11 @@ export default function Aftercare() {
         <Alert
           type="info"
           title="引用不等于事实已核实"
-          description="这里只登记合成证据元数据，不上传照片或执行图片识别。"
+          description={
+            config.mode === "real_listings"
+              ? "这里只记录你填写的资料位置和摘要，不上传文件或验证内容。"
+              : "这里只登记合成证据元数据，不上传照片或执行图片识别。"
+          }
         />
         {evidence.map((e, i) => (
           <div className="detail-row" key={i}>
@@ -405,7 +445,11 @@ export default function Aftercare() {
         </Button>
       </EvidenceDrawer>
       <Modal
-        title="登记合成证据元数据"
+        title={
+          config.mode === "real_listings"
+            ? "登记资料引用"
+            : "登记合成证据元数据"
+        }
         open={formOpen}
         onCancel={() => {
           if (action.busy || refreshing) return;
@@ -416,7 +460,7 @@ export default function Aftercare() {
         okButtonProps={{ "aria-label": "保存证据引用", disabled: refreshing }}
         cancelButtonProps={{ disabled: action.busy || refreshing }}
         closable={!action.busy && !refreshing}
-        maskClosable={!action.busy && !refreshing}
+        mask={{ closable: !action.busy && !refreshing }}
         onOk={addEvidence}
         okText="保存证据引用"
         cancelText={
@@ -456,10 +500,20 @@ export default function Aftercare() {
           </Form.Item>
           <Form.Item
             name="source_ref"
-            label="合成来源引用"
+            label={
+              config.mode === "real_listings"
+                ? "资料位置或文档名称"
+                : "合成来源引用"
+            }
             rules={[{ required: true }]}
           >
-            <Input placeholder="synthetic://…" />
+            <Input
+              placeholder={
+                config.mode === "real_listings"
+                  ? "填写你保存资料的位置或名称"
+                  : "synthetic://…"
+              }
+            />
           </Form.Item>
           <Form.Item
             name="source_version"

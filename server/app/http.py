@@ -17,8 +17,9 @@ def strict_route(operator):
                 # Operator decision routes reject before parsing their JSON body.
                 if request.url.path.endswith('/decisions'):
                     operator(request)
-                raw_contract_upload = self.path == '/api/v1/cases/{case_id}/contract-reviews'
-                if not raw_contract_upload and request.method == 'POST':
+                raw_upload = self.path in {'/api/v1/cases/{case_id}/contract-reviews',
+                    '/api/v1/cases/{case_id}/living-services/attachments'}
+                if not raw_upload and request.method == 'POST':
                     media = request.headers.get('Content-Type', '').split(';')[0].strip().lower()
                     require(not media or media == 'application/json' or (media.startswith('application/') and media.endswith('+json')),
                             415, 'unsupported_media_type', 'Send a JSON request')

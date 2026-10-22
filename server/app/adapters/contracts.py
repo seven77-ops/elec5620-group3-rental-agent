@@ -1,6 +1,12 @@
-"""Contracts orchestration for the local synthetic API."""
+"""Contract intake for independently consented real candidates and legacy demos."""
 from hashlib import sha256
 from pathlib import Path
+from datetime import datetime
+from zoneinfo import ZoneInfo
+from copy import deepcopy
+from contract_agent.review import review_agreement
+from .candidate_followup import followup_value
+from .real_contract import real_context
 from urllib.parse import unquote
 import json
 
@@ -18,7 +24,7 @@ class ContractsAdapter:
     def consent(self, case_id: str, body: dict):
         get = self.ctx.get
         repo = self.ctx.repo
-        selected = self.ctx.selected
+        selected = self.ctx.contract_selection
         shape(body, ('confirmed',), ('consent_id',))
         require(type(body['confirmed']) is bool, 422, 'invalid_input', 'Consent confirmation must be true or false')
         with repo.transaction() as db:
@@ -40,7 +46,7 @@ class ContractsAdapter:
         if consent is None or consent['case_id'] != case['case_id']:
             return False
         try:
-            return self.ctx.selected(case) == consent['selection']
+            return self.ctx.contract_selection(case) == consent['selection']
         except ApiError:
             # Saved consent remains readable while its former selection is historical.
             return False
@@ -68,13 +74,17 @@ class ContractsAdapter:
             case = self.ctx.get(db, 'case', saved['case_id'])
             consent_id = saved.get('consent_id')
             consent = self.ctx.repo.get(db, 'consent', consent_id) if consent_id else None
-            return {'case_id': saved['case_id'], 'consent_id': consent_id,
-                    'consent_active': bool(consent and consent['active'] and self.selection_is_current(case, consent))}
+            result = {'case_id': saved['case_id'], 'consent_id': consent_id,
+                      'consent_active': bool(consent and consent['active'] and self.selection_is_current(case, consent))}
+            context = real_context(saved, saved['review'])
+            if context is not None:
+                result['real_context'] = context
+            return result
 
     def upload_authorized(self, db, case_id, consent_id):
         get = self.ctx.get
         repo = self.ctx.repo
-        selected = self.ctx.selected
+        selected = self.ctx.contract_selection
         # Called before the route touches Request.stream()/body(), and again before disk writes.
         value = repo.get(db, 'consent', consent_id)
         require(value is not None and value['active'] and value['case_id'] == case_id,
@@ -91,11 +101,13 @@ class ContractsAdapter:
         upload_authorized = self.upload_authorized
         consent_id = request.headers.get('X-Consent-Id', '')
         with repo.transaction() as db:
-            upload_authorized(db, case_id, consent_id)
+            initial_case, _ = upload_authorized(db, case_id, consent_id)
+        real = initial_case['selection'].get('data_mode') == 'real_listings'
+        as_of = datetime.now(ZoneInfo('Australia/Sydney')).date().isoformat() if real else expected['contractReferenceDate']
         logical_id = request_id(request.headers.get('X-Request-Id', ''))
         name = unquote(request.headers.get('X-Filename', ''))
         suffix = Path(name).suffix.lower()
-        require(suffix in {'.txt', '.pdf', '.docx'}, 422, 'unsupported_format', 'Use a TXT, DOCX or PDF synthetic agreement')
+        require(suffix in {'.txt', '.pdf', '.docx'}, 422, 'unsupported_format', 'Use a TXT, DOCX or PDF agreement')
         require(request.headers.get('Content-Type', '').split(';')[0] == 'application/octet-stream',
                 415, 'unsupported_media_type', 'Send raw agreement bytes as application/octet-stream')
         size_header = request.headers.get('Content-Length')
@@ -107,11 +119,15 @@ class ContractsAdapter:
             require(len(content) + len(chunk) <= MAX_BYTES, 413, 'upload_too_large', 'Agreement exceeds the 2,000,000-byte limit')
             content.extend(chunk)
         identity = {'sha256': sha256(content).hexdigest(), 'format': suffix, 'consent_id': consent_id,
-                    'as_of': expected['contractReferenceDate']}
+                    'as_of': as_of}
         key = case_id + ':' + logical_id
         with repo.transaction() as db:
             case, consent = upload_authorized(db, case_id, consent_id)
             identity['selection'] = consent['selection']
+            # Retry the same logical upload against its original reference date.
+            prior = repo.get(db, 'contract_receipt', key)
+            if real and prior:
+                identity['as_of'] = prior['input']['as_of']
             old = receipt(db, 'contract_receipt', key, identity)
             if old:
                 return {'review': old['result'], 'newly_created': False}
@@ -121,14 +137,26 @@ class ContractsAdapter:
             path = directory / file_ref
             try:
                 path.write_bytes(content)
-                document = load_document(path, consent=True)
+                document = load_document(path, consent=True, max_pdf_pages=30 if real else 10)
                 # Uploaded filenames are presentation data, never filesystem paths.
                 document['source_name'] = Path(name.replace('\\', '/')).name[:200]
-                review, created = receive_review(document, consent=True, selection=consent['selection'],
-                    request_id='web-' + sha256(key.encode()).hexdigest(), as_of=expected['contractReferenceDate'],
-                    store=repo.directory / 'intake.sqlite3', gateway=None, allow_external_ai=False)
+                if real:
+                    # A public ad is contextual material, never a SelectedListingEvidence certificate.
+                    review = review_agreement(document, consent=True, selection=None, as_of=as_of,
+                                              gateway=None, allow_external_ai=False)
+                    review['data_limitations'].append('房源广告及用户补充记录未经独立核实；事实比对单独保存，不代表在租、申请或签约确认。')
+                    created = True
+                else:
+                    review, created = receive_review(document, consent=True, selection=consent['selection'],
+                        request_id='web-' + sha256(key.encode()).hexdigest(), as_of=as_of,
+                        store=repo.directory / 'intake.sqlite3', gateway=None, allow_external_ai=False)
                 validate_review(review)
-                repo.put(db, 'review', review['review_id'], {'case_id': case_id, 'review': review, 'file_ref': file_ref, 'consent_id': consent_id})
+                saved = {'case_id': case_id, 'review': review, 'file_ref': file_ref, 'consent_id': consent_id}
+                if real:
+                    saved['real_context'] = {'selection': deepcopy(consent['selection']),
+                        'profile': deepcopy(self.ctx.current(case)),
+                        'followup': deepcopy(followup_value(self.ctx, db, case)), 'captured_at': now()}
+                repo.put(db, 'review', review['review_id'], saved)
                 repo.put(db, 'review_version', review['review_id'] + ':1:' + uid('revision'), review)
                 case['reviews'].append({'review_id': review['review_id'], 'version': review['version'], 'status': review['status']})
                 repo.put(db, 'case', case_id, case)
@@ -146,8 +174,13 @@ class ContractsAdapter:
 
     def export_review(self, review_id: str):
         download = self.ctx.download
-        read_review = self.read_review
-        return download(read_review(review_id), 'contract-review')
+        with self.ctx.repo.transaction() as db:
+            saved = self.ctx.get(db, 'review', review_id)
+            value = deepcopy(saved['review'])
+            context = real_context(saved, value)
+            if context is not None:
+                value = {'review': value, 'real_context': context}
+            return download(value, 'contract-review')
 
     def export_questions(self, review_id: str):
         download = self.ctx.download

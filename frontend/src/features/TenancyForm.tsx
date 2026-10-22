@@ -28,7 +28,27 @@ export default function TenancyForm({
   const [form] = Form.useForm();
   const [confirmed, setConfirmed] = useState(false);
   const action = useAction();
-  const template = config.tenancy_template;
+  const real = config.mode === "real_listings";
+  const [realTemplate] = useState(() => ({
+    tenancy_id: `tenancy-${crypto.randomUUID()}`,
+    tenant_id: `tenant-${crypto.randomUUID()}`,
+    address: "",
+    jurisdiction: "NSW",
+    tenancy_type: "standard_residential",
+    confirmed: false,
+    source_ref: "user-entered:tenant-confirmation",
+    source_version: 1,
+    rooms: [],
+    carpeted: "unknown",
+    outdoor: "unknown",
+    furnished: "unknown",
+    inventory: [],
+    inventory_confirmed: false,
+    baseline_evidence_refs: [],
+  }));
+  const template = real ? realTemplate : config.tenancy_template;
+  const rooms = Form.useWatch("rooms", form) as
+    { id: string; name: string }[] | undefined;
   const capabilities = config.capabilities as Dict;
   const prefill = () => {
     const id = current.reviews.at(-1)?.review_id;
@@ -46,9 +66,25 @@ export default function TenancyForm({
   const submit = async () => {
     try {
       const values = await form.validateFields();
+      if (real)
+        for (const key of ["carpeted", "outdoor", "furnished"])
+          values[key] =
+            values[key] === "unknown" || values[key] == null
+              ? null
+              : values[key] === "yes";
       create({
-        tenancy: { ...template, ...values, confirmed: true },
-        evidence: capabilities.aftercare_evidence_template ?? [],
+        tenancy: {
+          ...template,
+          ...values,
+          ...(real
+            ? {
+                rooms: values.rooms?.length ? values.rooms : null,
+                inventory: values.inventory?.length ? values.inventory : null,
+              }
+            : {}),
+          confirmed: true,
+        },
+        evidence: real ? [] : (capabilities.aftercare_evidence_template ?? []),
       });
     } catch {
       /* Inline errors. */
@@ -60,8 +96,14 @@ export default function TenancyForm({
       <Alert
         type="info"
         showIcon
-        title="以下为合成租约样例，请逐项核对"
-        description="合同复核不代表租约已签订。只有你明确确认这些资料后，才创建租后服务案件。示例房间、家具和证据均可核对或编辑。"
+        title={
+          real ? "请填写并核对实际租约资料" : "以下为合成租约样例，请逐项核对"
+        }
+        description={
+          real
+            ? "合同草稿或复核结果不代表租约已签订。只有你明确确认实际租约资料后，才创建退租与押金案件。未知的房间与家具可暂不填写。"
+            : "合同复核不代表租约已签订。只有你明确确认这些资料后，才创建租后服务案件。示例房间、家具和证据均可核对或编辑。"
+        }
       />
       <Failure error={action.error} retry={action.retry} />
       {current.reviews.length > 0 && (
@@ -84,7 +126,7 @@ export default function TenancyForm({
           label="租约地址"
           rules={[{ required: true, message: "填写确认的租约地址" }]}
         >
-          <Input />
+          <Input aria-label="租约地址" />
         </Form.Item>
         <div className="form-grid">
           <Form.Item name="jurisdiction" label="管辖地区">
@@ -99,6 +141,7 @@ export default function TenancyForm({
           </Form.Item>
           <Form.Item
             name="source_ref"
+            hidden={real}
             label="资料来源引用"
             rules={[{ required: true }]}
           >
@@ -106,6 +149,7 @@ export default function TenancyForm({
           </Form.Item>
           <Form.Item
             name="source_version"
+            hidden={real}
             label="来源版本"
             rules={[{ required: true }]}
           >
@@ -113,15 +157,34 @@ export default function TenancyForm({
           </Form.Item>
         </div>
         <div className="switch-group">
-          <Form.Item name="carpeted" valuePropName="checked" label="有地毯">
-            <Switch />
-          </Form.Item>
-          <Form.Item name="outdoor" valuePropName="checked" label="有室外区域">
-            <Switch />
-          </Form.Item>
-          <Form.Item name="furnished" valuePropName="checked" label="带家具">
-            <Switch />
-          </Form.Item>
+          {(
+            [
+              ["carpeted", "有地毯"],
+              ["outdoor", "有室外区域"],
+              ["furnished", "带家具"],
+            ] as const
+          ).map(([key, label]) =>
+            real ? (
+              <Form.Item key={key} name={key} label={label}>
+                <Select
+                  options={[
+                    { value: "unknown", label: "尚未填写" },
+                    { value: "yes", label: "是" },
+                    { value: "no", label: "否" },
+                  ]}
+                />
+              </Form.Item>
+            ) : (
+              <Form.Item
+                key={key}
+                name={key}
+                valuePropName="checked"
+                label={label}
+              >
+                <Switch />
+              </Form.Item>
+            ),
+          )}
           <Form.Item
             name="inventory_confirmed"
             valuePropName="checked"
@@ -138,6 +201,7 @@ export default function TenancyForm({
                 <div className="list-form-row" key={f.key}>
                   <Form.Item
                     name={[f.name, "id"]}
+                    hidden={real}
                     label="房间标识"
                     rules={[{ required: true }]}
                   >
@@ -158,8 +222,14 @@ export default function TenancyForm({
                 </div>
               ))}
               <Button
-                icon={<PlusOutlined />}
-                onClick={() => add({ id: "", name: "" })}
+                aria-label="添加房间"
+                icon={<PlusOutlined aria-hidden="true" />}
+                onClick={() =>
+                  add({
+                    id: real ? `room-${crypto.randomUUID()}` : "",
+                    name: "",
+                  })
+                }
               >
                 添加房间
               </Button>
@@ -174,6 +244,7 @@ export default function TenancyForm({
                 <div className="list-form-row" key={f.key}>
                   <Form.Item
                     name={[f.name, "id"]}
+                    hidden={real}
                     label="家具标识"
                     rules={[{ required: true }]}
                   >
@@ -188,10 +259,20 @@ export default function TenancyForm({
                   </Form.Item>
                   <Form.Item
                     name={[f.name, "room_id"]}
-                    label="所属房间标识"
+                    label={real ? "所属房间" : "所属房间标识"}
                     rules={[{ required: true }]}
                   >
-                    <Input />
+                    {real ? (
+                      <Select
+                        placeholder="选择房间"
+                        options={(rooms ?? []).map((room) => ({
+                          value: room.id,
+                          label: room.name || "尚未命名房间",
+                        }))}
+                      />
+                    ) : (
+                      <Input />
+                    )}
                   </Form.Item>
                   <Button
                     aria-label="移除此家具"
@@ -201,15 +282,26 @@ export default function TenancyForm({
                 </div>
               ))}
               <Button
-                icon={<PlusOutlined />}
-                onClick={() => add({ id: "", name: "", room_id: "" })}
+                aria-label="添加家具"
+                icon={<PlusOutlined aria-hidden="true" />}
+                onClick={() =>
+                  add({
+                    id: real ? `item-${crypto.randomUUID()}` : "",
+                    name: "",
+                    room_id: "",
+                  })
+                }
               >
                 添加家具
               </Button>
             </>
           )}
         </Form.List>
-        <Form.Item name="baseline_evidence_refs" label="入住基线证据引用">
+        <Form.Item
+          name="baseline_evidence_refs"
+          hidden={real}
+          label="入住基线证据引用"
+        >
           <Select
             mode="multiple"
             options={(
@@ -221,18 +313,20 @@ export default function TenancyForm({
           />
         </Form.Item>
       </Form>
-      <Collapse
-        ghost
-        items={[
-          {
-            key: "evidence",
-            label: "查看随合成样例提供的证据元数据",
-            children: (
-              <JsonDetails value={capabilities.aftercare_evidence_template} />
-            ),
-          },
-        ]}
-      />
+      {!real && (
+        <Collapse
+          ghost
+          items={[
+            {
+              key: "evidence",
+              label: "查看随合成样例提供的证据元数据",
+              children: (
+                <JsonDetails value={capabilities.aftercare_evidence_template} />
+              ),
+            },
+          ]}
+        />
+      )}
       <Space orientation="vertical">
         <Checkbox
           checked={confirmed}

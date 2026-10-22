@@ -35,6 +35,8 @@ class AiService:
         saved = self.ctx.get(db,'evaluation',run_id)
         case = self.ctx.get(db,'case',saved['case_id'])
         report = saved['response']['report']
+        require(report.get('data_mode') != 'real_listings',409,'real_ai_not_supported',
+                '真实房源当前使用事实筛选；旧的模拟评分解读器不适用于此报告。')
         current = self.ctx.current(case,report['profile_version'])
         require(current['fingerprint']==report['profile_fingerprint'],409,'stale_evaluation','请使用当前确认偏好的推荐报告。')
         return {'case_id':case['case_id'],'run_id':run_id,'profile_version':report['profile_version'],

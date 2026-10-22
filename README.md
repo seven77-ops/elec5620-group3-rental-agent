@@ -2,14 +2,16 @@
 
 小组租房多 Agent 项目。各成员的实现放在独立目录中，再通过约定的数据契约联调。
 
+**2026-10-22 小组试用版：** 使用 `codex/group-trial-20261022` 分支，暂不合并 main。Windows/macOS 安装、完整试用步骤与反馈方式见 [小组试用指南](docs/frontend/2026-10-22-group-trial.md)。请先在群里向 Anda 反馈问题，由 Anda 统一修改本轮集成代码。
+
 | 模块 | 内容 | 运行说明 |
 |---|---|---|
 | [agent2/](agent2/) | Member 2：房源资格评估、评分推荐、偏好版本比较与本地选房证据包 | [Agent 2 README](agent2/README.md) |
-| [agent3/](agent3/) | Member 3：合同读取、选房交叉核对、人工复核与问题清单 | [Agent 3 README](agent3/README.md) |
+| [agent3/](agent3/) | Member 3：NSW 官方模板租约草稿、合同读取、选房交叉核对与人工复核 | [Agent 3 README](agent3/README.md) |
 
 ## 运行统一前端演示
 
-使用 React/TypeScript/Ant Design 页面与 FastAPI 本地接口，直接调用 Agent 1、2、3、4 的本地服务。偏好表单复用 Agent 1 的草稿校验、确认版本、任务交接和版本比较；默认只用合成数据，当前不启用 LLM 对话提取或外发消息。
+使用 React/TypeScript/Ant Design 页面与 FastAPI 本地接口。偏好表单通过 Agent 1 保存和确认版本，Agent2 默认读取500条真实住宅广告，提供房源字段筛选、分页、待核实候选报告和候选快照保存。缺失或损坏的数据文件会使启动失败，不会回退到模拟房源。AI 对话可整理需求、查询与比较候选；保存候选后可记录看房及中介回复，并在独立同意后上传真实合同，由 Agent3 提取和比对。Agent4 需另行确认租约资料。不会向房东或中介发送消息。
 
 ```sh
 python3 -m venv .venv
@@ -20,7 +22,11 @@ python3 -m venv .venv
 
 打开 <http://127.0.0.1:5173>。需要 Python 3.11+，前端本次使用 Node 22.23.1 验证。启动脚本生成的本地操作员密钥位于忽略目录 `.runtime/operator-key.txt`。完整启动、演示时钟和权限边界见 [前端运行说明](docs/frontend/implementation.md)，实际结果见 [验证记录](docs/frontend/verification.md)。
 
-## 运行 Agent 2
+## Agent2 网页与真实数据接口
+
+访问网页“房源推荐”；租房需求面板收进“AI租房助手”。接口与状态约定见 [真实 Agent2 接入说明](docs/frontend/2026-10-21-agent2-real-catalog.md)。真实广告未核实在租、计价对象和租期，不提供模拟通勤、综合分数或已认证合同交接。
+
+## 运行历史 Agent2 合成场景回归
 
 需要 Python 3.10+。从仓库根目录执行：
 
@@ -31,7 +37,7 @@ python3 -m unittest discover -s tests -v
 python3 -m rental_agent --profile data/demo/profiles/commute.json --listings data/demo/listings.json --output reports/my-first-run
 ```
 
-房源和路线全部为模拟数据。完整参数、比较功能和接口边界见 [Agent 2 说明](agent2/README.md)及[数据契约](agent2/docs/data-contracts.md)。
+以上 CLI 命令仅运行历史模拟场景；它不是网站运行时的数据源。完整参数、比较功能和接口边界见 [Agent 2 说明](agent2/README.md)及[数据契约](agent2/docs/data-contracts.md)。
 
 ## 小组协作
 
@@ -45,6 +51,24 @@ python3 -m rental_agent --profile data/demo/profiles/commute.json --listings dat
 
 [输入约定与本地联调](integration/README.md)：包含 Agent 1 已确认偏好及外层确认/版本/任务样例，以及 Agent 2 → Agent 3 的可复现场景。Agent 1 已通过 PR #6 合入 main；统一前端的实际服务接入及验证见 [最新验证记录](docs/frontend/verification.md#2026-10-20agent1-实际服务接入)。
 
-## 本地 AI 接入核对版（尚未发布）
+## 可选 AI 配置与历史核对记录
 
 Agent 2 推荐解读、Agent 3 候选提取/风险解释与前端接线见 [本地运行与 API 配置](docs/frontend/2026-10-20-ai-local-run.md)；同学核对见 [Agent 3 核对单](docs/frontend/agent3-ai-handoff.md)。默认不开启外部模型，真实服务成功仍需填写自己的后端配置后实测。
+
+上述 10 月 20 日文档保留当时的本地验证状态；本轮发布范围及试用方式以 10 月 22 日小组试用指南为准。
+
+## 真实数据与市场参考（本地）
+
+市场租金、真实观察记录和地图工具收进“房源推荐”页面：查询悉大周边政府历史租金基准、保存并导出真实房源观察记录，以及在配置凭据后查询 Domain 广告和 TfNSW 通勤。当前不将这些记录自动视为已通过资格评估的推荐。覆盖范围、来源、启动与配置见[真实数据运行说明](docs/frontend/2026-10-21-real-data.md)。
+
+## 候选之后的跟进与真实合同
+
+候选卡片提供“准备看房与询问”“生成租约草稿”和“已有合同，开始复核”。用户记录与广告原始快照分开保存，合同上传后冻结各自版本用于事实比对。未核实广告不转换为历史 `SelectedListingEvidence`；详细接口、范围和验证见 [候选跟进说明](docs/frontend/2026-10-22-candidate-followup.md)。
+
+“合同助手”支持 NSW 普通整租住宅的未签署草稿：填写或用 AI 整理双方及租约要点，经用户确认后保存版本并下载官方模板 PDF。广告租金不会自动成为约定租金；未知内容保留待补，签字栏保持空白。模板来源、版本保存和测试记录见 [租约草稿说明](docs/frontend/2026-10-22-lease-draft.md)。
+
+## 入住后的服务与退租
+
+“租后服务”现支持日常报修邮件草稿、实际中介联系人、水电气网供应商保存、真实搬运及清洁公司入口、报价与服务记录、照片收据，以及原 Agent4 的退租计划和押金流程。AI 聊天可读取同一份资料并在用户确认后同步更新；不自动发送邮件或提交预约。目录来源、接口及测试见 [租后服务说明](docs/frontend/2026-10-22-living-services.md)。
+
+租后服务还支持[租约资料接续、报修连续对话与待办直达](docs/frontend/2026-10-22-living-continuity.md)：核对来源后选择性带入资料，聊天与页面可跟进同一条报修，顶部待办直接定位到具体事项。

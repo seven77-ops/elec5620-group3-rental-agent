@@ -12,7 +12,7 @@ from fastapi.testclient import TestClient
 class BoundaryTests(unittest.TestCase):
     def setUp(self):
         self.assertTrue(Path('server/app/main.py').exists(), 'HTTP adapter has not been implemented')
-        from server.app.main import create_app
+        from server.tests.legacy_app import create_app
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.app = create_app(runtime_dir=self.temp.name, operator_key='test-private-key')
@@ -58,7 +58,7 @@ class BoundaryTests(unittest.TestCase):
         self.assertEqual(saved.json()['confirmations'][0],original)
         self.assertEqual(self.post(f'cases/{self.cid}/evaluations', {'request_id':'e','confirmation_version':1}).status_code,409)
         self.assertEqual(self.post(f'cases/{self.cid}/profile-drafts',{'expected_revision':1,'profile':profile}).status_code,409)
-        from server.app.main import create_app
+        from server.tests.legacy_app import create_app
         restarted=TestClient(create_app(runtime_dir=self.temp.name))
         self.assertEqual(restarted.get(f'/api/v1/cases/{self.cid}').json()['draft']['revision'],2)
 
@@ -327,7 +327,7 @@ class BoundaryTests(unittest.TestCase):
     def test_consent_references_restore_after_restart_and_remain_revocable(self):
         self.selected()
         consent=self.post(f'cases/{self.cid}/contract-consents',{'confirmed':True}).json()
-        from server.app.main import create_app
+        from server.tests.legacy_app import create_app
         resumed=TestClient(create_app(runtime_dir=self.temp.name))
         pending=resumed.get(f'/api/v1/cases/{self.cid}/contract-consents')
         self.assertEqual(pending.status_code,200,pending.text)

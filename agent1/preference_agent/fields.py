@@ -24,7 +24,7 @@ FIELDS['additional_requirements'] = {
         'text': {'type': 'string', 'minLength': 1},
         'priority': {'enum': ['hard', 'soft', 'unspecified']}},
         'required': ['text', 'priority'], 'additionalProperties': False}}
-OPTIONAL = {'preferred_locations', 'location_priority', 'additional_requirements'}
+OPTIONAL = {'housing_preferences', 'preferred_locations', 'location_priority', 'additional_requirements'}
 
 QUESTIONS = {
     'budget.currency': 'Which currency is your budget in? Agent2 currently supports AUD only.',
@@ -83,6 +83,8 @@ def profile_from(values, search_id, version):
             result.setdefault(key, {})[sub] = value
         else:
             result[field] = value
+    if values.get('housing_preferences') is not None:
+        result['housing_preferences'] = deepcopy(values['housing_preferences'])
     period = result['budget']['period']
     if period in ('month', 'fortnight'):
         factor = 12 / 52 if period == 'month' else .5

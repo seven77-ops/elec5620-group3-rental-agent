@@ -2,16 +2,19 @@ export class ApiError extends Error {
   code: string;
   requestId?: string;
   fields?: unknown;
+  status?: number;
   constructor(
     message: string,
     code = "network_error",
     requestId?: string,
     fields?: unknown,
+    status?: number,
   ) {
     super(message);
     this.code = code;
     this.requestId = requestId;
     this.fields = fields;
+    this.status = status;
   }
 }
 export const newRequestId = () => `web-${crypto.randomUUID()}`;
@@ -50,6 +53,7 @@ export async function api<T>(
         error?.code ?? `http_${response.status}`,
         error?.request_id,
         error?.fields,
+        response.status,
       );
     }
     if (result === null && !options?.allowNull)

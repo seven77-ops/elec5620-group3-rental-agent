@@ -12,6 +12,7 @@ import {
   Space,
   Timeline,
 } from "antd";
+import { useCase } from "../app/context";
 import type { Dict } from "../api/types";
 import {
   CommandRecovery,
@@ -34,7 +35,9 @@ export default function AftercareBond({
   clock: string;
   recovery: CommandRecoveryProps;
 }) {
-  const [bondRef, setBondRef] = useState("SYNTHETIC-RBO-001");
+  const { config } = useCase();
+  const real = config.mode === "real_listings";
+  const [bondRef, setBondRef] = useState(real ? "" : "SYNTHETIC-RBO-001");
   const [update, setUpdate] = useState(false);
   const [form] = Form.useForm();
   const [outcome, setOutcome] = useState("");
@@ -86,7 +89,9 @@ export default function AftercareBond({
       </p>
       {!bond ? (
         <div className="date-actions">
-          <label htmlFor="bond-reference">合成押金记录编号</label>
+          <label htmlFor="bond-reference">
+            {real ? "押金记录编号（可暂不填写）" : "合成押金记录编号"}
+          </label>
           <Input
             id="bond-reference"
             value={bondRef}
@@ -283,7 +288,7 @@ export default function AftercareBond({
         }}
         cancelButtonProps={{ disabled: busy || recovery.refreshing }}
         closable={!busy && !recovery.refreshing}
-        maskClosable={!busy && !recovery.refreshing}
+        mask={{ closable: !busy && !recovery.refreshing }}
         onOk={submitUpdate}
         okText="确认并记录"
         cancelText={recovery.error ? "取消本次编辑" : "取消"}

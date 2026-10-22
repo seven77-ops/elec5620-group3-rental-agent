@@ -11,7 +11,7 @@ from fastapi.testclient import TestClient
 
 class Agent1ApiTests(unittest.TestCase):
     def setUp(self):
-        from server.app.main import create_app
+        from server.tests.legacy_app import create_app
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.app = create_app(runtime_dir=self.tmp.name)
@@ -60,7 +60,7 @@ class Agent1ApiTests(unittest.TestCase):
         record = store.profile(session['case_id'], 1)
         self.assertEqual(record['profile'], self.case['confirmations'][0]['profile'])
         self.assertEqual(record['confirmationMethod'], 'explicit_local_ui_action')
-        from server.app.main import create_app
+        from server.tests.legacy_app import create_app
         restarted = TestClient(create_app(runtime_dir=self.tmp.name))
         saved = restarted.get(f'/api/v1/cases/{self.cid}').json()
         self.assertEqual(saved, self.case)

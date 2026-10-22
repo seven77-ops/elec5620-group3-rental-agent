@@ -1,6 +1,7 @@
 """Aftercare orchestration for the local synthetic API."""
 from copy import deepcopy
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 from hashlib import sha256
 
 from fastapi import Request
@@ -63,11 +64,16 @@ class AftercareAdapter:
                     require(payload.get('use_model') is False and payload.get('allow_external_ai') is False,
                             422, 'external_ai_disabled', 'This synthetic demo uses deterministic drafts only')
                 previous_clock = repo.get(db, 'clock', case['case_id'])
-                base = datetime.fromisoformat(previous_clock['at'] if previous_clock else AFTERCARE_CLOCK)
-                candidate = base + timedelta(seconds=1) if previous_clock else base
-                # Poll/close progress to allowlisted scenario checkpoints, never a browser-supplied clock.
-                checkpoint = datetime.fromisoformat(fixture_clocks.get(body['operation'], AFTERCARE_CLOCK))
-                clock = max(candidate, checkpoint).isoformat()
+                if self.ctx.settings.catalog is not None:
+                    actual = datetime.now(ZoneInfo('Australia/Sydney'))
+                    prior = datetime.fromisoformat(previous_clock['at']) if previous_clock else actual
+                    clock = max(actual, prior + timedelta(microseconds=1)).isoformat()
+                else:
+                    base = datetime.fromisoformat(previous_clock['at'] if previous_clock else AFTERCARE_CLOCK)
+                    candidate = base + timedelta(seconds=1) if previous_clock else base
+                    # Historical demo checkpoints remain confined to legacy mode.
+                    checkpoint = datetime.fromisoformat(fixture_clocks.get(body['operation'], AFTERCARE_CLOCK))
+                    clock = max(candidate, checkpoint).isoformat()
                 binding = {'schema_version': '1.0', 'case_id': m4_id, 'request_id': 'web-' + sha256(key.encode()).hexdigest(),
                     'actor_id': OPERATOR if role == 'operator' else TENANT, 'actor_role': role,
                     'expected_version': body['expected_version'], 'operation': body['operation'], 'payload': payload, 'as_of': clock}

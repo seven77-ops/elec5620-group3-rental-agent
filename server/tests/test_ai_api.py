@@ -11,7 +11,7 @@ from server.tests.ai_fixtures import TestProvider
 
 class AiApiTests(unittest.TestCase):
     def setUp(self):
-        from server.app.main import create_app
+        from server.tests.legacy_app import create_app
         self.assertIn('ai_provider', inspect.signature(create_app).parameters, 'AI HTTP integration is missing')
         self.tmp = tempfile.TemporaryDirectory(); self.addCleanup(self.tmp.cleanup)
         self.provider = TestProvider()
@@ -166,7 +166,7 @@ class AiApiTests(unittest.TestCase):
         self.assertEqual(self.client.get(f'/api/v1/contract-reviews/{self.review_id}').json(),self.original)
 
     def test_concurrent_duplicate_is_pending_then_receipt_survives_restart(self):
-        from server.app.main import create_app
+        from server.tests.legacy_app import create_app
         self.review(); entered=Event(); release=Event()
         def block(context):
             if context['task']=='contract_extract': entered.set(); release.wait(5)
@@ -210,7 +210,7 @@ class AiApiTests(unittest.TestCase):
         self.assertEqual(latest['analysis_id'],newer.json()['analysis_id'])
 
     def test_unconfigured_provider_and_changed_preference_are_explicit(self):
-        from server.app.main import create_app
+        from server.tests.legacy_app import create_app
         from server.app.ai.provider import ModelProvider
         client=TestClient(create_app(runtime_dir=self.tmp.name,ai_provider=ModelProvider(env={})))
         response=client.post(f'/api/v1/evaluations/{self.rid}/ai-explanations',json={'request_id':'missing','allow_external_ai':True})

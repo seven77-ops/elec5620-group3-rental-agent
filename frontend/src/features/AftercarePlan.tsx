@@ -61,18 +61,20 @@ export function CommandRecovery({
 }
 export default function AftercarePlan({
   plan,
+  initialDate,
   evidence,
   send,
   busy,
   recovery,
 }: {
   plan: Dict | null;
+  initialDate?: string;
   evidence: Dict[];
   send: SendCommand;
   busy: boolean;
   recovery: CommandRecoveryProps;
 }) {
-  const [date, setDate] = useState("2026-10-31");
+  const [date, setDate] = useState(initialDate ?? "2026-10-31");
   const [editing, setEditing] = useState<Dict | null>(null);
   const [form] = Form.useForm();
   const { modal } = App.useApp();
@@ -283,7 +285,7 @@ export default function AftercarePlan({
         }}
         cancelButtonProps={{ disabled: busy || recovery.refreshing }}
         closable={!busy && !recovery.refreshing}
-        maskClosable={!busy && !recovery.refreshing}
+        mask={{ closable: !busy && !recovery.refreshing }}
         onOk={save}
         okText="保存任务"
         cancelText={recovery.error ? "取消本次编辑" : "取消"}

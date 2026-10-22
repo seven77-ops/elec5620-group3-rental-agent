@@ -25,6 +25,7 @@ export default function ContractUpload({
   const [loadError, setLoadError] = useState<unknown>(null);
   const [loading, setLoading] = useState(true);
   const input = useRef<HTMLInputElement>(null);
+  const real = current.selection?.data_mode === "real_listings";
   const selectionCurrent = Boolean(
     current.selection &&
     current.selection.profile_version === currentConfirmation(current)?.version,
@@ -66,7 +67,11 @@ export default function ContractUpload({
       );
       setConsent(r.consent_id);
       onConsentChange();
-      message.success("合同处理同意已记录，现在可以选择合成合同。");
+      message.success(
+        real
+          ? "合同处理同意已记录，现在可以选择合同。"
+          : "合同处理同意已记录，现在可以选择合成合同。",
+      );
     });
   const revoke = () => {
     const id = consent;
@@ -114,8 +119,10 @@ export default function ContractUpload({
     <section className="panel upload-panel">
       <h2>独立同意与合同上传</h2>
       <p className="muted">
-        仅处理合成合同，上传后先在本地提取字段并核对。AI
-        辅助分析需另行同意并配置模型；不会向房东发送文件或消息。
+        {real
+          ? "上传后先在本地提取字段，并与当前房源和补充记录比对。"
+          : "仅处理合成合同，上传后先在本地提取字段并核对。"}
+        AI 辅助分析需另行同意。
       </p>
       <Failure
         error={action.error || loadError}
@@ -161,14 +168,14 @@ export default function ContractUpload({
             <input
               ref={input}
               type="file"
-              aria-label="选择合成合同"
+              aria-label={real ? "选择合同" : "选择合成合同"}
               accept=".txt,.docx,.pdf"
               disabled={action.busy}
               onChange={(e) => {
                 const chosen = e.target.files?.[0] ?? null;
                 if (chosen && chosen.size > 2_000_000) {
                   message.error(
-                    "文件超过 2,000,000 字节，请提供较小的合成合同。",
+                    "文件超过 2,000,000 字节，请提供较小的合同文件。",
                   );
                   e.target.value = "";
                   return;
@@ -177,12 +184,12 @@ export default function ContractUpload({
               }}
             />
             <Button
-              aria-label="选择合成合同文件"
+              aria-label={real ? "选择合同文件" : "选择合成合同文件"}
               icon={<UploadOutlined />}
               onClick={() => input.current?.click()}
               disabled={action.busy}
             >
-              选择合成合同
+              {real ? "选择合同" : "选择合成合同"}
             </Button>
             <span className="break-word">{file?.name ?? "尚未选择文件"}</span>
           </div>
@@ -190,7 +197,9 @@ export default function ContractUpload({
             checked={synthetic}
             onChange={(e) => setSynthetic(e.target.checked)}
           >
-            我确认上传的是合成演示合同。
+            {real
+              ? "我确认有权提交此合同用于本次复核。"
+              : "我确认上传的是合成演示合同。"}
           </Checkbox>
           <div className="consent-actions">
             <Button
@@ -206,19 +215,23 @@ export default function ContractUpload({
         </>
       )}
       <p className="muted small">
-        TXT / DOCX / PDF，最多 2,000,000 字节，PDF 最多 10 页。扫描文件需要本机
-        OCR 能力。
+        TXT / DOCX / PDF，最多 2,000,000 字节，文字 PDF 最多 {real ? 30 : 10}{" "}
+        页，扫描 PDF 最多 10 页。扫描文件需要本机 OCR 能力。
       </p>
-      <Space wrap>
-        <span className="muted">下载合成样例：</span>
-        {config.agreement_examples.map((e) => (
-          <a key={e.id} href={downloadUrl(`/demo-agreements/${e.id}`)}>
-            {e.id === "normal" ? "正常合同" : "租金冲突合同"}
-          </a>
-        ))}
-      </Space>
+      {!real && (
+        <Space wrap>
+          <span className="muted">下载合成样例：</span>
+          {config.agreement_examples.map((e) => (
+            <a key={e.id} href={downloadUrl(`/demo-agreements/${e.id}`)}>
+              {e.id === "normal" ? "正常合同" : "租金冲突合同"}
+            </a>
+          ))}
+        </Space>
+      )}
       <p className="muted small">
-        合同规则参考日期：{config.clocks.contract}，与房源快照日期独立。
+        {real
+          ? "以实际复核日期检查规则时效；字段无法可靠提取时，可核对原文后修正或另行使用 AI 分析。"
+          : `合同规则参考日期：${config.clocks.contract}，与房源快照日期独立。`}
       </p>
     </section>
   );

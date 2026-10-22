@@ -8,5 +8,13 @@ export function mergeEditableProfile(saved: Profile, edited: Profile): Profile {
     commute: { ...saved.commute, ...edited.commute },
     move_in_window: { ...saved.move_in_window, ...edited.move_in_window },
     weights: { ...saved.weights, ...edited.weights },
+    ...(saved.housing_preferences || edited.housing_preferences
+      ? {
+          housing_preferences: {
+            ...saved.housing_preferences,
+            ...edited.housing_preferences,
+          },
+        }
+      : {}),
   };
 }

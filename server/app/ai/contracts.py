@@ -11,8 +11,8 @@ def analyze_saved_contract(ctx,saved,gateway):
     from contract_agent.ai_analysis import analyze_contract
     directory=(ctx.repo.directory/'uploads').resolve()
     path=(directory/saved['file_ref']).resolve()
-    require(path.parent==directory and path.is_file(),404,'document_missing','保存的合成合同不可用，请重新提交。')
-    document=load_document(path,consent=True)
+    require(path.parent==directory and path.is_file(),404,'document_missing','保存的合同不可用，请重新提交。')
+    document=load_document(path,consent=True,max_pdf_pages=30 if saved.get('real_context') else 10)
     require(document['sha256']==saved['review']['document']['sha256'],409,'document_changed','保存的合同内容已变化，请重新提交。')
     document['source_name']=saved['review']['document']['source_name']
     return analyze_contract(document,saved['review'],gateway)

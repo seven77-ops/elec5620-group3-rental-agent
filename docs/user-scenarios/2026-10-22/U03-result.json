@@ -1,0 +1,850 @@
+{
+  "persona": {
+    "id": "U03",
+    "name": "Alex Lin",
+    "role": "已有候选的上班族",
+    "stage": "Agent2 候选到 Agent3 草稿再到 Agent4 入住",
+    "requirements": "已确认1人整租、Parramatta、2卧2卫、整套最高每周1500；选一条当前真实候选，使用虚构双方资料准备草稿。",
+    "expectations": [
+      "候选之后给出可执行的询问入口",
+      "草稿保存不等于签约或入住",
+      "核对来源后才能带入住处与联系人"
+    ],
+    "turns": [
+      "这套房子已经保存为候选了，下一步应该问中介什么？",
+      "帮我生成这套房子的租约草稿。",
+      "草稿已经生成了，是不是就算签约完成，可以自动当作已经入住？",
+      "我已经在租后服务确认了实际住处，现在保存了哪些水电网络公司？"
+    ]
+  },
+  "entries": [
+    {
+      "type": "user_action",
+      "label": "前置状态 已确认需求并保存一条真实广告候选",
+      "details": {
+        "address": "39/68 MacArthur Street, Parramatta",
+        "listing_id": "domain:18371533",
+        "availability_verified": false
+      },
+      "state": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [
+          1
+        ],
+        "selected_listing": "domain:18371533",
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    },
+    {
+      "type": "dialogue",
+      "round": 1,
+      "user": "这套房子已经保存为候选了，下一步应该问中介什么？",
+      "status": 200,
+      "intent": "followup",
+      "agent": "agent2",
+      "answer": "围绕你已保存的 39/68 MacArthur Street, Parramatta，建议先问：\n1. 请问 39/68 MacArthur Street, Parramatta 目前是否仍可租，何时可以看房？\n2. 请确认实际租金金额、付款周期，以及是整套、每间还是每人计价。\n3. 租金包含哪些账单？还有哪些固定费用？\n4. 最早起租日期、租期和押金金额分别是多少？\n5. 广告中的卧室、浴室和车位是否均包含在本次出租范围内？\n6. 申请需要哪些材料？能否提供拟签合同及出租方或代理信息供核对？\n可在房源跟进里记录中介回复；已有合同可直接复核。这份清单尚未发送给中介。",
+      "actions": [
+        {
+          "type": "navigate",
+          "label": "记录回复与看房安排",
+          "page": "recommendations?followup=1"
+        },
+        {
+          "type": "navigate",
+          "label": "已有合同，开始复核",
+          "page": "contract?mode=review"
+        }
+      ],
+      "listings": [],
+      "providers": [],
+      "model_calls": [
+        {
+          "task": "assistant_intent",
+          "provider": "openai_compatible",
+          "model": "qwen-plus",
+          "started_at": "2026-10-22T03:06:27.405910+00:00",
+          "duration_ms": 2839,
+          "status": "succeeded",
+          "attempted": true,
+          "usage": {
+            "prompt_tokens": 6859,
+            "total_tokens": 6865,
+            "completion_tokens": 6
+          }
+        }
+      ],
+      "elapsed_seconds": 2.85,
+      "state_before": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [
+          1
+        ],
+        "selected_listing": "domain:18371533",
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      },
+      "state_after": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [
+          1
+        ],
+        "selected_listing": "domain:18371533",
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    },
+    {
+      "type": "dialogue",
+      "round": 2,
+      "user": "帮我生成这套房子的租约草稿。",
+      "status": 200,
+      "intent": "draft_contract",
+      "agent": "agent3",
+      "answer": "可以先准备新州普通整租住宅的未签署草稿。请在合同助手核对房源、拟定租金、双方姓名和租期；未知信息留空，确认后才保存。",
+      "actions": [
+        {
+          "type": "navigate",
+          "label": "准备租约草稿",
+          "page": "contract?mode=draft"
+        }
+      ],
+      "listings": [],
+      "providers": [],
+      "model_calls": [
+        {
+          "task": "assistant_intent",
+          "provider": "openai_compatible",
+          "model": "qwen-plus",
+          "started_at": "2026-10-22T03:06:30.268334+00:00",
+          "duration_ms": 2237,
+          "status": "succeeded",
+          "attempted": true,
+          "usage": {
+            "prompt_tokens": 7097,
+            "total_tokens": 7103,
+            "completion_tokens": 6
+          }
+        }
+      ],
+      "elapsed_seconds": 2.25,
+      "state_before": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [
+          1
+        ],
+        "selected_listing": "domain:18371533",
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      },
+      "state_after": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [
+          1
+        ],
+        "selected_listing": "domain:18371533",
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    },
+    {
+      "type": "user_action",
+      "label": "用户在合同助手填写虚构双方资料并确认保存",
+      "details": {
+        "draft_status": "draft",
+        "draft_version": 1,
+        "fields": {
+          "address": "39/68 MacArthur Street, Parramatta",
+          "landlord_name": "Example Owner",
+          "landlord_contact": "owner@example.com",
+          "landlord_notice_address": "1 Example Road, Sydney NSW 2000",
+          "tenant_names": "Alex Lin",
+          "tenant_contact": "alex@example.com",
+          "tenant_notice_address": "",
+          "agent_name": "Example Agent",
+          "agent_contact": "agent@example.com",
+          "agent_notice_address": "",
+          "inclusions": "",
+          "payment_details": "",
+          "rent_due_day": "",
+          "rental_mode": "whole_property",
+          "lease_type": "fixed",
+          "rent_period": "week",
+          "payment_method": null,
+          "start_date": "2026-11-01",
+          "end_date": "2027-11-01",
+          "first_rent_date": null,
+          "rent_amount": 800,
+          "bond": 3200,
+          "max_occupants": null
+        },
+        "pdf_status": 200,
+        "pdf_header_ok": true,
+        "creates_actual_tenancy": false
+      },
+      "state": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [
+          1
+        ],
+        "selected_listing": "domain:18371533",
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    },
+    {
+      "type": "dialogue",
+      "round": 3,
+      "user": "草稿已经生成了，是不是就算签约完成，可以自动当作已经入住？",
+      "status": 200,
+      "intent": "followup",
+      "agent": "agent2",
+      "answer": "围绕你已保存的 39/68 MacArthur Street, Parramatta，建议先问：\n1. 请问 39/68 MacArthur Street, Parramatta 目前是否仍可租，何时可以看房？\n2. 请确认实际租金金额、付款周期，以及是整套、每间还是每人计价。\n3. 租金包含哪些账单？还有哪些固定费用？\n4. 最早起租日期、租期和押金金额分别是多少？\n5. 广告中的卧室、浴室和车位是否均包含在本次出租范围内？\n6. 申请需要哪些材料？能否提供拟签合同及出租方或代理信息供核对？\n可在房源跟进里记录中介回复；已有合同可直接复核。这份清单尚未发送给中介。",
+      "actions": [
+        {
+          "type": "navigate",
+          "label": "记录回复与看房安排",
+          "page": "recommendations?followup=1"
+        },
+        {
+          "type": "navigate",
+          "label": "已有合同，开始复核",
+          "page": "contract?mode=review"
+        }
+      ],
+      "listings": [],
+      "providers": [],
+      "model_calls": [
+        {
+          "task": "assistant_intent",
+          "provider": "openai_compatible",
+          "model": "qwen-plus",
+          "started_at": "2026-10-22T03:06:32.880580+00:00",
+          "duration_ms": 2477,
+          "status": "succeeded",
+          "attempted": true,
+          "usage": {
+            "prompt_tokens": 7200,
+            "total_tokens": 7206,
+            "completion_tokens": 6
+          }
+        }
+      ],
+      "elapsed_seconds": 2.49,
+      "state_before": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [
+          1
+        ],
+        "selected_listing": "domain:18371533",
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      },
+      "state_after": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [
+          1
+        ],
+        "selected_listing": "domain:18371533",
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    },
+    {
+      "type": "user_action",
+      "label": "用户另行核实实际租约并确认接入住处资料",
+      "details": {
+        "source_label": "已保存租约草稿 v1",
+        "selected_fields": [
+          "address",
+          "agent_name",
+          "agent_email",
+          "lease_start_date",
+          "lease_end_date"
+        ],
+        "aftercare_case_created": false,
+        "explanation": "只导入本人确认的资料，不自动创建退租押金案件，不证明签约。"
+      },
+      "state": {
+        "living_version": 1,
+        "profile": {
+          "address": "39/68 MacArthur Street, Parramatta",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "Example Agent",
+          "agent_email": "agent@example.com",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": "2026-11-01",
+          "lease_end_date": "2027-11-01",
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [
+          1
+        ],
+        "selected_listing": "domain:18371533",
+        "aftercare_case_id": null,
+        "tenancy_source": {
+          "actual_tenancy_confirmed": true,
+          "fields": [
+            "address",
+            "agent_name",
+            "agent_email",
+            "lease_start_date",
+            "lease_end_date"
+          ],
+          "id": "lease-draft-0e675a9e8c104540b00394c0ef7bc4bc",
+          "imported_at": "2026-10-22T03:06:35.380848+00:00",
+          "kind": "lease_draft",
+          "label": "已保存租约草稿 v1",
+          "token": "bcf7edbc3c0185b34932edc00265e9c3d9c857fc21509be4792be99c8c502063",
+          "version": 1
+        }
+      }
+    },
+    {
+      "type": "dialogue",
+      "round": 4,
+      "user": "我已经在租后服务确认了实际住处，现在保存了哪些水电网络公司？",
+      "status": 200,
+      "intent": "living_services",
+      "agent": "agent4",
+      "answer": "目前还没有保存水电气网公司。\n下面是可核对的官方入口，先按房屋地址确认可用服务，再比较套餐；目录没有实时费率，不能据此判断哪家最便宜。供水方依地址确认。",
+      "actions": [
+        {
+          "type": "navigate",
+          "label": "查看对应租后服务",
+          "page": "aftercare?tab=utilities"
+        }
+      ],
+      "listings": [],
+      "providers": [
+        {
+          "name": "AGL",
+          "website": "https://www.agl.com.au/",
+          "phone": "131 245",
+          "categories": [
+            "electricity",
+            "gas"
+          ]
+        },
+        {
+          "name": "Origin Energy",
+          "website": "https://www.originenergy.com.au/",
+          "phone": "13 24 61",
+          "categories": [
+            "electricity",
+            "gas"
+          ]
+        },
+        {
+          "name": "EnergyAustralia",
+          "website": "https://www.energyaustralia.com.au/",
+          "phone": "133 466",
+          "categories": [
+            "electricity",
+            "gas"
+          ]
+        },
+        {
+          "name": "Telstra",
+          "website": "https://www.telstra.com.au/",
+          "phone": null,
+          "categories": [
+            "internet"
+          ]
+        },
+        {
+          "name": "Optus",
+          "website": "https://www.optus.com.au/",
+          "phone": "133 937",
+          "categories": [
+            "internet"
+          ]
+        },
+        {
+          "name": "TPG",
+          "website": "https://www.tpg.com.au/",
+          "phone": "13 14 23",
+          "categories": [
+            "internet"
+          ]
+        },
+        {
+          "name": "Aussie Broadband",
+          "website": "https://www.aussiebroadband.com.au/",
+          "phone": "1300 880 905",
+          "categories": [
+            "internet"
+          ]
+        },
+        {
+          "name": "Superloop",
+          "website": "https://www.superloop.com/",
+          "phone": "1800 57 87 37",
+          "categories": [
+            "internet"
+          ]
+        },
+        {
+          "name": "Sydney Water",
+          "website": "https://www.sydneywater.com.au/",
+          "phone": "13 20 92",
+          "categories": [
+            "water"
+          ]
+        }
+      ],
+      "model_calls": [
+        {
+          "task": "assistant_intent",
+          "provider": "openai_compatible",
+          "model": "qwen-plus",
+          "started_at": "2026-10-22T03:06:35.391819+00:00",
+          "duration_ms": 2729,
+          "status": "succeeded",
+          "attempted": true,
+          "usage": {
+            "prompt_tokens": 7448,
+            "total_tokens": 7463,
+            "completion_tokens": 15
+          }
+        }
+      ],
+      "elapsed_seconds": 2.75,
+      "state_before": {
+        "living_version": 1,
+        "profile": {
+          "address": "39/68 MacArthur Street, Parramatta",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "Example Agent",
+          "agent_email": "agent@example.com",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": "2026-11-01",
+          "lease_end_date": "2027-11-01",
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [
+          1
+        ],
+        "selected_listing": "domain:18371533",
+        "aftercare_case_id": null,
+        "tenancy_source": {
+          "actual_tenancy_confirmed": true,
+          "fields": [
+            "address",
+            "agent_name",
+            "agent_email",
+            "lease_start_date",
+            "lease_end_date"
+          ],
+          "id": "lease-draft-0e675a9e8c104540b00394c0ef7bc4bc",
+          "imported_at": "2026-10-22T03:06:35.380848+00:00",
+          "kind": "lease_draft",
+          "label": "已保存租约草稿 v1",
+          "token": "bcf7edbc3c0185b34932edc00265e9c3d9c857fc21509be4792be99c8c502063",
+          "version": 1
+        }
+      },
+      "state_after": {
+        "living_version": 1,
+        "profile": {
+          "address": "39/68 MacArthur Street, Parramatta",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "Example Agent",
+          "agent_email": "agent@example.com",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": "2026-11-01",
+          "lease_end_date": "2027-11-01",
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [
+          1
+        ],
+        "selected_listing": "domain:18371533",
+        "aftercare_case_id": null,
+        "tenancy_source": {
+          "actual_tenancy_confirmed": true,
+          "fields": [
+            "address",
+            "agent_name",
+            "agent_email",
+            "lease_start_date",
+            "lease_end_date"
+          ],
+          "id": "lease-draft-0e675a9e8c104540b00394c0ef7bc4bc",
+          "imported_at": "2026-10-22T03:06:35.380848+00:00",
+          "kind": "lease_draft",
+          "label": "已保存租约草稿 v1",
+          "token": "bcf7edbc3c0185b34932edc00265e9c3d9c857fc21509be4792be99c8c502063",
+          "version": 1
+        }
+      }
+    }
+  ],
+  "checks": [
+    {
+      "check": "本轮问答未自动改租后资料",
+      "round": 1,
+      "passed": true
+    },
+    {
+      "check": "本轮问答未自动改租后资料",
+      "round": 2,
+      "passed": true
+    },
+    {
+      "check": "本轮问答未自动改租后资料",
+      "round": 3,
+      "passed": true
+    },
+    {
+      "check": "本轮问答未自动改租后资料",
+      "round": 4,
+      "passed": true
+    }
+  ],
+  "final_state": {
+    "living_version": 1,
+    "profile": {
+      "address": "39/68 MacArthur Street, Parramatta",
+      "suburb": "",
+      "postcode": "",
+      "agent_name": "Example Agent",
+      "agent_email": "agent@example.com",
+      "agent_phone": "",
+      "emergency_phone": "",
+      "moving_to": "",
+      "own_furniture": "",
+      "landlord_furniture": "",
+      "notes": "",
+      "bedrooms": null,
+      "bathrooms": null,
+      "carpeted": null,
+      "has_pets": null,
+      "has_elevator": null,
+      "move_out_date": null,
+      "lease_start_date": "2026-11-01",
+      "lease_end_date": "2027-11-01",
+      "utilities": {
+        "electricity": null,
+        "gas": null,
+        "internet": null,
+        "water": null
+      }
+    },
+    "repairs": [],
+    "booking_count": 0,
+    "confirmation_versions": [
+      1
+    ],
+    "selected_listing": "domain:18371533",
+    "aftercare_case_id": null,
+    "tenancy_source": {
+      "actual_tenancy_confirmed": true,
+      "fields": [
+        "address",
+        "agent_name",
+        "agent_email",
+        "lease_start_date",
+        "lease_end_date"
+      ],
+      "id": "lease-draft-0e675a9e8c104540b00394c0ef7bc4bc",
+      "imported_at": "2026-10-22T03:06:35.380848+00:00",
+      "kind": "lease_draft",
+      "label": "已保存租约草稿 v1",
+      "token": "bcf7edbc3c0185b34932edc00265e9c3d9c857fc21509be4792be99c8c502063",
+      "version": 1
+    }
+  },
+  "method": "Actual model and API; user confirmation actions reproduced through API",
+  "environment": "isolated temporary runtime",
+  "date": "2026-10-22"
+}

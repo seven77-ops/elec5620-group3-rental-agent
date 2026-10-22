@@ -1,0 +1,17 @@
+# Multi-turn rental dialogue repair
+
+The reported sequence was reproduced from the existing conversation: the request to organize rental needs received a generic clarification, followed by a one-off search for Rhodes, 800, one occupant, 2b2b and unrestricted parking. The query returned zero cards with no useful next step.
+
+The previous implementation classified each turn and executed a fixed response; it did not persist a rental brief or the last query. The repair adds `collect_preferences` and a strictly validated `brief_patch`. Conversation-only `rental_brief` values come from user statements, separately from example defaults and confirmed profiles. Intake retains known conditions, asks the next missing question and checks the budget's period and scope. A monthly amount is never silently used as a weekly limit.
+
+Search follow-ups inherit `last_search_filters`; null suburb explicitly removes the region constraint. Preview changes update conversation memory without changing Agent1 preferences. Confirming a proposal replaces the query context with the actual saved report filters. Agent1 proposal/confirmation, request idempotency, case signatures and conversation revisions remain mandatory.
+
+Empty results now compute alternatives from the catalogue by removing one condition at a time. For the reported query, the snapshot has zero matches at 800, a lowest compatible Rhodes advertisement at 890 (90 higher), and 30 matches if only the region constraint is removed. These are current catalogue calculations, not model-generated estimates or verified live availability. No proximity claim is made for other suburbs.
+
+Suggestion actions populate the composer and reset consent; they do not send, save, raise a budget or remove constraints themselves. Full inherited preference details are collapsed in intake messages and shown before explicit confirmation.
+
+Legacy conversations have no structured brief. When resuming intake in one, an additional bounded `assistant_brief` model task extracts only explicit past user requirements. The normal intent patch is merged afterwards so the newest value wins. Both calls run outside transactions, use the existing per-message external-AI consent, pass strict schemas, and appear as separate safe call metadata. A failed extraction does not persist a partial turn.
+
+Verification: new failing regressions reproduced missing intake, absent zero-result alternatives and lost short-follow-up constraints before implementation. The complete server suite now passes 122 tests. All 18 scoped browser tests pass, including a new check that suggestions require a fresh explicit message and consent. TypeScript/Vite build passes with the existing shared vendor size warning. Actual `qwen-plus` was checked on the exact four-turn intake and 900 follow-up; an additional actual-model check recovered the reported old conversation's Rhodes/800/1-person/2b2b/parking conditions. Browser integration uses only a model transport double; its catalogue and backend state remain real.
+
+The complete browser intake also survived reload, showed one matching advertisement at 900 and fit a 360px viewport with no page errors. The original 5191/8011 preview was restarted using its original runtime directory. A full JSON checksum verified that the original case, its existing conversation and all four prior messages were unchanged. Test servers were stopped. Existing assistant replies are retained as history; the repaired behavior applies to subsequent turns.

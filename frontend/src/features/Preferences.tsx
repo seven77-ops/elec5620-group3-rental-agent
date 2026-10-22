@@ -49,6 +49,25 @@ function Summary({ profile }: { profile: Profile }) {
           {profile.occupants} 人 · {label(profile.rental_mode)}
         </dd>
       </div>
+      {profile.housing_preferences && (
+        <div>
+          <dt>房屋条件</dt>
+          <dd>
+            {profile.housing_preferences.suburb || "不限区域"}
+            <small>
+              至少 {profile.housing_preferences.min_bedrooms ?? "不限"} 卧 ·{" "}
+              {profile.housing_preferences.min_bathrooms ?? "不限"} 浴室 ·{" "}
+              {profile.housing_preferences.min_car_spaces ?? "不限"} 车位
+            </small>
+            <small>
+              {profile.housing_preferences.budget_match_mode ===
+              "matching_scope"
+                ? "仅同计价对象筛预算"
+                : "按金额粗筛周租，计价待核实"}
+            </small>
+          </dd>
+        </div>
+      )}
       <div>
         <dt>通勤</dt>
         <dd>
@@ -101,29 +120,34 @@ function Summary({ profile }: { profile: Profile }) {
     </dl>
   );
 }
-function Agent1Warnings({ warnings }: { warnings: string[] }) {
+function Agent1Warnings({
+  warnings,
+  real = false,
+}: {
+  warnings: string[];
+  real?: boolean;
+}) {
   if (!warnings.length) return null;
+  const additional = warnings.filter(
+    (warning) => !warning.startsWith("Agent2 uses fictional listings"),
+  );
   return (
     <Alert
       type="warning"
       showIcon
-      title="确认前请核对服务限制"
+      title={real ? "费用、在租状态与租期仍需核实" : "确认前请核对服务限制"}
       description={
-        <ul>
-          {warnings.map((warning) => (
-            <li key={warning}>
-              {warning.startsWith("Agent2 uses fictional listings")
-                ? "房源为固定时点的合成数据。居住人数会被记录，但当前不检查房源可容纳人数。"
-                : warning}
-            </li>
-          ))}
-        </ul>
+        additional.length
+          ? additional.join("；")
+          : real
+            ? undefined
+            : "演示房源不检查可容纳人数。"
       }
     />
   );
 }
 export default function Preferences() {
-  const { current, refresh, go } = useCase();
+  const { current, config, refresh, go } = useCase();
   const [form] = Form.useForm<Profile>();
   const { modal, message } = App.useApp();
   const [dirty, setDirty] = useState(false);
@@ -140,6 +164,17 @@ export default function Preferences() {
           { name: ["weights", "commute"], errors: ["四维权重至少一项大于零"] },
         ]);
         return;
+      }
+      if (config.mode === "real_listings") {
+        value.housing_preferences = { ...value.housing_preferences };
+        for (const key of [
+          "suburb",
+          "min_bedrooms",
+          "min_bathrooms",
+          "min_car_spaces",
+        ] as const) {
+          value.housing_preferences[key] ??= null;
+        }
       }
       value.soft_preferences = Object.fromEntries(
         Object.entries(value.soft_preferences ?? {}).filter(
@@ -166,7 +201,10 @@ export default function Preferences() {
       content: (
         <>
           <p>你将批准当前保存的草稿修订 {current.draft.revision}。</p>
-          <Agent1Warnings warnings={current.agent1?.warnings ?? []} />
+          <Agent1Warnings
+            warnings={current.agent1?.warnings ?? []}
+            real={config.mode === "real_listings"}
+          />
           <Summary profile={current.draft.profile} />
         </>
       ),
@@ -200,24 +238,31 @@ export default function Preferences() {
         title="租房偏好"
         description="先把需要的条件说清楚，再确认用于推荐的版本。"
         extra={
-          <span className="revision-label">
-            草稿修订 {current.draft.revision}
-          </span>
+          <Space>
+            {config.mode === "real_listings" && (
+              <Button onClick={() => go("assistant")}>用对话填写</Button>
+            )}
+            <span className="revision-label">
+              草稿修订 {current.draft.revision}
+            </span>
+          </Space>
         }
       />
-      <Alert
-        type="info"
-        showIcon
-        title={legacy ? "旧版案例：偏好记录只读" : "Agent1 本地偏好服务已接入"}
-        description={legacy
-          ? "历史资料和报告保留。请从顶部新建案例，使用 Agent1 保存和确认新的偏好。"
-          : "表单由 Agent1 校验并保存确认版本，再调用 Agent2 生成推荐。初始值和房源均为合成演示；当前未启用 LLM 对话提取。"}
-      />
+      {legacy ? (
+        <Alert
+          type="info"
+          showIcon
+          title="旧版偏好记录只读"
+          description="历史资料已保留，请新建案例填写需求。"
+        />
+      ) : !current.confirmations.length ? (
+        <p className="muted small">初始条件仅为示例，请保存并确认你的需求。</p>
+      ) : null}
       <Failure error={action.error} retry={action.retry} />
       <div className="preference-layout">
         <Form
           form={form}
-          disabled={legacy}
+          disabled={legacy || action.busy}
           name="preferences"
           initialValues={current.draft.profile}
           layout="vertical"
@@ -296,6 +341,88 @@ export default function Preferences() {
               </div>
             </div>
           </section>
+          {config.mode === "real_listings" && (
+            <section className="panel">
+              <h2>房屋条件</h2>
+              <p className="muted">
+                保存并确认后，以下条件会自动带入房源推荐。未填写的条件不限制。
+              </p>
+              <div className="form-grid">
+                <Form.Item
+                  label="区域"
+                  name={["housing_preferences", "suburb"]}
+                >
+                  <Select
+                    aria-label="偏好区域"
+                    showSearch
+                    allowClear
+                    placeholder="不限区域"
+                    options={
+                      config.catalog?.suburbs.map((value) => ({
+                        value,
+                        label: value,
+                      })) ?? []
+                    }
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="至少卧室数"
+                  name={["housing_preferences", "min_bedrooms"]}
+                >
+                  <InputNumber
+                    aria-label="偏好至少卧室数"
+                    min={0}
+                    max={100}
+                    precision={0}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="至少浴室数"
+                  name={["housing_preferences", "min_bathrooms"]}
+                >
+                  <InputNumber
+                    aria-label="偏好至少浴室数"
+                    min={0}
+                    max={100}
+                    precision={0}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="至少车位数"
+                  name={["housing_preferences", "min_car_spaces"]}
+                >
+                  <InputNumber
+                    aria-label="偏好至少车位数"
+                    min={0}
+                    max={100}
+                    precision={0}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="预算筛选方式"
+                  name={["housing_preferences", "budget_match_mode"]}
+                  initialValue="advertised_amount"
+                >
+                  <Select
+                    options={[
+                      {
+                        value: "advertised_amount",
+                        label: "按预算金额粗筛周租",
+                      },
+                      {
+                        value: "matching_scope",
+                        label: "仅在计价对象一致时筛预算",
+                      },
+                    ]}
+                  />
+                </Form.Item>
+              </div>
+              <p className="muted">
+                按金额粗筛不代表房源已满足每人或含账单预算。0卧 Studio
+                按1个开放式睡眠空间计算，独立卧室仍待核实。
+              </p>
+            </section>
+          )}
           <section className="panel">
             <h2>通勤安排</h2>
             <div className="form-grid">
@@ -418,7 +545,9 @@ export default function Preferences() {
                   label={`${label(key)} · 软偏好`}
                 >
                   <InputNumber
-                    disabled={legacy || profile.hard_requirements?.includes(key)}
+                    disabled={
+                      legacy || profile.hard_requirements?.includes(key)
+                    }
                     min={0}
                     step={0.1}
                   />
@@ -466,7 +595,10 @@ export default function Preferences() {
         <aside className="preference-summary">
           <section className="panel">
             <h2>你的偏好摘要</h2>
-            <Agent1Warnings warnings={current.agent1?.warnings ?? []} />
+            <Agent1Warnings
+              warnings={current.agent1?.warnings ?? []}
+              real={config.mode === "real_listings"}
+            />
             <Summary profile={profile} />
             <div className="summary-state">
               {dirty
@@ -487,7 +619,12 @@ export default function Preferences() {
               </Button>
               <Button
                 block
-                disabled={legacy || dirty || Boolean(confirmation) || !current.agent1?.review_token}
+                disabled={
+                  legacy ||
+                  dirty ||
+                  Boolean(confirmation) ||
+                  !current.agent1?.review_token
+                }
                 onClick={confirm}
                 loading={action.busy}
                 aria-label="确认当前偏好"

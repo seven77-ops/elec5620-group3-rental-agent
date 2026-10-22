@@ -82,7 +82,7 @@ export default function ContractAi({
         <span className="muted">候选提取、原文引用与差异解释</span>
       </div>
       <p>
-        模型提取租金、地址与起止日期，并由原规则核对选房包。候选值需逐项核对，明确确认后才应用。
+        模型辅助提取租金、地址与起止日期。候选值需逐项核对，确认应用后更新复核结果。
       </p>
       <AiSetup config={config} />
       <Checkbox
@@ -90,7 +90,7 @@ export default function ContractAi({
         disabled={busy || !active}
         onChange={(e) => setConsent(e.target.checked)}
       >
-        我同意将本合同文本及选房核对资料发送到配置的模型，用于本次 AI 辅助分析。
+        我同意将本合同文本及本次复核资料发送到配置的模型，用于本次 AI 辅助分析。
       </Checkbox>
       <Space wrap>
         <Button
