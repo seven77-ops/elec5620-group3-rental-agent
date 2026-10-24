@@ -2024,3 +2024,68 @@ li {
     min-height: 40px;
   }
 }
+
+/* Tenant-facing M4 details and actionable clarification. */
+.aftercare-guidance {
+  margin-bottom: 20px;
+}
+.aftercare-guidance ul {
+  margin: 4px 0 12px;
+  padding-left: 20px;
+}
+.aftercare-plan-guidance {
+  margin-bottom: 20px;
+}
+.selection-strip .aftercare-missing {
+  color: #96631b;
+}
+.aftercare-details {
+  display: grid;
+  gap: 24px;
+}
+.aftercare-details header h2 {
+  margin: 8px 0;
+  font-size: 20px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.aftercare-details header > .muted {
+  margin: 0 0 16px;
+}
+.aftercare-details section h3 {
+  margin: 0 0 14px;
+  font-size: 16px;
+}
+.aftercare-details .ant-descriptions-item-content {
+  overflow-wrap: anywhere;
+}
+.aftercare-empty {
+  padding: 14px 16px;
+  margin: 0;
+  color: #718096;
+  background: #f6f8fc;
+  border-radius: 8px;
+}
+.aftercare-inventory-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #edf1f7;
+}
+.aftercare-inventory-item span {
+  color: #718096;
+}
+.aftercare-evidence-card {
+  padding: 16px;
+  margin-top: 12px;
+  border: 1px solid #e4eaf1;
+  border-radius: 10px;
+  overflow-wrap: anywhere;
+}
+.aftercare-evidence-card p {
+  margin: 10px 0 8px;
+}
+.aftercare-evidence-card small {
+  color: #718096;
+}

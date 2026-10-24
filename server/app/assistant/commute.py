@@ -25,6 +25,8 @@ ALIASES={'悉尼大学':'University of Sydney','悉大':'University of Sydney',
 
 
 def normalized_query(query):
+    query=re.sub(r'\bUSYD\b','University of Sydney',query,flags=re.I)
+    query=re.sub(r'\bUNSW\b','University of New South Wales',query,flags=re.I)
     for original,replacement in sorted(ALIASES.items(),key=lambda pair:-len(pair[0])):
         query=query.replace(original,' '+replacement+' ')
     query=re.sub(r'\bUTS\b|University of Technology Sydney','University of Technology',query,flags=re.I)
@@ -55,13 +57,29 @@ def plan_routes(ctx,brief,destination,allow_external):
     return enrich_commute(CommutePlanner(ctx,resolver=resolver_for(ctx)).prepare(brief,destination,allow_external=allow_external),ctx.settings.catalog)
 
 
+def question_fields(brief):
+    if 'budget_amount' not in brief:return ['budget_amount','budget_scope','min_bedrooms']
+    if brief.get('budget_period')!='week':return ['budget_period']
+    if brief.get('budget_scope') not in ('whole_property','per_room','per_person'):return ['budget_scope']
+    if 'min_bedrooms' not in brief:return ['min_bedrooms']
+    if not brief.get('destination_query'):return ['destination_query']
+    if not brief.get('arrival_time') or 'commute_max_minutes' not in brief:
+        return [k for k in ('arrival_time','commute_max_minutes') if not brief.get(k)]
+    if not brief.get('commute_mode'):return ['commute_mode']
+    return []
+
+
 def next_question(brief):
     if 'budget_amount' not in brief:return '不熟悉区域也没关系。每周最高预算大概多少，是整套、每间还是每人的预算？需要几间卧室？'
     if brief.get('budget_period')!='week':return '这笔预算是每周还是每月？房源按周报价，请确认每周最高金额。'
     if brief.get('budget_scope') not in ('whole_property','per_room','per_person'):return '这个每周预算是整套、每个房间，还是每人承担的金额？'
     if 'min_bedrooms' not in brief:return '至少需要几间卧室？浴室和车位有要求的话也可以一起告诉我。'
     if not brief.get('destination_query'):return '你主要去哪个学校或公司？请告诉我校区、办公楼或街道地址，我会先核对具体位置。'+(' 生活上更看重公园、餐饮购物、图书馆还是安静？也可以一起告诉我。' if 'lifestyle_priorities' not in brief else '')
-    if not brief.get('arrival_time') or 'commute_max_minutes' not in brief:return '通常几点需要到达学校或公司？单程最多能接受多少分钟？'
+    if not brief.get('arrival_time') or 'commute_max_minutes' not in brief:
+        prefix='已记下目的地关键词：'+brief['destination_query']+'，具体位置稍后核对。'
+        if brief.get('arrival_time'):return prefix+' 单程最多能接受多少分钟？'
+        if 'commute_max_minutes' in brief:return prefix+' 通常几点需要到达学校或公司？'
+        return prefix+' 通常几点需要到达学校或公司？单程最多能接受多少分钟？'
     if not brief.get('commute_mode'):return '通勤主要乘公共交通、步行、开车还是骑车？当前自动路线查询支持公共交通。'
     return None
 
@@ -80,7 +98,9 @@ def prepare(ctx,conversation,brief,patch,text,allow_external):
     answer={'intent':'recommend_areas','agent':'agent1','content':'','listings':[],'actions':[]}
     question=next_question(brief)
     if question:
-        answer['content']=question;return answer,options
+        answer['content']=question
+        answer['commute_question']={'fields':question_fields(brief)}
+        return answer,options
     if not allow_external:
         answer['content']='需求已记下。查询学校或公司位置及公共交通路线，需要勾选本次外部位置与交通查询同意后再发送；此时不会查询或猜测通勤时长。'
         return answer,options

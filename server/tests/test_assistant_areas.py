@@ -33,7 +33,7 @@ class AssistantAreaTests(unittest.TestCase):
         self.assertEqual(c['rental_brief']['budget_amount'],800)
         self.assertEqual(c['rental_brief']['lifestyle_priorities'],['library'])
         self.assertTrue(all('food' not in a['matched_topics'] for a in c['messages'][-1]['area_advice']['areas']))
-        self.assertIn('area_knowledge',self.provider.inputs[-1])
+        self.assertIn('area_knowledge',next(i for i in reversed(self.provider.inputs) if i['task']=='assistant_intent'))
         c=self.ask(c,{'lifestyle_priorities':[]},request='clear',text='生活配套没有特别要求').json()
         self.assertEqual(c['rental_brief']['lifestyle_priorities'],[])
 

@@ -141,6 +141,7 @@ export interface AssistantMessage {
   destination_options?: CommuteDestination[];
   commute_recommendation?: CommuteRecommendation;
   area_advice?: AreaAdviceReport;
+  commute_question?: { fields: string[] };
 }
 export interface Conversation {
   conversation_id: string;

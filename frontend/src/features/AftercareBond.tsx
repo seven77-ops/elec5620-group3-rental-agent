@@ -20,6 +20,7 @@ import {
   type SendCommand,
 } from "./AftercarePlan";
 import { JsonDetails, money, Status, text } from "../components/Common";
+import AftercareBondDetails from "./AftercareBondDetails";
 export default function AftercareBond({
   bond,
   evidence,
@@ -39,6 +40,7 @@ export default function AftercareBond({
   const real = config.mode === "real_listings";
   const [bondRef, setBondRef] = useState(real ? "" : "SYNTHETIC-RBO-001");
   const [update, setUpdate] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const [form] = Form.useForm();
   const [outcome, setOutcome] = useState("");
   const { modal } = App.useApp();
@@ -114,6 +116,27 @@ export default function AftercareBond({
       ) : (
         <>
           <p>押金编号：{text(bond.bond_reference)}</p>
+          <p>押金凭证：{text(bond.deposit_evidence_ref)}</p>
+          {state === "Draft" && (
+            <>
+              {!bond.bond_reference && !bond.deposit_evidence_ref && (
+                <Alert
+                  type="info"
+                  showIcon
+                  title="激活前请补录押金编号，或关联一份押金凭证。"
+                />
+              )}
+              <Button
+                disabled={busy || recovery.refreshing}
+                onClick={() => {
+                  recovery.abandon();
+                  setDetailsOpen(true);
+                }}
+              >
+                补录押金资料
+              </Button>
+            </>
+          )}
           {state === "UnderReview" && (
             <Alert
               type="warning"
@@ -270,6 +293,16 @@ export default function AftercareBond({
           )}
           {bond.outcome && <JsonDetails value={bond.outcome} />}
         </>
+      )}
+      {detailsOpen && bond && (
+        <AftercareBondDetails
+          bond={bond}
+          evidence={evidence}
+          send={send}
+          busy={busy}
+          recovery={recovery}
+          onClose={() => setDetailsOpen(false)}
+        />
       )}
       <Modal
         title={

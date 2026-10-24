@@ -148,6 +148,7 @@ export default function AreaAdvice({
             {onSuggest && area.matching_count > 0 && (
               <Button
                 size="small"
+                aria-label={`在 ${area.suburb} 找房`}
                 disabled={disabled}
                 onClick={() =>
                   onSuggest(
@@ -155,7 +156,7 @@ export default function AreaAdvice({
                   )
                 }
               >
-                继续了解这个区
+                在这个区找房
               </Button>
             )}
           </article>

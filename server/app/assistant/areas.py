@@ -10,14 +10,10 @@ def model_context():
             'facts':'Retrieved by server only. Opinions and missing evidence never prove property suitability.'}
 
 
-def answer_areas(catalog,brief,names=None):
+def answer_areas(catalog,brief,names=None,focus='balanced'):
+    from .area_answers import summarize
     report=AreaKnowledge().advice(catalog,brief,names)
-    missing=not brief.get('lifestyle_priorities')
-    content=('我把这些区域的资料和当前房源库存放在一起比较。'
-             '下面会区分可核对的设施、背景报道和住户体验；通勤是否满足仍以具体路线为准。')
-    if missing:content+=' 你更看重公园、吃饭购物方便、图书馆，还是安静？告诉我后可以进一步缩小范围。'
-    if not names and not brief.get('suburb'):
-        content+=' 当前仅按已整理的相关设施资料和库存标价给出初步区域参考。'
+    content=summarize(report,catalog,brief,focus)
     return {'intent':'area_advice','agent':'agent2','content':content,'listings':[],'actions':[],
             'area_advice':report,'_area_names':names}
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Alert,
   Button,
@@ -17,12 +17,19 @@ import { api } from "../api/client";
 import type { Dict, Review } from "../api/types";
 import { Failure, JsonDetails } from "../components/Common";
 import { useAction } from "../components/useAction";
+import { CommandRecovery, type CommandRecoveryProps } from "./AftercarePlan";
 export default function TenancyForm({
   create,
   busy,
+  tenancy,
+  disabled = false,
+  recovery,
 }: {
-  create: (payload: Dict) => void;
+  create: (payload: Dict) => void | Promise<boolean>;
   busy: boolean;
+  tenancy?: Dict;
+  disabled?: boolean;
+  recovery?: CommandRecoveryProps;
 }) {
   const { current, config } = useCase();
   const [form] = Form.useForm();
@@ -46,7 +53,19 @@ export default function TenancyForm({
     inventory_confirmed: false,
     baseline_evidence_refs: [],
   }));
-  const template = real ? realTemplate : config.tenancy_template;
+  const template = tenancy ?? (real ? realTemplate : config.tenancy_template);
+  const initialValues: Dict = {
+    ...template,
+    rooms: template.rooms ?? [],
+    inventory: template.inventory ?? [],
+  };
+  if (real && tenancy)
+    for (const key of ["carpeted", "outdoor", "furnished"])
+      initialValues[key] =
+        tenancy[key] == null ? "unknown" : tenancy[key] ? "yes" : "no";
+  useEffect(() => {
+    setConfirmed(false);
+  }, [tenancy?.source_version]);
   const rooms = Form.useWatch("rooms", form) as
     { id: string; name: string }[] | undefined;
   const capabilities = config.capabilities as Dict;
@@ -72,7 +91,7 @@ export default function TenancyForm({
             values[key] === "unknown" || values[key] == null
               ? null
               : values[key] === "yes";
-      create({
+      await create({
         tenancy: {
           ...template,
           ...values,
@@ -83,8 +102,17 @@ export default function TenancyForm({
               }
             : {}),
           confirmed: true,
+          ...(tenancy
+            ? { source_version: Number(tenancy.source_version) + 1 }
+            : {}),
         },
-        evidence: real ? [] : (capabilities.aftercare_evidence_template ?? []),
+        ...(!tenancy
+          ? {
+              evidence: real
+                ? []
+                : (capabilities.aftercare_evidence_template ?? []),
+            }
+          : {}),
       });
     } catch {
       /* Inline errors. */
@@ -92,21 +120,28 @@ export default function TenancyForm({
   };
   return (
     <section className="panel tenancy-form">
-      <h2>确认租约资料</h2>
+      {!tenancy && <h2>确认租约资料</h2>}
       <Alert
         type="info"
         showIcon
         title={
-          real ? "请填写并核对实际租约资料" : "以下为合成租约样例，请逐项核对"
+          tenancy
+            ? "核对并补齐当前租约资料"
+            : real
+              ? "请填写并核对实际租约资料"
+              : "以下为合成租约样例，请逐项核对"
         }
         description={
-          real
-            ? "合同草稿或复核结果不代表租约已签订。只有你明确确认实际租约资料后，才创建退租与押金案件。未知的房间与家具可暂不填写。"
-            : "合同复核不代表租约已签订。只有你明确确认这些资料后，才创建租后服务案件。示例房间、家具和证据均可核对或编辑。"
+          tenancy
+            ? "保存后更新同一案件的租约资料，已有证据保留。房间、地毯、室外区域与家具情况补齐后，可继续确认退租计划。"
+            : real
+              ? "合同草稿或复核结果不代表租约已签订。只有你明确确认实际租约资料后，才创建退租与押金案件。未知的房间与家具可暂不填写。"
+              : "合同复核不代表租约已签订。只有你明确确认这些资料后，才创建租后服务案件。示例房间、家具和证据均可核对或编辑。"
         }
       />
       <Failure error={action.error} retry={action.retry} />
-      {current.reviews.length > 0 && (
+      {recovery && <CommandRecovery {...recovery} />}
+      {!tenancy && current.reviews.length > 0 && (
         <Button
           onClick={prefill}
           loading={action.busy}
@@ -117,7 +152,8 @@ export default function TenancyForm({
       )}
       <Form
         form={form}
-        initialValues={template}
+        initialValues={initialValues}
+        disabled={busy || disabled}
         layout="vertical"
         onValuesChange={() => setConfirmed(false)}
       >
@@ -330,18 +366,19 @@ export default function TenancyForm({
       <Space orientation="vertical">
         <Checkbox
           checked={confirmed}
+          disabled={busy || disabled}
           onChange={(e) => setConfirmed(e.target.checked)}
         >
           我已核对并确认上述租约、房间、家具及资料来源。
         </Checkbox>
         <Button
           type="primary"
-          disabled={!confirmed}
+          disabled={!confirmed || disabled || Boolean(recovery?.error)}
           loading={busy}
           onClick={submit}
-          aria-label="确认资料并创建租后案件"
+          aria-label={tenancy ? "确认并保存租约资料" : "确认资料并创建租后案件"}
         >
-          确认资料并创建租后案件
+          {tenancy ? "确认并保存租约资料" : "确认资料并创建租后案件"}
         </Button>
       </Space>
     </section>

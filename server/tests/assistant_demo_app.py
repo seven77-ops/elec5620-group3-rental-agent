@@ -13,6 +13,11 @@ class AssistantDemoProvider:
                 'model':'assistant-ui-test-only','timeout_seconds':12}
 
     def call(self, context):
+        if context['task']=='assistant_area_followup':
+            chosen='那先看Ashfield吧' in context.get('message','')
+            return {'continue_housing':chosen,'brief_patch':{'suburb':'Ashfield'} if chosen else {}}, {
+                'task':context['task'],'provider':'test_stub','model':'assistant-ui-test-only',
+                'status':'succeeded','attempted':True,'simulated':True}
         if context['task'] == 'lease_draft_extract':
             return {'fields':[{'field':'rent_amount','value':600,'quote':'每周600'},
                 {'field':'rent_period','value':'week','quote':'每周600'},
@@ -23,8 +28,16 @@ class AssistantDemoProvider:
         if context['task'] != 'assistant_intent':
             raise ValueError('UI fixture only accepts assistant intent')
         message = context.get('message') or context.get('latest_user_message') or context.get('query') or ''
-        if '比较 Burwood 和 Rhodes' in message:
-            result={'intent':'area_advice','areas':['Burwood','Rhodes'],'brief_patch':{'lifestyle_priorities':['parks','food']}}
+        if '比较 Burwood 和 Ashfield' in message:
+            result={'intent':'area_advice','areas':['Burwood','Ashfield'],'brief_patch':{
+                'budget_amount':850,'budget_period':'week','budget_scope':'whole_property','min_bedrooms':1,'lifestyle_priorities':['food']}}
+        elif '那先看Ashfield吧' in message:
+            result={'intent':'area_advice','areas':['Ashfield']}
+        elif '预算降到700' in message:
+            result={'intent':'area_advice','areas':['Burwood','Ashfield'],'focus':'housing','brief_patch':{'budget_amount':700}}
+        elif '比较 Burwood 和 Rhodes' in message:
+            result={'intent':'area_advice','areas':['Burwood','Rhodes'],'brief_patch':{'lifestyle_priorities':['parks','food'],
+                'budget_amount':900,'budget_period':'week','budget_scope':'whole_property','min_bedrooms':2}}
         elif '比较 Carlton 的安静和安全' in message:
             result={'intent':'area_advice','areas':['Carlton'],'brief_patch':{'lifestyle_priorities':['quiet','safety']}}
         elif '我的电是AGL' in message:

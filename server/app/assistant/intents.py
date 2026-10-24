@@ -33,9 +33,10 @@ def finite_tree(value):
 
 def validate_intent(value,catalog,known_ids):
     model_require(isinstance(value,dict) and 'intent' in value and
-        not set(value)-{'intent','areas','filters','brief_patch','preference_patch','listing_ids','clarification','clarification_reason','market','steps',*INTENT_PROPERTIES})
+        not set(value)-{'intent','areas','focus','filters','brief_patch','preference_patch','listing_ids','clarification','clarification_reason','market','steps',*INTENT_PROPERTIES})
     model_require(isinstance(value['intent'],str) and value['intent'] in INTENTS)
     finite_tree(value)
+    if 'focus' in value:model_require(value['focus'] in ('housing','lifestyle','balanced'))
     if 'areas' in value:
         names=value['areas']
         model_require(isinstance(names,list) and 1<=len(names)<=4 and all(isinstance(s,str) and s in catalog.suburbs for s in names))
@@ -77,7 +78,7 @@ def validate_intent(value,catalog,known_ids):
         model_require(type(m['bedrooms']) is int and 0<=m['bedrooms']<=20 and isinstance(m['rent_scope'],str) and m['rent_scope'] in {'whole_property','per_room','per_person'})
         model_require(m.get('weekly_rent') is None or (type(m['weekly_rent']) in (int,float) and 0<=m['weekly_rent']<=100000))
     # Each operation accepts only data it can actually execute.
-    allowed={'area_advice':{'areas','brief_patch'},'collect_preferences':{'brief_patch'},'recommend_areas':{'brief_patch'},'search':{'filters'},'update_preferences':{'preference_patch'},'compare':{'listing_ids'},
+    allowed={'area_advice':{'areas','focus','brief_patch'},'collect_preferences':{'brief_patch'},'recommend_areas':{'brief_patch'},'search':{'filters'},'update_preferences':{'preference_patch'},'compare':{'listing_ids'},
         'explain':{'listing_ids'},'select':{'listing_ids'},'market':{'market','listing_ids'},
         'clarify':{'clarification','clarification_reason'},'contract':set(),'aftercare':set(),'followup':set(),'draft_contract':set(),'living_services':set(INTENT_PROPERTIES),'workflow':{'steps'},'other':set()}
     model_require(set(value)-{'intent'}<=allowed[value['intent']])
@@ -107,7 +108,7 @@ def response_schema():
             'bedrooms':{'type':'integer','minimum':0,'maximum':20},
             'rent_scope':{'enum':['whole_property','per_room','per_person']},
             'weekly_rent':{'type':['number','null'],'minimum':0,'maximum':100000}}}
-    fields={'area_advice':{'areas':{'type':'array','minItems':1,'maxItems':4,'uniqueItems':True,'items':{'type':'string'}},'brief_patch':BRIEF_SCHEMA},
+    fields={'area_advice':{'areas':{'type':'array','minItems':1,'maxItems':4,'uniqueItems':True,'items':{'type':'string'}},'brief_patch':BRIEF_SCHEMA,'focus':{'enum':['housing','lifestyle','balanced']}},
         'collect_preferences':{'brief_patch':BRIEF_SCHEMA},'recommend_areas':{'brief_patch':BRIEF_SCHEMA},'search':{'filters':filters},'update_preferences':{'preference_patch':PATCH_SCHEMA},
         'compare':{'listing_ids':ids},'explain':{'listing_ids':ids},'select':{'listing_ids':ids},
         'market':{'market':market,'listing_ids':ids},

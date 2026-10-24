@@ -48,3 +48,7 @@ Python 锁定依赖和前端依赖没有新增版本要求；启动仍是 `scrip
 - [PR #7](https://github.com/seven77-ops/elec5620-group3-rental-agent/pull/7)
 - [SCRUM-34](https://breezebee64.atlassian.net/browse/SCRUM-34)：Agent2、真实数据、通勤与区域资料
 - [SCRUM-35](https://breezebee64.atlassian.net/browse/SCRUM-35)：统一前端、AI 任务和共享合同草稿
+
+## 同日后续追加
+
+上文验证表保留为前一轮发布记录。最新 M4 反馈修复、AI 对话推进与本次 582 项 Python / 18 项前端检查见 [追加发布说明](2026-10-24-m4-feedback-publish.md)。Zz W 反馈、Anda 修复，待反馈人复测；继续不合并 main。

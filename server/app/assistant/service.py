@@ -16,6 +16,7 @@ from .repair_dialogue import repair_focus, focus_context
 from .lease_bridge import LeaseChatBridge
 from . import commute
 from . import areas
+from . import progress
 
 
 def signature(case):
@@ -121,6 +122,7 @@ class AssistantService:
             'displayed_listing_ids':ids,'displayed_listings':cards_context,'selected_listing_ids':requested,
             'rental_brief':c.get('rental_brief',{}),'dialogue_mode':c.get('dialogue_mode'),
             'commute':commute.brief_context(c),
+            'pending_question':progress.pending_question(c),
             'area_knowledge':areas.model_context(),
             'compared_areas':c.get('area_names',[]),
             'saved_candidate':({'listing_id':case['selection']['listing_id'],
@@ -135,9 +137,21 @@ class AssistantService:
         try:
             context['lease_draft']=LeaseChatBridge(self.ctx).context(case_id)
             if lease_pending_summary: context['lease_draft']['pending_proposal']=lease_pending_summary
-            output,call=self.ctx.ai_provider.call(context)
-            calls=[call]
-            intent=validate_intent(output,catalog,ids)
+            calls=[]
+            for attempt in range(2):
+                try:
+                    output,call=self.ctx.ai_provider.call(context)
+                    calls.append(call)
+                    explicit=progress.explicit_transition(c,body['message'])
+                    uncertain_region,output=progress.partial_region(body['message'],output,catalog) if not explicit else (None,explicit)
+                    intent=validate_intent(output,catalog,ids)
+                    break
+                except (ApiError,ProviderError) as error:
+                    if isinstance(error,ProviderError):calls.append(error.call)
+                    if error.code!='ai_invalid_response' or attempt:raise
+                    context={**context,'validation_feedback':'The previous response did not match response_schema. Return one strict JSON object using only the exact fields and enum values of its chosen intent. No markdown, prose, or extra fields.'}
+            intent,recovery_calls=progress.repair_route(self.ctx,c,body['message'],intent,catalog) if not uncertain_region else (intent,[])
+            calls.extend(recovery_calls)
             if intent['intent']=='collect_preferences' and c.get('dialogue_mode')=='recommend_areas':
                 intent['intent']='recommend_areas'
             proposal=None
@@ -158,10 +172,13 @@ class AssistantService:
                 memory={**c,'rental_brief':recovered.get('brief_patch',{})}
             brief=merge_brief(memory,intent)
             question=next_question(brief) if intent['intent']=='collect_preferences' else None
-            if intent['intent']=='area_advice':
+            if uncertain_region:
+                answer={'intent':'collect_preferences','agent':'agent1','listings':[],'actions':[],
+                        'content':f'你说的“{uncertain_region}”是哪个区的简称？请写完整英文区名；预算和房型要求先保留，我不会替你确定区域。'}
+            elif intent['intent']=='area_advice':
                 names=intent.get('areas')
                 if names is None and 'suburb' not in intent.get('brief_patch',{}):names=c.get('area_names')
-                answer=areas.answer_areas(catalog,brief,names)
+                answer=areas.answer_areas(catalog,brief,names,intent.get('focus','balanced'))
             elif intent['intent']=='recommend_areas':
                 answer,commute_options=commute.prepare(self.ctx,c,brief,intent.get('brief_patch',{}),body['message'],body.get('allow_external_data',False))
             elif intent['intent']=='collect_preferences' and question:

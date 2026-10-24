@@ -4,6 +4,8 @@
 
 **2026-10-24 小组试用更新：** 继续使用 `codex/group-trial-20261022` 分支及 PR #7，暂不合并 main。本次新增合同地址与日历租期、个性化比较和多步骤任务、聊天共享合同草稿、通勤接入与区域资料。见 [本轮更新及验证](docs/frontend/2026-10-24-trial-update.md)；Windows/macOS 安装与基本试用步骤仍见 [小组试用指南](docs/frontend/2026-10-22-group-trial.md)。请先在群里向 Anda 反馈问题，由 Anda 统一修改本轮集成代码。
 
+**同日最新追加：** Zz W 反馈的两处 M4 网页卡点已由 Anda 修复，包含同案租约补齐、押金草稿补录及最新 AI 对话流程修复；582 项 Python、18 项前端检查及构建通过，待反馈人复测。见 [本次修复与验证](docs/frontend/2026-10-24-m4-feedback-publish.md)。
+
 | 模块 | 内容 | 运行说明 |
 |---|---|---|
 | [agent2/](agent2/) | Member 2：房源资格评估、评分推荐、偏好版本比较与本地选房证据包 | [Agent 2 README](agent2/README.md) |

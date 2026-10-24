@@ -18,7 +18,6 @@ import { api, downloadUrl, newRequestId, post } from "../api/client";
 import type { AftercareCase, Dict } from "../api/types";
 import {
   EvidenceDrawer,
-  Failure,
   JsonDetails,
   Loading,
   PageTitle,
@@ -29,6 +28,13 @@ import { useAction } from "../components/useAction";
 import TenancyForm from "./TenancyForm";
 import AftercarePlan, { CommandRecovery } from "./AftercarePlan";
 import AftercareBond from "./AftercareBond";
+import AftercareFailure from "./aftercare/AftercareFailure";
+import TenancyDetails from "./aftercare/TenancyDetails";
+import {
+  missingTenancyDetails,
+  tenancySource,
+  evidenceKind,
+} from "./aftercare/presentation";
 export default function Aftercare({
   embedded = false,
   initialTab = "plan",
@@ -45,6 +51,7 @@ export default function Aftercare({
   const [error, setError] = useState<unknown>(null);
   const [evidenceOpen, setEvidenceOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
+  const [tenancyOpen, setTenancyOpen] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [pendingOperation, setPendingOperation] = useState("");
   const [evidenceForm] = Form.useForm();
@@ -141,6 +148,21 @@ export default function Aftercare({
   const evidence = (record?.evidence ?? []) as Dict[];
   const reviews = (record?.reviews ?? []) as Dict[];
   const reminders = (record?.reminders ?? []) as Dict[];
+  const tenancyEditable = Boolean(
+    record &&
+    (!record.plan || record.plan.state === "Draft") &&
+    (!record.bond || record.bond.state === "Draft"),
+  );
+  const missingTenancy = record ? missingTenancyDetails(record.tenancy) : [];
+  const openTenancy = () => {
+    abandon();
+    setEvidenceOpen(false);
+    setTenancyOpen(true);
+  };
+  const openEvidenceForm = () => {
+    evidenceForm.resetFields();
+    setFormOpen(true);
+  };
   const addEvidence = async () => {
     try {
       const values = await evidenceForm.validateFields();
@@ -202,7 +224,17 @@ export default function Aftercare({
           </a>
         </Space>
       )}
-      <Failure error={action.error || error} retry={action.retry} />
+      <AftercareFailure
+        error={action.error || error}
+        retry={action.retry}
+        onResolve={
+          tenancyEditable &&
+          ["create_plan", "confirm_plan"].includes(pendingOperation)
+            ? openTenancy
+            : undefined
+        }
+        resolveLabel="补充租约资料"
+      />
       {!record ? (
         current.aftercare_case_id ? (
           error ? (
@@ -233,13 +265,26 @@ export default function Aftercare({
               <span>已确认租约资料</span>
               <strong>{text(record.tenancy.address)}</strong>
               <p>
-                来源：{text(record.tenancy.source_ref)} · v
+                {tenancySource(record.tenancy.source_ref)} · 资料版本{" "}
                 {text(record.tenancy.source_version)}
               </p>
+              {missingTenancy.length > 0 && (
+                <p className="aftercare-missing">
+                  待补充：{missingTenancy.join("、")}
+                </p>
+              )}
             </div>
-            <Button onClick={() => setEvidenceOpen(true)}>
-              查看资料与证据
-            </Button>
+            <Space wrap>
+              <Button
+                disabled={!tenancyEditable || action.busy || refreshing}
+                onClick={openTenancy}
+              >
+                补充租约资料
+              </Button>
+              <Button onClick={() => setEvidenceOpen(true)}>
+                查看资料与证据
+              </Button>
+            </Space>
           </section>
           <Tabs
             defaultActiveKey={initialTab}
@@ -254,6 +299,10 @@ export default function Aftercare({
                         ? initialMoveOutDate ||
                           config.clocks.aftercare.slice(0, 10)
                         : undefined
+                    }
+                    missingDetails={missingTenancy}
+                    onCompleteTenancy={
+                      tenancyEditable ? openTenancy : undefined
                     }
                     plan={(record.plan ?? null) as Dict | null}
                     evidence={evidence}
@@ -280,9 +329,11 @@ export default function Aftercare({
                     busy={action.busy}
                     recovery={{
                       ...recovery,
-                      error: ["activate_bond", "bond_update"].includes(
-                        pendingOperation,
-                      )
+                      error: [
+                        "activate_bond",
+                        "bond_update",
+                        "open_bond",
+                      ].includes(pendingOperation)
                         ? recovery.error
                         : null,
                     }}
@@ -412,38 +463,62 @@ export default function Aftercare({
         open={evidenceOpen}
         onClose={() => setEvidenceOpen(false)}
       >
-        <h3>租约资料</h3>
-        <JsonDetails value={record?.tenancy} />
-        <h3>证据元数据</h3>
-        <Alert
-          type="info"
-          title="引用不等于事实已核实"
-          description={
-            config.mode === "real_listings"
-              ? "这里只记录你填写的资料位置和摘要，不上传文件或验证内容。"
-              : "这里只登记合成证据元数据，不上传照片或执行图片识别。"
-          }
-        />
-        {evidence.map((e, i) => (
-          <div className="detail-row" key={i}>
-            <strong>
-              {text(e.evidence_id)} · {text(e.kind)}
-            </strong>
-            <p>{text(e.summary)}</p>
-            <small className="break-word">
-              {text(e.source_ref)} · v{text(e.source_version)}
-            </small>
-          </div>
-        ))}
-        <Button
-          onClick={() => {
-            evidenceForm.resetFields();
-            setFormOpen(true);
-          }}
-        >
-          登记证据引用
-        </Button>
+        {record && (
+          <TenancyDetails
+            tenancy={record.tenancy}
+            evidence={evidence}
+            editable={tenancyEditable && !action.busy && !refreshing}
+            onEdit={openTenancy}
+            onAddEvidence={openEvidenceForm}
+          />
+        )}
       </EvidenceDrawer>
+      <Modal
+        title="补充租约资料"
+        open={tenancyOpen}
+        footer={null}
+        width={840}
+        destroyOnHidden
+        closable={!action.busy && !refreshing}
+        mask={{ closable: !action.busy && !refreshing }}
+        onCancel={() => {
+          if (!action.busy && !refreshing) {
+            if (pendingOperation === "revise_tenancy") abandon();
+            setTenancyOpen(false);
+          }
+        }}
+      >
+        {record && (
+          <>
+            {!tenancyEditable && (
+              <Alert
+                type="warning"
+                title="计划已确认或押金跟进已激活，当前租约资料不可修改。"
+              />
+            )}
+            <TenancyForm
+              tenancy={record.tenancy}
+              busy={action.busy}
+              disabled={refreshing || !tenancyEditable}
+              create={async (payload) => {
+                const saved = await send("revise_tenancy", payload);
+                if (saved) setTenancyOpen(false);
+                return saved;
+              }}
+              recovery={{
+                ...recovery,
+                error:
+                  pendingOperation === "revise_tenancy" ? recovery.error : null,
+                retry: async () => {
+                  const saved = await action.retry();
+                  if (saved) setTenancyOpen(false);
+                  return saved;
+                },
+              }}
+            />
+          </>
+        )}
+      </Modal>
       <Modal
         title={
           config.mode === "real_listings"
@@ -495,7 +570,7 @@ export default function Aftercare({
                 "correspondence",
                 "outcome",
                 "other",
-              ].map((value) => ({ value, label: value }))}
+              ].map((value) => ({ value, label: evidenceKind(value) }))}
             />
           </Form.Item>
           <Form.Item

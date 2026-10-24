@@ -11,7 +11,8 @@ import {
   Table,
 } from "antd";
 import type { Dict } from "../api/types";
-import { Failure, JsonDetails, Status, text } from "../components/Common";
+import { JsonDetails, Status, text } from "../components/Common";
+import AftercareFailure from "./aftercare/AftercareFailure";
 export type SendCommand = (
   operation: string,
   payload: Dict,
@@ -34,7 +35,7 @@ export function CommandRecovery({
   if (!error) return null;
   return (
     <>
-      <Failure error={error} />
+      <AftercareFailure error={error} />
       <Space wrap>
         <Button
           aria-label="重试原操作"
@@ -66,7 +67,11 @@ export default function AftercarePlan({
   send,
   busy,
   recovery,
+  missingDetails = [],
+  onCompleteTenancy,
 }: {
+  missingDetails?: string[];
+  onCompleteTenancy?: () => void;
   plan: Dict | null;
   initialDate?: string;
   evidence: Dict[];
@@ -99,7 +104,7 @@ export default function AftercarePlan({
     }
   };
   return (
-    <section className="panel">
+    <section className="panel" aria-label="退租计划">
       <div className="section-heading">
         <h2>退租计划</h2>
         {plan && <Status value={String(plan.state)} />}
@@ -107,6 +112,20 @@ export default function AftercarePlan({
       <p className="muted">
         计划日期是实用安排，不是法定期限。任务完成情况与证据由你维护。
       </p>
+      {!plan && missingDetails.length > 0 && (
+        <Alert
+          className="aftercare-plan-guidance"
+          type="info"
+          showIcon
+          title="先补齐房屋资料"
+          description={
+            <>
+              还需要：{missingDetails.join("、")}
+              。补齐后，就能安排清洁、物品整理和钥匙交还。
+            </>
+          }
+        />
+      )}
       <div className="date-actions">
         <label htmlFor="move-out-date">
           {plan ? "提议新的退租日期" : "计划退租日期"}
@@ -120,8 +139,14 @@ export default function AftercarePlan({
         <Button
           type="primary"
           loading={busy}
-          disabled={!date}
-          onClick={() =>
+          disabled={
+            !date || (!plan && missingDetails.length > 0 && !onCompleteTenancy)
+          }
+          onClick={() => {
+            if (!plan && missingDetails.length > 0) {
+              onCompleteTenancy?.();
+              return;
+            }
             modal.confirm({
               title: plan ? "提交改期提案" : "确认生成退租计划",
               content: plan
@@ -136,11 +161,21 @@ export default function AftercarePlan({
                     ? { move_out_date: date }
                     : { move_out_date: date, schedule_confirmed: true },
                 ),
-            })
+            });
+          }}
+          aria-label={
+            plan
+              ? "提交改期提案"
+              : missingDetails.length
+                ? "补齐资料后生成计划"
+                : "生成并确认计划"
           }
-          aria-label={plan ? "提交改期提案" : "生成并确认计划"}
         >
-          {plan ? "提交改期提案" : "生成并确认计划"}
+          {plan
+            ? "提交改期提案"
+            : missingDetails.length
+              ? "补齐资料后生成计划"
+              : "生成并确认计划"}
         </Button>
       </div>
       {plan && (
