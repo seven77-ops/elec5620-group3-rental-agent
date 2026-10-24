@@ -58,7 +58,8 @@ class AssistantWorkspace:
                 'profile':profile,'status':'proposed'}
             summary=preference_summary(profile)
             c['rental_brief']=deepcopy(brief)
-            c['dialogue_mode']='collect_preferences'
+            self.ctx.repo.put(db,'assistant_commute_activity',case_id,{'conversation_id':conversation_id,'brief':brief})
+            c['dialogue_mode']='recommend_areas' if brief.get('recommend_areas') else 'collect_preferences'
             c['messages'].append(message('assistant','租房需求已整理好。核对并确认后，将同步到房源推荐。','agent1',
                 intent='collect_preferences',actions=[{'type':'apply_preferences','label':'确认并同步需求',
                     'proposal_id':p['proposal_id'],'summary':summary}]))

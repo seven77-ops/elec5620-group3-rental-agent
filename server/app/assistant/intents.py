@@ -7,7 +7,7 @@ from ..adapters.business import validate_profile
 from .dialogue import BRIEF_SCHEMA
 from .living import INTENT_PROPERTIES, LIVING_INTENT_SCHEMA
 
-INTENTS = {'collect_preferences','search','update_preferences','compare','explain','market','select','clarify','contract','aftercare','followup','draft_contract','living_services','other'}
+INTENTS = {'area_advice','collect_preferences','recommend_areas','search','update_preferences','compare','explain','market','select','clarify','contract','aftercare','followup','draft_contract','living_services','workflow','other'}
 CLARIFICATION_REASONS = ('budget_units','reference','unknown_fact','missing_preferences','conflicting_preferences')
 PROFILE_SCHEMA = load('agent2/schemas/rental-profile.schema.json')
 PATCH_SCHEMA = deepcopy(PROFILE_SCHEMA)
@@ -33,9 +33,22 @@ def finite_tree(value):
 
 def validate_intent(value,catalog,known_ids):
     model_require(isinstance(value,dict) and 'intent' in value and
-        not set(value)-{'intent','filters','brief_patch','preference_patch','listing_ids','clarification','clarification_reason','market',*INTENT_PROPERTIES})
+        not set(value)-{'intent','areas','filters','brief_patch','preference_patch','listing_ids','clarification','clarification_reason','market','steps',*INTENT_PROPERTIES})
     model_require(isinstance(value['intent'],str) and value['intent'] in INTENTS)
     finite_tree(value)
+    if 'areas' in value:
+        names=value['areas']
+        model_require(isinstance(names,list) and 1<=len(names)<=4 and all(isinstance(s,str) and s in catalog.suburbs for s in names))
+        model_require(len(names)==len(set(names)))
+    if value['intent']=='workflow':
+        model_require(not list(Draft202012Validator(workflow_schema()).iter_errors(value)))
+        steps=value['steps']
+        model_require(sum(step['kind']=='prepare_enquiry' for step in steps)<=1)
+        for step in steps:
+            if 'filters' in step:
+                try: catalog.filters(step['filters'])
+                except (ApiError,TypeError): model_require(False)
+            model_require(set(step.get('listing_ids',[]))<=set(known_ids))
     if value['intent']=='living_services':
         model_require(not list(Draft202012Validator(LIVING_INTENT_SCHEMA).iter_errors(value)))
         model_require(value['service_action']!='report_repair' or bool(value.get('repair')))
@@ -64,9 +77,9 @@ def validate_intent(value,catalog,known_ids):
         model_require(type(m['bedrooms']) is int and 0<=m['bedrooms']<=20 and isinstance(m['rent_scope'],str) and m['rent_scope'] in {'whole_property','per_room','per_person'})
         model_require(m.get('weekly_rent') is None or (type(m['weekly_rent']) in (int,float) and 0<=m['weekly_rent']<=100000))
     # Each operation accepts only data it can actually execute.
-    allowed={'collect_preferences':{'brief_patch'},'search':{'filters'},'update_preferences':{'preference_patch'},'compare':{'listing_ids'},
+    allowed={'area_advice':{'areas','brief_patch'},'collect_preferences':{'brief_patch'},'recommend_areas':{'brief_patch'},'search':{'filters'},'update_preferences':{'preference_patch'},'compare':{'listing_ids'},
         'explain':{'listing_ids'},'select':{'listing_ids'},'market':{'market','listing_ids'},
-        'clarify':{'clarification','clarification_reason'},'contract':set(),'aftercare':set(),'followup':set(),'draft_contract':set(),'living_services':set(INTENT_PROPERTIES),'other':set()}
+        'clarify':{'clarification','clarification_reason'},'contract':set(),'aftercare':set(),'followup':set(),'draft_contract':set(),'living_services':set(INTENT_PROPERTIES),'workflow':{'steps'},'other':set()}
     model_require(set(value)-{'intent'}<=allowed[value['intent']])
     return value
 
@@ -94,11 +107,32 @@ def response_schema():
             'bedrooms':{'type':'integer','minimum':0,'maximum':20},
             'rent_scope':{'enum':['whole_property','per_room','per_person']},
             'weekly_rent':{'type':['number','null'],'minimum':0,'maximum':100000}}}
-    fields={'collect_preferences':{'brief_patch':BRIEF_SCHEMA},'search':{'filters':filters},'update_preferences':{'preference_patch':PATCH_SCHEMA},
+    fields={'area_advice':{'areas':{'type':'array','minItems':1,'maxItems':4,'uniqueItems':True,'items':{'type':'string'}},'brief_patch':BRIEF_SCHEMA},
+        'collect_preferences':{'brief_patch':BRIEF_SCHEMA},'recommend_areas':{'brief_patch':BRIEF_SCHEMA},'search':{'filters':filters},'update_preferences':{'preference_patch':PATCH_SCHEMA},
         'compare':{'listing_ids':ids},'explain':{'listing_ids':ids},'select':{'listing_ids':ids},
         'market':{'market':market,'listing_ids':ids},
         'clarify':{'clarification':{'type':'string','minLength':1,'maxLength':300},
             'clarification_reason':{'enum':list(CLARIFICATION_REASONS)}},
         'contract':{},'aftercare':{},'followup':{},'draft_contract':{},'other':{}}
     return {'oneOf':[{'type':'object','required':['intent'],'additionalProperties':False,
-        'properties':{'intent':{'const':name},**properties}} for name,properties in fields.items()]+[LIVING_INTENT_SCHEMA]}
+        'properties':{'intent':{'const':name},**properties}} for name,properties in fields.items()]+[LIVING_INTENT_SCHEMA,workflow_schema(filters)]}
+
+
+def workflow_schema(filters=None):
+    if filters is None:
+        filters={'type':'object','additionalProperties':False,'properties':{
+            'suburb':{'type':['string','null']},
+            **{key:{'type':'integer','minimum':0,'maximum':100} for key in ('min_bedrooms','min_bathrooms','min_car_spaces')},
+            'max_weekly_rent':{'type':'number','minimum':0,'maximum':1000000000000},
+            'sort':{'enum':['rent_asc','rent_desc','bedrooms_desc']}}}
+    ids={'type':'array','maxItems':5,'uniqueItems':True,'items':{'type':'string'}}
+    steps=[{'type':'object','additionalProperties':False,'required':['kind'],
+        'properties':{'kind':{'const':'search'},'filters':filters}}]
+    for kind in ('compare','explain','prepare_enquiry'):
+        steps.append({'type':'object','additionalProperties':False,'required':['kind'],
+            'properties':{'kind':{'const':kind},'listing_ids':ids,
+                'reference':{'enum':['selected','previous','cheapest']}},
+            'not':{'required':['listing_ids','reference']}})
+    return {'type':'object','required':['intent','steps'],'additionalProperties':False,
+        'properties':{'intent':{'const':'workflow'},'steps':{'type':'array','minItems':1,'maxItems':3,'items':{'oneOf':steps},
+            'contains':{'type':'object','required':['kind'],'properties':{'kind':{'const':'prepare_enquiry'}}},'minContains':0,'maxContains':1}}}

@@ -23,7 +23,11 @@ class AssistantDemoProvider:
         if context['task'] != 'assistant_intent':
             raise ValueError('UI fixture only accepts assistant intent')
         message = context.get('message') or context.get('latest_user_message') or context.get('query') or ''
-        if '我的电是AGL' in message:
+        if '比较 Burwood 和 Rhodes' in message:
+            result={'intent':'area_advice','areas':['Burwood','Rhodes'],'brief_patch':{'lifestyle_priorities':['parks','food']}}
+        elif '比较 Carlton 的安静和安全' in message:
+            result={'intent':'area_advice','areas':['Carlton'],'brief_patch':{'lifestyle_priorities':['quiet','safety']}}
+        elif '我的电是AGL' in message:
             result={'intent':'living_services','topic':'utilities','service_action':'update_profile',
                     'profile_patch':{'utilities':{'electricity':'agl','internet':'tpg'}}}
         elif '客气' in message or '礼貌' in message:

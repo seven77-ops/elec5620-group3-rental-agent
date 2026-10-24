@@ -30,6 +30,10 @@ def register_routes(app, services):
     app.get('/api/v1/cases/{case_id}/candidate-followup/questions')(followup.questions)
     from .lease_drafts.service import LeaseDraftService
     from .lease_drafts.ai import LeaseDraftAI
+    from .lease_drafts.addresses import LeaseAddresses
+    app.get('/api/v1/lease-addresses')(LeaseAddresses(services).search)
+    from .lease_drafts.localities import search_localities
+    app.get('/api/v1/lease-localities')(search_localities)
     drafts = LeaseDraftService(services)
     draft_base = '/api/v1/cases/{case_id}/lease-drafts'
     app.get(draft_base+'/context')(drafts.context)

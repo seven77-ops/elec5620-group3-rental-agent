@@ -107,7 +107,7 @@ class DataProviders:
                 422, 'invalid_input', '请选择未来30天内的到达时间；供应商实际时刻表范围可能更短。')
         self.gate('tfnsw', body['allow_external'])
         local = arrival.astimezone(ZoneInfo('Australia/Sydney'))
-        coord = lambda p: f"{p['longitude']:g},{p['latitude']:g}:EPSG:4326"
+        coord = lambda p: f"{p['longitude']:g}:{p['latitude']:g}:EPSG:4326"
         data = self.request('GET', 'https://api.transport.nsw.gov.au/v1/tp/trip',
                             {'Authorization': 'apikey ' + self.tfnsw_key, 'Accept': 'application/json'}, params={
                                 'outputFormat': 'rapidJSON', 'coordOutputFormat': 'EPSG:4326', 'depArrMacro': 'arr',

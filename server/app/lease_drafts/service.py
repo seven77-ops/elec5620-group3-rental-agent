@@ -25,6 +25,12 @@ class LeaseDraftService:
             packet,token=self.source(db,case_id)
         values=deepcopy(DEFAULTS);values['address']=packet['selection']['listing_snapshot']['address']
         sources={'address':'已保存候选的广告地址（待核实）'}
+        # The property was explicitly selected earlier. Use only its dedicated source
+        # locality/postcode fields, never infer postal data from a unit/street string.
+        snapshot=packet['selection']['listing_snapshot']
+        for key,value in (('suburb',snapshot.get('suburb','')),('state','NSW'),('postcode',snapshot.get('postcode',''))):
+            values[key]=value
+            sources[key]='已保存候选的本地新州广告地址字段（待核实）'
         followup=packet['followup'];facts=followup['facts']
         if followup['version']:
             basis='用户跟进记录 v'+str(followup['version'])+'：'+facts['source_note']

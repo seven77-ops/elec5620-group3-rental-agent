@@ -2,6 +2,90 @@ import { api } from "./client";
 import type { HousingAd } from "./catalog";
 import type { CaseState } from "./types";
 import type { LivingProvider } from "./living";
+import type { LeaseDraft, LeaseFields, LeaseQuestion } from "./leaseDraft";
+import type { AreaContext, AreaAdviceReport, LifestyleTopic } from "./areas";
+export interface CommuteDestination {
+  id: string;
+  label: string;
+  latitude: number;
+  longitude: number;
+  precision: string;
+  source_url: string;
+}
+export interface CommuteRecommendation {
+  status: "ready" | "partial" | "unavailable";
+  destination: CommuteDestination;
+  criteria: RentalBrief;
+  queried_at: string;
+  date: string;
+  arrival_time: string;
+  total_matching: number;
+  evaluated_count: number;
+  query_limit: number;
+  areas: {
+    suburb: string;
+    count: number;
+    min_weekly_rent: number;
+    max_weekly_rent: number;
+    fastest_minutes: number | null;
+    verified_route_count: number;
+    reasons: string[];
+    tradeoffs: string[];
+    area_context?: AreaContext;
+  }[];
+  routes: {
+    listing_id: string;
+    status: "ok" | "unavailable" | "unsupported" | "over_limit";
+    duration_minutes: number | null;
+    walking_minutes: number | null;
+    transfers: number | null;
+    departure_at: string | null;
+    arrival_at: string | null;
+    source_url: string;
+    route_url?: string;
+    origin_precision: string;
+    reason: string;
+  }[];
+  limitations: string[];
+  pending_listings?: HousingAd[];
+  area_knowledge_coverage?: {
+    covered_suburbs: number;
+    catalog_suburbs: number;
+  };
+}
+export interface SharedCommuteRecommendation {
+  conversation_id: string;
+  message: AssistantMessage;
+  stale: boolean;
+  stale_reasons: string[];
+}
+export interface HousingComparison {
+  basis: string;
+  recommended_listing_id: string | null;
+  summary: string;
+  items: {
+    listing_id: string;
+    matches: string[];
+    tradeoffs: string[];
+    to_verify: string[];
+  }[];
+}
+export interface EnquiryDraft {
+  listing_id: string;
+  address: string;
+  subject: string;
+  body: string;
+  questions: string[];
+  source_url: string;
+}
+export interface LeaseChatProposal {
+  proposal_id: string;
+  status: "pending" | "applied" | "obsolete";
+  fields: LeaseFields;
+  patch: Partial<LeaseFields>;
+  questions: LeaseQuestion[];
+  base_version: number;
+}
 export interface ConversationSummary {
   conversation_id: string;
   title: string;
@@ -45,6 +129,18 @@ export interface AssistantMessage {
   actions: AssistantAction[];
   providers?: LivingProvider[];
   calls?: object[];
+  comparison?: HousingComparison;
+  task_steps?: {
+    label: string;
+    status: "completed" | "needs_input";
+    detail: string;
+  }[];
+  enquiry?: EnquiryDraft;
+  verification_checklist?: { title: string; items: string[] };
+  lease_proposal?: LeaseChatProposal;
+  destination_options?: CommuteDestination[];
+  commute_recommendation?: CommuteRecommendation;
+  area_advice?: AreaAdviceReport;
 }
 export interface Conversation {
   conversation_id: string;
@@ -57,6 +153,18 @@ export interface Conversation {
   dialogue_mode?: string;
 }
 export interface RentalBrief {
+  lifestyle_priorities?: LifestyleTopic[];
+  recommend_areas?: boolean;
+  destination_query?: string;
+  destination_id?: string;
+  arrival_time?: string;
+  commute_max_minutes?: number;
+  commute_hard_limit?: boolean;
+  commute_priority?: "balanced" | "rent" | "commute";
+  max_transfers?: number;
+  travel_day?: "weekday" | "weekend";
+  travel_date?: string;
+  commute_mode?: "public_transport" | "walk" | "drive" | "bike";
   suburb?: string | null;
   budget_amount?: number;
   budget_period?: "week" | "month" | "unknown";
@@ -73,6 +181,7 @@ export interface AssistantTurn {
   expected_revision: number;
   message: string;
   allow_external_ai: true;
+  allow_external_data?: boolean;
   listing_ids?: string[];
 }
 const root = (caseId: string) =>
@@ -91,6 +200,18 @@ function assistantPost<T>(path: string, body: unknown) {
 }
 export const listConversations = (caseId: string) =>
   api<{ items: ConversationSummary[] }>(conversations(caseId));
+export const getCommuteRecommendation = (caseId: string) =>
+  api<SharedCommuteRecommendation | null>(
+    `${root(caseId)}/commute-recommendation`,
+    undefined,
+    { allowNull: true },
+  );
+export const getAreaAdvice = (caseId: string) =>
+  api<SharedCommuteRecommendation | null>(
+    `${root(caseId)}/area-advice`,
+    undefined,
+    { allowNull: true },
+  );
 export const createConversation = (caseId: string) =>
   assistantPost<Conversation>(conversations(caseId), {});
 export const getConversation = (caseId: string, id: string) =>
@@ -112,6 +233,21 @@ export const applyAssistantProposal = (
   assistantPost<{ case: CaseState; conversation: Conversation }>(
     `${root(caseId)}/proposals/${encodeURIComponent(id)}/apply`,
     { request_id: requestId, confirmed: true },
+  );
+export const applyAssistantLease = (
+  caseId: string,
+  conversationId: string,
+  proposalId: string,
+  body: {
+    request_id: string;
+    expected_revision: number;
+    confirmed: true;
+    applicability_confirmed: true;
+  },
+) =>
+  assistantPost<{ draft: LeaseDraft; conversation: Conversation }>(
+    `${conversations(caseId)}/${encodeURIComponent(conversationId)}/lease-proposals/${encodeURIComponent(proposalId)}/apply`,
+    body,
   );
 export interface WorkspaceRequest {
   request_id: string;

@@ -1,5 +1,29 @@
 import type { LeaseFields } from "../../api/leaseDraft";
 export const leaseLabels: Record<keyof LeaseFields, string> = {
+  suburb: "房屋区域（Suburb）",
+  state: "房屋 State",
+  postcode: "房屋邮编",
+  landlord_notice_suburb: "出租方区域（Suburb）",
+  landlord_notice_state: "出租方 State",
+  landlord_notice_postcode: "出租方邮编",
+  tenant_notice_suburb: "租客区域（Suburb）",
+  tenant_notice_state: "租客 State",
+  tenant_notice_postcode: "租客邮编",
+  agent_notice_suburb: "代理区域（Suburb）",
+  agent_notice_state: "代理 State",
+  agent_notice_postcode: "代理邮编",
+  lease_term_months: "租期时长",
+  agreement_date: "拟定签约日期",
+  agreement_place: "拟定签约地点",
+  landlord_name_2: "第二出租方姓名",
+  landlord_residence: "出租方通常居住州或国家",
+  landlord_phone: "出租方联系电话",
+  electrical_repair_name: "紧急电工姓名 / 公司",
+  electrical_repair_phone: "紧急电工电话",
+  plumbing_repair_name: "紧急水管工姓名 / 公司",
+  plumbing_repair_phone: "紧急水管工电话",
+  other_repair_name: "其他紧急维修联系人",
+  other_repair_phone: "其他紧急维修电话",
   address: "房屋地址",
   rental_mode: "租约适用范围",
   landlord_name: "出租方姓名",
@@ -24,6 +48,34 @@ export const leaseLabels: Record<keyof LeaseFields, string> = {
   first_rent_date: "首期租金付款日期",
   rent_due_day: "租金付款日",
 };
+export const leaseExtraDefaults: Partial<LeaseFields> = Object.fromEntries(
+  [
+    "suburb",
+    "state",
+    "postcode",
+    "landlord_notice_suburb",
+    "landlord_notice_state",
+    "landlord_notice_postcode",
+    "tenant_notice_suburb",
+    "tenant_notice_state",
+    "tenant_notice_postcode",
+    "agent_notice_suburb",
+    "agent_notice_state",
+    "agent_notice_postcode",
+    "agreement_place",
+    "landlord_name_2",
+    "landlord_residence",
+    "landlord_phone",
+    "electrical_repair_name",
+    "electrical_repair_phone",
+    "plumbing_repair_name",
+    "plumbing_repair_phone",
+    "other_repair_name",
+    "other_repair_phone",
+  ].map((key) => [key, ""]),
+);
+leaseExtraDefaults.lease_term_months = null;
+leaseExtraDefaults.agreement_date = null;
 export const requiredLeaseFields: (keyof LeaseFields)[] = [
   "rental_mode",
   "address",
@@ -58,6 +110,12 @@ export const leaseOptions: Partial<
   ],
 };
 export function leaseText(key: keyof LeaseFields, value: unknown) {
+  if (key === "lease_term_months")
+    return value == null
+      ? "自定义日期"
+      : value === 6
+        ? "6个月"
+        : `${Number(value) / 12}年`;
   if (value == null || value === "") return "待补充";
   return (
     leaseOptions[key]?.find((o) => o.value === value)?.label ?? String(value)

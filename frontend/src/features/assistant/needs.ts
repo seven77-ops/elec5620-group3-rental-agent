@@ -30,7 +30,9 @@ export function conversationNeeds(
   profile?: Profile,
 ): RentalBrief {
   if (
-    conversation?.dialogue_mode === "collect_preferences" &&
+    (conversation?.dialogue_mode === "collect_preferences" ||
+      conversation?.dialogue_mode === "area_advice" ||
+      conversation?.dialogue_mode === "recommend_areas") &&
     conversation.rental_brief
   )
     return { ...conversation.rental_brief };

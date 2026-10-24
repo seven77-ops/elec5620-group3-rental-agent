@@ -39,7 +39,11 @@ import {
   leaseOptions,
   leaseText,
   missingLeaseFields,
+  leaseExtraDefaults,
 } from "./leaseFields";
+import LeaseAddressFields, { addressGroups } from "./LeaseAddressFields";
+import { applyLeaseChange, leaseDurations } from "./leaseTerm";
+import { housingCopy } from "../real-data/listingPresentation";
 
 const sections: { title: string; fields: (keyof LeaseFields)[] }[] = [
   {
@@ -61,6 +65,7 @@ const sections: { title: string; fields: (keyof LeaseFields)[] }[] = [
     title: "租期与租金",
     fields: [
       "lease_type",
+      "lease_term_months",
       "start_date",
       "end_date",
       "rent_amount",
@@ -89,10 +94,13 @@ const monetary = new Set<keyof LeaseFields>([
   "max_occupants",
 ]);
 function clean(fields: LeaseFields, defaults: LeaseFields): LeaseFields {
+  defaults = { ...leaseExtraDefaults, ...defaults };
   return Object.fromEntries(
     Object.keys(defaults).map((key) => [
       key,
-      fields[key as keyof LeaseFields] ??
+      (key.endsWith("_date") && fields[key as keyof LeaseFields] === ""
+        ? null
+        : fields[key as keyof LeaseFields]) ??
         (typeof defaults[key as keyof LeaseFields] === "string" ? "" : null),
     ]),
   ) as unknown as LeaseFields;
@@ -172,7 +180,11 @@ export default function LeaseDraft() {
   useEffect(() => {
     if (!loading && (saved || context)) {
       form.resetFields();
-      form.setFieldsValue(saved?.fields ?? context!.defaults);
+      form.setFieldsValue(
+        saved
+          ? clean(saved.fields, context?.defaults ?? saved.fields)
+          : context!.defaults,
+      );
     }
     // Loading/reloading establishes a new source snapshot; ordinary field edits
     // and version selections must not rerun this initialization.
@@ -201,7 +213,7 @@ export default function LeaseDraft() {
       if (token !== generation.current) return;
       setSaved(d);
       setPreview(null);
-      form.setFieldsValue(d.fields);
+      form.setFieldsValue(clean(d.fields, context?.defaults ?? d.fields));
       setDirty(false);
       action.clear();
     });
@@ -253,21 +265,35 @@ export default function LeaseDraft() {
     });
   };
   const renderField = (key: keyof LeaseFields) => {
+    if (Object.hasOwn(addressGroups, key))
+      return (
+        <LeaseAddressFields
+          key={`${key}:${saved?.draft_id ?? "new"}:${saved?.version ?? 0}:${context?.context_token}`}
+          name={key as keyof typeof addressGroups}
+          form={form}
+          source={
+            !saved && context?.prefill_sources[key]
+              ? housingCopy(context.prefill_sources[key]!)
+              : undefined
+          }
+          onEdited={() => {
+            setDirty(true);
+            action.clear();
+          }}
+        />
+      );
+    if (key === "lease_term_months" && fields?.lease_type !== "fixed")
+      return null;
     let input;
-    if (leaseOptions[key])
+    if (key === "lease_term_months")
+      input = <Select virtual={false} options={leaseDurations} />;
+    else if (leaseOptions[key])
       input = (
         <Select
           virtual={false}
           allowClear
           placeholder="待确认"
           options={leaseOptions[key]}
-          onChange={
-            key === "lease_type"
-              ? (v) => {
-                  if (v === "periodic") form.setFieldValue("end_date", null);
-                }
-              : undefined
-          }
         />
       );
     else if (monetary.has(key))
@@ -282,7 +308,11 @@ export default function LeaseDraft() {
       input = (
         <Input
           type="date"
-          disabled={key === "end_date" && fields?.lease_type === "periodic"}
+          disabled={
+            key === "end_date" &&
+            (fields?.lease_type === "periodic" ||
+              fields?.lease_term_months != null)
+          }
         />
       );
     else if (
@@ -299,6 +329,19 @@ export default function LeaseDraft() {
         key={key}
         name={key}
         label={leaseLabels[key]}
+        getValueProps={
+          key === "lease_term_months"
+            ? (value) => ({ value: value == null ? "custom" : String(value) })
+            : undefined
+        }
+        getValueFromEvent={
+          key === "lease_term_months"
+            ? (value) => (value === "custom" ? null : Number(value))
+            : undefined
+        }
+        dependencies={
+          key === "end_date" ? ["start_date", "lease_type"] : undefined
+        }
         className={
           key === "address" ||
           key === "tenant_names" ||
@@ -307,14 +350,29 @@ export default function LeaseDraft() {
             : ""
         }
         extra={
-          !saved && context?.prefill_sources[key]
-            ? context.prefill_sources[key]
-            : undefined
+          key === "lease_term_months"
+            ? "按自然月 / 年顺延至同日；月末落到目标月最后一天。"
+            : key === "end_date" && fields?.lease_term_months != null
+              ? "已根据租期和起租日期自动计算。"
+              : !saved && context?.prefill_sources[key]
+                ? housingCopy(context.prefill_sources[key]!)
+                : undefined
         }
         rules={
           key === "rental_mode"
             ? [{ required: true, message: "请先确认适用新州普通整租住宅。" }]
-            : undefined
+            : key === "end_date"
+              ? [
+                  {
+                    validator: (_, value) => {
+                      const start = form.getFieldValue("start_date");
+                      return value && start && value <= start
+                        ? Promise.reject(new Error("结束日期须晚于起租日期。"))
+                        : Promise.resolve();
+                    },
+                  },
+                ]
+              : undefined
         }
       >
         {input}
@@ -432,7 +490,12 @@ export default function LeaseDraft() {
                           fields={fields!}
                           disabled={action.busy || readAction.busy}
                           onApply={(patch) => {
-                            form.setFieldsValue(patch);
+                            form.setFieldsValue(
+                              applyLeaseChange(
+                                form.getFieldsValue(true),
+                                patch,
+                              ),
+                            );
                             setDirty(true);
                             action.clear();
                           }}
@@ -445,11 +508,21 @@ export default function LeaseDraft() {
               <Form
                 form={form}
                 key={`form:${context?.context_token ?? saved?.draft_id}`}
-                initialValues={saved?.fields ?? context?.defaults}
+                initialValues={
+                  saved
+                    ? clean(saved.fields, context?.defaults ?? saved.fields)
+                    : context?.defaults
+                }
                 layout="vertical"
                 requiredMark={false}
                 disabled={action.busy || readAction.busy || readOnly}
-                onValuesChange={() => {
+                onValuesChange={(changes, values) => {
+                  form.setFieldsValue(
+                    applyLeaseChange(
+                      { ...values, lease_type: fields?.lease_type },
+                      changes,
+                    ),
+                  );
                   setDirty(true);
                   action.clear();
                 }}
@@ -461,6 +534,9 @@ export default function LeaseDraft() {
                     金额均为 AUD；房源标价仅作参考，不自动填作已商定租金。
                   </span>
                 </div>
+                <p className="muted small">
+                  房屋地址取自所选房源。双方接收通知的地址请分别填写，区域、State和邮编可搜索选择，也可手动填写。
+                </p>
                 {context && (
                   <div className="lease-source-note">
                     当前房源：
@@ -493,6 +569,50 @@ export default function LeaseDraft() {
                       children: (
                         <div className="lease-fields-grid">
                           {extra.map(renderField)}
+                        </div>
+                      ),
+                    },
+                    {
+                      key: "signing",
+                      label: "签约信息（可选）",
+                      children: (
+                        <div className="lease-fields-grid">
+                          {(["agreement_date", "agreement_place"] as const).map(
+                            renderField,
+                          )}
+                        </div>
+                      ),
+                    },
+                    {
+                      key: "owners",
+                      label: "补充出租方信息（如适用）",
+                      children: (
+                        <div className="lease-fields-grid">
+                          {(
+                            [
+                              "landlord_name_2",
+                              "landlord_residence",
+                              "landlord_phone",
+                            ] as const
+                          ).map(renderField)}
+                        </div>
+                      ),
+                    },
+                    {
+                      key: "repairs",
+                      label: "紧急维修联系人（可选）",
+                      children: (
+                        <div className="lease-fields-grid">
+                          {(
+                            [
+                              "electrical_repair_name",
+                              "electrical_repair_phone",
+                              "plumbing_repair_name",
+                              "plumbing_repair_phone",
+                              "other_repair_name",
+                              "other_repair_phone",
+                            ] as const
+                          ).map(renderField)}
                         </div>
                       ),
                     },

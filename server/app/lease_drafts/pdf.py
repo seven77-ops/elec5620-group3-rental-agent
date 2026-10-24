@@ -14,6 +14,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib import colors
 from ..bootstrap import ROOT
 from ..common import require
+from .fields import calendar_months
 
 BASE=ROOT/'agent3/data/templates'
 TEMPLATE=BASE/'nsw-residential-tenancy-2026-09-21.pdf'
@@ -25,7 +26,15 @@ TEXT_MAP={'address':'Text field 3.11','landlord_name':'Text field 1.4',
     'agent_name':'Text field 2.15','agent_notice_address':'Text field 2.16','agent_contact':'Text field 2.20',
     'rent_amount':'Text field 3.13','bond':'Text field 4.0','max_occupants':'Text field 4.4',
     'inclusions':'Text field 3.12','payment_details':'Text field 3.23','rent_due_day':'Text field 3.18'}
-DATE_MAP={'start_date':'Text field 3.9','end_date':'Text field 3.10','first_rent_date':'Text field 3.19'}
+TEXT_MAP.update({'suburb':None,'state':None,'postcode':None,
+    'landlord_notice_suburb':'Text field 1.12','landlord_notice_state':'Text field 1.13','landlord_notice_postcode':'Text field 1.14',
+    'tenant_notice_suburb':'Text field 2.11','tenant_notice_state':'Text field 2.12','tenant_notice_postcode':'Text field 2.13',
+    'agent_notice_suburb':'Text field 2.17','agent_notice_state':'Text field 2.18','agent_notice_postcode':'Text field 2.19',
+    'agreement_place':'Text field 1.2','landlord_name_2':'Text field 1.5','landlord_residence':'Text field 1.7','landlord_phone':'Text field 1.8',
+    'electrical_repair_name':'Text field 4.5','electrical_repair_phone':'Text field 4.6',
+    'plumbing_repair_name':'Text field 4.7','plumbing_repair_phone':'Text field 4.8',
+    'other_repair_name':'Text field 4.9','other_repair_phone':'Text field 4.10'})
+DATE_MAP={'agreement_date':'Text field 1.1','start_date':'Text field 3.9','end_date':'Text field 3.10','first_rent_date':'Text field 3.19'}
 
 
 def template_metadata():
@@ -34,13 +43,40 @@ def template_metadata():
     return meta
 
 
+def property_address(fields):
+    address=fields.get('address','').strip()
+    suburb=fields.get('suburb','').strip();state=fields.get('state','').strip();postcode=fields.get('postcode','').strip()
+    if not address or not any((suburb,state,postcode)):return address
+    import re
+    states=r'(?:NSW|ACT|VIC|QLD|TAS|NT|SA|WA)'
+    suburb_present=not suburb or re.search(r'(?:,\s*|\s+)'+re.escape(suburb)+r'(?:\s+'+states+r')?(?:\s+[0-9]{4})?\s*$',address,re.I)
+    state_present=not state or re.search(r'(?:,\s*|\s+)'+re.escape(state)+r'(?:\s+[0-9]{4})?\s*$',address,re.I)
+    postcode_prefix=states+(('|'+re.escape(suburb)) if suburb else '')
+    postcode_present=not postcode or re.search(r'(?:'+postcode_prefix+r')\s+'+re.escape(postcode)+r'\s*$',address,re.I)
+    if suburb_present and state_present and postcode_present:return address
+    # Replace only a known existing suffix; never parse arbitrary numbers in a street.
+    options=[]
+    if suburb:
+        options.extend([' '.join(p for p in (suburb,state,postcode) if p),
+            ' '.join(p for p in (suburb,state) if p),suburb])
+    if state:options.extend([' '.join(p for p in (state,postcode) if p),state])
+    base=address
+    for suffix in sorted(set(options),key=len,reverse=True):
+        pattern=r'(?:,\s*|\s+)'+re.escape(suffix)+r'\s*$'
+        stripped=re.sub(pattern,'',base,flags=re.I)
+        if stripped!=base:
+            base=stripped.rstrip(', ');break
+    return base+', '+' '.join(p for p in (suburb,state,postcode) if p)
+
+
 def field_values(fields):
     result={}
     for key,name in TEXT_MAP.items():
-        value=fields[key]
+        if name is None:continue
+        value=property_address(fields) if key=='address' else fields.get(key)
         if value not in (None,''):result[name]=f'{value:g}' if type(value) in (int,float) else str(value).replace('\n','; ')
     for key,name in DATE_MAP.items():
-        if fields[key]:result[name]=date.fromisoformat(fields[key]).strftime('%d/%m/%Y')
+        if fields.get(key):result[name]=date.fromisoformat(fields[key]).strftime('%d/%m/%Y')
     names=fields['tenant_names'].splitlines()
     for i,name in enumerate(names[:3]):result['Text field 2.'+str(6+i)]=name
     if len(names)>3:result['Text field 2.9']='; '.join(names[3:])
@@ -50,12 +86,13 @@ def field_values(fields):
         if period=='month':result['Text field 3.17']='month'
     if fields['lease_type']=='periodic':result['Check Box 3.1']='/Periodic no end date '
     elif fields['lease_type']=='fixed':
-        result['Check Box 3.1']='/Other'
+        options={6:'/6 months',12:'/12 months',24:'/2 years',36:'/3 years',60:'/5 years'}
+        result['Check Box 3.1']=options.get(fields.get('lease_term_months'),'/Other')
         if fields['start_date'] and fields['end_date']:
             start=date.fromisoformat(fields['start_date']);end=date.fromisoformat(fields['end_date'])
-            months=(end.year-start.year)*12+end.month-start.month
-            options={6:'/6 months',12:'/12 months',24:'/2 years',36:'/3 years',60:'/5 years'}
-            if start.day==end.day and months in options:result['Check Box 3.1']=options[months]
+            months=calendar_months(fields['start_date'],fields['end_date'])
+            if months in options:result['Check Box 3.1']=options[months]
+            elif months:result['Text field 3.2']=str(months)+' months'
             else:result['Text field 3.2']=str((end-start).days)+' days'
     method=fields['payment_method']
     if method:result['Check Box 3.20']={'bank_transfer':'/Paid by approved electronic bank transfer','centrepay':'/Paid by Centrepay','other':'/Paid by Other'}[method]
@@ -130,9 +167,15 @@ def cover_pages(draft):
         'rent_period':'Rent period','bond':'Proposed bond (AUD)','max_occupants':'Proposed maximum occupants',
         'inclusions':'Proposed inclusions','payment_method':'Proposed payment method','payment_details':'Payment details',
         'first_rent_date':'First rent due','rent_due_day':'Rent due day'}
+    labels.update({'suburb':'Property suburb','state':'Property state','postcode':'Property postcode',
+        'agreement_date':'Agreement date','agreement_place':'Agreement place','landlord_name_2':'Second landlord',
+        'landlord_residence':'Landlord residence','landlord_phone':'Landlord phone',
+        **{prefix+'_'+part:label+' '+part for prefix,label in (('landlord_notice','Landlord notice'),('tenant_notice','Tenant notice'),('agent_notice','Agent notice')) for part in ('suburb','state','postcode')},
+        **{kind+'_repair_'+part:kind.capitalize()+' repair '+part for kind in ('electrical','plumbing','other') for part in ('name','phone')},
+        'lease_term_months':'Calendar lease months'})
     rows=[]
     for key,label in labels.items():
-        value=f[key]
+        value=f.get(key)
         if value in (None,''):continue
         value={'whole_property':'Whole property','fixed':'Fixed term','periodic':'Periodic (no end date)','week':'Per week','fortnight':'Per fortnight','month':'Per month','bank_transfer':'Electronic bank transfer','centrepay':'Centrepay','other':'Other'}.get(str(value),value)
         rows.append([Paragraph(label,small),Paragraph(escape(str(value)).replace('\n','<br/>'),small)])

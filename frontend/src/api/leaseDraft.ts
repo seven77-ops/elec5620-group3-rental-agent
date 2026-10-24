@@ -2,6 +2,30 @@ import { api, post } from "./client";
 import { aiPost } from "./ai";
 import type { Json } from "./types";
 export interface LeaseFields {
+  suburb?: string;
+  state?: string;
+  postcode?: string;
+  landlord_notice_suburb?: string;
+  landlord_notice_state?: string;
+  landlord_notice_postcode?: string;
+  tenant_notice_suburb?: string;
+  tenant_notice_state?: string;
+  tenant_notice_postcode?: string;
+  agent_notice_suburb?: string;
+  agent_notice_state?: string;
+  agent_notice_postcode?: string;
+  lease_term_months?: number | null;
+  agreement_date?: string | null;
+  agreement_place?: string;
+  landlord_name_2?: string;
+  landlord_residence?: string;
+  landlord_phone?: string;
+  electrical_repair_name?: string;
+  electrical_repair_phone?: string;
+  plumbing_repair_name?: string;
+  plumbing_repair_phone?: string;
+  other_repair_name?: string;
+  other_repair_phone?: string;
   address: string;
   landlord_name: string;
   landlord_contact: string;
@@ -26,6 +50,31 @@ export interface LeaseFields {
   payment_details: string;
   rent_due_day: string;
 }
+export interface LeaseAddressSuggestion {
+  id: string;
+  kind: "address" | "locality";
+  address: string;
+  full_address: string;
+  suburb: string;
+  state: string;
+  postcode: string;
+  source_url?: string;
+}
+export const searchLeaseAddresses = (query: string) =>
+  api<{
+    items: LeaseAddressSuggestion[];
+    source: "local_catalog";
+  }>(`/lease-addresses?q=${encodeURIComponent(query)}`);
+export interface LeaseLocality {
+  id: string;
+  suburb: string;
+  state: string;
+  postcode: string;
+}
+export const searchLeaseLocalities = (query: string, state: string) =>
+  api<{ items: LeaseLocality[]; source: "au_postcodes" }>(
+    `/lease-localities?q=${encodeURIComponent(query)}&state=${encodeURIComponent(state.trim().toUpperCase())}`,
+  );
 export interface LeaseQuestion {
   field: keyof LeaseFields;
   label: string;

@@ -29,6 +29,10 @@ import { ListingThumbnail } from "./real-data/ListingPhotos";
 
 import ListingDetails from "./real-data/ListingDetails";
 import { housingCopy } from "./real-data/listingPresentation";
+import { getCommuteRecommendation, getAreaAdvice } from "../api/assistant";
+import type { SharedCommuteRecommendation } from "../api/assistant";
+import CommuteResults from "./assistant/CommuteResults";
+import AreaAdvice from "./assistant/AreaAdvice";
 
 const CandidateFollowup = lazy(() => import("./candidate/CandidateFollowup"));
 
@@ -43,6 +47,12 @@ export default function RealRecommendations() {
   const [filters, setFilters] = useState<HousingFilters>({ sort: "rent_asc" });
   const filtersTouched = useRef(false);
   const [context, setContext] = useState<RecommendationContext | null>(null);
+  const [commuteResult, setCommuteResult] =
+    useState<SharedCommuteRecommendation | null>(null);
+  const [commuteError, setCommuteError] = useState(false);
+  const [areaResult, setAreaResult] =
+    useState<SharedCommuteRecommendation | null>(null);
+  const [areaError, setAreaError] = useState(false);
   const [contextReady, setContextReady] = useState(false);
   const [manualFilters, setManualFilters] = useState(false);
   const [filterDirty, setFilterDirty] = useState(false);
@@ -59,6 +69,31 @@ export default function RealRecommendations() {
   const latest = current.evaluations.at(-1)?.run_id;
   const action = useAction();
   const confirmed = currentConfirmation(current);
+  useEffect(() => {
+    let valid = true;
+    setCommuteResult(null);
+    setCommuteError(false);
+    setAreaResult(null);
+    setAreaError(false);
+    getAreaAdvice(current.case_id)
+      .then((value) => {
+        if (valid && value?.message?.area_advice) setAreaResult(value);
+      })
+      .catch(() => {
+        if (valid) setAreaError(true);
+      });
+    getCommuteRecommendation(current.case_id)
+      .then((value) => {
+        if (valid && value?.message?.commute_recommendation)
+          setCommuteResult(value);
+      })
+      .catch(() => {
+        if (valid) setCommuteError(true);
+      });
+    return () => {
+      valid = false;
+    };
+  }, [current.case_id, current.draft.fingerprint]);
   useEffect(() => {
     if (!contextReady) return;
     let valid = true;
@@ -211,6 +246,74 @@ export default function RealRecommendations() {
           </Space>
         }
       />
+      {areaResult ? (
+        <section className="area-shared" aria-label="聊天中的区域参考">
+          {areaResult.stale && (
+            <Alert
+              type="warning"
+              showIcon
+              title="这份区域参考需要更新"
+              description={areaResult.stale_reasons.join(" ")}
+            />
+          )}
+          <Button
+            onClick={() =>
+              go(
+                `assistant?conversation=${encodeURIComponent(areaResult.conversation_id)}`,
+              )
+            }
+          >
+            回到对话调整生活偏好
+          </Button>
+          <AreaAdvice report={areaResult.message.area_advice} />
+        </section>
+      ) : areaError ? (
+        <Alert
+          type="warning"
+          showIcon
+          title="区域参考暂时无法读取"
+          action={
+            <Button size="small" onClick={() => go("assistant")}>
+              到对话查看
+            </Button>
+          }
+        />
+      ) : null}
+      {commuteResult ? (
+        <section className="commute-shared" aria-label="聊天中的通勤推荐">
+          {commuteResult.stale ? (
+            <Alert
+              type="warning"
+              showIcon
+              title="这份通勤推荐需要更新"
+              description={commuteResult.stale_reasons.join(" ")}
+            />
+          ) : null}
+          <div className="commute-actions">
+            <Button
+              onClick={() =>
+                go(
+                  `assistant?conversation=${encodeURIComponent(commuteResult.conversation_id)}`,
+                )
+              }
+            >
+              回到对话更新推荐
+            </Button>
+          </div>
+          <CommuteResults message={commuteResult.message} onView={setDetail} />
+        </section>
+      ) : commuteError ? (
+        <Alert
+          type="warning"
+          showIcon
+          title="通勤推荐暂时无法读取"
+          action={
+            <Button size="small" onClick={() => go("assistant")}>
+              到对话查看
+            </Button>
+          }
+        />
+      ) : null}
       <section className="real-catalog-status" data-testid="catalog-summary">
         <strong>
           {result?.catalog.total ?? "—"} 条真实房源 ·{" "}

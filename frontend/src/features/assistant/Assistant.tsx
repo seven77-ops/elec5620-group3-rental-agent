@@ -19,6 +19,7 @@ import {
 } from "@ant-design/icons";
 import {
   applyAssistantProposal,
+  applyAssistantLease,
   createConversation,
   getConversation,
   listConversations,
@@ -37,6 +38,10 @@ import { useCase, currentConfirmation } from "../../app/context";
 import RentalNeeds from "./RentalNeeds";
 import CandidateFollowup from "../candidate/CandidateFollowup";
 import LivingCards from "./LivingCards";
+import TaskResults from "./TaskResults";
+import LeaseProposalCard from "./LeaseProposalCard";
+import CommuteResults from "./CommuteResults";
+import AreaAdvice from "./AreaAdvice";
 import {
   conversationNeeds,
   needsMatch,
@@ -57,19 +62,24 @@ const isInputError = (error: unknown) =>
 
 const suggestions = [
   {
+    title: "不知道住哪里",
+    text: "我刚来悉尼，不知道哪个区适合我，请根据预算、户型和到学校或公司的通勤帮我推荐。",
+    note: "按通勤选区域",
+  },
+  {
     title: "帮我找房",
     text: "我想租房，帮我整理预算、区域和房屋条件。",
     note: "从需求开始",
   },
   {
     title: "比较房源",
-    text: "我想比较几套房源，请先帮我找到合适的候选。",
+    text: "请按我的租房需求比较房源，说明符合哪些要求、需要取舍什么，再为更便宜的一套准备看房询问。",
     note: "看清差别",
   },
   {
-    title: "复核合同",
-    text: "我想复核租房合同，下一步怎么做？",
-    note: "进入合同复核",
+    title: "准备合同",
+    text: "帮我整理当前候选房源的租约草稿，先确认需要哪些信息。",
+    note: "核对后填入合同",
   },
   {
     title: "租后问题",
@@ -80,7 +90,7 @@ const suggestions = [
 const agentNames = {
   agent1: "租房需求",
   agent2: "房源顾问",
-  agent3: "合同复核",
+  agent3: "合同助手",
   agent4: "租后服务",
   assistant: "租房助手",
 };
@@ -149,11 +159,13 @@ export default function Assistant() {
       .then(async (result) => {
         if (generation.current !== token) return;
         setItems(result.items);
-        if (result.items[0]) {
-          const value = await getConversation(
-            caseId,
-            result.items[0].conversation_id,
-          );
+        const requestedConversation = searchParams.get("conversation");
+        const initialId =
+          result.items.find(
+            (item) => item.conversation_id === requestedConversation,
+          )?.conversation_id ?? result.items[0]?.conversation_id;
+        if (initialId) {
+          const value = await getConversation(caseId, initialId);
           if (generation.current === token) {
             active.current = value;
             setConversation(value);
@@ -267,6 +279,7 @@ export default function Assistant() {
         expected_revision: target.revision,
         message: input,
         allow_external_ai: true,
+        allow_external_data: true,
         ...(listingIds.length ? { listing_ids: listingIds } : {}),
       };
       let value: Conversation;
@@ -408,6 +421,31 @@ export default function Assistant() {
         },
       });
     }
+  };
+  const confirmLease = async (proposalId: string) => {
+    const target = active.current;
+    if (!target || busyRef.current || loading || canRetry) return false;
+    const token = generation.current;
+    const body = {
+      request_id: newRequestId(),
+      expected_revision: target.revision,
+      confirmed: true as const,
+      applicability_confirmed: true as const,
+    };
+    let applied = false;
+    await run(async () => {
+      const result = await applyAssistantLease(
+        caseId,
+        target.conversation_id,
+        proposalId,
+        body,
+      );
+      if (generation.current !== token) return;
+      update(result.conversation);
+      applied = true;
+      toast.success(`合同草稿 v${result.draft.version} 已同步。`);
+    });
+    return applied;
   };
   const saveListing = (listing: HousingAd) => {
     if (busyRef.current || loading || canRetry) return;
@@ -630,95 +668,165 @@ export default function Assistant() {
                   </span>
                   <div className="assistant-bubble">
                     {item.role === "assistant"
-                      ? housingCopy(item.content)
+                      ? item.task_steps?.length
+                        ? "本次任务的处理结果如下。"
+                        : item.comparison
+                          ? "已按你当前明确的要求整理房源比较。"
+                          : housingCopy(item.content)
                       : item.content}
                   </div>
+                  {item.role === "assistant" && (
+                    <AreaAdvice
+                      report={item.area_advice}
+                      disabled={busy || loading || canRetry}
+                      onSuggest={(value) => {
+                        setText(value);
+                        setConsent(false);
+                        setSelected([]);
+                      }}
+                    />
+                  )}
+                  {item.role === "assistant" && (
+                    <CommuteResults
+                      message={item}
+                      onView={setDetail}
+                      onSave={saveListing}
+                      disabled={busy || loading || canRetry}
+                      onSuggest={(value) => {
+                        setText(value);
+                        setConsent(false);
+                        setSelected([]);
+                      }}
+                    />
+                  )}
+                  {item.role === "assistant" && (
+                    <TaskResults
+                      message={item}
+                      onView={setDetail}
+                      onSave={saveListing}
+                      disabled={busy || canRetry}
+                      selectedListingId={
+                        current.selection?.profile_fingerprint ===
+                        confirmed?.fingerprint
+                          ? current.selection?.listing_id
+                          : undefined
+                      }
+                    />
+                  )}
+                  {item.lease_proposal && (
+                    <LeaseProposalCard
+                      proposal={item.lease_proposal}
+                      disabled={busy || loading || canRetry}
+                      onConfirm={confirmLease}
+                      onOpenContract={() => go("contract?mode=draft")}
+                    />
+                  )}
                   {Boolean(item.providers?.length) && (
                     <LivingCards providers={item.providers!} />
                   )}
-                  {item.listings.length > 0 && (
-                    <div className="assistant-listings">
-                      {item.listings.map((listing) => (
-                        <article
-                          key={listing.listing_id}
-                          className="assistant-listing"
-                          data-listing-id={listing.listing_id}
-                        >
-                          <div className="assistant-listing-top">
-                            <Tag variant="filled">真实房源</Tag>
-                            <Checkbox
-                              aria-label={`选择比较 ${listing.address}`}
-                              checked={selected.includes(listing.listing_id)}
-                              disabled={
-                                busy ||
-                                canRetry ||
-                                (selected.length >= MAX_COMPARISON_LISTINGS &&
-                                  !selected.includes(listing.listing_id))
-                              }
-                              onChange={(e) =>
-                                setSelected((ids) =>
-                                  e.target.checked
-                                    ? ids.includes(listing.listing_id) ||
-                                      ids.length >= MAX_COMPARISON_LISTINGS
-                                      ? ids
-                                      : [...ids, listing.listing_id]
-                                    : ids.filter(
-                                        (id) => id !== listing.listing_id,
-                                      ),
-                                )
-                              }
+                  {!item.commute_recommendation &&
+                    item.listings.some(
+                      (listing) =>
+                        !item.comparison?.items.some(
+                          (compared) =>
+                            compared.listing_id === listing.listing_id,
+                        ),
+                    ) && (
+                      <div className="assistant-listings">
+                        {item.listings
+                          .filter(
+                            (listing) =>
+                              !item.comparison?.items.some(
+                                (compared) =>
+                                  compared.listing_id === listing.listing_id,
+                              ),
+                          )
+                          .map((listing) => (
+                            <article
+                              key={listing.listing_id}
+                              className="assistant-listing"
+                              data-listing-id={listing.listing_id}
                             >
-                              比较
-                            </Checkbox>
-                          </div>
-                          <h3>{listing.address}</h3>
-                          <p className="muted">
-                            {listing.suburb} · {listing.postcode}
-                          </p>
-                          <strong className="assistant-rent">
-                            AUD {listing.weekly_rent.toLocaleString()}
-                            <small>/周 · 房源标价</small>
-                          </strong>
-                          <p className="assistant-listing-facts">
-                            {listing.bedroom_label || `${listing.bedrooms} 卧`}{" "}
-                            · {listing.bathrooms} 卫 · {listing.car_spaces} 车位
-                          </p>
-                          <Space>
-                            <Button
-                              size="small"
-                              onClick={() => setDetail(listing)}
-                            >
-                              房源详情
-                            </Button>
-                            {current.selection?.listing_id ===
-                              listing.listing_id &&
-                            current.selection.profile_fingerprint ===
-                              confirmed?.fingerprint ? (
-                              <Tag color="blue">当前候选</Tag>
-                            ) : (
-                              <Button
-                                size="small"
-                                disabled={busy || canRetry}
-                                onClick={() => saveListing(listing)}
-                              >
-                                保存为候选
-                              </Button>
-                            )}
-                            <a
-                              href={listing.source_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              原始房源 ↗
-                            </a>
-                          </Space>
-                          <small className="muted">
-                            在租状态、账单与计价对象待核实
-                          </small>
-                        </article>
-                      ))}
-                    </div>
-                  )}
+                              <div className="assistant-listing-top">
+                                <Tag variant="filled">真实房源</Tag>
+                                <Checkbox
+                                  aria-label={`选择比较 ${listing.address}`}
+                                  checked={selected.includes(
+                                    listing.listing_id,
+                                  )}
+                                  disabled={
+                                    busy ||
+                                    canRetry ||
+                                    (selected.length >=
+                                      MAX_COMPARISON_LISTINGS &&
+                                      !selected.includes(listing.listing_id))
+                                  }
+                                  onChange={(e) =>
+                                    setSelected((ids) =>
+                                      e.target.checked
+                                        ? ids.includes(listing.listing_id) ||
+                                          ids.length >= MAX_COMPARISON_LISTINGS
+                                          ? ids
+                                          : [...ids, listing.listing_id]
+                                        : ids.filter(
+                                            (id) => id !== listing.listing_id,
+                                          ),
+                                    )
+                                  }
+                                >
+                                  比较
+                                </Checkbox>
+                              </div>
+                              <h3>{listing.address}</h3>
+                              <p className="muted">
+                                {listing.suburb} · {listing.postcode}
+                              </p>
+                              <strong className="assistant-rent">
+                                AUD {listing.weekly_rent.toLocaleString()}
+                                <small>/周 · 房源标价</small>
+                              </strong>
+                              <p className="assistant-listing-facts">
+                                {listing.bedroom_label ||
+                                  `${listing.bedrooms} 卧`}{" "}
+                                · {listing.bathrooms} 卫 · {listing.car_spaces}{" "}
+                                车位
+                              </p>
+                              <Space>
+                                <Button
+                                  size="small"
+                                  onClick={() => setDetail(listing)}
+                                >
+                                  房源详情
+                                </Button>
+                                {current.selection?.listing_id ===
+                                  listing.listing_id &&
+                                current.selection.profile_fingerprint ===
+                                  confirmed?.fingerprint ? (
+                                  <Tag color="blue">当前候选</Tag>
+                                ) : (
+                                  <Button
+                                    size="small"
+                                    disabled={busy || canRetry}
+                                    onClick={() => saveListing(listing)}
+                                  >
+                                    保存为候选
+                                  </Button>
+                                )}
+                                <a
+                                  href={listing.source_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  原始房源 ↗
+                                </a>
+                              </Space>
+                              <small className="muted">
+                                在租状态、账单与计价对象待核实
+                              </small>
+                            </article>
+                          ))}
+                      </div>
+                    )}
                   {item.actions
                     .filter(
                       (action) =>
@@ -897,7 +1005,8 @@ export default function Assistant() {
             disabled={busy || loading || canRetry}
             onChange={(e) => setConsent(e.target.checked)}
           >
-            同意本次将消息与相关租房、租后资料发送至外部 AI；请勿填写敏感信息。
+            同意本次使用外部
+            AI，并查询位置与交通信息；将发送必要的消息和租房、合同或租后资料，请勿填写敏感证件信息。
           </Checkbox>
         </div>
       </div>

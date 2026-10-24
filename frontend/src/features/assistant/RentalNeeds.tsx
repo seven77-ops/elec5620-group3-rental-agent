@@ -19,6 +19,7 @@ import {
 import type { Conversation, RentalBrief } from "../../api/assistant";
 import { newRequestId } from "../../api/client";
 import { conversationNeeds, needsMatch, pendingNeeds } from "./needs";
+import { lifestyleTopics } from "../../api/areas";
 
 type Fields = Omit<RentalBrief, "suburb"> & { suburb?: string };
 const fieldsFrom = (brief: RentalBrief): Fields => ({
@@ -106,7 +107,7 @@ export default function RentalNeeds({
     await onReload();
   };
   const submit = (fields: Fields) => {
-    const brief = briefFrom(fields);
+    const brief = { ...seed, ...briefFrom(fields) };
     const requestId = newRequestId();
     let target = conversation;
     void execute(async () => {
@@ -323,6 +324,21 @@ export default function RentalNeeds({
         <p className="muted small">
           数量填 0 表示不限。房源的账单、在租状态和计价对象仍需核实。
         </p>
+        <Form.Item
+          name="lifestyle_priorities"
+          label="生活偏好（用于区域参考）"
+          extra="记录你看重什么；安静和安全等要求仍需核实具体房源。"
+        >
+          <Select
+            mode="multiple"
+            allowClear
+            placeholder="可选，也可以直接在聊天里说"
+            options={Object.entries(lifestyleTopics).map(([value, label]) => ({
+              value,
+              label,
+            }))}
+          />
+        </Form.Item>
         <Button
           aria-label="确认并同步需求"
           type="primary"

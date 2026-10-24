@@ -152,7 +152,7 @@ test("shared assistant requires consent, sends a turn and restores server histor
   ).toBeDisabled();
   await page
     .getByRole("checkbox", {
-      name: /同意本次将消息与相关租房、租后资料发送至外部 AI/,
+      name: /同意本次使用外部 AI，并查询位置与交通信息/,
     })
     .check();
   await input.press("Enter");

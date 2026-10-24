@@ -2,7 +2,7 @@
 
 小组租房多 Agent 项目。各成员的实现放在独立目录中，再通过约定的数据契约联调。
 
-**2026-10-22 小组试用版：** 使用 `codex/group-trial-20261022` 分支，暂不合并 main。Windows/macOS 安装、完整试用步骤与反馈方式见 [小组试用指南](docs/frontend/2026-10-22-group-trial.md)。请先在群里向 Anda 反馈问题，由 Anda 统一修改本轮集成代码。
+**2026-10-24 小组试用更新：** 继续使用 `codex/group-trial-20261022` 分支及 PR #7，暂不合并 main。本次新增合同地址与日历租期、个性化比较和多步骤任务、聊天共享合同草稿、通勤接入与区域资料。见 [本轮更新及验证](docs/frontend/2026-10-24-trial-update.md)；Windows/macOS 安装与基本试用步骤仍见 [小组试用指南](docs/frontend/2026-10-22-group-trial.md)。请先在群里向 Anda 反馈问题，由 Anda 统一修改本轮集成代码。
 
 | 模块 | 内容 | 运行说明 |
 |---|---|---|
@@ -55,7 +55,7 @@ python3 -m rental_agent --profile data/demo/profiles/commute.json --listings dat
 
 Agent 2 推荐解读、Agent 3 候选提取/风险解释与前端接线见 [本地运行与 API 配置](docs/frontend/2026-10-20-ai-local-run.md)；同学核对见 [Agent 3 核对单](docs/frontend/agent3-ai-handoff.md)。默认不开启外部模型，真实服务成功仍需填写自己的后端配置后实测。
 
-上述 10 月 20 日文档保留当时的本地验证状态；本轮发布范围及试用方式以 10 月 22 日小组试用指南为准。
+上述 10 月 20 日文档保留当时的本地验证状态；当前范围以 10 月 24 日试用更新为准，基本启动步骤沿用 10 月 22 日小组试用指南。
 
 ## 真实数据与市场参考（本地）
 

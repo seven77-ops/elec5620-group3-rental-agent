@@ -1,15 +1,18 @@
 """Conversation-only requirements: explicit values, focused questions, no profile writes."""
 from copy import deepcopy
+from .commute import COMMUTE_PROPERTIES
+from ..areas.evidence import PRIORITIES_SCHEMA
 
 COUNT = {'type':'integer','minimum':0,'maximum':100}
 BRIEF_SCHEMA = {'type':'object','additionalProperties':False,'properties':{
     'suburb':{'type':['string','null']},
+    'lifestyle_priorities':PRIORITIES_SCHEMA,
     'budget_amount':{'type':'number','exclusiveMinimum':0,'maximum':1000000000000},
     'budget_period':{'enum':['week','month','unknown']},
     'budget_scope':{'enum':['per_person','per_room','whole_property','unknown']},
     'occupants':{'type':'integer','minimum':1,'maximum':100},
     'min_bedrooms':COUNT,'min_bathrooms':COUNT,'min_car_spaces':COUNT,
-    'rental_mode':{'enum':['private_room','shared_room','whole_property','student_accommodation']}}}
+    'rental_mode':{'enum':['private_room','shared_room','whole_property','student_accommodation']},**COMMUTE_PROPERTIES}}
 
 
 def merge_brief(conversation,intent):
@@ -25,6 +28,9 @@ def merge_brief(conversation,intent):
 
 def brief_summary(brief):
     parts=[]
+    from ..areas.evidence import TOPICS
+    if brief.get('lifestyle_priorities'):
+        parts.append('生活偏好：'+'、'.join(TOPICS[t] for t in brief['lifestyle_priorities']))
     if 'suburb' in brief: parts.append(brief['suburb'] or '区域不限')
     if 'occupants' in brief: parts.append(f"{brief['occupants']}人")
     for field,label in (('min_bedrooms','卧'),('min_bathrooms','卫'),('min_car_spaces','车位')):
