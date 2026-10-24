@@ -1,0 +1,929 @@
+{
+  "persona": {
+    "id": "U06",
+    "name": "许然",
+    "role": "同时跟进两个维修问题的租客",
+    "stage": "Agent4 指代消歧与单条更新",
+    "requirements": "同一住处已有厨房漏水和门锁损坏两条报修；有意使用“那个”和一句话多个问题来测试识别。",
+    "expectations": [
+      "指代不明时询问具体问题",
+      "一句话涉及两条记录时不误改",
+      "明确问题后仅更新指定维修"
+    ],
+    "turns": [
+      "那个问题处理好了，帮我标记解决。",
+      "门锁损坏已经修好了，厨房漏水还没修好。",
+      "那就只更新门锁损坏，标记为已解决。",
+      "现在厨房漏水是什么状态？"
+    ]
+  },
+  "entries": [
+    {
+      "type": "user_action",
+      "label": "前置状态 已保存两条待处理报修",
+      "details": {
+        "issues": [
+          "厨房漏水",
+          "门锁损坏"
+        ]
+      },
+      "state": {
+        "living_version": 2,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [
+          {
+            "repair_id": "repair-55dfa4da55fc44849c5387b8f9727952",
+            "title": "厨房漏水",
+            "status": "prepared",
+            "email_tone": "standard",
+            "updates": [],
+            "delivery_status": "prepared_not_sent"
+          },
+          {
+            "repair_id": "repair-aecb9ce6f0d446488b52d174edcd2ce9",
+            "title": "门锁损坏",
+            "status": "prepared",
+            "email_tone": "standard",
+            "updates": [],
+            "delivery_status": "prepared_not_sent"
+          }
+        ],
+        "booking_count": 0,
+        "confirmation_versions": [],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    },
+    {
+      "type": "dialogue",
+      "round": 1,
+      "user": "那个问题处理好了，帮我标记解决。",
+      "status": 200,
+      "intent": "living_services",
+      "agent": "agent4",
+      "answer": "请先说明要更新哪一条报修；可以说出问题名称，或从报修卡片继续聊。",
+      "actions": [],
+      "listings": [],
+      "providers": [],
+      "model_calls": [
+        {
+          "task": "assistant_intent",
+          "provider": "openai_compatible",
+          "model": "qwen-plus",
+          "started_at": "2026-10-22T03:05:25.848071+00:00",
+          "duration_ms": 2900,
+          "status": "succeeded",
+          "attempted": true,
+          "usage": {
+            "prompt_tokens": 6589,
+            "total_tokens": 6648,
+            "completion_tokens": 59
+          }
+        }
+      ],
+      "elapsed_seconds": 2.92,
+      "state_before": {
+        "living_version": 2,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [
+          {
+            "repair_id": "repair-55dfa4da55fc44849c5387b8f9727952",
+            "title": "厨房漏水",
+            "status": "prepared",
+            "email_tone": "standard",
+            "updates": [],
+            "delivery_status": "prepared_not_sent"
+          },
+          {
+            "repair_id": "repair-aecb9ce6f0d446488b52d174edcd2ce9",
+            "title": "门锁损坏",
+            "status": "prepared",
+            "email_tone": "standard",
+            "updates": [],
+            "delivery_status": "prepared_not_sent"
+          }
+        ],
+        "booking_count": 0,
+        "confirmation_versions": [],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      },
+      "state_after": {
+        "living_version": 2,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [
+          {
+            "repair_id": "repair-55dfa4da55fc44849c5387b8f9727952",
+            "title": "厨房漏水",
+            "status": "prepared",
+            "email_tone": "standard",
+            "updates": [],
+            "delivery_status": "prepared_not_sent"
+          },
+          {
+            "repair_id": "repair-aecb9ce6f0d446488b52d174edcd2ce9",
+            "title": "门锁损坏",
+            "status": "prepared",
+            "email_tone": "standard",
+            "updates": [],
+            "delivery_status": "prepared_not_sent"
+          }
+        ],
+        "booking_count": 0,
+        "confirmation_versions": [],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    },
+    {
+      "type": "dialogue",
+      "round": 2,
+      "user": "门锁损坏已经修好了，厨房漏水还没修好。",
+      "status": 200,
+      "intent": "living_services",
+      "agent": "agent4",
+      "answer": "已整理这条报修的更新。确认后修改原记录，保留之前的问题描述；邮件不会发送。",
+      "actions": [
+        {
+          "type": "apply_living_services",
+          "label": "确认更新这条报修",
+          "proposal_id": "living-proposal-e45220bf01b949f782fc2a74a3a237d2",
+          "expected_version": 2,
+          "summary": [
+            "更新报修：门锁损坏",
+            "状态：已解决（用户记录）",
+            "用户记录：门锁损坏已经修好了，厨房漏水还没修好。",
+            "确认后更新同一条报修；不会发送邮件。"
+          ]
+        }
+      ],
+      "listings": [],
+      "providers": [],
+      "model_calls": [
+        {
+          "task": "assistant_intent",
+          "provider": "openai_compatible",
+          "model": "qwen-plus",
+          "started_at": "2026-10-22T03:05:28.771234+00:00",
+          "duration_ms": 3605,
+          "status": "succeeded",
+          "attempted": true,
+          "usage": {
+            "prompt_tokens": 6668,
+            "total_tokens": 6725,
+            "completion_tokens": 57
+          }
+        }
+      ],
+      "elapsed_seconds": 3.63,
+      "state_before": {
+        "living_version": 2,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [
+          {
+            "repair_id": "repair-55dfa4da55fc44849c5387b8f9727952",
+            "title": "厨房漏水",
+            "status": "prepared",
+            "email_tone": "standard",
+            "updates": [],
+            "delivery_status": "prepared_not_sent"
+          },
+          {
+            "repair_id": "repair-aecb9ce6f0d446488b52d174edcd2ce9",
+            "title": "门锁损坏",
+            "status": "prepared",
+            "email_tone": "standard",
+            "updates": [],
+            "delivery_status": "prepared_not_sent"
+          }
+        ],
+        "booking_count": 0,
+        "confirmation_versions": [],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      },
+      "state_after": {
+        "living_version": 2,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [
+          {
+            "repair_id": "repair-55dfa4da55fc44849c5387b8f9727952",
+            "title": "厨房漏水",
+            "status": "prepared",
+            "email_tone": "standard",
+            "updates": [],
+            "delivery_status": "prepared_not_sent"
+          },
+          {
+            "repair_id": "repair-aecb9ce6f0d446488b52d174edcd2ce9",
+            "title": "门锁损坏",
+            "status": "prepared",
+            "email_tone": "standard",
+            "updates": [],
+            "delivery_status": "prepared_not_sent"
+          }
+        ],
+        "booking_count": 0,
+        "confirmation_versions": [],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    },
+    {
+      "type": "user_action",
+      "label": "用户核对并点击确认保存租后资料或报修更新",
+      "details": {
+        "summary": [
+          "更新报修：门锁损坏",
+          "状态：已解决（用户记录）",
+          "用户记录：门锁损坏已经修好了，厨房漏水还没修好。",
+          "确认后更新同一条报修；不会发送邮件。"
+        ],
+        "version": 3
+      },
+      "state": {
+        "living_version": 3,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [
+          {
+            "repair_id": "repair-55dfa4da55fc44849c5387b8f9727952",
+            "title": "厨房漏水",
+            "status": "prepared",
+            "email_tone": "standard",
+            "updates": [],
+            "delivery_status": "prepared_not_sent"
+          },
+          {
+            "repair_id": "repair-aecb9ce6f0d446488b52d174edcd2ce9",
+            "title": "门锁损坏",
+            "status": "resolved",
+            "email_tone": "standard",
+            "updates": [
+              {
+                "at": "2026-10-22T03:05:32.395090+00:00",
+                "note": "门锁损坏已经修好了，厨房漏水还没修好。",
+                "status": "resolved"
+              }
+            ],
+            "delivery_status": "prepared_not_sent"
+          }
+        ],
+        "booking_count": 0,
+        "confirmation_versions": [],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    },
+    {
+      "type": "dialogue",
+      "round": 3,
+      "user": "那就只更新门锁损坏，标记为已解决。",
+      "status": 200,
+      "intent": "living_services",
+      "agent": "agent4",
+      "answer": "已整理这条报修的更新。确认后修改原记录，保留之前的问题描述；邮件不会发送。",
+      "actions": [
+        {
+          "type": "apply_living_services",
+          "label": "确认更新这条报修",
+          "proposal_id": "living-proposal-a1d173993a4a4637ab32e0f4d404c0df",
+          "expected_version": 3,
+          "summary": [
+            "更新报修：门锁损坏",
+            "状态：已解决（用户记录）",
+            "用户记录：那就只更新门锁损坏，标记为已解决。",
+            "确认后更新同一条报修；不会发送邮件。"
+          ]
+        }
+      ],
+      "listings": [],
+      "providers": [],
+      "model_calls": [
+        {
+          "task": "assistant_intent",
+          "provider": "openai_compatible",
+          "model": "qwen-plus",
+          "started_at": "2026-10-22T03:05:32.408641+00:00",
+          "duration_ms": 3164,
+          "status": "succeeded",
+          "attempted": true,
+          "usage": {
+            "prompt_tokens": 6836,
+            "total_tokens": 6893,
+            "completion_tokens": 57
+          }
+        }
+      ],
+      "elapsed_seconds": 3.18,
+      "state_before": {
+        "living_version": 3,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [
+          {
+            "repair_id": "repair-55dfa4da55fc44849c5387b8f9727952",
+            "title": "厨房漏水",
+            "status": "prepared",
+            "email_tone": "standard",
+            "updates": [],
+            "delivery_status": "prepared_not_sent"
+          },
+          {
+            "repair_id": "repair-aecb9ce6f0d446488b52d174edcd2ce9",
+            "title": "门锁损坏",
+            "status": "resolved",
+            "email_tone": "standard",
+            "updates": [
+              {
+                "at": "2026-10-22T03:05:32.395090+00:00",
+                "note": "门锁损坏已经修好了，厨房漏水还没修好。",
+                "status": "resolved"
+              }
+            ],
+            "delivery_status": "prepared_not_sent"
+          }
+        ],
+        "booking_count": 0,
+        "confirmation_versions": [],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      },
+      "state_after": {
+        "living_version": 3,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [
+          {
+            "repair_id": "repair-55dfa4da55fc44849c5387b8f9727952",
+            "title": "厨房漏水",
+            "status": "prepared",
+            "email_tone": "standard",
+            "updates": [],
+            "delivery_status": "prepared_not_sent"
+          },
+          {
+            "repair_id": "repair-aecb9ce6f0d446488b52d174edcd2ce9",
+            "title": "门锁损坏",
+            "status": "resolved",
+            "email_tone": "standard",
+            "updates": [
+              {
+                "at": "2026-10-22T03:05:32.395090+00:00",
+                "note": "门锁损坏已经修好了，厨房漏水还没修好。",
+                "status": "resolved"
+              }
+            ],
+            "delivery_status": "prepared_not_sent"
+          }
+        ],
+        "booking_count": 0,
+        "confirmation_versions": [],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    },
+    {
+      "type": "user_action",
+      "label": "用户核对并点击确认保存租后资料或报修更新",
+      "details": {
+        "summary": [
+          "更新报修：门锁损坏",
+          "状态：已解决（用户记录）",
+          "用户记录：那就只更新门锁损坏，标记为已解决。",
+          "确认后更新同一条报修；不会发送邮件。"
+        ],
+        "version": 4
+      },
+      "state": {
+        "living_version": 4,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [
+          {
+            "repair_id": "repair-55dfa4da55fc44849c5387b8f9727952",
+            "title": "厨房漏水",
+            "status": "prepared",
+            "email_tone": "standard",
+            "updates": [],
+            "delivery_status": "prepared_not_sent"
+          },
+          {
+            "repair_id": "repair-aecb9ce6f0d446488b52d174edcd2ce9",
+            "title": "门锁损坏",
+            "status": "resolved",
+            "email_tone": "standard",
+            "updates": [
+              {
+                "at": "2026-10-22T03:05:32.395090+00:00",
+                "note": "门锁损坏已经修好了，厨房漏水还没修好。",
+                "status": "resolved"
+              },
+              {
+                "at": "2026-10-22T03:05:35.591997+00:00",
+                "note": "那就只更新门锁损坏，标记为已解决。",
+                "status": "resolved"
+              }
+            ],
+            "delivery_status": "prepared_not_sent"
+          }
+        ],
+        "booking_count": 0,
+        "confirmation_versions": [],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    },
+    {
+      "type": "dialogue",
+      "round": 4,
+      "user": "现在厨房漏水是什么状态？",
+      "status": 200,
+      "intent": "living_services",
+      "agent": "agent4",
+      "answer": "厨房漏水：草稿待联系\n门锁损坏：已解决（用户记录）",
+      "actions": [
+        {
+          "type": "navigate",
+          "label": "查看对应租后服务",
+          "page": "aftercare?tab=repairs"
+        }
+      ],
+      "listings": [],
+      "providers": [],
+      "model_calls": [
+        {
+          "task": "assistant_intent",
+          "provider": "openai_compatible",
+          "model": "qwen-plus",
+          "started_at": "2026-10-22T03:05:35.604782+00:00",
+          "duration_ms": 3196,
+          "status": "succeeded",
+          "attempted": true,
+          "usage": {
+            "prompt_tokens": 6908,
+            "total_tokens": 6924,
+            "completion_tokens": 16
+          }
+        }
+      ],
+      "elapsed_seconds": 3.22,
+      "state_before": {
+        "living_version": 4,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [
+          {
+            "repair_id": "repair-55dfa4da55fc44849c5387b8f9727952",
+            "title": "厨房漏水",
+            "status": "prepared",
+            "email_tone": "standard",
+            "updates": [],
+            "delivery_status": "prepared_not_sent"
+          },
+          {
+            "repair_id": "repair-aecb9ce6f0d446488b52d174edcd2ce9",
+            "title": "门锁损坏",
+            "status": "resolved",
+            "email_tone": "standard",
+            "updates": [
+              {
+                "at": "2026-10-22T03:05:32.395090+00:00",
+                "note": "门锁损坏已经修好了，厨房漏水还没修好。",
+                "status": "resolved"
+              },
+              {
+                "at": "2026-10-22T03:05:35.591997+00:00",
+                "note": "那就只更新门锁损坏，标记为已解决。",
+                "status": "resolved"
+              }
+            ],
+            "delivery_status": "prepared_not_sent"
+          }
+        ],
+        "booking_count": 0,
+        "confirmation_versions": [],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      },
+      "state_after": {
+        "living_version": 4,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [
+          {
+            "repair_id": "repair-55dfa4da55fc44849c5387b8f9727952",
+            "title": "厨房漏水",
+            "status": "prepared",
+            "email_tone": "standard",
+            "updates": [],
+            "delivery_status": "prepared_not_sent"
+          },
+          {
+            "repair_id": "repair-aecb9ce6f0d446488b52d174edcd2ce9",
+            "title": "门锁损坏",
+            "status": "resolved",
+            "email_tone": "standard",
+            "updates": [
+              {
+                "at": "2026-10-22T03:05:32.395090+00:00",
+                "note": "门锁损坏已经修好了，厨房漏水还没修好。",
+                "status": "resolved"
+              },
+              {
+                "at": "2026-10-22T03:05:35.591997+00:00",
+                "note": "那就只更新门锁损坏，标记为已解决。",
+                "status": "resolved"
+              }
+            ],
+            "delivery_status": "prepared_not_sent"
+          }
+        ],
+        "booking_count": 0,
+        "confirmation_versions": [],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    }
+  ],
+  "checks": [
+    {
+      "check": "本轮问答未自动改租后资料",
+      "round": 1,
+      "passed": true
+    },
+    {
+      "check": "本轮问答未自动改租后资料",
+      "round": 2,
+      "passed": true
+    },
+    {
+      "check": "本轮问答未自动改租后资料",
+      "round": 3,
+      "passed": true
+    },
+    {
+      "check": "本轮问答未自动改租后资料",
+      "round": 4,
+      "passed": true
+    }
+  ],
+  "final_state": {
+    "living_version": 4,
+    "profile": {
+      "address": "",
+      "suburb": "",
+      "postcode": "",
+      "agent_name": "",
+      "agent_email": "",
+      "agent_phone": "",
+      "emergency_phone": "",
+      "moving_to": "",
+      "own_furniture": "",
+      "landlord_furniture": "",
+      "notes": "",
+      "bedrooms": null,
+      "bathrooms": null,
+      "carpeted": null,
+      "has_pets": null,
+      "has_elevator": null,
+      "move_out_date": null,
+      "lease_start_date": null,
+      "lease_end_date": null,
+      "utilities": {
+        "electricity": null,
+        "gas": null,
+        "internet": null,
+        "water": null
+      }
+    },
+    "repairs": [
+      {
+        "repair_id": "repair-55dfa4da55fc44849c5387b8f9727952",
+        "title": "厨房漏水",
+        "status": "prepared",
+        "email_tone": "standard",
+        "updates": [],
+        "delivery_status": "prepared_not_sent"
+      },
+      {
+        "repair_id": "repair-aecb9ce6f0d446488b52d174edcd2ce9",
+        "title": "门锁损坏",
+        "status": "resolved",
+        "email_tone": "standard",
+        "updates": [
+          {
+            "at": "2026-10-22T03:05:32.395090+00:00",
+            "note": "门锁损坏已经修好了，厨房漏水还没修好。",
+            "status": "resolved"
+          },
+          {
+            "at": "2026-10-22T03:05:35.591997+00:00",
+            "note": "那就只更新门锁损坏，标记为已解决。",
+            "status": "resolved"
+          }
+        ],
+        "delivery_status": "prepared_not_sent"
+      }
+    ],
+    "booking_count": 0,
+    "confirmation_versions": [],
+    "selected_listing": null,
+    "aftercare_case_id": null,
+    "tenancy_source": null
+  },
+  "method": "Actual model and API; user confirmation actions reproduced through API",
+  "environment": "isolated temporary runtime",
+  "date": "2026-10-22"
+}

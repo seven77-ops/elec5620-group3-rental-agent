@@ -219,6 +219,49 @@
         "amenities"
       ],
       "additionalProperties": false
+    },
+    "housing_preferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "suburb": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "min_bedrooms": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "min_bathrooms": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "min_car_spaces": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "budget_match_mode": {
+          "enum": [
+            "advertised_amount",
+            "matching_scope"
+          ]
+        }
+      }
     }
   },
   "required": [

@@ -1,0 +1,501 @@
+.living-hub {
+  max-width: 1180px;
+  margin: 0 auto;
+  min-width: 0;
+}
+.living-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  margin: 6px 0 26px;
+}
+.living-heading h1 {
+  margin: 6px 0 8px;
+}
+.living-heading p,
+.living-section-heading p {
+  color: #7a8799;
+  margin: 0;
+  font-size: 13px;
+}
+.living-eyebrow {
+  color: #174ea6;
+  letter-spacing: 2px;
+  font-size: 11px;
+}
+.living-contact-strip {
+  background: #fff;
+  border: 1px solid #e4eaf1;
+  border-radius: 10px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 18px;
+}
+.living-contact-strip strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 10px;
+  overflow-wrap: anywhere;
+}
+.living-contact-strip .ant-descriptions-row > td {
+  padding-bottom: 3px;
+}
+.living-contact-strip .ant-descriptions-item-label,
+.living-contact-strip .ant-descriptions-item-content {
+  font-size: 12px;
+}
+.living-contact-strip > .ant-btn {
+  flex-shrink: 0;
+}
+.living-hub > .ant-tabs > .ant-tabs-nav {
+  margin-bottom: 24px;
+}
+.living-section {
+  background: #fff;
+  border: 1px solid #e4eaf1;
+  border-radius: 10px;
+  padding: 26px;
+  min-width: 0;
+}
+.living-section-heading {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.living-section-heading h2 {
+  font-size: 21px;
+  margin: 0 0 8px;
+}
+.living-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 20px;
+}
+.living-form-grid .ant-input-number,
+.living-hub .ant-input-number {
+  width: 100%;
+}
+.living-section .ant-form {
+  max-width: 800px;
+}
+.living-provider-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+.living-provider-card {
+  border: 1px solid #e2e8f1;
+  border-radius: 10px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.living-category {
+  color: #174ea6;
+  font-size: 11px;
+}
+.living-provider-card h3 {
+  font-size: 20px;
+  font-weight: 550;
+  margin: 0;
+}
+.living-provider-card p {
+  margin: 0;
+  font-size: 12px;
+}
+.living-provider-card a {
+  font-size: 12px;
+}
+.living-provider-card > small {
+  display: block;
+  font-size: 10px;
+  color: #8994a4;
+  margin-top: auto;
+  padding-top: 4px;
+}
+.living-provider-card > small a {
+  font-size: 10px;
+}
+.living-provider-card > .ant-btn {
+  margin-top: 4px;
+  font-size: 12px;
+}
+.living-list-title {
+  font-size: 15px;
+  margin: 30px 0 16px;
+  border-top: 1px solid #edf0f5;
+  padding-top: 24px;
+}
+.living-record-list {
+  display: grid;
+  gap: 16px;
+}
+.living-repair-card,
+.living-booking-card {
+  border: 1px solid #e4eaf1;
+  border-radius: 10px;
+  padding: 22px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.living-card-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.living-card-heading h3 {
+  font-size: 16px;
+  margin: 0;
+}
+.living-repair-card > p {
+  font-size: 12px;
+  margin: 10px 0;
+}
+.living-repair-card > small {
+  display: block;
+  font-size: 10px;
+  margin-top: 14px;
+}
+.living-repair-card details {
+  font-size: 12px;
+}
+.living-repair-card summary {
+  cursor: pointer;
+  color: #174ea6;
+}
+.living-email-meta {
+  color: #7a8799;
+  margin: 16px 0 8px;
+}
+.living-email-body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  background: #f7f9fc;
+  border-radius: 8px;
+  padding: 18px;
+  font: inherit;
+  line-height: 1.9;
+  margin: 0;
+}
+.living-unsent {
+  color: #174ea6;
+}
+.living-prewrap {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.living-booking-facts {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin: 16px 0;
+  font-size: 12px;
+}
+.living-booking-facts strong {
+  color: #174ea6;
+  font-size: 18px;
+}
+.living-booking-card > p {
+  font-size: 12px;
+  color: #7a8799;
+}
+.living-note {
+  font-size: 12px;
+  color: #7a8799;
+}
+.living-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  gap: 14px;
+  color: #7a8799;
+}
+.living-ai-help {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin: 22px 0;
+  font-size: 11px;
+  color: #8994a4;
+}
+.living-ai-help .ant-btn {
+  font-size: 12px;
+}
+@media (max-width: 767px) {
+  .living-heading {
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .living-contact-strip {
+    padding: 18px;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .living-section {
+    padding: 20px 16px;
+  }
+  .living-form-grid,
+  .living-provider-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .living-provider-card,
+  .living-repair-card,
+  .living-booking-card {
+    padding: 18px;
+  }
+  .living-hub .ant-tabs-tab + .ant-tabs-tab {
+    margin-left: 18px !important;
+  }
+  .living-hub .ant-tabs-tab {
+    font-size: 12px !important;
+  }
+  .living-ai-help {
+    justify-content: flex-start;
+  }
+  .living-card-heading {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+}
+.living-files {
+  margin-top: 24px;
+}
+.living-file-controls {
+  display: grid;
+  grid-template-columns: auto minmax(120px, 1fr) auto minmax(160px, 1.4fr);
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 18px;
+  font-size: 12px;
+}
+.living-file-picked {
+  margin: 14px 0;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.living-files > .living-note {
+  margin: 14px 0 22px;
+}
+.living-attachment-list {
+  display: grid;
+  gap: 12px;
+}
+.living-attachment {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-top: 1px solid #edf0f5;
+  padding-top: 16px;
+  min-width: 0;
+}
+.living-attachment > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.living-attachment p,
+.living-attachment small {
+  margin: 5px 0 0;
+  color: #8994a4;
+  font-size: 10px;
+}
+.living-attachment .ant-tag {
+  font-size: 10px;
+  flex-shrink: 0;
+}
+@media (max-width: 767px) {
+  .living-file-controls {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  .living-file-controls > .ant-select {
+    margin-bottom: 8px;
+  }
+  .living-attachment {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .living-files .living-section-heading {
+    flex-wrap: wrap;
+  }
+}
+.living-source-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  background: #fff;
+  border: 1px solid #e4eaf1;
+  border-radius: 10px;
+}
+.living-source-bar strong {
+  font-size: 13px;
+}
+.living-source-bar p {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: #7a8799;
+}
+.living-source-label {
+  font-weight: 600;
+  color: #174ea6;
+}
+.living-source-fields {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0;
+}
+.living-source-field {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  border-bottom: 1px solid #edf0f5;
+  padding-bottom: 12px;
+  font-size: 12px;
+}
+.living-source-field > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.living-source-field > div span {
+  color: #8994a4;
+  font-size: 10px;
+}
+.living-source-field p {
+  margin: 3px 0 0;
+}
+.living-todos {
+  background: #fff;
+  border: 1px solid #e4eaf1;
+  border-radius: 10px;
+  padding: 18px 22px;
+  margin-bottom: 16px;
+}
+.living-todos-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.living-todos h2 {
+  font-size: 15px;
+  margin: 0;
+}
+.living-todos h2 small {
+  color: #8994a4;
+  font-weight: 400;
+  margin-left: 8px;
+}
+.living-todos > p {
+  font-size: 12px;
+  margin: 12px 0 0;
+}
+.living-todos ul {
+  padding: 0;
+  margin: 12px 0 0;
+  list-style: none;
+}
+.living-todos li {
+  margin: 0;
+  border-top: 1px solid #edf0f5;
+}
+.living-todos li button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  background: none;
+  border: 0;
+  text-align: left;
+  padding: 11px 0;
+  cursor: pointer;
+  color: #174ea6;
+  font: inherit;
+}
+.living-todos li strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+}
+.living-todos li div span {
+  display: block;
+  color: #8994a4;
+  font-size: 10px;
+  margin-top: 3px;
+}
+.living-repair-card,
+.living-booking-card {
+  scroll-margin-top: 100px;
+}
+.living-repair-card.is-targeted,
+.living-booking-card.is-targeted {
+  border-color: #8caedc;
+  outline: 2px solid #e8f0fd;
+}
+.living-repair-followup-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.living-repair-followup-actions .ant-btn {
+  font-size: 12px;
+}
+.living-repair-updates {
+  border-top: 1px solid #edf0f5;
+  margin-top: 18px;
+  padding-top: 16px;
+  font-size: 12px;
+}
+.living-repair-updates h4 {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.living-repair-updates > div {
+  padding: 10px 0;
+}
+.living-repair-updates p {
+  margin: 0 0 5px;
+}
+.living-repair-updates small {
+  color: #8994a4;
+  font-size: 10px;
+}
+@media (max-width: 767px) {
+  .living-source-bar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .living-source-field {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .living-source-field > .ant-checkbox-wrapper {
+    grid-column: 1 / -1;
+  }
+  .living-todos {
+    padding: 16px;
+  }
+}

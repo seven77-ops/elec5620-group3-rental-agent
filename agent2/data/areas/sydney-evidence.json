@@ -1,0 +1,368 @@
+{
+  "schema_version": "1.0",
+  "dataset_version": "2026-10-24.1",
+  "description": "人工核对的简短事实摘要与原文索引；无全文转载、无 AUO 数据、无通用宜居评分。",
+  "records": [
+    {
+      "evidence_id": "burwood-dining",
+      "suburb": "Burwood",
+      "topics": [
+        "food",
+        "shopping"
+      ],
+      "kind": "venue",
+      "summary": "Burwood Chinatown 运营方介绍这里为餐饮与零售街区，提供多种亚洲餐饮选择。",
+      "geographic_scope": "precinct",
+      "scope_label": "Burwood Chinatown 商业街区",
+      "limitation": "运营方介绍，仅支持餐饮零售配套存在，不代表性价比、噪音或整个区域的体验。",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "Burwood Chinatown",
+        "title": "Burwood Chinatown – Asian Dining & Retail Precinct",
+        "url": "https://burwoodchinatown.com.au/",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "burwood-sbs-2025",
+      "suburb": "Burwood",
+      "topics": [
+        "food",
+        "community"
+      ],
+      "kind": "media",
+      "summary": "SBS 2025年报道 Burwood 入选 Time Out 最酷社区榜单，着重介绍多元餐饮和社区生活。",
+      "geographic_scope": "suburb",
+      "scope_label": "Burwood 区域报道",
+      "limitation": "媒体生活方式介绍；榜单不能证明租金更低、房源安静或最适合某位租客。",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "SBS 中文",
+        "title": "全球最型格社區：雪梨華人區冠澳洲",
+        "url": "https://www.sbs.com.au/language/chinese/zh-hant/article/sydney-chinese-neighbourhoods-ranks-the-worlds-coolest/2g26wj79u",
+        "published_at": "2025-10-01",
+        "updated_at": null,
+        "data_period": "2025",
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "rhodes-foreshore",
+      "suburb": "Rhodes",
+      "topics": [
+        "parks",
+        "walkability"
+      ],
+      "kind": "official",
+      "summary": "Canada Bay Council 介绍 The Connection 面向 Homebush Bay Corso 步行与骑行路线，邻近连接 Rhodes 与 Wentworth Point 的 Bennelong Bridge。",
+      "geographic_scope": "facility",
+      "scope_label": "Rhodes The Connection 及邻近步行路线",
+      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "City of Canada Bay Council",
+        "title": "The Connection visitor information",
+        "url": "https://www.canadabay.nsw.gov.au/community/facilities-and-venues/the-connection/visitor-information",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "rhodes-community",
+      "suburb": "Rhodes",
+      "topics": [
+        "community"
+      ],
+      "kind": "official",
+      "summary": "The Connection 提供 Learning Space、Digital Gallery 和可租用的活动空间。",
+      "geographic_scope": "facility",
+      "scope_label": "Rhodes The Connection 社区设施",
+      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "City of Canada Bay Council",
+        "title": "The Connection visitor information",
+        "url": "https://www.canadabay.nsw.gov.au/community/facilities-and-venues/the-connection/visitor-information",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "rhodes-shopping",
+      "suburb": "Rhodes",
+      "topics": [
+        "shopping"
+      ],
+      "kind": "official",
+      "summary": "Council 的到访指南列出附近 Rider Boulevard 的 Rhodes Waterside Shopping Centre。",
+      "geographic_scope": "facility",
+      "scope_label": "Rhodes The Connection 周边商业设施",
+      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "City of Canada Bay Council",
+        "title": "The Connection visitor information",
+        "url": "https://www.canadabay.nsw.gov.au/community/facilities-and-venues/the-connection/visitor-information",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "rhodes-resident-noise",
+      "suburb": "Rhodes",
+      "topics": [
+        "quiet"
+      ],
+      "kind": "resident_opinion",
+      "summary": "Homely 页面有2024年住户提到噪音，也有不同的正面居住体验，意见并不一致。",
+      "geographic_scope": "suburb",
+      "scope_label": "个人住户评价，非整体区域测量",
+      "limitation": "个体体验可能过时或受具体楼栋与朝向影响；不能据此判断当前房源安静程度。",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "Homely",
+        "title": "Rhodes suburb profile & local reviews",
+        "url": "https://www.homely.com.au/suburb-profile/rhodes-nsw-2138",
+        "published_at": "2024-02-03",
+        "updated_at": null,
+        "data_period": "2024及部分日期不明的评论",
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "redfern-park",
+      "suburb": "Redfern",
+      "topics": [
+        "parks"
+      ],
+      "kind": "official",
+      "summary": "City of Sydney 列出 Redfern Park 的游乐设施、运动场及篮球设施。",
+      "geographic_scope": "facility",
+      "scope_label": "具体设施资料，不代表整个区域",
+      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "City of Sydney",
+        "title": "Redfern Park",
+        "url": "https://www.cityofsydney.nsw.gov.au/parks/redfern-park",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "camperdown-victoria",
+      "suburb": "Camperdown",
+      "topics": [
+        "parks"
+      ],
+      "kind": "official",
+      "summary": "Victoria Park 官方页面列出草地、游乐设施、泳池与咖啡馆，地址标注为 Parramatta Road, Broadway 2008。",
+      "geographic_scope": "nearby_facility",
+      "scope_label": "Camperdown 周边参考设施：Broadway 的 Victoria Park",
+      "limitation": "来源地点标注 Broadway，作为周边设施参考；不代表该区所有房源都能方便步行到达，也不证明房源靠近校门。",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "City of Sydney",
+        "title": "Victoria Park",
+        "url": "https://www.cityofsydney.nsw.gov.au/parks/victoria-park",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "glebe-foreshore",
+      "suburb": "Glebe",
+      "topics": [
+        "parks",
+        "walkability"
+      ],
+      "kind": "official",
+      "summary": "NSW Government 列出 Glebe Foreshore Walk，地点为 Glebe Point Road, Glebe。",
+      "geographic_scope": "facility",
+      "scope_label": "具体设施资料，不代表整个区域",
+      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "NSW Government",
+        "title": "Glebe Foreshore Walk",
+        "url": "https://www.nsw.gov.au/visiting-and-exploring-nsw/locations-and-attractions/glebe-foreshore-walk",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "marrickville-library",
+      "suburb": "Marrickville",
+      "topics": [
+        "library",
+        "community"
+      ],
+      "kind": "official",
+      "summary": "Marrickville Library and Pavilion 位于 Patyegarang Place、313 Marrickville Road；Council 列出轮椅及电梯无障碍设施。",
+      "geographic_scope": "facility",
+      "scope_label": "具体设施资料，不代表整个区域",
+      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "Inner West Council",
+        "title": "Marrickville Library and Pavilion",
+        "url": "https://www.innerwest.nsw.gov.au/find-a-library/marrickville-library-and-pavilion",
+        "published_at": null,
+        "updated_at": "2026-10-06",
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "petersham-park",
+      "suburb": "Petersham",
+      "topics": [
+        "parks"
+      ],
+      "kind": "official",
+      "summary": "Petersham Park 官方设施清单包括运动场、游乐设施、户外健身设备、野餐区及 Fanny Durack Aquatic Centre。",
+      "geographic_scope": "facility",
+      "scope_label": "具体设施资料，不代表整个区域",
+      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "Inner West Council",
+        "title": "Petersham Park",
+        "url": "https://www.innerwest.nsw.gov.au/sporting-grounds/petersham-park",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "strathfield-park",
+      "suburb": "Strathfield",
+      "topics": [
+        "parks",
+        "community"
+      ],
+      "kind": "official",
+      "summary": "Strathfield Park 的 Council 页面介绍运动和休闲设施、儿童游乐区、野餐区域及社区活动。",
+      "geographic_scope": "facility",
+      "scope_label": "具体设施资料，不代表整个区域",
+      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "Strathfield Council",
+        "title": "Strathfield Park",
+        "url": "https://www.strathfield.nsw.gov.au/Play/Parks-and-Natural-Areas/Strathfield-Park",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "eastwood-library",
+      "suburb": "Eastwood",
+      "topics": [
+        "library",
+        "community"
+      ],
+      "kind": "official",
+      "summary": "City of Ryde 将 Eastwood Library 的位置列为 Hillview Road 与 West Parade 路口。",
+      "geographic_scope": "facility",
+      "scope_label": "具体设施资料，不代表整个区域",
+      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "City of Ryde",
+        "title": "Eastwood Library",
+        "url": "https://www.ryde.nsw.gov.au/Library/Visit-Us/Eastwood-Library",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "chatswood-library",
+      "suburb": "Chatswood",
+      "topics": [
+        "library",
+        "community"
+      ],
+      "kind": "official",
+      "summary": "Willoughby City Library 官方网站列出 Chatswood Library，位于 The Concourse、409 Victoria Avenue 的 Lower Ground 层。",
+      "geographic_scope": "facility",
+      "scope_label": "具体设施资料，不代表整个区域",
+      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "Willoughby City Library",
+        "title": "Willoughby City Library",
+        "url": "https://libraries.willoughby.nsw.gov.au/Home",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "parramatta-park",
+      "suburb": "Parramatta",
+      "topics": [
+        "parks"
+      ],
+      "kind": "official",
+      "summary": "Greater Sydney Parklands 列出 Parramatta Park 的野餐棚、烧烤和游乐设施；Domain Creek 游乐区位于公园 Westmead 一侧。",
+      "geographic_scope": "facility",
+      "scope_label": "Parramatta Park 公园设施（包含 Westmead 一侧）",
+      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "Greater Sydney Parklands",
+        "title": "Parramatta Park facilities",
+        "url": "https://www.greatersydneyparklands.nsw.gov.au/parramatta-park-facilities",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "ashfield-library",
+      "suburb": "Ashfield",
+      "topics": [
+        "library",
+        "community"
+      ],
+      "kind": "official",
+      "summary": "Ashfield Library 官方地址为 260 Liverpool Road、Ashfield Civic Centre 的 Level 3；Council 列出电梯及无障碍设施。",
+      "geographic_scope": "facility",
+      "scope_label": "具体设施资料，不代表整个区域",
+      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "Inner West Council",
+        "title": "Ashfield Library",
+        "url": "https://www.innerwest.nsw.gov.au/find-a-library/ashfield-library",
+        "published_at": null,
+        "updated_at": "2026-08-10",
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    }
+  ]
+}

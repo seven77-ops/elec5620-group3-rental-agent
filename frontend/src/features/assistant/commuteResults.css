@@ -1,0 +1,159 @@
+.commute-results {
+  margin-top: 16px;
+  padding: 20px;
+  border: 1px solid #dfe7f3;
+  border-radius: 16px;
+  background: #fff;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  display: grid;
+  gap: 14px;
+}
+.commute-results h3,
+.commute-results h4,
+.commute-results p {
+  margin: 0;
+}
+.commute-results h3 {
+  font-size: 17px;
+}
+.commute-results h4 {
+  font-size: 14px;
+  line-height: 1.65;
+}
+.commute-results p,
+.commute-results li {
+  line-height: 1.8;
+}
+.commute-heading,
+.commute-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.commute-heading {
+  justify-content: space-between;
+}
+.commute-destinations {
+  display: grid;
+  gap: 14px;
+}
+.commute-destinations article {
+  padding: 16px;
+  background: #f7faff;
+  border-radius: 10px;
+}
+.commute-destinations .commute-actions {
+  margin-top: 12px;
+}
+.commute-area-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.commute-area {
+  padding: 16px;
+  border: 1px solid #e3eaf5;
+  border-radius: 12px;
+  background: #f8faff;
+  min-width: 0;
+}
+.commute-area h4 {
+  margin-bottom: 10px;
+}
+.commute-results ul {
+  padding-left: 18px;
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.commute-tradeoffs {
+  color: #7f6235;
+}
+.commute-price {
+  font-size: 17px;
+  color: #174ea6;
+}
+.commute-price small {
+  margin-left: 5px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #78889e;
+}
+.commute-homes {
+  display: grid;
+  gap: 12px;
+}
+.commute-home {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(120px, auto);
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid #e5eaf2;
+  border-radius: 12px;
+  min-width: 0;
+}
+.commute-home .commute-actions {
+  grid-column: 1/-1;
+}
+.commute-route {
+  max-width: 220px;
+}
+.commute-time {
+  font-size: 20px;
+  color: #174ea6;
+}
+.commute-destination {
+  font-weight: 500;
+}
+.commute-shared {
+  margin: 20px 0;
+}
+.commute-shared > .commute-actions {
+  margin: 12px 0;
+}
+.commute-shared .commute-results {
+  margin-top: 12px;
+}
+@media (max-width: 900px) {
+  .commute-area-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .commute-results {
+    padding: 14px;
+    border-radius: 12px;
+  }
+  .commute-area-grid,
+  .commute-home {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .commute-area,
+  .commute-home {
+    padding: 14px;
+  }
+  .commute-route {
+    max-width: none;
+  }
+}
+.commute-pending summary {
+  cursor: pointer;
+  color: #174ea6;
+  line-height: 1.7;
+}
+.commute-pending > .commute-home {
+  margin-top: 12px;
+}
+.commute-pending > p {
+  margin: 10px 0;
+}
+.commute-area-notes {
+  font-size: 12px;
+  margin-top: 10px;
+}
+.commute-area-notes summary {
+  color: #5c7291;
+  cursor: pointer;
+}
