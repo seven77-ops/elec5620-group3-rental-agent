@@ -7,16 +7,15 @@ from ..common import ApiError
 from . import commute
 from .dialogue import BRIEF_SCHEMA
 from .intents import validate_intent
+from . import preferences_progress
 
 SCHOOL_REPLY=re.compile(r'(?:usyd|unsw|uts|wsu|悉大|悉尼大学|悉尼科技大学|新南威尔士大学|新南|麦考瑞大学|西悉尼大学|University of Sydney|University of Technology(?: Sydney)?|University of New South Wales|Macquarie University)(?:\s+(?:Camperdown|Darlington|Kensington|Parramatta)(?:\s+campus|校区)?)?',re.I)
 
 
 def pending_question(conversation):
     brief=conversation.get('rental_brief',{})
-    if conversation.get('dialogue_mode')!='recommend_areas':return None
+    if conversation.get('dialogue_mode')!='recommend_areas':return preferences_progress.pending(conversation)
     fields=commute.question_fields(brief)
-    if not fields and not brief.get('destination_id') and conversation.get('commute_destination_options'):
-        fields=['destination_id']
     if not fields:return None
     return {'task':'commute','fields':fields,'question':commute.next_question(brief),
             'destination_options':[{'id':o['id'],'label':o['label']} for o in conversation.get('commute_destination_options',[])]}
@@ -27,18 +26,24 @@ def region_continuation(conversation,text):
     # Exact product-generated action text, sent explicitly by the user. A named
     # area in an unrelated message or a negated request cannot trigger this.
     for suburb in shown:
-        pattern=r'(?:保持我的预算和房型要求[，,]\s*)?按\s*'+re.escape(suburb)+r'\s*区域继续推荐房源[，,]\s*并核对到学校或公司的通勤[。.!！]?'
+        pattern=r'(?:保持我的预算和房型要求[，,]\s*)?按\s*'+re.escape(suburb)+r'\s*区域继续推荐房源[，,]\s*并核对到(?:学校或公司|悉大主校区)的通勤[。.!！]?'
         if re.fullmatch(pattern,text.strip(),flags=re.I):return suburb
     return None
 
 
 def explicit_transition(conversation,text):
+    if conversation.get('dialogue_mode')=='recommend_areas' and text.strip()=='保持全部已确认的预算、房型和通勤条件，换一批推荐，优先展示之前没看过的房源。':
+        return {'intent':'recommend_areas','refresh_recommendations':True}
+    pending=pending_question(conversation)
+    preference=preferences_progress.explicit(conversation,text,pending)
+    if preference:return preference
     suburb=region_continuation(conversation,text)
     if suburb:
         return {'intent':'recommend_areas','brief_patch':{'suburb':suburb,'recommend_areas':True}}
-    pending=pending_question(conversation)
-    if pending and 'destination_query' in pending['fields'] and SCHOOL_REPLY.fullmatch(text.strip()):
-        return {'intent':'recommend_areas','brief_patch':{'destination_query':text.strip()}}
+    if pending and pending['task']=='commute' and SCHOOL_REPLY.fullmatch(text.strip()):
+        if re.search(r'usyd|悉大|悉尼大学|University of Sydney',text,re.I):
+            return {'intent':'recommend_areas','brief_patch':{}}
+        return {'intent':'outside_scope'}
     return None
 
 
@@ -71,6 +76,8 @@ def repair_route(ctx,conversation,text,intent,catalog):
     if explicit:return explicit,[]
     pending=pending_question(conversation)
     if not pending:return area_followup(ctx,conversation,text,intent,catalog)
+    if pending['task']=='rental_preferences':
+        return preferences_progress.repair(ctx,conversation,text,intent,catalog,pending)
     repairable={'area_advice','collect_preferences','recommend_areas','search','clarify','other'}
     if intent['intent'] not in repairable:return intent,[]
     if 'destination_query' in pending['fields'] and SCHOOL_REPLY.fullmatch(text.strip()):

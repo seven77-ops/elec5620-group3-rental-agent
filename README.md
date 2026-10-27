@@ -2,18 +2,28 @@
 
 小组租房多 Agent 项目。各成员的实现放在独立目录中，再通过约定的数据契约联调。
 
-**2026-10-24 小组试用更新：** 继续使用 `codex/group-trial-20261022` 分支及 PR #7，暂不合并 main。本次新增合同地址与日历租期、个性化比较和多步骤任务、聊天共享合同草稿、通勤接入与区域资料。见 [本轮更新及验证](docs/frontend/2026-10-24-trial-update.md)；Windows/macOS 安装与基本试用步骤仍见 [小组试用指南](docs/frontend/2026-10-22-group-trial.md)。请先在群里向 Anda 反馈问题，由 Anda 统一修改本轮集成代码。
+接手本地开发请先阅读[最新跨窗口交接说明](docs/frontend/2026-10-27-agent2-chat-ui-handoff.md)，其中记录了MCP接入、当前界面要求、实际工作目录、启动方式与验证结果。
 
-**同日最新追加：** Zz W 反馈的两处 M4 网页卡点已由 Anda 修复，包含同案租约补齐、押金草稿补录及最新 AI 对话流程修复；582 项 Python、18 项前端检查及构建通过，待反馈人复测。见 [本次修复与验证](docs/frontend/2026-10-24-m4-feedback-publish.md)。
+**2026-10-28 小组试用更新：** 使用 `codex/group-trial-20261022` / PR #7，暂不合并 main。本次包含 1,000 套房源、悉大通勤、可选 TfNSW MCP、完整结果及换批；安装、最新验证和范围见 [本轮发布说明](docs/frontend/2026-10-28-trial-update.md)。先在群里向 Anda 反馈，由 Anda 统一修改本轮集成代码。
 
 | 模块 | 内容 | 运行说明 |
 |---|---|---|
 | [agent2/](agent2/) | Member 2：房源资格评估、评分推荐、偏好版本比较与本地选房证据包 | [Agent 2 README](agent2/README.md) |
 | [agent3/](agent3/) | Member 3：NSW 官方模板租约草稿、合同读取、选房交叉核对与人工复核 | [Agent 3 README](agent3/README.md) |
 
+## 悉大学生到校通勤
+
+Agent2现已接入本地 TfNSW MCP：按用户到达时间查询公共交通，核对总时长和换乘，再生成推荐。聊天可查询已展示房源附近的车站和某一附近站点当前的运营提醒；网页按用户要求展示平均通勤参考和地图链接，不再展示行程分段。运营提醒不代表整条行程必然正常，开车、骑行仍使用原有路网服务。
+
+首次运行 `.venv/bin/python scripts/setup_tfnsw_mcp.py`（需要 `uv`），再按下方启动网站。上游源码、MIT许可证和锁文件位于 `integrations/tfnsw_mcp/`，使用独立Python环境；后端仍使用本地 `.env` 的 `TFNSW_API_KEY`，无需另配密钥。`scripts/dev.py` 自动启动仅监听本机的6401端口。未安装、端口占用或查询失败时，路线查询保留原有TfNSW直连回退；附近车站/提醒失败会明确提示。设置 `RENTAL_TFNSW_MCP_ENABLED=0` 可关闭MCP。详见[接入验证](docs/frontend/2026-10-27-tfnsw-mcp.md)。
+
+找房现在面向悉尼大学 Camperdown/Darlington 主校区学生，以 Fisher Library 官方设施点为统一到校参考。每套房源提供公共交通（含火车、地铁、公交方案）及开车、骑行、步行标注；超过用户分钟上限或数据未知的房源不会进入符合条件的推荐。
+
+现有1000套房源均有图片和通勤标注；852套取得来源可核对的楼栋位置，849套有公共交通计划方案；原有148套缺楼栋定位的房源提供明确标记的街道或区域通勤区间。新增300套中，215套位于悉大周边，85套覆盖Burwood、Strathfield、Rhodes等通勤区域；每套新增房源配一张匹配照片。到达时间、出行日及换乘限制会随需求同步；与基准不一致时必须使用近期核对的路线。详见[数据来源、覆盖与更新方法](agent2/data/real/README-usyd.md)。
+
 ## 运行统一前端演示
 
-使用 React/TypeScript/Ant Design 页面与 FastAPI 本地接口。偏好表单通过 Agent 1 保存和确认版本，Agent2 默认读取500条真实住宅广告，提供房源字段筛选、分页、待核实候选报告和候选快照保存。缺失或损坏的数据文件会使启动失败，不会回退到模拟房源。AI 对话可整理需求、查询与比较候选；保存候选后可记录看房及中介回复，并在独立同意后上传真实合同，由 Agent3 提取和比对。Agent4 需另行确认租约资料。不会向房东或中介发送消息。
+使用 React/TypeScript/Ant Design 页面与 FastAPI 本地接口。偏好表单通过 Agent 1 保存和确认版本，Agent2 默认读取1000条真实住宅房源，提供房源字段筛选、分页、待核实候选报告和候选快照保存。缺失或损坏的数据文件会使启动失败，不会回退到模拟房源。AI 对话可整理需求、查询与比较候选；保存候选后可记录看房及中介回复，并在独立同意后上传真实合同，由 Agent3 提取和比对。Agent4 需另行确认租约资料。不会向房东或中介发送消息。
 
 ```sh
 python3 -m venv .venv
@@ -53,11 +63,9 @@ python3 -m rental_agent --profile data/demo/profiles/commute.json --listings dat
 
 [输入约定与本地联调](integration/README.md)：包含 Agent 1 已确认偏好及外层确认/版本/任务样例，以及 Agent 2 → Agent 3 的可复现场景。Agent 1 已通过 PR #6 合入 main；统一前端的实际服务接入及验证见 [最新验证记录](docs/frontend/verification.md#2026-10-20agent1-实际服务接入)。
 
-## 可选 AI 配置与历史核对记录
+## AI 接入与模块核对
 
 Agent 2 推荐解读、Agent 3 候选提取/风险解释与前端接线见 [本地运行与 API 配置](docs/frontend/2026-10-20-ai-local-run.md)；同学核对见 [Agent 3 核对单](docs/frontend/agent3-ai-handoff.md)。默认不开启外部模型，真实服务成功仍需填写自己的后端配置后实测。
-
-上述 10 月 20 日文档保留当时的本地验证状态；当前范围以 10 月 24 日试用更新为准，基本启动步骤沿用 10 月 22 日小组试用指南。
 
 ## 真实数据与市场参考（本地）
 

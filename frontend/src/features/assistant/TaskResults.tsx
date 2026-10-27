@@ -6,7 +6,10 @@ import {
 } from "@ant-design/icons";
 import type { AssistantMessage } from "../../api/assistant";
 import type { HousingAd } from "../../api/catalog";
-import { housingCopy } from "../real-data/listingPresentation";
+import {
+  housingCopy,
+  recommendationCopy,
+} from "../real-data/listingPresentation";
 import "./taskResults.css";
 
 function Points({ label, items }: { label: string; items: string[] }) {
@@ -15,7 +18,7 @@ function Points({ label, items }: { label: string; items: string[] }) {
       <strong>{label}</strong>
       <ul>
         {items.map((text, i) => (
-          <li key={i}>{housingCopy(text)}</li>
+          <li key={i}>{recommendationCopy(text)}</li>
         ))}
       </ul>
     </div>
@@ -67,7 +70,7 @@ export default function TaskResults({
         <section className="task-result-card" aria-label="个性化房源比较">
           <h3>按你的需求比较</h3>
           <p className="muted small">{housingCopy(comparison.basis)}</p>
-          <p>{housingCopy(comparison.summary)}</p>
+          <p>{recommendationCopy(comparison.summary)}</p>
           <div className="task-comparison-grid">
             {comparison.items.map((item) => {
               const listing = message.listings.find(
@@ -89,12 +92,6 @@ export default function TaskResults({
                   )}
                   <Points label="符合的要求" items={item.matches} />
                   <Points label="需要取舍" items={item.tradeoffs} />
-                  <Points
-                    label="还需核实"
-                    items={item.to_verify.filter(
-                      (text) => !sharedChecks.includes(text),
-                    )}
-                  />
                   {listing && (
                     <div className="task-result-actions">
                       <Button size="small" onClick={() => onView?.(listing)}>
@@ -111,20 +108,12 @@ export default function TaskResults({
                           保存为候选
                         </Button>
                       )}
-                      <a
-                        href={listing.source_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        原始房源 ↗
-                      </a>
                     </div>
                   )}
                 </article>
               );
             })}
           </div>
-          <Points label="共同待核实事项" items={sharedChecks} />
         </section>
       )}
       {enquiry && (
@@ -159,17 +148,28 @@ export default function TaskResults({
             >
               复制看房询问
             </Button>
-            <a
-              href={enquiry.source_url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              查看原始房源 ↗
-            </a>
+            {message.listings.find(
+              (listing) => listing.listing_id === enquiry.listing_id,
+            ) && (
+              <Button
+                size="small"
+                onClick={() =>
+                  onView?.(
+                    message.listings.find(
+                      (listing) => listing.listing_id === enquiry.listing_id,
+                    )!,
+                  )
+                }
+              >
+                房源详情
+              </Button>
+            )}
           </div>
         </section>
       )}
-      {checks && extraChecks.length ? (
+      {checks &&
+      extraChecks.length &&
+      ((!comparison && !message.task_steps?.length) || Boolean(enquiry)) ? (
         <section
           className="task-result-card task-verification"
           aria-label="待核实清单"

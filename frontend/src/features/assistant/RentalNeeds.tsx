@@ -6,6 +6,7 @@ import {
   Drawer,
   Form,
   InputNumber,
+  Input,
   Select,
   Space,
   Tag,
@@ -19,6 +20,7 @@ import {
 import type { Conversation, RentalBrief } from "../../api/assistant";
 import { newRequestId } from "../../api/client";
 import { conversationNeeds, needsMatch, pendingNeeds } from "./needs";
+import { commuteModes } from "../real-data/UsydCommute";
 import { lifestyleTopics } from "../../api/areas";
 
 type Fields = Omit<RentalBrief, "suburb"> & { suburb?: string };
@@ -28,6 +30,7 @@ const fieldsFrom = (brief: RentalBrief): Fields => ({
 });
 const briefFrom = (values: Fields): RentalBrief => ({
   ...values,
+  arrival_time: values.arrival_time || undefined,
   suburb: values.suburb === "__all__" ? null : values.suburb,
 });
 
@@ -56,7 +59,7 @@ export default function RentalNeeds({
   onReload: () => Promise<void>;
   isCurrent: (id: string) => boolean;
 }) {
-  const { current, config, refresh, go } = useCase();
+  const { current, config, refresh } = useCase();
   const { modal, message } = App.useApp();
   const [form] = Form.useForm<Fields>();
   const [dirty, setDirty] = useState(false);
@@ -73,11 +76,14 @@ export default function RentalNeeds({
     };
   }, []);
   const confirmed = currentConfirmation(current);
-  const seed = conversationNeeds(conversation, confirmed?.profile);
+  const confirmedProfile = confirmed
+    ? (current.requirements_profile ?? confirmed.profile)
+    : undefined;
+  const seed = conversationNeeds(conversation, confirmedProfile);
   const values = Form.useWatch([], form);
   const synced =
     !pendingNeeds(conversation) &&
-    needsMatch(values ? briefFrom(values) : seed, confirmed?.profile);
+    needsMatch(values ? briefFrom(values) : seed, confirmedProfile);
   const stale =
     dirty &&
     (baseline.id !== (conversation?.conversation_id ?? null) ||
@@ -87,7 +93,7 @@ export default function RentalNeeds({
     if (!open || dirty) return;
     form.resetFields();
     form.setFieldsValue(
-      fieldsFrom(conversationNeeds(conversation, confirmed?.profile)),
+      fieldsFrom(conversationNeeds(conversation, confirmedProfile)),
     );
     setBaseline({
       id: conversation?.conversation_id ?? null,
@@ -168,6 +174,7 @@ export default function RentalNeeds({
   const required = [{ required: true, message: "请填写或选择这一项" }];
   return (
     <Drawer
+      rootClassName="rental-needs-drawer"
       title="我的租房需求"
       open={open}
       onClose={onClose}
@@ -178,7 +185,6 @@ export default function RentalNeeds({
         <Tag color={synced ? "blue" : "orange"}>
           {synced ? `已同步 v${confirmed?.version}` : "待确认同步"}
         </Tag>
-        <p>AI 整理的条件可以在这里修改。确认后，房源推荐使用同一份需求。</p>
       </div>
       {error && (
         <Alert
@@ -321,14 +327,32 @@ export default function RentalNeeds({
             </Form.Item>
           ))}
         </div>
-        <p className="muted small">
-          数量填 0 表示不限。房源的账单、在租状态和计价对象仍需核实。
-        </p>
-        <Form.Item
-          name="lifestyle_priorities"
-          label="生活偏好（用于区域参考）"
-          extra="记录你看重什么；安静和安全等要求仍需核实具体房源。"
-        >
+        <h3>到悉大主校区</h3>
+        <p className="muted small">Camperdown / Darlington · Fisher Library</p>
+        <div className="form-grid">
+          <Form.Item name="commute_mode" label="通勤方式">
+            <Select
+              allowClear
+              placeholder="可选，也可以在对话里说"
+              options={commuteModes}
+            />
+          </Form.Item>
+          <Form.Item name="commute_max_minutes" label="单程最多（分钟）">
+            <InputNumber min={1} max={240} precision={0} />
+          </Form.Item>
+          <Form.Item name="arrival_time" hidden>
+            <Input />
+          </Form.Item>
+        </div>
+        <div className="form-grid">
+          <Form.Item name="max_transfers" label="最多换乘（可选）">
+            <InputNumber min={0} max={5} precision={0} />
+          </Form.Item>
+          <Form.Item name="travel_day" hidden>
+            <Input />
+          </Form.Item>
+        </div>
+        <Form.Item name="lifestyle_priorities" label="生活偏好（用于区域参考）">
           <Select
             mode="multiple"
             allowClear
@@ -350,18 +374,6 @@ export default function RentalNeeds({
           确认并同步需求
         </Button>
       </Form>
-      <div className="assistant-needs-links">
-        <Button
-          type="link"
-          onClick={() => go("recommendations")}
-          disabled={busy}
-        >
-          查看房源推荐
-        </Button>
-        <Button type="link" onClick={() => go("preferences")} disabled={busy}>
-          其他偏好与完整设置
-        </Button>
-      </div>
     </Drawer>
   );
 }

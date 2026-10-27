@@ -79,7 +79,6 @@ export default function Repairs({
       <div className="living-section-heading">
         <div>
           <h2>日常报修</h2>
-          <p>先记录问题，准备给中介或房东的邮件草稿。</p>
         </div>
       </div>
       {!record.profile.agent_email && (

@@ -3,11 +3,11 @@ import {
   Alert,
   App,
   Button,
-  Collapse,
   Drawer,
   Empty,
   Form,
   InputNumber,
+  Input,
   Select,
   Space,
   Table,
@@ -23,22 +23,13 @@ import type {
 } from "../api/catalog";
 import { filterKey } from "../api/catalog";
 import { currentConfirmation, useCase } from "../app/context";
-import { Failure, PageTitle, Loading } from "../components/Common";
+import { Failure, PageTitle } from "../components/Common";
 import { useAction } from "../components/useAction";
 import { ListingThumbnail } from "./real-data/ListingPhotos";
 
+import { UsydCommuteMini, commuteModes } from "./real-data/UsydCommute";
 import ListingDetails from "./real-data/ListingDetails";
-import { housingCopy } from "./real-data/listingPresentation";
-import { getCommuteRecommendation, getAreaAdvice } from "../api/assistant";
-import type { SharedCommuteRecommendation } from "../api/assistant";
-import CommuteResults from "./assistant/CommuteResults";
-import AreaAdvice from "./assistant/AreaAdvice";
-
 const CandidateFollowup = lazy(() => import("./candidate/CandidateFollowup"));
-
-const RecommendationTools = lazy(
-  () => import("./real-data/RecommendationTools"),
-);
 
 export default function RealRecommendations() {
   const { current, refresh, go } = useCase();
@@ -47,12 +38,6 @@ export default function RealRecommendations() {
   const [filters, setFilters] = useState<HousingFilters>({ sort: "rent_asc" });
   const filtersTouched = useRef(false);
   const [context, setContext] = useState<RecommendationContext | null>(null);
-  const [commuteResult, setCommuteResult] =
-    useState<SharedCommuteRecommendation | null>(null);
-  const [commuteError, setCommuteError] = useState(false);
-  const [areaResult, setAreaResult] =
-    useState<SharedCommuteRecommendation | null>(null);
-  const [areaError, setAreaError] = useState(false);
   const [contextReady, setContextReady] = useState(false);
   const [manualFilters, setManualFilters] = useState(false);
   const [filterDirty, setFilterDirty] = useState(false);
@@ -70,31 +55,6 @@ export default function RealRecommendations() {
   const action = useAction();
   const confirmed = currentConfirmation(current);
   useEffect(() => {
-    let valid = true;
-    setCommuteResult(null);
-    setCommuteError(false);
-    setAreaResult(null);
-    setAreaError(false);
-    getAreaAdvice(current.case_id)
-      .then((value) => {
-        if (valid && value?.message?.area_advice) setAreaResult(value);
-      })
-      .catch(() => {
-        if (valid) setAreaError(true);
-      });
-    getCommuteRecommendation(current.case_id)
-      .then((value) => {
-        if (valid && value?.message?.commute_recommendation)
-          setCommuteResult(value);
-      })
-      .catch(() => {
-        if (valid) setCommuteError(true);
-      });
-    return () => {
-      valid = false;
-    };
-  }, [current.case_id, current.draft.fingerprint]);
-  useEffect(() => {
     if (!contextReady) return;
     let valid = true;
     setLoading(true);
@@ -104,7 +64,9 @@ export default function RealRecommendations() {
     Object.entries(filters).forEach(([k, v]) => {
       if (v != null) query.set(k, String(v));
     });
-    api<HousingPage>(`/listings?${query}`)
+    api<HousingPage>(
+      `/listings?case_id=${encodeURIComponent(current.case_id)}&${query}`,
+    )
       .then((value) => {
         if (valid) setResult(value);
       })
@@ -215,9 +177,7 @@ export default function RealRecommendations() {
           <p>
             {item.address} · AUD {item.weekly_rent}/周（房源标价）
           </p>
-          <p>
-            保存后可准备看房询问、记录中介回复，或上传已有合同复核。房源中的在租状态、计价对象和租期仍待确认。
-          </p>
+          <p>保存后可准备看房询问、记录中介回复，或上传已有合同复核。</p>
         </>
       ),
       okText: "确认保存候选",
@@ -236,7 +196,6 @@ export default function RealRecommendations() {
     <>
       <PageTitle
         title="真实房源推荐"
-        description="按预算与房屋条件，找到适合你的住处。"
         extra={
           <Space wrap>
             <Button onClick={() => go("assistant")}>用对话找房</Button>
@@ -246,115 +205,6 @@ export default function RealRecommendations() {
           </Space>
         }
       />
-      {areaResult ? (
-        <section className="area-shared" aria-label="聊天中的区域参考">
-          {areaResult.stale && (
-            <Alert
-              type="warning"
-              showIcon
-              title="这份区域参考需要更新"
-              description={areaResult.stale_reasons.join(" ")}
-            />
-          )}
-          <Button
-            onClick={() =>
-              go(
-                `assistant?conversation=${encodeURIComponent(areaResult.conversation_id)}`,
-              )
-            }
-          >
-            回到对话调整生活偏好
-          </Button>
-          <AreaAdvice report={areaResult.message.area_advice} />
-        </section>
-      ) : areaError ? (
-        <Alert
-          type="warning"
-          showIcon
-          title="区域参考暂时无法读取"
-          action={
-            <Button size="small" onClick={() => go("assistant")}>
-              到对话查看
-            </Button>
-          }
-        />
-      ) : null}
-      {commuteResult ? (
-        <section className="commute-shared" aria-label="聊天中的通勤推荐">
-          {commuteResult.stale ? (
-            <Alert
-              type="warning"
-              showIcon
-              title="这份通勤推荐需要更新"
-              description={commuteResult.stale_reasons.join(" ")}
-            />
-          ) : null}
-          <div className="commute-actions">
-            <Button
-              onClick={() =>
-                go(
-                  `assistant?conversation=${encodeURIComponent(commuteResult.conversation_id)}`,
-                )
-              }
-            >
-              回到对话更新推荐
-            </Button>
-          </div>
-          <CommuteResults message={commuteResult.message} onView={setDetail} />
-        </section>
-      ) : commuteError ? (
-        <Alert
-          type="warning"
-          showIcon
-          title="通勤推荐暂时无法读取"
-          action={
-            <Button size="small" onClick={() => go("assistant")}>
-              到对话查看
-            </Button>
-          }
-        />
-      ) : null}
-      <section className="real-catalog-status" data-testid="catalog-summary">
-        <strong>
-          {result?.catalog.total ?? "—"} 条真实房源 ·{" "}
-          {result?.catalog.suburb_count ?? "—"} 个区域
-        </strong>
-        <span className="muted">房源资料 · 在租状态待确认</span>
-        <span
-          data-testid="preference-linkage"
-          className="real-preference-status"
-        >
-          {confirmed ? `已确认偏好 v${confirmed.version}` : "尚未确认偏好"}
-          {confirmed && (manualFilters ? " · 手动筛选" : " · 已带入偏好")}
-        </span>
-      </section>
-      <details className="real-catalog-notes">
-        <summary>来源与筛选说明</summary>
-        <p>
-          卧室、浴室、车位和周租来自公开房源。Studio
-          原始房源为0卧时，计为1个开放式睡眠空间，并非独立卧室。标价的计价对象、账单、在租状态和通勤均待核实。
-        </p>
-        <p>
-          {confirmed
-            ? manualFilters
-              ? "手动条件可能与已确认偏好不同，可恢复偏好筛选。"
-              : "已自动带入偏好的区域、卧室、浴室、车位和预算筛选方式。"
-            : "可先浏览房源，确认偏好后生成候选报告。"}
-        </p>
-        <p>
-          采集时间：
-          {result
-            ? new Date(result.catalog.captured_at).toLocaleString("zh-CN")
-            : "读取中"}
-        </p>
-        {context?.unverified_preferences.length ? (
-          <ul>
-            {context.unverified_preferences.map((note) => (
-              <li key={note}>{housingCopy(note)}</li>
-            ))}
-          </ul>
-        ) : null}
-      </details>
       <Form
         form={form}
         disabled={action.busy}
@@ -367,7 +217,7 @@ export default function RealRecommendations() {
         className="panel real-catalog-filters"
         onFinish={(values) => {
           const clean = Object.fromEntries(
-            Object.entries(values).filter(([, v]) => v != null),
+            Object.entries(values).filter(([, v]) => v != null && v !== ""),
           ) as HousingFilters;
           filtersTouched.current = true;
           setManualFilters(true);
@@ -417,6 +267,35 @@ export default function RealRecommendations() {
             min={0}
             max={1000000000000}
           />
+        </Form.Item>
+        <Form.Item name="usyd_mode" label="到校通勤方式">
+          <Select
+            virtual={false}
+            aria-label="到校通勤方式"
+            allowClear
+            placeholder="公共交通"
+            options={commuteModes}
+          />
+        </Form.Item>
+        <Form.Item name="usyd_max_minutes" label="到悉大最多（分钟）">
+          <InputNumber
+            aria-label="到悉大最多（分钟）"
+            min={1}
+            max={240}
+            precision={0}
+          />
+        </Form.Item>
+        <Form.Item name="usyd_arrival_time" hidden>
+          <Input />
+        </Form.Item>
+        <Form.Item name="usyd_max_transfers" hidden>
+          <InputNumber min={0} max={5} precision={0} />
+        </Form.Item>
+        <Form.Item name="usyd_travel_day" hidden>
+          <Input />
+        </Form.Item>
+        <Form.Item name="usyd_travel_date" hidden>
+          <Input />
         </Form.Item>
         <Form.Item name="sort" label="排序">
           <Select
@@ -515,7 +394,7 @@ export default function RealRecommendations() {
           scroll={{ x: 980 }}
           locale={{
             emptyText: (
-              <Empty description="没有符合当前筛选的真实房源，可调整区域、户型或周租。" />
+              <Empty description="没有符合当前条件的房源。可调整预算、房型或明确放宽到校通勤时间。" />
             ),
           }}
           pagination={{
@@ -544,12 +423,6 @@ export default function RealRecommendations() {
                     <div className="muted">
                       {r.suburb} · {r.postcode}
                     </div>
-                    <small>
-                      {r.source_observation.detail_read
-                        ? "房源资料"
-                        : "房源资料"}{" "}
-                      · 在租待核实
-                    </small>
                   </div>
                 </div>
               ),
@@ -569,6 +442,12 @@ export default function RealRecommendations() {
               render: (value) => `AUD ${Number(value).toLocaleString()}/周`,
             },
             {
+              title: "到悉大",
+              key: "usyd",
+              width: 150,
+              render: (_, row) => <UsydCommuteMini listing={row} />,
+            },
+            {
               title: "操作",
               key: "actions",
               width: 245,
@@ -582,13 +461,6 @@ export default function RealRecommendations() {
                   >
                     详情
                   </Button>
-                  <a
-                    href={r.source_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    查看房源
-                  </a>
                   <Button
                     size="small"
                     disabled={
@@ -608,20 +480,34 @@ export default function RealRecommendations() {
           ]}
         />
       </section>
-      <Collapse
-        items={[
-          {
-            key: "tools",
-            label: "房源补充工具",
-            children: (
-              <Suspense fallback={<Loading />}>
-                <RecommendationTools />
-              </Suspense>
-            ),
-          },
-        ]}
-      />
+      <p className="muted small">
+        到校路线：
+        <a
+          href="https://routing.openstreetmap.de/about.html"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          © OpenStreetMap contributors · FOSSGIS
+        </a>{" "}
+        ·{" "}
+        <a
+          href="https://www.openstreetmap.org/fixthemap"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          地图纠错
+        </a>{" "}
+        · 公共交通：
+        <a
+          href="https://opendata.transport.nsw.gov.au/dataset/trip-planner-apis"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Transport for NSW
+        </a>
+      </p>
       <Drawer
+        rootClassName="usyd-listing-drawer"
         title="房源详情"
         open={Boolean(detail)}
         onClose={() => setDetail(null)}

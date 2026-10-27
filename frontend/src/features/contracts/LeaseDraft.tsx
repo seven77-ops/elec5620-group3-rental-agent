@@ -15,7 +15,7 @@ import {
   Spin,
   Tag,
 } from "antd";
-import { useCase } from "../../app/context";
+import { useCase, currentConfirmation } from "../../app/context";
 import { downloadUrl, newRequestId } from "../../api/client";
 import {
   getLeaseContext,
@@ -124,10 +124,25 @@ export default function LeaseDraft() {
   const readAction = useAction();
   const generation = useRef(0);
   const watched = Form.useWatch([], { form, preserve: true });
+  const confirmed = currentConfirmation(current);
+  const prerequisite = !confirmed
+    ? {
+        title: "先确认租房需求",
+        action: "我的租房需求",
+        target: "assistant?needs=1",
+      }
+    : !current.selection
+      ? {
+          title: "先保存一套房源候选",
+          action: "前往房源推荐",
+          target: "recommendations",
+        }
+      : null;
   const sourceKey = JSON.stringify([
     current.selection,
     current.draft.revision,
     current.draft.fingerprint,
+    confirmed?.version,
   ]);
   useEffect(() => {
     const token = ++generation.current;
@@ -140,20 +155,20 @@ export default function LeaseDraft() {
     action.clear();
     void (async () => {
       const [source, list] = await Promise.allSettled([
-        getLeaseContext(current.case_id),
+        prerequisite ? Promise.resolve(null) : getLeaseContext(current.case_id),
         listLeaseDrafts(current.case_id),
       ]);
       if (token !== generation.current) return;
       if (list.status === "fulfilled") setItems(list.value.items);
       else setError(list.reason);
-      if (source.status === "fulfilled") {
+      if (source.status === "fulfilled" && source.value) {
         setContext(source.value);
 
         setDirty(false);
         const latest =
           list.status === "fulfilled"
             ? list.value.items.find(
-                (v) => v.context_token === source.value.context_token,
+                (v) => v.context_token === source.value?.context_token,
               )
             : undefined;
         if (latest) {
@@ -170,7 +185,7 @@ export default function LeaseDraft() {
             if (token === generation.current) setError(e);
           }
         }
-      } else setError(source.reason);
+      } else if (source.status === "rejected") setError(source.reason);
       if (token === generation.current) setLoading(false);
     })();
     return () => {
@@ -384,9 +399,6 @@ export default function LeaseDraft() {
       <section className="panel lease-draft-intro">
         <div>
           <h2>准备一份租约草稿</h2>
-          <p className="muted">
-            填写信息 → 核对确认 → 预览并下载合同。未知项可以先留空。
-          </p>
         </div>
         <Space wrap>
           <a
@@ -459,10 +471,12 @@ export default function LeaseDraft() {
           )}
           {!context && !saved ? (
             <Blank
-              text="先保存一套房源候选，再准备租约草稿。"
+              text={prerequisite?.title ?? "请重新选择房源后继续。"}
               action={
-                <Button onClick={() => go("recommendations")}>
-                  前往房源推荐
+                <Button
+                  onClick={() => go(prerequisite?.target ?? "recommendations")}
+                >
+                  {prerequisite?.action ?? "前往房源推荐"}
                 </Button>
               }
             />

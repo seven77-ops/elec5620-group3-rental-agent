@@ -47,29 +47,16 @@
 .commute-destinations .commute-actions {
   margin-top: 12px;
 }
-.commute-area-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-.commute-area {
-  padding: 16px;
-  border: 1px solid #e3eaf5;
-  border-radius: 12px;
-  background: #f8faff;
-  min-width: 0;
-}
-.commute-area h4 {
-  margin-bottom: 10px;
+.commute-area-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 .commute-results ul {
   padding-left: 18px;
   margin: 8px 0 0;
   font-size: 13px;
   line-height: 1.7;
-}
-.commute-tradeoffs {
-  color: #7f6235;
 }
 .commute-price {
   font-size: 17px;
@@ -107,6 +94,16 @@
 .commute-destination {
   font-weight: 500;
 }
+.commute-filter-tags .ant-tag {
+  margin: 0;
+  padding: 3px 10px;
+  font-size: 13px;
+}
+.commute-pagination {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
 .commute-shared {
   margin: 20px 0;
 }
@@ -116,21 +113,14 @@
 .commute-shared .commute-results {
   margin-top: 12px;
 }
-@media (max-width: 900px) {
-  .commute-area-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
 @media (max-width: 600px) {
   .commute-results {
     padding: 14px;
     border-radius: 12px;
   }
-  .commute-area-grid,
   .commute-home {
     grid-template-columns: minmax(0, 1fr);
   }
-  .commute-area,
   .commute-home {
     padding: 14px;
   }
@@ -149,11 +139,18 @@
 .commute-pending > p {
   margin: 10px 0;
 }
-.commute-area-notes {
-  font-size: 12px;
-  margin-top: 10px;
+.transit-stop-list {
+  list-style: none;
+  padding: 0;
 }
-.commute-area-notes summary {
-  color: #5c7291;
-  cursor: pointer;
+.transit-stop-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid #edf1f7;
+}
+.transit-stop-list small {
+  color: #71829e;
+  white-space: nowrap;
 }

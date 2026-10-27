@@ -33,16 +33,16 @@ def timing_matches(journey,requested):
         if departure.utcoffset() is None or arrival.utcoffset() is None: return False
         elapsed=(arrival.astimezone(timezone.utc)-departure.astimezone(timezone.utc)).total_seconds()/60
         return (0<=elapsed<=10080 and abs(elapsed-journey['duration_minutes'])<=0.011
-                and arrival.astimezone(SYDNEY).date()==requested.date() and arrival<=requested)
+                and arrival.astimezone(SYDNEY).date()==requested.date() and 0<=(requested-arrival).total_seconds()<=3600)
     except (KeyError,ValueError,TypeError,AttributeError,OverflowError):
         return False
 
 
-def directions_url(row,destination):
+def directions_url(row,destination,mode="public_transport"):
     """An ordinary outbound URL: constructing it makes no Google API request."""
     return 'https://www.google.com/maps/dir/?'+urlencode({'api':'1',
         'origin':f"{row['address']} NSW {row.get('postcode','')}".strip(),
-        'destination':f"{destination['latitude']},{destination['longitude']}", 'travelmode':'transit'})
+        'destination':f"{destination['latitude']},{destination['longitude']}", 'travelmode':{'drive':'driving','bike':'bicycling','walk':'walking'}.get(mode,'transit')})
 
 
 def arrival_for(brief):
@@ -100,7 +100,7 @@ class CommutePlanner:
         self.ctx=ctx
         self.resolver=resolver or LocationResolver()
 
-    def prepare(self,brief,destination,allow_external=False):
+    def prepare(self,brief,destination,allow_external=False,previous_reports=None):
         require(isinstance(brief,dict),422,'invalid_commute_brief','通勤条件无效。')
         require(valid_point(destination) and all(isinstance(destination.get(k),str) and destination[k]
                 for k in ('id','label','precision','source_url')),422,'invalid_destination','请选择服务器返回的目的地。')
@@ -111,6 +111,13 @@ class CommutePlanner:
         if 'max_transfers' in brief:
             require(type(brief['max_transfers']) is int and 0<=brief['max_transfers']<=5,
                     422,'invalid_transfers','换乘上限须为0至5次。')
+        mode=brief.get('commute_mode','public_transport')
+        if mode in ('public_transport','train','metro','bus') and 'arrival_time' not in brief:
+            from .cached_plan import reference_answer
+            return reference_answer(self.ctx.settings.catalog,brief,destination)
+        if mode in ('drive','bike','walk') and getattr(self.ctx.settings.catalog,'commutes',None):
+            from .cached_plan import road_answer
+            return road_answer(self.ctx.settings.catalog,brief,destination)
         arrival=arrival_for(brief)
         catalog=self.ctx.settings.catalog
         require(catalog is not None,503,'real_catalog_unavailable','真实房源库未加载。')
@@ -126,15 +133,22 @@ class CommutePlanner:
         else:
             limitations.append('预算周期或计价对象无法与广告周租直接比较，未用预算筛除房源，也未按人数乘除租金。')
         rows=catalog.matching(filters)
-        selected=bounded_candidates(rows,destination,self.resolver)
-        report={'status':'unavailable','destination':deepcopy(destination),'criteria':deepcopy(brief),
+        from .history import recent_routes
+        reused=recent_routes(previous_reports,brief,destination,arrival,{r['listing_id'] for r in rows},catalog.fingerprint)
+        remaining=[r for r in rows if r['listing_id'] not in reused]
+        if getattr(catalog,'commutes',None):
+            from .cached_plan import shortlist
+            selected=shortlist(remaining,brief,QUERY_LIMIT)
+        else:
+            selected=bounded_candidates(remaining,destination,self.resolver)
+        report={'status':'unavailable','destination':deepcopy(destination),'criteria':deepcopy(brief),'catalog_fingerprint':catalog.fingerprint,
                 'queried_at':now(),'date':arrival.date().isoformat(),'arrival_time':brief['arrival_time'],
                 'total_matching':len(rows),'evaluated_count':0,'query_limit':QUERY_LIMIT,
                 'areas':[],'routes':[],'limitations':limitations}
         reason=None
         mode=brief.get('commute_mode','public_transport')
         if allow_external is not True: reason='本轮未同意向位置／交通服务发送查询。'
-        elif mode!='public_transport': reason='当前实际路线仅支持公共交通；此出行方式尚不支持。'
+        elif mode not in ('public_transport','train','metro','bus'): reason='当前实际路线仅支持公共交通；此出行方式尚不支持。'
         elif not self.ctx.data_provider.public_config().get('tfnsw',{}).get('configured'):
             reason='后端未配置 TFNSW_API_KEY；无法核验真实通勤时长。'
         if reason: limitations.append(reason)
@@ -152,20 +166,21 @@ class CommutePlanner:
                     'transfers':None,'departure_at':None,'arrival_at':None,'source_url':TFNSW_DOC,
                     'route_url':directions_url(row,destination),'origin_precision':precision or 'unknown','reason':why}
         def evaluate(row):
-            if reason: return unavailable(row,reason,'unsupported' if mode!='public_transport' else 'unavailable')
+            if reason: return unavailable(row,reason,'unsupported' if mode not in ('public_transport','train','metro','bus') else 'unavailable')
             if monotonic()>=deadline: return unavailable(row,'本轮查询时间预算已用尽，未查询此房源。')
             with attempt_lock: attempted.add(row['listing_id'])
             try:
-                origin=self.resolver.listing(row)
+                origin=(row.get('usyd_commute') or {}).get('origin') or self.resolver.listing(row)
                 if not origin: return unavailable(row,'未找到唯一匹配的官方完整地址点，未使用区域中心坐标。')
                 if monotonic()>=deadline: return unavailable(row,'本轮查询时间预算已用尽，未查询路线。',precision=origin['precision'])
-                response=self.ctx.data_provider.trips({'origin':{k:origin[k] for k in ('latitude','longitude')},
+                response=getattr(self.ctx,'transit_provider',self.ctx.data_provider).trips({'origin':{k:origin[k] for k in ('latitude','longitude')},
                     'destination':{k:destination[k] for k in ('latitude','longitude')},
                     'arrival_at':arrival.isoformat(),'allow_external':True})
                 journeys=response.get('journeys',[])
                 usable=[]
                 for journey in journeys:
                     if not number(journey.get('duration_minutes'),0,10080): continue
+                    if mode in ('train','metro','bus') and mode not in journey.get('transit_modes',[]): continue
                     if brief.get('max_transfers') is not None and (type(journey.get('transfers')) is not int
                             or journey['transfers']>brief['max_transfers']): continue
                     # The provider validates elapsed timing; the planner additionally
@@ -177,8 +192,12 @@ class CommutePlanner:
                 chosen=min(usable,key=lambda r:r['duration_minutes'])
                 over=chosen['duration_minutes']>brief['commute_max_minutes']
                 return {'listing_id':row['listing_id'],'status':'over_limit' if over else 'ok',
-                        **{k:chosen.get(k) for k in ('duration_minutes','walking_minutes','transfers','departure_at','arrival_at')},
+                        **{k:chosen.get(k) for k in ('duration_minutes','walking_minutes','transfers','departure_at','arrival_at','transit_modes','services','legs')},
                         'source_url':TFNSW_DOC,'route_url':directions_url(row,destination),'origin_precision':origin['precision'],
+                        'mode':mode,'basis':'scheduled_live_query',
+                        'transport_backend':response.get('transport_backend','tfnsw_direct'),
+                        'fallback_used':response.get('fallback_used',False),
+                        'origin':{**deepcopy(origin),'original_address':row['address'],'original_suburb':row['suburb']},
                         'reason':'已核验的计划通勤超过给定上限。' if over else '已核验公共交通计划时刻，含候车与换乘。'}
             except ApiError as error:
                 return unavailable(row,'位置／交通查询失败：'+error.message)
@@ -189,12 +208,16 @@ class CommutePlanner:
             # No new task starts external I/O after 24s: last in-flight request ends by ~36s.
             with ThreadPoolExecutor(max_workers=3) as pool: routes=list(pool.map(evaluate,selected))
             report['evaluated_count']=len(attempted)
+        routes=list(reused.values())+[{**route,'queried_at':now()} for route in routes]
+        evaluated_ids={route['listing_id'] for route in routes}
+        selected=[r for r in rows if r['listing_id'] in evaluated_ids]
         report['routes']=routes
         route_by_id={r['listing_id']:r for r in routes}
         verified=[r for r in routes if r['duration_minutes'] is not None]
         report['status']='ready' if routes and len(verified)==len(routes) else 'partial' if verified else 'unavailable'
         if len(selected)<len(rows): limitations.append(f'符合库存条件共{len(rows)}条，本轮仅选取{len(selected)}条；未评估房源不能视为满足通勤上限。')
-        hard=brief.get('commute_hard_limit',False) is True
+        hard=True
+        report['criteria']['commute_hard_limit']=True
         eligible=[]
         for row in selected:
             route=route_by_id[row['listing_id']]
@@ -203,7 +226,16 @@ class CommutePlanner:
             maximum=brief.get('max_transfers')
             if maximum is not None and (type(route.get('transfers')) is not int
                     or not 0<=route['transfers']<=maximum): continue
-            eligible.append({**deepcopy(row),'commute_minutes':route['duration_minutes'],'commute_status':route['status']})
+            card={**deepcopy(row),'commute_minutes':route['duration_minutes'],'commute_status':route['status']}
+            if route.get('origin') and card.get('usyd_commute'):
+                from .snapshot import distance_metres
+                annotation=card['usyd_commute'];annotation['origin']=deepcopy(route['origin'])
+                annotation['straight_line_distance_m']=distance_metres(route['origin'])
+                annotation.pop('estimates',None)
+                annotation['modes'][mode]={**deepcopy(route),'status':'planned',
+                    'queried_at':route['queried_at'],'reference_arrival_at':arrival.isoformat()}
+                annotation['reference_arrival_at']=arrival.isoformat()
+            eligible.append(card)
         eligible_ids={row['listing_id'] for row in eligible}
         # Inspection-only catalogue facts. The caller must not register these as
         # recommendation/selection authority or attach save actions to them.
@@ -229,9 +261,10 @@ class CommutePlanner:
             return (score,row['weekly_rent'],lifestyle,row['listing_id'])
         eligible.sort(key=rank)
         groups=defaultdict(list)
-        for row in rows: groups[row['suburb']].append(row)
+        for row in eligible: groups[row['suburb']].append(row)
         eligible_suburbs={row['suburb']:i for i,row in reversed(list(enumerate(eligible)))}
         for suburb,group in groups.items():
+            if suburb not in eligible_suburbs: continue
             facts=[route_by_id[r['listing_id']] for r in group if r['listing_id'] in route_by_id]
             known=[r for r in facts if r['duration_minutes'] is not None]
             ok=[r for r in facts if r['status']=='ok']
@@ -243,11 +276,11 @@ class CommutePlanner:
                              f'本区已核验{len(known)}条路线；其余通勤未确认。',
                              '广告周租的计价对象与可租状态仍需确认。']})
         report['areas'].sort(key=lambda area:(eligible_suburbs.get(area['suburb'],math.inf),area['min_weekly_rent'],area['suburb']))
-        if len(report['areas'])>5: limitations.append('区域卡片仅展示前5个区域，完整匹配数量见库存统计。')
-        report['areas']=report['areas'][:5]
-        content=(f"当前广告库匹配{len(rows)}条房源，本轮选择{len(selected)}条，核验到{len(verified)}条路线。"
-                 + (' 硬性通勤上限下，未知或超时路线未列为满足条件的房源。' if hard else '')
-                 + (' '+reason if reason else '')
-                 + ' 这是条件预览，尚未更新正式需求或房源选择。')
-        return {'intent':'recommend_areas','agent':'agent2','content':content,'listings':eligible,'actions':[],
-                'commute_recommendation':report}
+        report['matching_count']=len(eligible)
+        from .usyd import MODE_LABELS
+        content=(f"按你的预算和房型，找到{len(eligible)}套{MODE_LABELS.get(mode,'公共交通')}到悉大主校区不超过{brief['commute_max_minutes']}分钟的房源。"
+                 if eligible else '暂时无法查询这次通勤路线。你可以在房源详情中打开地图查看。' if reason
+                 else f"暂时没有找到{brief['commute_max_minutes']}分钟内的房源，可以调整预算、房型或通勤时间。")
+        from .estimates import attach_estimates
+        return attach_estimates({'intent':'recommend_areas','agent':'agent2','content':content,'listings':eligible,'actions':[],
+                'commute_recommendation':report},rows,brief)

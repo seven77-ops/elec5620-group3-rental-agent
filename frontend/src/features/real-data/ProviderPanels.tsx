@@ -111,9 +111,10 @@ export function DomainPanel({
                 {item.bedrooms ?? "未知"} · 尚未评估
               </p>
               {item.source_url && (
-                <a href={item.source_url} target="_blank" rel="noreferrer">
-                  查看原始房源
-                </a>
+                <details>
+                  <summary>房源详情</summary>
+                  <a href={item.source_url} target="_blank" rel="noreferrer">查看原始房源</a>
+                </details>
               )}
               {item.latitude != null && item.longitude != null && (
                 <Button

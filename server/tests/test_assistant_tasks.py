@@ -27,7 +27,8 @@ class AssistantTaskTests(unittest.TestCase):
         self.assertTrue(all(any('车位无要求' in x for x in i['matches']) for i in comparison['items']))
         self.assertTrue(all(i['to_verify'] for i in comparison['items']))
         self.assertNotIn('%',str(comparison))
-        self.assertIn('计价对象',comparison['summary'])
+        self.assertNotIn('计价对象',comparison['summary'])
+        self.assertNotIn('待核实',comparison['summary'])
         self.assertEqual(self.client.get('/api/v1/cases/'+self.case['case_id']).json(),self.case)
 
     def test_comparison_without_explicit_context_never_uses_example_profile(self):
@@ -161,7 +162,7 @@ class AssistantTaskTests(unittest.TestCase):
         rows=self.client.get('/api/v1/listings',params={'page_size':100}).json()['items']
         studio=next(row for row in rows if row['advertised_bedrooms']==0)
         case=deepcopy(self.case);profile=deepcopy(case['draft']['profile'])
-        profile['hard_requirements']=['private_bedroom'];profile['budget']['maximum']=100000
+        profile['hard_requirements']=['private_bedroom'];profile['budget']={'maximum':100000}
         profile['housing_preferences']={'min_bedrooms':1}
         case['confirmations']=[{'profile':profile,'fingerprint':case['draft']['fingerprint'],'draft_revision':case['draft']['revision']}]
         case['agent1']['state']='Confirmed'

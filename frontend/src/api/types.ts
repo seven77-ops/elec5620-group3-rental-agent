@@ -2,17 +2,32 @@ export type Json =
   null | boolean | number | string | Json[] | { [key: string]: Json };
 export type Dict = Record<string, Json>;
 export interface Profile {
+  student_commute?: {
+    mode:
+      | "public_transport"
+      | "train"
+      | "metro"
+      | "bus"
+      | "drive"
+      | "bike"
+      | "walk";
+    maximum_minutes: number;
+    arrival_time?: string;
+    travel_day?: "weekday" | "weekend";
+    travel_date?: string;
+    max_transfers?: number;
+  };
   schema_version: string;
   search_id: string;
   profile_version: number;
-  budget: {
-    currency: string;
-    period: string;
-    scope: string;
-    includes_bills: boolean;
-    preferred: number;
-    maximum: number;
-    hard_limit: boolean;
+  budget?: {
+    currency?: string;
+    period?: string;
+    scope?: string;
+    includes_bills?: boolean;
+    preferred?: number;
+    maximum?: number;
+    hard_limit?: boolean;
   };
   housing_preferences?: {
     suburb?: string | null;
@@ -21,22 +36,22 @@ export interface Profile {
     min_car_spaces?: number | null;
     budget_match_mode?: "advertised_amount" | "matching_scope";
   };
-  occupants: number;
-  rental_mode: string;
-  destination_id: string;
-  arrival_time: string;
-  timezone: string;
-  commute: {
-    modes: string[];
-    preferred_minutes: number;
-    maximum_minutes: number;
-    hard_limit: boolean;
+  occupants?: number;
+  rental_mode?: string;
+  destination_id?: string;
+  arrival_time?: string;
+  timezone?: string;
+  commute?: {
+    modes?: string[];
+    preferred_minutes?: number;
+    maximum_minutes?: number;
+    hard_limit?: boolean;
   };
-  move_in_window: { from: string; to: string };
-  lease_months: number;
-  hard_requirements: string[];
-  soft_preferences: Record<string, number>;
-  weights: Record<string, number>;
+  move_in_window?: { from?: string; to?: string };
+  lease_months?: number;
+  hard_requirements?: string[];
+  soft_preferences?: Record<string, number>;
+  weights?: Record<string, number>;
 }
 export interface Confirmation {
   version: number;
@@ -47,6 +62,7 @@ export interface Confirmation {
   source?: string;
 }
 export interface CaseState {
+  requirements_profile?: Profile;
   case_id: string;
   search_id: string;
   draft: {

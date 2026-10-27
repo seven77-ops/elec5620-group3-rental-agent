@@ -325,7 +325,7 @@ test("utility edits retain their base version across refresh and cannot erase a 
     .click();
   await page.getByRole("button", { name: "确认保存选择", exact: true }).click();
   await expect(
-    page.getByText("资料已变化，请重新读取后确认。", { exact: true }),
+    page.getByText("请读取最新资料，核对当前输入后重新保存。", { exact: true }),
   ).toBeVisible();
   const protectedRecord = await (await request.get(root)).json();
   expect(protectedRecord.profile.utilities).toMatchObject({
@@ -339,7 +339,7 @@ test("utility edits retain their base version across refresh and cannot erase a 
     .click();
   await page.getByRole("button", { name: "确认保存选择", exact: true }).click();
   await expect(
-    page.getByText("资料已变化，请重新读取后确认。", { exact: true }),
+    page.getByText("请读取最新资料，核对当前输入后重新保存。", { exact: true }),
   ).toHaveCount(0);
   const saved = await (await request.get(root)).json();
   expect(saved.profile.utilities).toMatchObject({

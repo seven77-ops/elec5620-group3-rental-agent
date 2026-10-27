@@ -1,7 +1,17 @@
-import { Alert, Button, Descriptions, Drawer, Empty, Spin, Tag } from "antd";
+import {
+  Alert,
+  Button,
+  Collapse,
+  Descriptions,
+  Drawer,
+  Empty,
+  Spin,
+  Tag,
+} from "antd";
 import type { ReactNode } from "react";
 import { ApiError } from "../api/client";
 import type { Json } from "../api/types";
+import { userError } from "./errorPresentation";
 export function Failure({
   error,
   retry,
@@ -11,35 +21,49 @@ export function Failure({
 }) {
   if (!error) return null;
   const e = error instanceof Error ? error : new Error(String(error));
+  const readable = userError(
+    e instanceof ApiError ? e.code : undefined,
+    e.message,
+  );
   return (
     <Alert
       className="error-message"
       type="error"
       showIcon
-      title="操作未完成"
+      title={readable.title}
       description={
         <>
-          <div>{e.message}</div>
-          {e instanceof ApiError && e.fields != null && (
-            <pre className="field-errors">
-              {typeof e.fields === "object"
-                ? Object.entries(e.fields as Record<string, unknown>)
-                    .map(([key, value]) => `${key}: ${String(value)}`)
-                    .join("\n")
-                : String(e.fields)}
-            </pre>
-          )}
-          {e instanceof ApiError && (
-            <small>
-              {e.code}
-              {e.requestId ? ` · 请求 ${e.requestId}` : ""}
-            </small>
-          )}
+          <div>{readable.message}</div>
           {retry && (
             <div>
               <Button onClick={retry}>重试原操作</Button>
             </div>
           )}
+          <Collapse
+            ghost
+            size="small"
+            items={[
+              {
+                key: "details",
+                label: "查看详情",
+                children: (
+                  <JsonDetails
+                    value={{
+                      message: e.message,
+                      ...(e instanceof ApiError
+                        ? {
+                            code: e.code,
+                            request_id: e.requestId,
+                            fields: e.fields,
+                            status: e.status,
+                          }
+                        : {}),
+                    }}
+                  />
+                ),
+              },
+            ]}
+          />
         </>
       }
     />
@@ -51,14 +75,14 @@ export function PageTitle({
   extra,
 }: {
   title: string;
-  description: string;
+  description?: string;
   extra?: ReactNode;
 }) {
   return (
     <div className="page-heading">
       <div>
         <h1>{title}</h1>
-        <p>{description}</p>
+        {description && <p>{description}</p>}
       </div>
       {extra && <div className="heading-actions">{extra}</div>}
     </div>

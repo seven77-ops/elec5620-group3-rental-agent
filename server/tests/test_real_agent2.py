@@ -14,6 +14,12 @@ class RealAgent2Tests(unittest.TestCase):
         self.client = TestClient(create_app(runtime_dir=self.temp.name))
         self.case = self.client.post('/api/v1/cases', json={}).json()
         self.cid = self.case['case_id']
+        # These regression scenarios explicitly supply their original test requirements.
+        profile = json.loads(Path('integration/agent1-to-agent2/confirmed-profile.json').read_text())
+        response = self.client.post(f'/api/v1/cases/{self.cid}/profile-drafts',json={
+            'expected_revision':self.case['draft']['revision'],'profile':profile})
+        self.assertEqual(response.status_code,200,response.text)
+        self.case = response.json()
 
     def confirm(self):
         c = self.case
@@ -26,11 +32,11 @@ class RealAgent2Tests(unittest.TestCase):
         if filters is not None: body['filters'] = filters
         return self.client.post(f'/api/v1/cases/{self.cid}/evaluations', json=body)
 
-    def test_default_catalogue_is_500_real_ads_with_four_facts(self):
+    def test_default_catalogue_is_1000_real_ads_with_four_facts(self):
         self.assertEqual(self.client.get('/api/v1/health').json()['mode'], 'real_listings')
         r = self.client.get('/api/v1/listings?page_size=100').json()
-        self.assertEqual(r['total'], 500)
-        self.assertEqual(r['catalog']['suburb_count'], 71)
+        self.assertEqual(r['total'], 1000)
+        self.assertEqual(r['catalog']['suburb_count'], 72)
         self.assertEqual(len(r['items']), 100)
         for item in r['items']:
             self.assertTrue(item['listing_id'].startswith('domain:'))
@@ -56,9 +62,9 @@ class RealAgent2Tests(unittest.TestCase):
     def test_zero_bedroom_studios_count_as_one_open_plan_space(self):
         source = json.loads(Path('agent2/data/real/listings.json').read_text())
         studios = [r for r in source if r['bedrooms'] == 0]
-        self.assertEqual(len(studios), 5)
+        self.assertEqual(len(studios), self.client.get('/api/v1/listings?page_size=1').json()['catalog']['open_plan_as_one_count'])
         one_plus = self.client.get('/api/v1/listings?min_bedrooms=1&page_size=100').json()
-        self.assertEqual(one_plus['total'], 500)
+        self.assertEqual(one_plus['total'], 1000)
         for raw in studios:
             item = self.client.get('/api/v1/listings/'+raw['record_id']).json()
             self.assertEqual(item['bedrooms'], 1)
@@ -113,7 +119,7 @@ class RealAgent2Tests(unittest.TestCase):
         other = self.client.post('/api/v1/cases', json={}).json()
         self.assertEqual(self.client.post(f'/api/v1/cases/{other["case_id"]}/selections', json=body).status_code, 409)
         profile = copy.deepcopy(self.case['draft']['profile']); profile['weights']['cost'] += 1
-        self.client.post(f'/api/v1/cases/{self.cid}/profile-drafts',json={'expected_revision':1,'profile':profile})
+        self.client.post(f'/api/v1/cases/{self.cid}/profile-drafts',json={'expected_revision':self.case['draft']['revision'],'profile':profile})
         body['listing_id'] = run['report']['recommendations'][0]['listing_id']
         self.assertEqual(self.client.post(f'/api/v1/cases/{self.cid}/selections', json=body).status_code, 409)
 
@@ -187,7 +193,7 @@ class RealAgent2Tests(unittest.TestCase):
         self.confirm()
         report = self.evaluate().json()['report']
         self.assertNotIn('max_weekly_rent',report['filters'])
-        self.assertEqual(report['counts']['input'],500)
+        self.assertEqual(report['counts']['input'],1000)
         self.assertTrue(report['unverified_preferences'])
 
     def test_manual_report_records_overrides_instead_of_claiming_profile_match(self):

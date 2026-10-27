@@ -2,7 +2,6 @@ import { test, expect, type Page } from "@playwright/test";
 
 async function send(page: Page, text: string) {
   await page.getByRole("textbox", { name: "给租房助手的消息" }).fill(text);
-  await page.getByRole("checkbox", { name: /同意本次/ }).check();
   await page.getByRole("button", { name: "发送消息", exact: true }).click();
 }
 
@@ -85,9 +84,7 @@ test("chat repair proposal becomes an unsent record and recommendations use actu
   await expect(
     page.getByRole("textbox", { name: "给租房助手的消息" }),
   ).toHaveValue("帮我找悉尼搬家公司");
-  await expect(
-    page.getByRole("checkbox", { name: /同意本次/ }),
-  ).not.toBeChecked();
+  await expect(page.getByRole("checkbox", { name: /同意本次/ })).toHaveCount(0);
   await send(page, "帮我找悉尼搬家公司");
   const card = page.locator(
     '.assistant-listing[data-provider-id="two-men-and-a-truck"]',

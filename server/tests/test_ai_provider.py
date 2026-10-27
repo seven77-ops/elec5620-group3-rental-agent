@@ -54,6 +54,23 @@ class ProviderTests(unittest.TestCase):
         self.assertGreaterEqual(call['duration_ms'], 0)
         self.assertNotIn('private-test-secret', json.dumps(call))
 
+    def test_assistant_temperature_is_moderate_and_extraction_remains_precise(self):
+        sent=[]
+        def respond(request):
+            sent.append(json.loads(request.content))
+            return httpx.Response(200,json={'choices':[{'message':{'content':'{}'}}]})
+        provider=self.provider(respond)
+        provider.call({'task':'assistant_intent'})
+        provider.call({'task':'contract_extract'})
+        provider.call({'task':'assistant_commute_reply'})
+        self.assertEqual([r['temperature'] for r in sent],[0.6,0,0])
+        self.assertEqual(provider.public_config()['assistant_temperature'],0.6)
+        provider=self.provider(respond,RENTAL_AI_ASSISTANT_TEMPERATURE='0.8')
+        provider.call({'task':'assistant_intent'})
+        self.assertEqual(sent[-1]['temperature'],0.8)
+        for value in ('nan','infinity','bad','-1','3'):
+            self.assertEqual(self.provider(respond,RENTAL_AI_ASSISTANT_TEMPERATURE=value).public_config()['assistant_temperature'],0.6)
+
     def test_redirect_is_not_followed(self):
         calls = []
         def respond(request):

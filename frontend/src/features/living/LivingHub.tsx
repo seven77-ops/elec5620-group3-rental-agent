@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Alert, Button, Space, Spin, Tabs } from "antd";
+import { Button, Space, Spin, Tabs } from "antd";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   getLivingProviders,
@@ -15,6 +15,7 @@ import { newRequestId } from "../../api/client";
 import { useCase } from "../../app/context";
 import { useAction } from "../../components/useAction";
 import Aftercare from "../Aftercare";
+import { Failure } from "../../components/Common";
 import ProfileEditor from "./ProfileEditor";
 import Repairs from "./Repairs";
 import Utilities from "./Utilities";
@@ -116,14 +117,7 @@ export default function LivingHub() {
             <span>正在读取生活服务资料…</span>
           </div>
         ) : (
-          <Alert
-            type="error"
-            title="资料暂时无法读取"
-            description={
-              error instanceof Error ? error.message : "请稍后重新读取。"
-            }
-            action={<Button onClick={() => void load()}>重新读取</Button>}
-          />
+          <Failure error={error} retry={() => void load()} />
         )}
       </section>
     );
@@ -185,9 +179,7 @@ export default function LivingHub() {
     <section className="living-hub">
       <header className="living-heading">
         <div>
-          <span className="living-eyebrow">从入住到搬家</span>
           <h1>租后生活服务</h1>
-          <p>照顾好日常，也为下一步做好准备。</p>
         </div>
         <Button
           disabled={action.busy}
@@ -202,44 +194,17 @@ export default function LivingHub() {
           读取最新资料
         </Button>
       </header>
-      {Boolean(error) && (
-        <Alert
-          type="error"
-          title="操作未完成"
-          description={
-            <>
-              <span>
-                {error instanceof Error ? error.message : "请稍后重试。"}
-              </span>
-              <p>
-                输入仍保留。资料版本发生变化时，请读取最新资料并重新打开编辑窗口核对。
-              </p>
-            </>
-          }
-          action={
-            <Space wrap>
-              {Boolean(action.error) && (
-                <Button
-                  disabled={loading}
-                  loading={action.busy}
-                  onClick={() => void action.retry()}
-                >
-                  重试原操作
-                </Button>
-              )}
-              <Button
-                disabled={action.busy}
-                onClick={() => {
-                  action.clear();
-                  void load();
-                }}
-              >
-                读取最新资料
-              </Button>
-            </Space>
-          }
-        />
-      )}
+      <Failure
+        error={error}
+        retry={
+          action.error
+            ? action.retry
+            : () => {
+                action.clear();
+                void load();
+              }
+        }
+      />
       <LivingTodos
         record={record}
         providers={directory.providers}

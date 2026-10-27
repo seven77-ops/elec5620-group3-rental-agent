@@ -1,6 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 
-test("empty-result suggestions require an explicit new message and consent", async ({
+test("empty-result suggestions require an explicit new message", async ({
   page,
   request,
 }) => {
@@ -58,14 +58,11 @@ test("empty-result suggestions require an explicit new message and consent", asy
     .click();
   const composer = page.getByRole("textbox", { name: "给租房助手的消息" });
   await expect(composer).toHaveValue(suggestion);
-  await expect(
-    page.getByRole("checkbox", { name: /同意本次/ }),
-  ).not.toBeChecked();
+  await expect(page.getByRole("checkbox", { name: /同意本次/ })).toHaveCount(0);
   await expect(
     page.getByRole("button", { name: "发送消息", exact: true }),
-  ).toBeDisabled();
+  ).toBeEnabled();
   expect(sent).toEqual([]);
-  await page.getByRole("checkbox", { name: /同意本次/ }).check();
   await page.getByRole("button", { name: "发送消息", exact: true }).click();
   await expect.poll(() => sent.length).toBe(1);
   expect(sent[0].message).toBe(suggestion);
@@ -132,7 +129,7 @@ async function assistantTransport(page: Page, caseId: string) {
   return requests;
 }
 
-test("shared assistant requires consent, sends a turn and restores server history", async ({
+test("shared assistant sends directly, records a turn and restores server history", async ({
   page,
   request,
 }) => {
@@ -140,21 +137,23 @@ test("shared assistant requires consent, sends a turn and restores server histor
   page.on("pageerror", (error) => errors.push(error.message));
   const c = await (await request.post("/api/v1/cases", { data: {} })).json();
   const requests = await assistantTransport(page, c.case_id);
-  await page.goto(`/cases/${c.case_id}/preferences`);
-  await page.getByRole("menuitem", { name: "AI租房助手", exact: true }).click();
+  await page.goto(`/cases/${c.case_id}/assistant`);
   await expect(
     page.getByRole("heading", { name: "今天，想住在哪里？" }),
   ).toBeVisible();
+  for (const copy of ["面向悉大学生", "尚未同步需求", "你的需求，你来决定", "修改偏好前会请你确认", "独立的业务参考时间"]) await expect(page.locator("body")).not.toContainText(copy);
+  await expect(page.getByRole("button", { name: "资料与设置", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "演示与证据", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "我的租房需求", exact: true })).toBeVisible();
+  await expect(page.getByTestId("assistant-needs-status")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "AI租房助手", exact: true })).toHaveCSS("color", "rgb(17, 17, 17)");
+  await expect(page.getByRole("button", { name: "我的租房需求", exact: true })).toHaveCSS("color", "rgb(17, 17, 17)");
+
   const input = page.getByRole("textbox", { name: "给租房助手的消息" });
   await input.fill("帮我找租房");
   await expect(
     page.getByRole("button", { name: "发送消息", exact: true }),
-  ).toBeDisabled();
-  await page
-    .getByRole("checkbox", {
-      name: /同意本次使用外部 AI，并查询位置与交通信息/,
-    })
-    .check();
+  ).toBeEnabled();
   await input.press("Enter");
   await expect(
     page.getByText("请告诉我每周预算和偏好区域。", { exact: true }),
@@ -165,9 +164,7 @@ test("shared assistant requires consent, sends a turn and restores server histor
     expected_revision: 0,
     allow_external_ai: true,
   });
-  await expect(
-    page.getByRole("checkbox", { name: /同意本次/ }),
-  ).not.toBeChecked();
+  await expect(page.getByRole("checkbox", { name: /同意本次/ })).toHaveCount(0);
   await page.reload();
   await expect(
     page.getByText("请告诉我每周预算和偏好区域。", { exact: true }),
@@ -189,7 +186,6 @@ test("mobile assistant fits the viewport and IME Enter does not submit", async (
   await page.goto(`/cases/${c.case_id}/assistant`);
   const input = page.getByRole("textbox", { name: "给租房助手的消息" });
   await input.fill("悉尼");
-  await page.getByRole("checkbox", { name: /同意本次/ }).check();
   await input.dispatchEvent("compositionstart");
   await input.press("Enter");
   await input.dispatchEvent("compositionend");
@@ -250,7 +246,6 @@ test("retry preserves the original request and prevents a second turn", async ({
   await page.goto(`/cases/${c.case_id}/assistant`);
   const input = page.getByRole("textbox", { name: "给租房助手的消息" });
   await input.fill("预算每周800澳元");
-  await page.getByRole("checkbox", { name: /同意本次/ }).check();
   await page.getByRole("button", { name: "发送消息", exact: true }).click();
   await expect(
     page.getByText("模型服务暂时不可用，请重试。", { exact: true }),
@@ -396,19 +391,16 @@ test("real catalogue cards retain source facts and send explicit comparison IDs"
   await page.goto(`/cases/${c.case_id}/assistant`);
   const first = page.locator(`[data-listing-id="${listings[0].listing_id}"]`);
   await expect(first.getByRole("heading")).toHaveText(listings[0].address);
-  await expect(first.getByRole("link", { name: "原始房源 ↗" })).toHaveAttribute(
-    "href",
-    listings[0].source_url,
-  );
+  await expect(first.getByRole("link", { name: "原始房源 ↗" })).toHaveCount(0);
   await first.getByRole("button", { name: "房源详情", exact: true }).click();
-  await expect(page.getByRole("dialog")).toContainText("待确认事项");
+  await expect(page.getByRole("dialog")).not.toContainText("待确认事项");
+  await expect(page.getByRole("dialog").getByRole("link", { name: "查看 Domain 房源" })).toHaveAttribute("href", listings[0].source_url);
   await page.keyboard.press("Escape");
   for (const listing of listings)
     await page
       .getByRole("checkbox", { name: `选择比较 ${listing.address}` })
       .check();
   await page.getByRole("button", { name: "比较所选房源", exact: true }).click();
-  await page.getByRole("checkbox", { name: /同意本次/ }).check();
   await page.getByRole("button", { name: "发送消息", exact: true }).click();
   await expect(
     page.getByText("请告诉我每周预算和偏好区域。", { exact: true }),
@@ -508,7 +500,6 @@ test("composer limits selections and restores editable input after validation er
   ).toBeVisible();
   const original = "请比较所选房源";
   await input.fill(original);
-  await page.getByRole("checkbox", { name: /同意本次/ }).check();
   await page.getByRole("button", { name: "发送消息", exact: true }).click();
   await expect(
     page.getByText("请调整这次比较条件。", { exact: true }),
@@ -519,11 +510,8 @@ test("composer limits selections and restores editable input after validation er
     page.getByRole("button", { name: "重试原操作", exact: true }),
   ).toHaveCount(0);
   for (const box of boxes.slice(1)) await expect(box).toBeChecked();
-  await expect(
-    page.getByRole("checkbox", { name: /同意本次/ }),
-  ).not.toBeChecked();
+  await expect(page.getByRole("checkbox", { name: /同意本次/ })).toHaveCount(0);
   await input.fill("请只比较所选房源的周租");
-  await page.getByRole("checkbox", { name: /同意本次/ }).check();
   await page.getByRole("button", { name: "发送消息", exact: true }).click();
   await expect(
     page.getByText("已按调整后的条件比较。", { exact: true }),

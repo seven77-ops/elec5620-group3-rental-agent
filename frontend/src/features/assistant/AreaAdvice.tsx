@@ -152,7 +152,7 @@ export default function AreaAdvice({
                 disabled={disabled}
                 onClick={() =>
                   onSuggest(
-                    `保持我的预算和房型要求，按 ${area.suburb} 区域继续推荐房源，并核对到学校或公司的通勤。`,
+                    `保持我的预算和房型要求，按 ${area.suburb} 区域继续推荐房源，并核对到悉大主校区的通勤。`,
                   )
                 }
               >

@@ -36,35 +36,26 @@ test("property details surface available facts and omit extraction noise and adv
     page.getByRole("heading", { name: "真实房源推荐", exact: true }),
   ).toBeVisible();
   await expect(page.locator("body")).not.toContainText("广告");
+  await expect(page.locator(".real-catalog-filters")).not.toContainText("到校时间");
+  await expect(page.locator(".real-catalog-filters")).not.toContainText("最多换乘");
   await page.getByRole("button", { name: "查看房源详情", exact: true }).click();
   const d = page.getByRole("dialog");
+  await expect(d).not.toContainText("在租状态待确认");
+  await expect(d).not.toContainText("房源资料采集于");
   await expect(d.getByTestId("listing-detail-rent")).toContainText("540");
-  await expect(d.getByTestId("listing-detail-facts")).toContainText("Studio");
-  await expect(d.getByTestId("listing-detail-facts")).toContainText("2,160");
-  await expect(d.getByTestId("listing-detail-facts")).toContainText(
-    "2026/11/11",
-  );
-  await expect(d.getByTestId("listing-detail-facts")).toContainText("不带家具");
-  await expect(
-    d.getByRole("heading", { name: "房屋配置", exact: true }),
-  ).toBeVisible();
-  await expect(d.getByTestId("listing-detail-features")).toContainText("阳台");
-  await expect(d.getByTestId("listing-detail-features")).toContainText(
-    "燃气设施",
-  );
-  await expect(d.getByTestId("listing-detail-features")).not.toContainText(
-    "Domain",
-  );
+  await expect(d.getByTestId("listing-detail-facts")).toHaveCount(0);
+  await expect(d.getByTestId("listing-detail-features")).toHaveCount(0);
   await expect(d).not.toContainText("Unverified");
   await expect(d).not.toContainText("未知 / 待核实");
   await expect(d).not.toContainText("today");
   await expect(
     d.getByRole("heading", { name: "待确认事项", exact: true }),
-  ).toBeVisible();
+  ).toHaveCount(0);
   await expect(
     d.getByRole("link", { name: "查看 Domain 房源", exact: true }),
   ).toHaveAttribute("href", item.source_url);
   await expect(d).not.toContainText("广告");
+  await page.screenshot({ path: "/tmp/rental-fields-cleanup-desktop.png" });
 });
 
 test("missing property facts stay compact without invented deposit, furniture or facilities", async ({
@@ -94,11 +85,8 @@ test("missing property facts stay compact without invented deposit, furniture or
   await expect(
     d.getByRole("heading", { name: "房屋配置", exact: true }),
   ).toHaveCount(0);
-  await expect(d.getByTestId("listing-detail-pending")).toContainText("押金");
-  await expect(d.getByTestId("listing-detail-pending")).toContainText("家具");
-  await expect(d.getByTestId("listing-detail-pending")).toContainText(
-    "可入住日期",
-  );
+  await expect(d.getByTestId("listing-detail-pending")).toHaveCount(0);
+  await expect(d.getByTestId("listing-detail-facts")).toHaveCount(0);
   await expect(d).not.toContainText("未知 / 待核实");
   await expect(d).not.toContainText("不带家具");
   await expect(d).not.toContainText("today");
@@ -107,4 +95,5 @@ test("missing property facts stay compact without invented deposit, furniture or
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
+  await page.screenshot({ path: "/tmp/rental-fields-cleanup-mobile.png" });
 });

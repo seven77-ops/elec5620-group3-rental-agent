@@ -19,8 +19,10 @@ class Services:
         self.settings = settings
         self.ai_provider = ai_provider if ai_provider is not None else ModelProvider()
         self.data_provider = data_provider if data_provider is not None else DataProviders()
+        from ..commute.mcp_transit import TransitProvider
+        self.transit_provider = TransitProvider(self.data_provider)
         self.repo = Repository(settings.runtime_dir)
-        self.preferences = Agent1Bridge(self.repo)
+        self.preferences = Agent1Bridge(self.repo, real=settings.catalog is not None)
         self.aftercare = AftercareAgent(self.repo.directory / 'aftercare.sqlite3', operator_ids={OPERATOR}, gateway=None)
 
     def safe_message(self, message):

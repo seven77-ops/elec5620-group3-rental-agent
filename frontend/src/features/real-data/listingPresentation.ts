@@ -5,6 +5,24 @@ export const housingCopy = (text: string) =>
     .replaceAll("原广告", "原始房源")
     .replaceAll("广告", "房源");
 
+// Older saved replies may still contain the retired recommendation footers.
+// Match those exact notices; actual user requirements and questions are retained.
+export function recommendationCopy(text: string) {
+  const notices = [
+    "这是房源标价预览，偏好尚未修改；在租状态、账单和计价对象仍需核实。",
+    "这是广告标价预览，偏好尚未修改；在租状态、账单和计价对象仍需核实。",
+    "是否仍在租、计价对象、账单、起租日期和通勤均待核实。",
+    "计价对象、账单和在租状态待核实，不能据此认定个人总费用或实际性价比。",
+  ];
+  let result = text;
+  for (const notice of notices) result = result.replaceAll(notice, "");
+  return housingCopy(result)
+    .replace(/，先给你看\s*\d+\s*条/g, "")
+    .replace(/；个人费用待核实|；计价对象待核实/g, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 export const propertyTypes: Record<string, string> = {
   apartment: "公寓",
   house: "独立屋",

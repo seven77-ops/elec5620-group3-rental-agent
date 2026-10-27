@@ -193,6 +193,43 @@ class PlannerTests(unittest.TestCase):
             self.assertEqual(arrival.weekday()<5,day=='weekday')
             self.assertEqual(report['date'],arrival.date().isoformat())
 
+    def test_no_arrival_uses_stored_transit_reference_without_inventing_time_or_transfers(self):
+        from server.app.common import now
+        from server.app.commute.planner import arrival_for
+        from server.app.commute.usyd import DESTINATION
+        brief={k:v for k,v in self.brief.items() if k not in ('arrival_time','travel_day')}
+        baseline=arrival_for(self.brief).isoformat()
+        observed={'status':'planned','duration_minutes':25,'transfers':1,'transit_modes':['bus'],
+                  'queried_at':now(),'reference_arrival_at':baseline,
+                  'source_url':'https://opendata.transport.nsw.gov.au/dataset/trip-planner-apis'}
+        self.catalog.rows[0]['usyd_commute']={'origin':dict(DESTINATION),
+            'modes':{'public_transport':observed,'bus':deepcopy(observed)}}
+        before=deepcopy(brief)
+        result=self.planner.prepare(brief,DESTINATION,allow_external=True)
+        self.assertEqual([r['listing_id'] for r in result['listings']],['domain:1'])
+        report=result['commute_recommendation']
+        self.assertEqual(report['basis'],'scheduled_reference')
+        self.assertNotIn('arrival_time',report['criteria'])
+        self.assertEqual(report['arrival_time'],'')
+        self.assertEqual(report['routes'][0]['transfers'],1)
+        self.assertEqual(brief,before)
+        for changes in ({'max_transfers':0},{'commute_max_minutes':20},{'commute_mode':'train'},
+                        {'travel_day':'weekend'},{'travel_date':'2099-01-01'}):
+            with self.subTest(changes=changes):
+                result=self.planner.prepare({**brief,**changes},DESTINATION,allow_external=True)
+                self.assertEqual(result['listings'],[])
+        self.assertEqual(self.resolver.calls,[])
+        self.assertEqual(self.provider.calls,[])
+
+    def test_no_arrival_and_no_reference_returns_unavailable_without_asking_or_guessing(self):
+        from server.app.commute.usyd import DESTINATION
+        brief={k:v for k,v in self.brief.items() if k!='arrival_time'}
+        result=self.planner.prepare(brief,DESTINATION,allow_external=True)
+        self.assertEqual(result['listings'],[])
+        self.assertEqual(result['commute_recommendation']['status'],'unavailable')
+        self.assertIsNone(result['commute_recommendation']['routes'][0]['transfers'])
+        self.assertEqual(self.provider.calls,[])
+
     def test_explicit_date_wrong_day_past_invalid_time_or_over_30_days_uses_no_provider(self):
         for change in [{'arrival_time':'25:00'},{'travel_day':'holiday'},{'travel_date':'2020-01-01'},
                        {'travel_date':(datetime.now()+timedelta(days=40)).date().isoformat()},
@@ -234,14 +271,13 @@ class PlannerTests(unittest.TestCase):
         self.assertEqual(self.provider.calls,[])
         self.assertEqual(self.resolver.calls,[])
 
-    def test_soft_time_limit_without_transfer_constraint_retains_unverified_housing_preview(self):
+    def test_time_ceiling_never_accepts_unverified_housing_even_with_old_soft_flag(self):
         self.provider.configured=False
         brief=dict(self.brief,commute_hard_limit=False)
         brief.pop('max_transfers')
         result=self.planner.prepare(brief,destination(),allow_external=True)
-        self.assertEqual([r['listing_id'] for r in result['listings']],['domain:1'])
-        self.assertEqual(result['commute_recommendation']['pending_listings'],[])
-        self.assertEqual(result['listings'][0]['commute_status'],'unavailable')
+        self.assertEqual(result['listings'],[])
+        self.assertEqual([r['listing_id'] for r in result['commute_recommendation']['pending_listings']],['domain:1'])
 
     def test_missing_origin_and_provider_failure_remain_visible_and_partial(self):
         self.catalog.rows=[row(1),row(2)]; self.resolver.missing={'domain:1'}

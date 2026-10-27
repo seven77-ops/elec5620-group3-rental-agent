@@ -189,9 +189,10 @@ export default function ListingPanel({
                   : "不含账单"}
             </p>
             <p className="muted">观察时间 {item.observed_at}</p>
-            <a href={item.source_url} target="_blank" rel="noreferrer">
-              查看原始来源
-            </a>
+              <details>
+                <summary>房源详情</summary>
+                <a href={item.source_url} target="_blank" rel="noreferrer">查看原始来源</a>
+              </details>
             {item.latitude != null && item.longitude != null && (
               <>
                 <a

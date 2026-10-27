@@ -8,25 +8,19 @@ import {
   useState,
 } from "react";
 import type { ReactNode } from "react";
-import { Alert, Button, Drawer, Layout, Menu, Space } from "antd";
+import { Button, Drawer, Layout, Menu, Space } from "antd";
 import {
   CheckSquareOutlined,
   FileTextOutlined,
   FormOutlined,
   HomeOutlined,
-  InfoCircleOutlined,
   MenuOutlined,
   CommentOutlined,
 } from "@ant-design/icons";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { api, post } from "../api/client";
 import type { CaseState, DemoConfig } from "../api/types";
-import {
-  EvidenceDrawer,
-  Failure,
-  JsonDetails,
-  Loading,
-} from "../components/Common";
+import { Failure, Loading } from "../components/Common";
 import { useAction } from "../components/useAction";
 import { CaseContext } from "./context";
 const Assistant = lazy(() => import("../features/assistant/Assistant"));
@@ -91,7 +85,6 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<unknown>(null);
   const [mobile, setMobile] = useState(false);
-  const [evidence, setEvidence] = useState(false);
   const action = useAction();
   const navigate = useNavigate();
   const location = useLocation();
@@ -145,14 +138,20 @@ export default function App() {
       navigate(`/cases/${caseId}/assistant`, { replace: true });
     if (page === "real-data" && caseId)
       navigate(`/cases/${caseId}/recommendations`, { replace: true });
-  }, [page, routePage, caseId, navigate]);
+    if (page === "preferences" && caseId && config?.mode === "real_listings")
+      navigate(`/cases/${caseId}/assistant?needs=1`, { replace: true });
+  }, [page, routePage, caseId, config?.mode, navigate]);
   const go = (target: string) => {
     setMobile(false);
+    const destination =
+      target === "preferences" && config?.mode === "real_listings"
+        ? "assistant?needs=1"
+        : target;
     navigate(
-      target === "operator"
+      destination === "operator"
         ? "/operator"
         : current
-          ? `/cases/${current.case_id}/${target}`
+          ? `/cases/${current.case_id}/${destination}`
           : "/",
     );
   };
@@ -181,7 +180,9 @@ export default function App() {
         }
         onClick={({ key }) => go(key)}
       />
-      <div className="sidebar-bottom">
+      <div
+        className={`sidebar-bottom${config?.mode === "real_listings" ? " sidebar-bottom-mobile-only" : ""}`}
+      >
         {current && (
           <Button
             className="mobile-new-case"
@@ -191,25 +192,18 @@ export default function App() {
             新建演示案例
           </Button>
         )}
-        <Button
-          type="text"
-          icon={<InfoCircleOutlined />}
-          onClick={() => {
-            setMobile(false);
-            setEvidence(true);
-          }}
-        >
-          演示与证据
-        </Button>
-        <Link to="/operator" onClick={() => setMobile(false)}>
-          本地演示操作员
-        </Link>
+        {config?.mode !== "real_listings" && (
+          <Link to="/operator" onClick={() => setMobile(false)}>
+            本地演示操作员
+          </Link>
+        )}
       </div>
     </>
   );
   const pages: Record<string, ReactNode> = {
     assistant: <Assistant />,
-    preferences: <Preferences />,
+    preferences:
+      config?.mode === "real_listings" ? <Assistant /> : <Preferences />,
     recommendations:
       config?.mode === "real_listings" ? (
         <Recommendations />
@@ -229,11 +223,6 @@ export default function App() {
             <span>租房助手</span>
           </div>
           <Space>
-            <span className="demo-label">
-              {config?.mode === "real_listings"
-                ? "真实房源 · 参考快照"
-                : "合成数据演示"}
-            </span>
             {current && (
               <Button
                 className="new-case"
@@ -304,16 +293,6 @@ export default function App() {
                   <CaseContext.Provider
                     value={{ current, config, refresh, go }}
                   >
-                    {page !== "assistant" && (
-                      <div className="case-caption">
-                        当前案例 <span>{current.case_id}</span>
-                        <span>
-                          {page === "operator"
-                            ? "本地演示操作员视图"
-                            : "本地演示身份 · 租客"}
-                        </span>
-                      </div>
-                    )}
                     <div id="page-content" key={`${current.case_id}:${page}`}>
                       <ErrorBoundary>
                         <Suspense fallback={<Loading />}>
@@ -327,41 +306,6 @@ export default function App() {
             )}
           </main>
         </Layout>
-        <EvidenceDrawer
-          title="演示与证据"
-          open={evidence}
-          onClose={() => setEvidence(false)}
-        >
-          <Alert
-            type="info"
-            title="真实房源与业务能力"
-            description="Agent1 保存偏好，Agent2 使用真实房源库进行事实筛选和候选保存；是否仍在租、费用与租期尚待核实。可记录看房与中介回复，由 Agent3 生成未签署租约草稿，或独立同意上传真实合同后提取与比对。房源和用户记录不视为已核实交接证明；Agent4 需要另行确认租约资料。不会向房东或中介发送消息。"
-            showIcon
-          />
-          <h3>独立的业务参考时间</h3>
-          <JsonDetails value={config?.clocks} />
-          <h3>当前案例与版本引用</h3>
-          <JsonDetails
-            value={
-              current
-                ? {
-                    case_id: current.case_id,
-                    search_id: current.search_id,
-                    agent1: current.agent1,
-                    draft_revision: current.draft.revision,
-                    confirmations: current.confirmations.map((c) => ({
-                      version: c.version,
-                      fingerprint: c.fingerprint,
-                    })),
-                    evaluations: current.evaluations,
-                    selection: current.selection,
-                    reviews: current.reviews,
-                    aftercare_case_id: current.aftercare_case_id,
-                  }
-                : null
-            }
-          />
-        </EvidenceDrawer>
       </Layout>
     </ErrorBoundary>
   );

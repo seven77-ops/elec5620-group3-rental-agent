@@ -2,6 +2,7 @@
 import unittest
 from unittest.mock import patch
 from server.app.ai.provider import ProviderError
+from server.app.commute.usyd import DESTINATION
 from server.tests import test_assistant_api as harness
 
 
@@ -29,7 +30,7 @@ class AssistantProgressTests(unittest.TestCase):
         self.assertEqual(c['rental_brief']['suburb'],'Rhodes')
         self.assertEqual(c['rental_brief']['budget_amount'],900)
         self.assertEqual(c['rental_brief']['min_bedrooms'],2)
-        self.assertIn('学校',c['messages'][-1]['content'])
+        self.assertIn('悉大主校区',c['messages'][-1]['content'])
         return c
 
     def test_exact_rendered_region_action_advances_even_when_router_misclassifies(self):
@@ -41,10 +42,10 @@ class AssistantProgressTests(unittest.TestCase):
         r=self.send(c,'school','usyd');self.assertEqual(r.status_code,200,r.text)
         c=r.json();answer=c['messages'][-1]
         self.assertEqual(answer['intent'],'recommend_areas')
-        self.assertEqual(c['rental_brief']['destination_query'],'usyd')
+        self.assertEqual(c['rental_brief']['destination_query'],DESTINATION['label'])
         self.assertNotIn('area_advice',answer)
-        self.assertIn('几点',answer['content']);self.assertIn('多少分钟',answer['content'])
-        self.assertEqual(answer['commute_question']['fields'],['arrival_time','commute_max_minutes'])
+        self.assertIn('多少分钟',answer['content']);self.assertNotIn('哪个学校',answer['content'])
+        self.assertEqual(answer['commute_question']['fields'],['commute_max_minutes'])
         self.assertIn('pending_question',self.provider.inputs[-1])
         from server.app.assistant.commute import normalized_query
         self.assertEqual(normalized_query('USYD'),'University of Sydney')
@@ -55,7 +56,8 @@ class AssistantProgressTests(unittest.TestCase):
         self.provider.by_task['assistant_commute_reply']={'is_reply':True,'brief_patch':{'destination_query':'Westmead Hospital'}}
         r=self.send(c,'hospital','Westmead Hospital')
         self.assertEqual(r.status_code,200,r.text);c=r.json()
-        self.assertEqual(c['rental_brief']['destination_query'],'Westmead Hospital')
+        self.assertEqual(c['rental_brief']['destination_query'],DESTINATION['label'])
+        self.assertEqual(c['messages'][-1]['intent'],'outside_scope')
         self.assertNotIn('area_advice',c['messages'][-1])
         self.assertEqual([i['task'] for i in self.provider.inputs[-2:]],['assistant_intent','assistant_commute_reply'])
         self.assertNotIn('draft_profile',self.provider.inputs[-1])
@@ -96,7 +98,7 @@ class AssistantProgressTests(unittest.TestCase):
         r=self.send(c,'legacy-resume','usyd')
         self.assertEqual(r.status_code,200,r.text)
         answer=r.json()['messages'][-1]
-        self.assertNotIn('area_advice',answer);self.assertIn('几点',answer['content'])
+        self.assertNotIn('area_advice',answer);self.assertIn('多少分钟',answer['content'])
 
     def test_failed_optional_repair_never_overrides_explicit_area_question(self):
         c=self.choose(self.compare())

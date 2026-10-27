@@ -29,6 +29,7 @@ class DataProviders:
                 'tfnsw': {'configured': bool(self.tfnsw_key), 'documentation': TFNSW_DOC}}
 
     def request(self, method, url, headers, **kwargs):
+        response_limit=kwargs.pop('response_limit',1_000_000)
         async def fetch():
             async with asyncio.timeout(self.timeout):
                 async with httpx.AsyncClient(transport=self.transport, timeout=self.timeout,
@@ -38,7 +39,7 @@ class DataProviders:
                                 '数据服务未成功返回，请检查接口权限、额度或服务状态。')
                         content = bytearray()
                         async for chunk in response.aiter_bytes():
-                            require(len(content) + len(chunk) <= 1_000_000, 502, 'data_response_too_large', '数据响应超过大小限制。')
+                            require(len(content) + len(chunk) <= response_limit, 502, 'data_response_too_large', '数据响应超过大小限制。')
                             content.extend(chunk)
                         return strict_json(bytes(content).decode('utf-8'))
         try:
@@ -107,9 +108,9 @@ class DataProviders:
                 422, 'invalid_input', '请选择未来30天内的到达时间；供应商实际时刻表范围可能更短。')
         self.gate('tfnsw', body['allow_external'])
         local = arrival.astimezone(ZoneInfo('Australia/Sydney'))
-        coord = lambda p: f"{p['longitude']:g}:{p['latitude']:g}:EPSG:4326"
+        coord = lambda p: f"{p['longitude']:.7f}:{p['latitude']:.7f}:EPSG:4326"
         data = self.request('GET', 'https://api.transport.nsw.gov.au/v1/tp/trip',
-                            {'Authorization': 'apikey ' + self.tfnsw_key, 'Accept': 'application/json'}, params={
+                            {'Authorization': 'apikey ' + self.tfnsw_key, 'Accept': 'application/json'}, response_limit=8_000_000,params={
                                 'outputFormat': 'rapidJSON', 'coordOutputFormat': 'EPSG:4326', 'depArrMacro': 'arr',
                                 'itdDate': local.strftime('%Y%m%d'), 'itdTime': local.strftime('%H%M'),
                                 'type_origin': 'coord', 'name_origin': coord(origin),
@@ -124,6 +125,8 @@ class DataProviders:
                 if not isinstance(legs, list) or not 0 < len(legs) <= 100:
                     raise ValueError()
                 duration, walking, names = 0, 0, []
+                transit_modes=[]
+                summary_legs=[]
                 walking_known = True
                 for leg in legs:
                     seconds = leg['duration']
@@ -134,11 +137,16 @@ class DataProviders:
                     product = transport.get('product', {})
                     if type(product.get('class')) is not int:
                         walking_known = False
-                    if product.get('class') == 100:
+                    if product.get('class') in (99,100):
                         walking += seconds
                     name = transport.get('name') or product.get('name')
                     if isinstance(name, str) and name not in names:
                         names.append(name[:160])
+                    from ..commute.usyd import transit_kind
+                    kind=transit_kind(transport)
+                    if kind and kind not in transit_modes: transit_modes.append(kind)
+                    summary_legs.append({'mode':kind or ('walk' if product.get('class')==100 else 'unknown'),
+                        'service':name[:160] if isinstance(name,str) else None,'duration_minutes':round(seconds/60,2)})
                 departure = legs[0].get('origin', {}).get('departureTimePlanned')
                 arrives = legs[-1].get('destination', {}).get('arrivalTimePlanned')
                 elapsed = None
@@ -150,7 +158,8 @@ class DataProviders:
                 journeys.append({'duration_minutes': None if elapsed is None else round(elapsed / 60, 2),
                                  'leg_travel_minutes': round(duration / 60, 2), 'walking_minutes': round(walking / 60, 2) if walking_known else None,
                                  'transfers': transfers if type(transfers) is int and transfers >= 0 else None,
-                                 'departure_at': departure, 'arrival_at': arrives, 'services': names})
+                                 'departure_at': departure, 'arrival_at': arrives, 'services': names,
+                                 'transit_modes':transit_modes,'legs':summary_legs})
             return {'provider': 'tfnsw', 'queried_at': now(), 'query': body, 'journeys': journeys,
                     'limitations': ['按计划时刻计算，不能保证将来准点或可用。', '总时长包含换乘候车；缺少时刻时不估算总时长。', '未计算 Opal 票价；结果未写入正式推荐或合同流程。']}
         except (ValueError, TypeError, KeyError, AttributeError, ApiError):

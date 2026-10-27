@@ -13,6 +13,8 @@ class AssistantDemoProvider:
                 'model':'assistant-ui-test-only','timeout_seconds':12}
 
     def call(self, context):
+        if context['task']=='assistant_preferences_reply':
+            return {'is_reply':False,'brief_patch':{}},{'task':context['task'],'provider':'test_stub','status':'succeeded','attempted':True,'simulated':True}
         if context['task']=='assistant_area_followup':
             chosen='那先看Ashfield吧' in context.get('message','')
             return {'continue_housing':chosen,'brief_patch':{'suburb':'Ashfield'} if chosen else {}}, {
@@ -28,7 +30,15 @@ class AssistantDemoProvider:
         if context['task'] != 'assistant_intent':
             raise ValueError('UI fixture only accepts assistant intent')
         message = context.get('message') or context.get('latest_user_message') or context.get('query') or ''
-        if '比较 Burwood 和 Ashfield' in message:
+        if '悉大' in message and '步行20分钟' in message:
+            result={'intent':'recommend_areas','brief_patch':{'suburb':None,'budget_amount':1200,'budget_period':'week','budget_scope':'whole_property','rental_mode':'whole_property','min_bedrooms':1,'min_bathrooms':1,'min_car_spaces':0,'occupants':1,'commute_mode':'walk','commute_max_minutes':20}}
+        elif message.strip()=='20分钟':
+            result={'intent':'recommend_areas','brief_patch':{'commute_max_minutes':20}}
+        elif '我想住Burwood预算1200每周' in message:
+            result={'intent':'collect_preferences','brief_patch':{'suburb':'Burwood','budget_amount':1200,'budget_period':'week','budget_scope':'unknown'}}
+        elif message=='整套':
+            result={'intent':'collect_preferences','brief_patch':{}}
+        elif '比较 Burwood 和 Ashfield' in message:
             result={'intent':'area_advice','areas':['Burwood','Ashfield'],'brief_patch':{
                 'budget_amount':850,'budget_period':'week','budget_scope':'whole_property','min_bedrooms':1,'lifestyle_priorities':['food']}}
         elif '那先看Ashfield吧' in message:

@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
+import { fillRentalNeeds, confirmRentalNeeds } from "./fillRentalNeeds";
 
-test("real catalogue has 500 ads, paginates, filters, and preserves unknowns", async ({
+test("real catalogue has 1000 ads, paginates, filters, and preserves unknowns", async ({
   page,
   request,
 }) => {
@@ -14,10 +15,13 @@ test("real catalogue has 500 ads, paginates, filters, and preserves unknowns", a
   await expect(
     page.getByRole("heading", { name: "真实房源推荐", exact: true }),
   ).toBeVisible();
-  await expect(page.getByTestId("catalog-summary")).toContainText(
-    "500 条真实房源",
-  );
-  await expect(page.getByTestId("catalog-summary")).toContainText("71 个区域");
+  await expect(
+    page.getByRole("heading", { name: /筛选结果.*1000/ }),
+  ).toBeVisible();
+  const catalogue = await (
+    await request.get("/api/v1/listings?page_size=1")
+  ).json();
+  expect(catalogue.catalog.suburb_count).toBe(72);
   await expect(
     page.getByTestId("real-catalog").locator("tbody tr.ant-table-row"),
   ).toHaveCount(20);
@@ -61,7 +65,7 @@ test("real catalogue has 500 ads, paginates, filters, and preserves unknowns", a
     .getByRole("button", { name: "查看房源详情", exact: true })
     .first()
     .click();
-  await expect(page.getByRole("dialog")).toContainText("待确认事项");
+  await expect(page.getByRole("dialog")).not.toContainText("待确认事项");
   await expect(
     page.getByRole("dialog").getByRole("link", { name: "查看 Domain 房源" }),
   ).toHaveAttribute("href", /^https:\/\/www.domain.com.au\//);
@@ -72,7 +76,9 @@ test("real catalogue has 500 ads, paginates, filters, and preserves unknowns", a
     .fill("1");
   await page.getByRole("button", { name: "应用筛选", exact: true }).click();
   await expect(
-    page.getByText("没有符合当前筛选的真实房源，可调整区域、户型或周租。"),
+    page.getByText(
+      "没有符合当前条件的房源。可调整预算、房型或明确放宽到校通勤时间。",
+    ),
   ).toBeVisible();
   expect(errors).toEqual([]);
   await expect(page.locator("vite-error-overlay")).toHaveCount(0);
@@ -90,9 +96,10 @@ test("confirmed Agent1 profile produces real report and durable provisional sele
       review_token: c.agent1.review_token,
     },
   });
-  // Exercise the existing preferences-to-evaluation entry point, now backed by real data.
-  await page.goto(`/cases/${c.case_id}/preferences`);
-  await page.getByRole("button", { name: "生成推荐", exact: true }).click();
+  await page.goto(`/cases/${c.case_id}/recommendations`);
+  await page
+    .getByRole("button", { name: "生成当前筛选的候选报告", exact: true })
+    .click();
   await expect(
     page.getByRole("heading", { name: "真实房源推荐", exact: true }),
   ).toBeVisible();
@@ -159,9 +166,9 @@ test("mobile catalogue and source details stay usable", async ({
   await page.setViewportSize({ width: 360, height: 800 });
   const c = await (await request.post("/api/v1/cases", { data: {} })).json();
   await page.goto(`/cases/${c.case_id}/real-data`);
-  await expect(page.getByTestId("catalog-summary")).toContainText(
-    "500 条真实房源",
-  );
+  await expect(
+    page.getByRole("heading", { name: /筛选结果.*1000/ }),
+  ).toBeVisible();
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= window.innerWidth,
@@ -233,26 +240,18 @@ test("preferences generate mapped budget and housing filters in the merged recom
   page.on("pageerror", (e) => errors.push(e.message));
   const c = await (await request.post("/api/v1/cases", { data: {} })).json();
   await page.goto(`/cases/${c.case_id}/preferences`);
-  await expect(
-    page.getByRole("heading", { name: "房屋条件", exact: true }),
-  ).toBeVisible();
-  await page.getByRole("spinbutton", { name: /最高周预算/ }).fill("1500");
-  await page
-    .getByRole("combobox", { name: "偏好区域", exact: true })
-    .fill("Rhodes");
-  await page
-    .getByRole("combobox", { name: "偏好区域", exact: true })
-    .press("Enter");
-  await page.getByRole("spinbutton", { name: "偏好至少卧室数" }).fill("2");
-  await page.getByRole("spinbutton", { name: "偏好至少浴室数" }).fill("2");
-  await page.getByRole("spinbutton", { name: "偏好至少车位数" }).fill("1");
-  await page.getByRole("button", { name: "保存草稿", exact: true }).click();
-  await expect(
-    page.getByText("草稿已保存，请确认当前偏好后再生成推荐。"),
-  ).toBeVisible();
-  await page.getByRole("button", { name: "确认当前偏好", exact: true }).click();
-  await page.getByRole("button", { name: "确认这些条件", exact: true }).click();
-  await page.getByRole("button", { name: "生成推荐", exact: true }).click();
+  await expect(page).toHaveURL(
+    new RegExp(`/cases/${c.case_id}/assistant\\?needs=1$`),
+  );
+  await fillRentalNeeds(page, {
+    suburb: "Rhodes",
+    budget: 1500,
+    bedrooms: 2,
+    bathrooms: 2,
+    parking: 1,
+  });
+  await confirmRentalNeeds(page);
+  await page.getByRole("menuitem", { name: "房源推荐", exact: true }).click();
   await expect(page.getByText("当前偏好 v1 · 候选报告已保存")).toBeVisible();
   for (const [name, value] of [
     ["最高周租（AUD）", "1500"],
@@ -264,9 +263,11 @@ test("preferences generate mapped budget and housing filters in the merged recom
       page.getByRole("spinbutton", { name, exact: true }),
     ).toHaveValue(value);
   }
-  await expect(page.getByTestId("preference-linkage")).toContainText(
-    "已确认偏好 v1",
-  );
+  expect(
+    (
+      await (await request.get(`/api/v1/cases/${c.case_id}`)).json()
+    ).confirmations.at(-1).version,
+  ).toBe(1);
   await expect(
     page.getByRole("menuitem", { name: "真实数据", exact: true }),
   ).toHaveCount(0);
@@ -281,10 +282,10 @@ test("preferences generate mapped budget and housing filters in the merged recom
   await expect(page).toHaveURL(
     new RegExp(`/cases/${c.case_id}/recommendations$`),
   );
-  await page.getByText("房源补充工具", { exact: true }).click();
+  await expect(page.getByText("房源补充工具", { exact: true })).toHaveCount(0);
   await expect(
     page.getByRole("tab", { name: "租金参考", exact: true }),
-  ).toBeVisible();
+  ).toHaveCount(0);
   expect(errors).toEqual([]);
 });
 
@@ -301,6 +302,10 @@ test("generation keeps applied filters stable while its response is pending", as
     },
   });
   await page.goto(`/cases/${c.case_id}/recommendations`);
+  await page
+    .getByRole("spinbutton", { name: "最高周租（AUD）", exact: true })
+    .fill("550");
+  await page.getByRole("button", { name: "应用筛选", exact: true }).click();
   await expect(
     page.getByRole("spinbutton", { name: "最高周租（AUD）", exact: true }),
   ).toHaveValue("550");

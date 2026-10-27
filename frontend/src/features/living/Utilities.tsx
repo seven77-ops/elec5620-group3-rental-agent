@@ -66,7 +66,6 @@ export default function Utilities({
       <div className="living-section-heading">
         <div>
           <h2>水电气网</h2>
-          <p>保存正在使用或准备联系的供应商，方便以后查找。</p>
         </div>
       </div>
       <Alert

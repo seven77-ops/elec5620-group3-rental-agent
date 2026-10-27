@@ -65,6 +65,27 @@ class AssistantTests(unittest.TestCase):
         other = self.client.post('/api/v1/cases',json={}).json()['case_id']
         self.assertEqual(self.client.get(path.replace(self.case['case_id'],other)).status_code,404)
 
+    def test_search_returns_all_matches_without_repeated_verification_disclaimers(self):
+        from server.app.real_data.catalog import RealCatalog
+        filters={'suburb':'Burwood','max_weekly_rent':900,'min_bedrooms':2,'min_bathrooms':1}
+        expected=RealCatalog().matching(filters)
+        self.assertGreater(len(expected),5)
+        self.provider.result={'intent':'search','filters':filters}
+        response=self.send(self.conversation(),message='找一下Burwood在900以内的房源')
+        self.assertEqual(response.status_code,200,response.text)
+        answer=response.json()['messages'][-1]
+        self.assertEqual([r['listing_id'] for r in answer['listings']],[r['listing_id'] for r in expected])
+        for text in ('先给你看','在租状态','账单','计价对象','待核实','仍需核实'):
+            self.assertNotIn(text,answer['content'])
+
+    def rhodes_budget_alternatives(self):
+        # Assert against the catalogue instead of a stale snapshot's minimum and count.
+        from server.app.real_data.catalog import RealCatalog
+        rows = [r for r in RealCatalog().matching({}) if r['bedrooms'] >= 2 and r['bathrooms'] >= 2]
+        lowest = min(r['weekly_rent'] for r in rows if r['suburb'] == 'Rhodes')
+        elsewhere = sum(r['weekly_rent'] <= 800 for r in rows)
+        return f'AUD {lowest:g}', f'AUD {lowest - 800:g}', f'有 {elsewhere} 条'
+
     def test_intake_remembers_explicit_conditions_and_only_asks_missing_budget_units(self):
         c=self.conversation()
         self.provider.result={'intent':'collect_preferences','brief_patch':{}}
@@ -89,7 +110,7 @@ class AssistantTests(unittest.TestCase):
         self.assertEqual(r.status_code,200,r.text); c=r.json()
         self.assertEqual(self.provider.inputs[-1]['rental_brief']['min_bathrooms'],2)
         text=c['messages'][-1]['content']
-        for expected in ('Rhodes','890','90','30'): self.assertIn(expected,text)
+        for expected in ('Rhodes', *self.rhodes_budget_alternatives()): self.assertIn(expected,text)
         self.assertNotIn('展示前 0',text)
         actions=c['messages'][-1]['actions']
         proposal=next(a for a in actions if a['type']=='apply_preferences')
@@ -122,11 +143,11 @@ class AssistantTests(unittest.TestCase):
             'suburb':'Rhodes','min_bedrooms':2,'min_bathrooms':2,'min_car_spaces':0,'max_weekly_rent':800}}
         r=self.send(c); self.assertEqual(r.status_code,200,r.text)
         answer=r.json()['messages'][-1]
-        for expected in ('890','90','30'): self.assertIn(expected,answer['content'])
+        for expected in self.rhodes_budget_alternatives(): self.assertIn(expected,answer['content'])
         self.assertFalse(answer['listings'])
         suggestions=[a for a in answer['actions'] if a['type']=='suggestion']
         self.assertEqual(len(suggestions),2)
-        self.assertIn('890',suggestions[0]['message'])
+        self.assertIn(self.rhodes_budget_alternatives()[0].removeprefix('AUD '),suggestions[0]['message'])
         self.assertIn('800',suggestions[1]['message']); self.assertIn('不限区域',suggestions[1]['message'])
         self.assertEqual(r.json()['last_search_filters']['max_weekly_rent'],800)
         self.assertEqual(self.client.get('/api/v1/cases/'+self.case['case_id']).json(),self.case)
@@ -226,15 +247,16 @@ class AssistantTests(unittest.TestCase):
         self.assertEqual(self.apply(pid).json(),result)
         self.assertEqual(self.apply(pid,'another').status_code,409)
 
-    def test_model_task_is_registered_and_proposal_summarizes_inherited_defaults(self):
+    def test_model_task_is_registered_and_proposal_only_summarizes_supplied_values(self):
         from server.app.ai.provider import TASKS
         self.assertIn('assistant_intent',TASKS)
         c=self.conversation(); self.provider.result={'intent':'update_preferences','preference_patch':{'occupants':2}}
         r=self.send(c); self.assertEqual(r.status_code,200,r.text)
         summary=r.json()['messages'][-1]['actions'][0]['summary']
         text=' '.join(summary)
-        for expected in ('550','450','AUD/周','按人','含账单','2','2027-02-01','40','12'):
-            self.assertIn(expected,text)
+        self.assertIn('2 人',text)
+        for invented in ('550','450','按人','含账单','2027-02-01','40','12','demo-usyd'):
+            self.assertNotIn(invented,text)
 
     def test_history_is_bounded_and_pending_identity_is_exclusive(self):
         c=self.conversation()
@@ -317,14 +339,15 @@ class AssistantTests(unittest.TestCase):
         self.assertEqual(self.send(c,'context').status_code,200)
         context=self.provider.inputs[-1]
         by_id={r['listing_id']:r for r in context['displayed_listings']}
-        for row in original:
+        for row in original[:12]:
             facts=by_id[row['listing_id']]
             for key in ('address','bedrooms','bathrooms','car_spaces','weekly_rent','source_url','rent_scope'):
                 self.assertEqual(facts[key],row[key])
         self.assertEqual(context['history'][-1]['display_order'],[
-            {'position':index+1,'listing_id':row['listing_id']} for index,row in enumerate(original)])
+            {'position':index+1,'listing_id':row['listing_id']} for index,row in enumerate(original[:12])])
+        self.assertLessEqual(len(context['displayed_listings']),12)
 
-    def test_context_and_reference_validation_share_latest_hundred_catalogue_ids(self):
+    def test_model_context_is_bounded_but_explicit_references_support_all_displayed_houses(self):
         c=self.conversation()
         rows=[]
         for page in (1,2):
@@ -345,8 +368,13 @@ class AssistantTests(unittest.TestCase):
         for entry in context['history']:
             self.assertLessEqual(set(entry['listing_ids']),set(ids))
             self.assertLessEqual({row['listing_id'] for row in entry['display_order']},set(ids))
-        # Old cards are deliberately outside both the context and permitted references.
-        self.assertEqual(self.send(r.json(),'too-old',listing_ids=[rows[0]['listing_id']]).status_code,422)
+        # The model preview is bounded; a user can still select any displayed card.
+        selected=self.send(r.json(),'earlier-card',listing_ids=[rows[0]['listing_id']])
+        self.assertEqual(selected.status_code,200,selected.text)
+        self.assertIn(rows[0]['listing_id'],self.provider.inputs[-1]['displayed_listing_ids'])
+        self.assertLessEqual(len(self.provider.inputs[-1]['displayed_listings']),100)
+        unshown=self.client.get('/api/v1/listings?page=2&page_size=100').json()['items'][-1]['listing_id']
+        self.assertEqual(self.send(selected.json(),'never-shown',listing_ids=[unshown]).status_code,422)
 
     def test_proposal_summary_uses_readable_labels_without_repeating_conditions(self):
         c=self.conversation(); self.provider.result={'intent':'update_preferences','preference_patch':{'occupants':2}}
@@ -355,7 +383,8 @@ class AssistantTests(unittest.TestCase):
         for raw in ('private_bedroom','public_transport','walk','demo-usyd','furnished','amenities',"{'",': 0.6'):
             self.assertNotIn(raw,text)
         for label in ('独立卧室','公共交通','步行','家具','费用','设施'):
-            self.assertIn(label,text)
+            self.assertNotIn(label,text)
+        self.assertIn('未提供的信息留空',text)
         self.assertEqual(answer['content'],'已整理新的租房条件。请核对下方摘要；确认后保存偏好并生成候选。')
 
     def test_structured_clarification_reason_handles_unknowns_without_keyword_guessing(self):
@@ -425,7 +454,8 @@ class AssistantTests(unittest.TestCase):
         self.assertEqual(context['task'],'assistant_intent')
         self.assertEqual(len(context['history']),2)
         self.assertIn('draft_profile',context); self.assertIn('confirmed_profile',context)
-        self.assertIn('计价',r.json()['messages'][-1]['content'])
+        self.assertNotIn('计价',r.json()['messages'][-1]['content'])
+        self.assertIn(c['messages'][-1]['listings'][0]['address'],r.json()['messages'][-1]['content'])
 
     def test_comparison_scoped_references_and_market_coverage(self):
         c=self.send(self.conversation()).json(); rows=c['messages'][-1]['listings'][:2]
@@ -482,7 +512,7 @@ class AssistantTests(unittest.TestCase):
 
     def test_ambiguous_profile_and_module_routes(self):
         c=self.conversation()
-        self.provider.result={'intent':'update_preferences','preference_patch':{'budget':{'maximum':100}}}
+        self.provider.result={'intent':'update_preferences','preference_patch':{'budget':{'preferred':150,'maximum':100}}}
         r=self.send(c); self.assertEqual(r.status_code,200,r.text)
         self.assertEqual(r.json()['messages'][-1]['intent'],'clarify')
         self.assertFalse(r.json()['messages'][-1]['actions'])

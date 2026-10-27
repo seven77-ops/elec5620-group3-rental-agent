@@ -7,7 +7,7 @@ from ..bootstrap import ROOT  # Initialize sibling package paths first.
 from ..common import require
 from ..settings import TENANT
 from preference_agent.store import Store
-from preference_agent.service import PreferenceAgent
+from preference_agent.service import PreferenceAgent, ProfileService
 from preference_agent.llm import ManualOnly
 from preference_agent.fields import flatten
 from preference_agent.handover import HandoverService
@@ -68,9 +68,16 @@ class _PrepareOnly:
 
 
 class Agent1Bridge:
-    def __init__(self, repository):
+    def __init__(self, repository, real=False):
+        self.real = real
         self.store = JoinedStore(repository.database)
         self.agent = PreferenceAgent(self.store, ManualOnly())
+        if real:
+            class RealProfileService(ProfileService):
+                def validateDraft(self, session):
+                    from ..real_data.profile import real_assess
+                    return real_assess(session['draft'],session['search_id'],session['latest_version']+1)
+            self.agent.profiles = RealProfileService(self.store)
         self.preparer = HandoverService(self.store, receiver=_PrepareOnly(self.store))
         self.handover = HandoverService(self.store)
 
@@ -96,16 +103,23 @@ class Agent1Bridge:
         case = {'case_id': case_id, 'search_id': session['search_id'],
                 'agent1_case_id': session['case_id'], 'confirmations': [], 'evaluations': [],
                 'selection': None, 'reviews': [], 'aftercare_case_id': None}
-        return self.draft(case, template, revision=1)
+        if self.real: case['requirements_contract'] = 'supplied-only-v1'
+        initial = {'schema_version':'1.0','search_id':session['search_id'],'profile_version':1} if self.real else template
+        return self.draft(case, initial, revision=1)
 
     def draft(self, case, profile, revision):
         identifier = self.require_case(case)
-        self.agent.setFields(identifier, flatten(profile))
+        values = flatten(profile)
+        if self.real:
+            from preference_agent.fields import FIELDS
+            values = {**dict.fromkeys(FIELDS),**values}
+        self.agent.setFields(identifier, values)
         reviewed = self.agent.reviewDraft(identifier)
         require(reviewed['valid'], 422, 'invalid_profile', '\n'.join(reviewed['errors']))
         session = self.metadata(case)
         case['draft'] = {'draft_id': session['draft']['draft_id'], 'revision': revision,
                          'profile': reviewed['profile'], 'fingerprint': fingerprint(reviewed['profile'])}
+        if self.real: case['requirements_contract'] = 'supplied-only-v1'
         return case
 
     def confirm(self, case, body):

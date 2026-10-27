@@ -84,6 +84,7 @@ export default function LivingTodos({
       label: "填写联系人",
       tab: "contacts",
     });
+  if (!todos.length) return null;
   return (
     <section className="living-todos" aria-label="待办事项">
       <div className="living-todos-heading">

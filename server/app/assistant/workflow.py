@@ -4,7 +4,7 @@ from .comparison import prepare_enquiry, verification_checklist
 LABELS={'search':'筛选房源','compare':'比较房源','explain':'解释房源','prepare_enquiry':'准备询问信草稿'}
 
 
-def execute_workflow(intent,case,conversation,catalog,requested_ids):
+def execute_workflow(intent,case,conversation,catalog,requested_ids,ctx=None):
     from .tools import execute, reference_listings, listing_context
     previous=list(requested_ids) or [r['listing_id'] for r in listing_context(catalog,[r['listing_id'] for r in reference_listings(conversation)])]
     combined={}; outcomes=[]; content=[]; extras={}; memory=dict(conversation)
@@ -28,7 +28,7 @@ def execute_workflow(intent,case,conversation,catalog,requested_ids):
             row=catalog.get(ids[0]); extras['enquiry']=prepare_enquiry(row)
             rows=[row]; detail='已准备询问信草稿，请核对后自行复制发送。'
         else:
-            result=execute({'intent':kind,**({'filters':step.get('filters',{})} if kind=='search' else {'listing_ids':ids})},case,memory,catalog,[])
+            result=execute({'intent':kind,**({'filters':step.get('filters',{})} if kind=='search' else {'listing_ids':ids})},case,memory,catalog,[],ctx=ctx)
             rows=result['listings']; detail=result['content']
             if '_search_filters' in result:
                 extras['_search_filters']=result['_search_filters']; memory={**memory,'last_search_filters':result['_search_filters'],'dialogue_mode':'search'}

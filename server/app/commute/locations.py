@@ -38,10 +38,34 @@ def listing_address(row):
     address,suburb=row.get('address'),row.get('suburb')
     if not isinstance(address,str) or not isinstance(suburb,str): return None
     address=normalized(address)
+    address=re.sub(r'^FURNISHED\s+(?=\d)', '', address)
     address=re.sub(r'^(?:UNIT\s+)?[A-Z0-9-]+\s*/\s*(?=\d)', '', address)
     suburb=normalized(suburb)
     if not address.endswith(' '+suburb): address+=' '+suburb
     return address if re.match(r'^\d+[A-Z]?(?:-\d+[A-Z]?)?\s+\S',address) else None
+
+
+def is_listed_range_endpoint(row,point):
+    """A sourced endpoint within an advertised building-number range, not an exact unit."""
+    address=listing_address(row)
+    matched=re.fullmatch(r'(\d+)-(\d+) (.+)',address or '')
+    actual=re.fullmatch(r'(\d+) (.+)',normalized(point.get('label','')))
+    return bool(matched and actual and int(actual[1]) in (int(matched[1]),int(matched[2])) and actual[2]==matched[3])
+
+
+def validated_origin(row,point):
+    if not isinstance(point,dict):return False
+    if point.get('provider')=='tfnsw_stop_finder':
+        from .tfnsw_addresses import valid_cached_point
+        return valid_cached_point(row,point)
+    identifier=row.get('listing_id') or row.get('record_id')
+    if LocationResolver(points={identifier:point}).cached_listing(row):return True
+    if point.get('precision')!='official_listed_range_endpoint_not_unit_entrance' or not is_listed_range_endpoint(row,point):return False
+    if point.get('original_address')!=row['address'] or point.get('original_suburb')!=row['suburb']:return False
+    canonical=deepcopy(point)
+    canonical.update(precision='official_address_point_not_unit_entrance',original_address=point['label'])
+    exact={**row,'address':point['label']}
+    return bool(LocationResolver(points={identifier:canonical}).cached_listing(exact))
 
 
 class LocationResolver:
@@ -142,6 +166,9 @@ class LocationResolver:
         if not address: return None
         if address in self._listing_cache: return deepcopy(self._listing_cache[address])
         point=self._seeded_points.get(row.get('listing_id') or row.get('record_id'))
+        if isinstance(point,dict) and point.get('provider')=='tfnsw_stop_finder':
+            from .tfnsw_addresses import valid_cached_point
+            return deepcopy(point) if valid_cached_point(row,point) else None
         if (not isinstance(point,dict) or not valid_point(point)
                 or point.get('original_address')!=row.get('address') or point.get('original_suburb')!=row.get('suburb')
                 or not isinstance(point.get('label'),str) or normalized(point['label'])!=address
@@ -153,19 +180,20 @@ class LocationResolver:
         if point.get('source_url')!=expected: return None
         return {key:deepcopy(value) for key,value in point.items() if key not in ('original_address','original_suburb')}
 
-    def prefetch(self,rows):
+    def prefetch(self,rows,batch_size=20):
         """Explicit one-time public-data harvest. Caller supplies external-data consent.
 
         Queries exact building addresses in chunks of twenty with three workers;
         no file writes, inferred points, retries or per-turn automatic invocation.
         """
         require(isinstance(rows,list) and len(rows)<=1000,422,'location_batch_limit','位置采集最多1000条公开房源。')
+        require(type(batch_size) is int and 1<=batch_size<=20,422,'location_batch_limit','地址批次须为1至20条。')
         groups={}
         for row in rows:
             address=listing_address(row)
             if address: groups.setdefault(address,[]).append(row)
         addresses=list(groups)
-        batches=[addresses[i:i+20] for i in range(0,len(addresses),20)]
+        batches=[addresses[i:i+batch_size] for i in range(0,len(addresses),batch_size)]
         def run(batch):
             literals=','.join("'"+item.replace("'","''")+"'" for item in batch)
             try:

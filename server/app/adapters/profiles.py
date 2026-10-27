@@ -12,6 +12,8 @@ class ProfilesAdapter:
     def __init__(self, ctx):
         self.ctx = ctx
 
+    validate_profile = staticmethod(validate_profile)
+
     def create_case(self, body: dict):
         shape(body, ())
         with self.ctx.repo.transaction() as db, self.ctx.preferences.store.join(db):
@@ -33,7 +35,7 @@ class ProfilesAdapter:
             require(isinstance(body['profile'], dict), 422, 'invalid_profile', 'Profile must be an object')
             profile = deepcopy(body['profile'])
             profile.update(search_id=case['search_id'], profile_version=len(case['confirmations']) + 1)
-            validate_profile(profile)
+            self.validate_profile(profile)
             case = self.ctx.preferences.draft(case, profile, revision=case['draft']['revision'] + 1)
             self.ctx.repo.put(db, 'case', case_id, case)
             return case

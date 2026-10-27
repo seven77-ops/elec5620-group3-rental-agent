@@ -22,6 +22,58 @@ class WorkspaceTests(unittest.TestCase):
     def read_case(self):
         return self.client.get('/api/v1/cases/'+self.case['case_id']).json()
 
+    def test_real_case_and_chat_confirmation_have_no_demo_requirements(self):
+        for field in ('destination_id','arrival_time','commute','move_in_window','lease_months',
+                      'hard_requirements','soft_preferences','weights','occupants','rental_mode'):
+            self.assertNotIn(field,self.case['draft']['profile'])
+        case=self.sync()
+        profile=case['confirmations'][-1]['profile']
+        self.assertEqual(profile['budget']['maximum'],1500)
+        self.assertNotIn('preferred',profile['budget'])
+        self.assertNotIn('includes_bills',profile['budget'])
+        for field in ('destination_id','arrival_time','commute','move_in_window','lease_months',
+                      'hard_requirements','soft_preferences','weights'):
+            self.assertNotIn(field,profile)
+        self.assertNotIn('demo-usyd',str(case))
+        self.assertNotIn('2027-02-01',str(case))
+
+    def test_explicit_optional_values_equal_to_old_demo_values_are_preserved(self):
+        from server.app.assistant.intents import merge_profile
+        profile={**self.case['draft']['profile'],'destination_id':'demo-usyd',
+                 'lease_months':12,'budget':{'preferred':450,'includes_bills':True}}
+        root='/api/v1/cases/'+self.case['case_id']
+        saved=self.client.post(root+'/profile-drafts',json={
+            'expected_revision':self.case['draft']['revision'],'profile':profile})
+        self.assertEqual(saved.status_code,200,saved.text)
+        case=self.sync(); actual=case['confirmations'][-1]['profile']
+        self.assertEqual(actual['destination_id'],'demo-usyd')
+        self.assertEqual(actual['lease_months'],12)
+        self.assertEqual(actual['budget']['preferred'],450)
+        self.assertIs(actual['budget']['includes_bills'],True)
+
+    def test_legacy_defaults_are_removed_even_after_destination_was_changed(self):
+        from server.app.common import load
+        root='/api/v1/cases/'+self.case['case_id']
+        profile=load('integration/agent1-to-agent2/confirmed-profile.json')
+        profile['destination_id']='unsw-kensington'
+        saved=self.client.post(root+'/profile-drafts',json={
+            'expected_revision':self.case['draft']['revision'],'profile':profile})
+        self.assertEqual(saved.status_code,200,saved.text)
+        repo=self.client.app.state.repository
+        with repo.transaction() as db:
+            old=repo.get(db,'case',self.case['case_id']);old.pop('requirements_contract')
+            repo.put(db,'case',self.case['case_id'],old)
+        p=self.prepare();self.assertEqual(p.status_code,200,p.text)
+        summary=' '.join(p.json()['summary'])
+        self.assertNotIn('2027-02-01',summary)
+        self.assertNotIn('家具',summary)
+        self.assertNotIn('含账单',summary)
+        self.assertNotIn('450',summary)
+        self.assertIn('unsw-kensington',summary)
+        self.assertNotIn('lease_months',self.read_case()['requirements_profile'])
+        with repo.transaction() as db:
+            self.assertEqual(repo.get(db,'case',self.case['case_id']),old)  # Review never rewrites history.
+
     def prepare(self,**changes):
         body={'request_id':'prepare-one','expected_revision':self.c['revision'],
             'expected_profile_fingerprint':self.read_case()['draft']['fingerprint'],'brief':self.brief,**changes}
@@ -86,6 +138,15 @@ class WorkspaceTests(unittest.TestCase):
         fresh=TestClient(create_app(runtime_dir=self.temp.name,ai_provider=self.provider))
         self.assertEqual(fresh.get('/api/v1/cases/'+case['case_id']).json()['selection'],saved)
 
+    def test_confirmed_preferences_show_all_filtered_houses_in_chat(self):
+        self.brief.update(suburb='Burwood',budget_amount=900,min_bedrooms=2,min_bathrooms=1,min_car_spaces=0)
+        case=self.sync()
+        report=self.client.get('/api/v1/evaluations/'+case['evaluations'][-1]['run_id']).json()['report']
+        cards=self.c['messages'][-1]['listings']
+        self.assertGreater(report['counts']['input'],5)
+        self.assertEqual(len(cards),report['counts']['input'])
+        self.assertNotIn('待核实',self.c['messages'][-1]['content'])
+
     def test_unknown_and_outside_profile_cards_are_rejected_without_partial_report(self):
         self.provider.result={'intent':'search','filters':{'suburb':'Parramatta','max_weekly_rent':1500}}
         r=self.client.post(self.path+'/messages',json={'request_id':'preview','expected_revision':0,
@@ -114,6 +175,34 @@ class WorkspaceTests(unittest.TestCase):
         self.sync(); row=self.c['messages'][-1]['listings'][0]
         r=self.choose(row['listing_id'],request_id='s'*80)
         self.assertEqual(r.status_code,200,r.text)
+
+    def full_catalog_conversation(self):
+        self.brief.update(suburb=None,budget_amount=100000,min_bedrooms=0,min_bathrooms=0,min_car_spaces=0)
+        self.sync()
+        from server.app.real_data.catalog import RealCatalog
+        rows=RealCatalog().matching({})
+        self.assertGreater(len(rows),100)
+        repo=self.client.app.state.repository
+        with repo.transaction() as db:
+            c=repo.get(db,'assistant_conversation',self.c['conversation_id'])
+            c['messages'][-1]['listings']=rows
+            repo.put(db,'assistant_conversation',self.c['conversation_id'],c)
+        return rows
+
+    def test_every_displayed_full_inventory_card_can_be_saved(self):
+        rows=self.full_catalog_conversation()
+        response=self.choose(rows[0]['listing_id'])
+        self.assertEqual(response.status_code,200,response.text)
+        self.assertEqual(response.json()['case']['selection']['listing_id'],rows[0]['listing_id'])
+
+    def test_explicit_reference_to_early_full_inventory_card_keeps_model_context_bounded(self):
+        rows=self.full_catalog_conversation();target=rows[0]['listing_id']
+        self.provider.result={'intent':'explain','listing_ids':[target]}
+        response=self.client.post(self.path+'/messages',json={'request_id':'explain-early','expected_revision':self.c['revision'],
+            'message':'解释我选中的这套房源','listing_ids':[target],'allow_external_ai':True})
+        self.assertEqual(response.status_code,200,response.text)
+        self.assertIn(target,self.provider.inputs[-1]['displayed_listing_ids'])
+        self.assertLessEqual(len(self.provider.inputs[-1]['displayed_listings']),100)
 
     def test_prepared_manual_requirements_take_priority_over_an_older_preview(self):
         self.provider.result={'intent':'search','filters':{'suburb':'Rhodes','max_weekly_rent':800}}

@@ -40,7 +40,7 @@ def summarize(report,catalog,brief,focus='balanced'):
     eligible=[a for a in areas if a['matching_count']]
     if focus=='housing' and eligible:
         cheapest=min(eligible,key=lambda a:a['min_weekly_rent'])
-        parts.append(f"这批符合条件的候选里，可先看 {cheapest['suburb']} 的低标价房源；这不是全区域市场租金结论，计价对象和在租状态仍需核实。")
+        parts.append(f"这批符合条件的候选里，可先看 {cheapest['suburb']} 的低标价房源。")
     elif topics and eligible:
         strongest=max(len(a['matched_topics']) for a in eligible)
         supported=[a for a in eligible if len(a['matched_topics'])==strongest]

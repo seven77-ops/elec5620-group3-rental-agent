@@ -46,8 +46,8 @@ class AssistantFlexibilityTests(unittest.TestCase):
         r=self.send(c,'unsw','UNSW Kensington')
         self.assertEqual(r.status_code,200,r.text);c=r.json()
         self.assertEqual(c['rental_brief']['suburb'],'Camperdown')
-        self.assertEqual(c['rental_brief']['destination_query'],'UNSW Kensington')
-        self.assertIn('几点',c['messages'][-1]['content'])
+        self.assertEqual(c['messages'][-1]['intent'],'outside_scope')
+        self.assertIn('悉尼大学',c['messages'][-1]['content'])
 
     def test_natural_area_choice_recovers_a_misrouted_area_introduction(self):
         self.provider.result={'intent':'area_advice','areas':['Burwood','Ashfield'],'brief_patch':{
@@ -59,7 +59,7 @@ class AssistantFlexibilityTests(unittest.TestCase):
         self.assertEqual(r.status_code,200,r.text);c=r.json();answer=c['messages'][-1]
         self.assertEqual(answer['intent'],'recommend_areas');self.assertNotIn('area_advice',answer)
         self.assertEqual(c['rental_brief']['suburb'],'Ashfield');self.assertEqual(c['rental_brief']['budget_amount'],850)
-        self.assertIn('学校或公司',answer['content'])
+        self.assertIn('悉大主校区',answer['content'])
 
     def test_area_followup_recovery_does_not_steal_another_comparison(self):
         self.provider.result={'intent':'area_advice','areas':['Burwood','Ashfield']}

@@ -1044,7 +1044,13 @@ li {
 .mobile-new-case {
   display: none;
 }
+.sidebar-bottom-mobile-only {
+  display: none;
+}
 @media (max-width: 767px) {
+  .sidebar-bottom-mobile-only {
+    display: flex;
+  }
   .mobile-new-case {
     display: inline-flex;
   }
@@ -1290,13 +1296,6 @@ li {
   background: #eaf1fc;
   color: #174ea6;
 }
-.assistant-history-foot {
-  border-top: 1px solid #e8edf4;
-  padding: 20px 8px 0;
-  color: #8792a3;
-  font-size: 11px;
-  line-height: 1.9;
-}
 .assistant-workspace {
   display: flex;
   flex-direction: column;
@@ -1313,38 +1312,23 @@ li {
 }
 .assistant-heading h1 {
   font-size: 18px;
-  margin: 0 0 3px;
+  margin: 0;
+  color: #111111;
   letter-spacing: 0;
 }
-.assistant-heading span {
-  color: #8390a3;
-  font-size: 12px;
+.assistant-heading .assistant-needs-button {
+  color: #111111;
+  font-size: 14px;
 }
 .assistant-history-toggle {
   display: none;
 }
-.assistant-needs-strip {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 10px 34px;
-  background: #fafcff;
-  border-bottom: 1px solid #edf0f5;
-  font-size: 11px;
-  color: #687b95;
-}
-.assistant-needs-strip .ant-tag {
-  font-size: 10px;
-  margin-inline-end: 8px;
-}
-.assistant-needs-strip .ant-btn {
-  font-size: 11px;
-  color: #174ea6;
-}
 .assistant-needs-intro {
   margin-bottom: 20px;
+}
+.rental-needs-drawer .ant-drawer-content-wrapper {
+  width: min(500px, 100vw) !important;
+  max-width: 100vw;
 }
 .assistant-needs-intro p {
   font-size: 13px;
@@ -1492,6 +1476,24 @@ li {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   margin-top: 18px;
+}
+.assistant-listing-results {
+  margin-top: 16px;
+  min-width: 0;
+}
+.assistant-listing-results-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  color: #71829e;
+  font-size: 12px;
+}
+.assistant-listing-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
 }
 .assistant-listing {
   min-width: 0;
@@ -1686,12 +1688,6 @@ li {
   }
   .assistant-heading {
     flex-wrap: wrap;
-  }
-  .assistant-needs-strip {
-    padding: 10px 20px;
-  }
-  .assistant-heading span {
-    font-size: 10px;
   }
   .assistant-transcript {
     padding: 22px 20px;

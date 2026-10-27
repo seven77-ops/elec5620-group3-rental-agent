@@ -8,7 +8,8 @@ from ..repository import canonical
 from ..ai.provider import ProviderError
 from ..adapters.real_agent2 import RealProfilesAdapter
 from .intents import validate_intent,merge_profile,response_schema
-from .tools import execute,known_listings,CLARIFY,UNKNOWN,preference_summary,listing_context,history_context,search_answer
+from ..real_data.profile import supplied_profile
+from .tools import execute,known_listings,CLARIFY,preference_summary,listing_context,history_context,search_answer
 from .dialogue import BRIEF_SCHEMA,merge_brief,brief_summary,next_question,brief_filters,brief_profile_patch,profile_brief
 from .living import read_snapshot, model_context, answer_living
 from ..living.service import LivingService
@@ -17,6 +18,7 @@ from .lease_bridge import LeaseChatBridge
 from . import commute
 from . import areas
 from . import progress
+from .preferences_progress import guard_monthly
 
 
 def signature(case):
@@ -104,7 +106,10 @@ class AssistantService:
             require(not old or old.get('status')!='pending' or time()-old['started_at']>60,409,'request_in_progress','本次消息正在处理，请稍后重试。')
             require(c['revision']==body['expected_revision'],409,'conversation_conflict','对话已更新，请刷新后重试。')
             require(len(c['messages'])<200,409,'message_limit','这个对话已满，请新建对话。')
-            cards_context=listing_context(catalog,known_listings(c))
+            known=known_listings(c)
+            require(set(requested)<=set(known),422,'invalid_reference','只能引用当前对话已展示的房源。')
+            preview=known_listings(c,preview=True)
+            cards_context=listing_context(catalog,[i for i in preview if i not in requested]+requested)
             ids=[row['listing_id'] for row in cards_context]
             require(set(requested)<=set(ids),422,'invalid_reference','只能引用当前对话已展示的房源。')
             public_snapshot=LeaseChatBridge(self.ctx).hydrate(db,c)
@@ -117,8 +122,8 @@ class AssistantService:
         living_focus=repair_focus(self.ctx,case_id,c,living_snapshot)
         context={'task':'assistant_intent','response_schema':response_schema(),'message':body['message'],
             'history':history_context(c,ids),
-            'draft_profile':case['draft']['profile'],
-            'confirmed_profile':case['confirmations'][-1]['profile'] if (case['confirmations'] and case['confirmations'][-1]['draft_revision']==case['draft']['revision'] and case['confirmations'][-1]['fingerprint']==case['draft']['fingerprint'] and case['agent1']['state']=='Confirmed') else None,
+            'draft_profile':supplied_profile(case['draft']['profile'],case.get('requirements_contract')!='supplied-only-v1'),
+            'confirmed_profile':supplied_profile(case['confirmations'][-1]['profile'],case.get('requirements_contract')!='supplied-only-v1') if (case['confirmations'] and case['confirmations'][-1]['draft_revision']==case['draft']['revision'] and case['confirmations'][-1]['fingerprint']==case['draft']['fingerprint'] and case['agent1']['state']=='Confirmed') else None,
             'displayed_listing_ids':ids,'displayed_listings':cards_context,'selected_listing_ids':requested,
             'rental_brief':c.get('rental_brief',{}),'dialogue_mode':c.get('dialogue_mode'),
             'commute':commute.brief_context(c),
@@ -133,7 +138,7 @@ class AssistantService:
             'catalog':{'suburbs':catalog.suburbs,'fingerprint':catalog.fingerprint},
             'lease_draft':None,
             'living_services':model_context(living_snapshot,LivingService(self.ctx).directory(),focus_context(living_focus)),
-            'unknowns':['rent_scope','bills','availability','commute_minutes','move_in_date']}
+            'unknowns':['rent_scope','bills','availability','actual_door_to_class_duration','move_in_date']}
         try:
             context['lease_draft']=LeaseChatBridge(self.ctx).context(case_id)
             if lease_pending_summary: context['lease_draft']['pending_proposal']=lease_pending_summary
@@ -152,6 +157,7 @@ class AssistantService:
                     context={**context,'validation_feedback':'The previous response did not match response_schema. Return one strict JSON object using only the exact fields and enum values of its chosen intent. No markdown, prose, or extra fields.'}
             intent,recovery_calls=progress.repair_route(self.ctx,c,body['message'],intent,catalog) if not uncertain_region else (intent,[])
             calls.extend(recovery_calls)
+            intent=guard_monthly(c,body['message'],intent)
             if intent['intent']=='collect_preferences' and c.get('dialogue_mode')=='recommend_areas':
                 intent['intent']='recommend_areas'
             proposal=None
@@ -171,6 +177,8 @@ class AssistantService:
                 require(recovered['intent']=='collect_preferences',502,'ai_invalid_response','历史需求提取失败，请重试。')
                 memory={**c,'rental_brief':recovered.get('brief_patch',{})}
             brief=merge_brief(memory,intent)
+            if intent['intent']=='collect_preferences' and (brief.get('commute_mode') or brief.get('commute_max_minutes')):
+                intent['intent']='recommend_areas'
             question=next_question(brief) if intent['intent']=='collect_preferences' else None
             if uncertain_region:
                 answer={'intent':'collect_preferences','agent':'agent1','listings':[],'actions':[],
@@ -180,7 +188,8 @@ class AssistantService:
                 if names is None and 'suburb' not in intent.get('brief_patch',{}):names=c.get('area_names')
                 answer=areas.answer_areas(catalog,brief,names,intent.get('focus','balanced'))
             elif intent['intent']=='recommend_areas':
-                answer,commute_options=commute.prepare(self.ctx,c,brief,intent.get('brief_patch',{}),body['message'],body.get('allow_external_data',False))
+                answer,commute_options=commute.prepare(self.ctx,c,brief,intent.get('brief_patch',{}),body['message'],body.get('allow_external_data',False),
+                    refresh=intent.get('refresh_recommendations',False))
             elif intent['intent']=='collect_preferences' and question:
                 summary=brief_summary(brief)
                 answer={'intent':'collect_preferences','agent':'agent1',
@@ -189,19 +198,20 @@ class AssistantService:
                 patch=brief_profile_patch(brief) if intent['intent']=='collect_preferences' else intent.get('preference_patch',{})
                 try:
                     require(bool(patch),422,'empty_patch','请补充偏好。')
-                    profile=merge_profile(case['draft']['profile'],patch)
+                    profile=merge_profile(case['draft']['profile'],patch,legacy=case.get('requirements_contract')!='supplied-only-v1')
                     housing=profile.get('housing_preferences',{})
                     catalog.filters({k:v for k,v in housing.items() if k!='budget_match_mode'})
                 except (ApiError,ValueError):
                     answer={'intent':'clarify','agent':'agent1','content':CLARIFY,'listings':[],'actions':[]}
                 else:
                     proposal={'proposal_id':uid('proposal'),'case_id':case_id,'conversation_id':conversation_id,
-                        'case_signature':snapshot,'conversation_revision':c['revision']+1,'profile':profile,'status':'proposed'}
+                        'case_signature':snapshot,'conversation_revision':c['revision']+1,'profile':profile,'status':'proposed',
+                        'requirements_contract':'supplied-only-v1'}
                     answer={'intent':'update_preferences','agent':'agent1',
                         'content':'已整理新的租房条件。请核对下方摘要；确认后保存偏好并生成候选。',
                         'listings':[],'actions':[{'type':'apply_preferences','label':'确认偏好并生成候选','proposal_id':proposal['proposal_id'],'summary':preference_summary(profile)}]}
                     if intent['intent']=='collect_preferences':
-                        preview=search_answer(catalog,brief_filters(brief))
+                        preview=search_answer(catalog,brief_filters(brief),ctx=self.ctx,case_id=case_id)
                         preview['actions'].extend(answer['actions'])
                         answer={**preview,'intent':'collect_preferences','agent':'agent1',
                             'content':'条件记下了：'+brief_summary(brief)+'。\n'+preview['content']+'\n确认下方条件后，我再保存为你的租房偏好。'}
@@ -211,7 +221,10 @@ class AssistantService:
                 if prepared.get('call'): calls.append(prepared['call'])
             elif intent['intent']=='living_services':
                 answer=answer_living(self.ctx,intent,case_id,c,body['message'],living_snapshot['version'],living_focus)
-            else: answer=execute(intent,case,c,catalog,requested)
+            elif intent['intent']=='transit_info':
+                from .transit_info import answer as transit_answer
+                answer=transit_answer(self.ctx,intent,case,c,requested,body.get('allow_external_data',False))
+            else: answer=execute(intent,case,c,catalog,requested,ctx=self.ctx)
             search_filters=answer.pop('_search_filters',None)
             area_names=answer.pop('_area_names',None)
             next_living_focus=answer.pop('_living_focus',None)
@@ -264,6 +277,10 @@ class AssistantService:
                         for field in ('occupants','rental_mode'):
                             if field in changed:kept[field]=changed[field]
                         kept.update({k:v for k,v in changed.get('housing_preferences',{}).items() if k in ('suburb','min_bedrooms','min_bathrooms','min_car_spaces')})
+                        if changed.get('student_commute'):
+                            student=profile['student_commute']
+                            kept.update(commute_mode=student['mode'],commute_max_minutes=student['maximum_minutes'],commute_hard_limit=True)
+                            if student.get('arrival_time'):kept['arrival_time']=student['arrival_time']
                         current['rental_brief']=kept
                         current['dialogue_mode']='recommend_areas'
                     else:
@@ -319,6 +336,8 @@ class AssistantService:
             if old: return old['result']
             c=self.get(db,case_id,p['conversation_id']); case=self.ctx.get(db,'case',case_id)
             require(p['status']=='proposed',409,'proposal_applied','此偏好提案已应用。')
+            require(p.get('requirements_contract')=='supplied-only-v1',409,'stale_proposal',
+                    '这份旧摘要包含演示初始条件，请在“我的租房需求”中重新核对并同步。')
             require(signature(case)==p['case_signature'] and c['revision']==p['conversation_revision'],409,'stale_proposal','偏好或对话已更新，请重新提出修改。')
             joined=copy(self.ctx); joined.repo=BorrowedRepository(self.ctx.repo,db)
             adapter=RealProfilesAdapter(joined)
@@ -326,8 +345,8 @@ class AssistantService:
             case=adapter.confirm(case_id,{'draft_revision':case['draft']['revision'],'fingerprint':case['draft']['fingerprint'],'review_token':case['agent1']['review_token']})
             run=adapter.evaluation(case_id,{'request_id':'assistant-'+p['proposal_id'],'confirmation_version':case['confirmations'][-1]['version']})
             case=self.ctx.get(db,'case',case_id)
-            cards=[self.catalog().get(r['listing_id']) for r in run['report']['recommendations']]
-            c['messages'].append(message('assistant',f"Agent1 已确认偏好版本 {case['confirmations'][-1]['version']}，Agent2 找到 {run['report']['counts']['input']} 条房源候选。"+UNKNOWN,
+            cards=deepcopy(run['report']['pending_confirmation'])
+            c['messages'].append(message('assistant',f"Agent1 已确认偏好版本 {case['confirmations'][-1]['version']}，Agent2 找到 {run['report']['counts']['input']} 条房源候选。",
                 'agent2',intent='search',listings=cards,actions=[{'type':'navigate','label':'查看候选报告','page':'recommendations','run_id':run['run_id']}]))
             c['last_search_filters']=run['report']['filters']
             if c.get('rental_brief',{}).get('recommend_areas'):

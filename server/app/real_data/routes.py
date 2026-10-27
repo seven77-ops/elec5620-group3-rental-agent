@@ -10,7 +10,7 @@ def register_real_data_routes(app, services):
     provider = services.data_provider
 
     def config():
-        return {'coverage': market.coverage(), 'providers': provider.public_config(),
+        return {'coverage': market.coverage(), 'providers': {**provider.public_config(),'transit':services.transit_provider.public_config()},
                 'mode': 'real_data_research', 'formal_recommendation_enabled': False}
 
     def benchmark(postcode: str, bedrooms: int, rent_scope: str, weekly_rent: float | None = None):

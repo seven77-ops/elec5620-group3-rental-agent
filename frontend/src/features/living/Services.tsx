@@ -94,7 +94,6 @@ export default function Services({
       <div className="living-section-heading">
         <div>
           <h2>搬运与清洁</h2>
-          <p>查看有官方来源的服务商，记录你自己收到的报价或预约。</p>
         </div>
       </div>
       <p className="living-note">

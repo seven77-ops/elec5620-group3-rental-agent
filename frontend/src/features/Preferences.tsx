@@ -32,21 +32,32 @@ function Summary({ profile }: { profile: Profile }) {
       <div>
         <dt>周预算</dt>
         <dd>
-          {money(profile.budget?.preferred)}，最高{" "}
-          {money(profile.budget?.maximum)} /{" "}
+          {profile.budget?.preferred != null
+            ? `期望 ${money(profile.budget.preferred)}，`
+            : ""}
+          最高 {money(profile.budget?.maximum)} /{" "}
           {label(profile.budget?.scope ?? "")}
           <small>
-            {profile.budget?.includes_bills ? "包含账单" : "账单另核对"} ·{" "}
-            {profile.budget?.hard_limit
-              ? "最高预算为硬条件"
-              : "最高预算为软限制"}
+            {profile.budget?.includes_bills == null
+              ? "账单要求未填写"
+              : profile.budget.includes_bills
+                ? "包含账单"
+                : "账单另核对"}{" "}
+            ·{" "}
+            {profile.budget?.hard_limit == null
+              ? ""
+              : profile.budget.hard_limit
+                ? "最高预算为硬条件"
+                : "最高预算为软限制"}
           </small>
         </dd>
       </div>
       <div>
         <dt>居住</dt>
         <dd>
-          {profile.occupants} 人 · {label(profile.rental_mode)}
+          {profile.occupants == null ? "人数未填写" : `${profile.occupants} 人`}{" "}
+          ·{" "}
+          {profile.rental_mode ? label(profile.rental_mode) : "租赁方式未填写"}
         </dd>
       </div>
       {profile.housing_preferences && (
@@ -68,34 +79,38 @@ function Summary({ profile }: { profile: Profile }) {
           </dd>
         </div>
       )}
-      <div>
-        <dt>通勤</dt>
-        <dd>
-          期望 {profile.commute?.preferred_minutes} 分钟，最长{" "}
-          {profile.commute?.maximum_minutes} 分钟
-          <small>
-            {profile.destination_id} · {profile.arrival_time} 到达 ·{" "}
-            {profile.timezone ?? "Australia/Sydney"}
-            <br />
-            {profile.commute?.modes?.map(label).join("、")} ·{" "}
-            {profile.commute?.hard_limit
-              ? "最长通勤为硬条件"
-              : "最长通勤为软限制"}
-          </small>
-        </dd>
-      </div>
-      <div>
-        <dt>租期</dt>
-        <dd>
-          {profile.move_in_window?.from} 至 {profile.move_in_window?.to} 入住
-          <small>{profile.lease_months} 个月</small>
-        </dd>
-      </div>
+      {(profile.commute || profile.destination_id) && (
+        <div>
+          <dt>通勤</dt>
+          <dd>
+            期望 {profile.commute?.preferred_minutes} 分钟，最长{" "}
+            {profile.commute?.maximum_minutes} 分钟
+            <small>
+              {profile.destination_id} · {profile.arrival_time} 到达 ·{" "}
+              {profile.timezone ?? "Australia/Sydney"}
+              <br />
+              {profile.commute?.modes?.map(label).join("、")} ·{" "}
+              {profile.commute?.hard_limit
+                ? "最长通勤为硬条件"
+                : "最长通勤为软限制"}
+            </small>
+          </dd>
+        </div>
+      )}
+      {(profile.move_in_window || profile.lease_months) && (
+        <div>
+          <dt>租期</dt>
+          <dd>
+            {profile.move_in_window?.from} 至 {profile.move_in_window?.to} 入住
+            <small>{profile.lease_months} 个月</small>
+          </dd>
+        </div>
+      )}
       <div>
         <dt>必须满足</dt>
         <dd>
           {profile.hard_requirements?.map(label).join("、") ||
-            "无额外设施硬要求"}
+            (profile.hard_requirements ? "无额外设施硬要求" : "未填写")}
         </dd>
       </div>
       <div>
@@ -155,17 +170,22 @@ export default function Preferences() {
   const confirmation = currentConfirmation(current);
   const legacy = !current.agent1;
   const values = Form.useWatch([], form) as Profile | undefined;
-  const profile = values ?? current.draft.profile;
+  const savedProfile = current.requirements_profile ?? current.draft.profile;
+  const profile = values ?? savedProfile;
   const save = async () => {
     try {
       const value = await form.validateFields();
-      if (Object.values(value.weights ?? {}).every((v) => v === 0)) {
+      if (
+        config.mode !== "real_listings" &&
+        Object.values(value.weights ?? {}).every((v) => v === 0)
+      ) {
         form.setFields([
           { name: ["weights", "commute"], errors: ["四维权重至少一项大于零"] },
         ]);
         return;
       }
       if (config.mode === "real_listings") {
+        value.budget = { currency: "AUD", period: "week", ...value.budget };
         value.housing_preferences = { ...value.housing_preferences };
         for (const key of [
           "suburb",
@@ -173,19 +193,28 @@ export default function Preferences() {
           "min_bathrooms",
           "min_car_spaces",
         ] as const) {
-          value.housing_preferences[key] ??= null;
+          if (value.housing_preferences[key] == null) {
+            if (savedProfile.housing_preferences?.[key] != null)
+              value.housing_preferences[key] = null;
+            else delete value.housing_preferences[key];
+          }
         }
       }
-      value.soft_preferences = Object.fromEntries(
-        Object.entries(value.soft_preferences ?? {}).filter(
-          ([key, v]) =>
-            !value.hard_requirements.includes(key) && v != null && v > 0,
-        ),
-      );
+      if (
+        value.soft_preferences &&
+        Object.values(value.soft_preferences).some((v) => v != null)
+      )
+        value.soft_preferences = Object.fromEntries(
+          Object.entries(value.soft_preferences ?? {}).filter(
+            ([key, v]) =>
+              !value.hard_requirements?.includes(key) && v != null && v > 0,
+          ),
+        );
+      else delete value.soft_preferences;
       void action.run(async () => {
         await post(`/cases/${current.case_id}/profile-drafts`, {
           expected_revision: current.draft.revision,
-          profile: mergeEditableProfile(current.draft.profile, value),
+          profile: mergeEditableProfile(savedProfile, value),
         });
         await refresh();
         setDirty(false);
@@ -205,7 +234,7 @@ export default function Preferences() {
             warnings={current.agent1?.warnings ?? []}
             real={config.mode === "real_listings"}
           />
-          <Summary profile={current.draft.profile} />
+          <Summary profile={savedProfile} />
         </>
       ),
       okText: "确认这些条件",
@@ -255,7 +284,7 @@ export default function Preferences() {
           title="旧版偏好记录只读"
           description="历史资料已保留，请新建案例填写需求。"
         />
-      ) : !current.confirmations.length ? (
+      ) : config.mode !== "real_listings" && !current.confirmations.length ? (
         <p className="muted small">初始条件仅为示例，请保存并确认你的需求。</p>
       ) : null}
       <Failure error={action.error} retry={action.retry} />
@@ -264,7 +293,7 @@ export default function Preferences() {
           form={form}
           disabled={legacy || action.busy}
           name="preferences"
-          initialValues={current.draft.profile}
+          initialValues={savedProfile}
           layout="vertical"
           onValuesChange={() => setDirty(true)}
           className="preference-form"
@@ -276,7 +305,12 @@ export default function Preferences() {
               <Form.Item
                 label="期望周预算（AUD）"
                 name={["budget", "preferred"]}
-                rules={[{ required: true, message: "填写期望周预算" }]}
+                rules={[
+                  {
+                    required: config.mode !== "real_listings",
+                    message: "填写期望周预算",
+                  },
+                ]}
               >
                 <InputNumber min={0} />
               </Form.Item>
@@ -287,6 +321,8 @@ export default function Preferences() {
                   { required: true, message: "填写最高周预算" },
                   {
                     validator: (_, v) =>
+                      v == null ||
+                      form.getFieldValue(["budget", "preferred"]) == null ||
                       v >= form.getFieldValue(["budget", "preferred"])
                         ? Promise.resolve()
                         : Promise.reject(new Error("最高预算不能低于期望预算")),
@@ -298,7 +334,7 @@ export default function Preferences() {
               <Form.Item
                 label="计价对象"
                 name={["budget", "scope"]}
-                rules={[{ required: true }]}
+                rules={[{ required: config.mode !== "real_listings" }]}
               >
                 <Select
                   options={["per_person", "per_room", "whole_property"].map(
@@ -319,7 +355,7 @@ export default function Preferences() {
               <Form.Item
                 label="居住人数"
                 name="occupants"
-                rules={[{ required: true }]}
+                rules={[{ required: config.mode !== "real_listings" }]}
               >
                 <InputNumber min={1} precision={0} />
               </Form.Item>
@@ -429,22 +465,26 @@ export default function Preferences() {
               <Form.Item
                 label="目的地标识"
                 name="destination_id"
-                rules={[{ required: true }]}
-                extra="演示目的地：demo-usyd"
+                rules={[{ required: config.mode !== "real_listings" }]}
+                extra={
+                  config.mode === "real_listings"
+                    ? undefined
+                    : "演示目的地：demo-usyd"
+                }
               >
                 <Input />
               </Form.Item>
               <Form.Item
                 label="到达时间（悉尼）"
                 name="arrival_time"
-                rules={[{ required: true }]}
+                rules={[{ required: config.mode !== "real_listings" }]}
               >
                 <Input type="time" />
               </Form.Item>
               <Form.Item
                 label="期望通勤（分钟）"
                 name={["commute", "preferred_minutes"]}
-                rules={[{ required: true }]}
+                rules={[{ required: config.mode !== "real_listings" }]}
               >
                 <InputNumber min={0} />
               </Form.Item>
@@ -452,9 +492,12 @@ export default function Preferences() {
                 label="最长通勤（分钟）"
                 name={["commute", "maximum_minutes"]}
                 rules={[
-                  { required: true },
+                  { required: config.mode !== "real_listings" },
                   {
                     validator: (_, v) =>
+                      v == null ||
+                      form.getFieldValue(["commute", "preferred_minutes"]) ==
+                        null ||
                       v >= form.getFieldValue(["commute", "preferred_minutes"])
                         ? Promise.resolve()
                         : Promise.reject(new Error("最长通勤不能小于期望通勤")),
@@ -469,7 +512,7 @@ export default function Preferences() {
               name={["commute", "modes"]}
               rules={[
                 {
-                  required: true,
+                  required: config.mode !== "real_listings",
                   type: "array",
                   min: 1,
                   message: "至少选择一种交通方式",
@@ -496,7 +539,7 @@ export default function Preferences() {
               <Form.Item
                 label="最早入住"
                 name={["move_in_window", "from"]}
-                rules={[{ required: true }]}
+                rules={[{ required: config.mode !== "real_listings" }]}
               >
                 <Input type="date" />
               </Form.Item>
@@ -504,9 +547,12 @@ export default function Preferences() {
                 label="最晚入住"
                 name={["move_in_window", "to"]}
                 rules={[
-                  { required: true },
+                  { required: config.mode !== "real_listings" },
                   {
                     validator: (_, v) =>
+                      v == null ||
+                      !v ||
+                      !form.getFieldValue(["move_in_window", "from"]) ||
                       v >= form.getFieldValue(["move_in_window", "from"])
                         ? Promise.resolve()
                         : Promise.reject(new Error("最晚入住不能早于最早入住")),
@@ -518,7 +564,7 @@ export default function Preferences() {
               <Form.Item
                 label="租期（月）"
                 name="lease_months"
-                rules={[{ required: true }]}
+                rules={[{ required: config.mode !== "real_listings" }]}
               >
                 <InputNumber min={1} />
               </Form.Item>
@@ -554,42 +600,49 @@ export default function Preferences() {
                 </Form.Item>
               ))}
             </div>
-            <h3>你更看重什么？</h3>
-            <p className="muted">
-              四维权重至少一项大于零。后端统一归一化后计算。
-            </p>
-            {dimensions.map((key) => (
-              <Form.Item
-                key={key}
-                name={["weights", key]}
-                label={`${label(key)}权重`}
-                dependencies={dimensions
-                  .filter((other) => other !== key)
-                  .map((other) => ["weights", other])}
-                rules={[
-                  {
-                    required: true,
-                    type: "number",
-                    min: 0,
-                    max: 1,
-                    message: "权重须介于 0 和 1 之间",
-                  },
-                  {
-                    validator: () =>
-                      key !== "commute" ||
-                      dimensions.some(
-                        (dimension) =>
-                          Number(form.getFieldValue(["weights", dimension])) >
-                          0,
-                      )
-                        ? Promise.resolve()
-                        : Promise.reject(new Error("四维权重至少一项大于零")),
-                  },
-                ]}
-              >
-                <WeightControl dimension={label(key)} />
-              </Form.Item>
-            ))}
+            {config.mode !== "real_listings" && (
+              <>
+                <h3>你更看重什么？</h3>
+                <p className="muted">
+                  四维权重至少一项大于零。后端统一归一化后计算。
+                </p>
+                {dimensions.map((key) => (
+                  <Form.Item
+                    key={key}
+                    name={["weights", key]}
+                    label={`${label(key)}权重`}
+                    dependencies={dimensions
+                      .filter((other) => other !== key)
+                      .map((other) => ["weights", other])}
+                    rules={[
+                      {
+                        required: true,
+                        type: "number",
+                        min: 0,
+                        max: 1,
+                        message: "权重须介于 0 和 1 之间",
+                      },
+                      {
+                        validator: () =>
+                          key !== "commute" ||
+                          dimensions.some(
+                            (dimension) =>
+                              Number(
+                                form.getFieldValue(["weights", dimension]),
+                              ) > 0,
+                          )
+                            ? Promise.resolve()
+                            : Promise.reject(
+                                new Error("四维权重至少一项大于零"),
+                              ),
+                      },
+                    ]}
+                  >
+                    <WeightControl dimension={label(key)} />
+                  </Form.Item>
+                ))}
+              </>
+            )}
           </section>
         </Form>
         <aside className="preference-summary">

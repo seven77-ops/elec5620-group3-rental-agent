@@ -67,6 +67,11 @@ async function photoFixture(page: Page, request: APIRequestContext) {
       },
     });
   });
+  await page.route("**/api/v1/listings/*", (route) => {
+    const identifier = decodeURIComponent(new URL(route.request().url()).pathname.split("/").pop()!);
+    const item = items.find((row: Record<string, unknown>) => row.listing_id === identifier);
+    return item ? route.fulfill({ json: item }) : route.continue();
+  });
   return { c, items, urls };
 }
 
@@ -94,7 +99,7 @@ test("real-photo thumbnail opens details by keyboard, previews and retains obser
     )
     .toBeGreaterThan(0);
   await expect(page.getByTestId("real-catalog").locator("thead th")).toHaveText(
-    ["房源", "卧室", "浴室", "车位", "周租", "操作"],
+    ["房源", "卧室", "浴室", "车位", "周租", "到悉大", "操作"],
   );
   await thumb.focus();
   await page.keyboard.press("Enter");

@@ -16,10 +16,7 @@ export default function ContractAssistant() {
       : "draft";
   return (
     <>
-      <PageTitle
-        title="合同助手"
-        description="没有合同，先准备草稿；已有合同，上传核对。"
-      />
+      <PageTitle title="合同助手" />
       <Tabs
         activeKey={mode}
         onChange={(key) => setParams({ mode: key })}

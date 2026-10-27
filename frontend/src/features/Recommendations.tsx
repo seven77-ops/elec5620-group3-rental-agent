@@ -112,8 +112,8 @@ export default function Recommendations() {
       content: (
         <>
           <p>
-            {money(item.weekly_cost)} / {label(p.budget.scope)} / 周，模拟通勤{" "}
-            {item.commute_minutes} 分钟。
+            {money(item.weekly_cost)} / {label(p.budget?.scope ?? "")} /
+            周，模拟通勤 {item.commute_minutes} 分钟。
           </p>
           <p>
             将按披露的模拟选择时间重新检查资格与证据时效。此操作不表示已经签约。
@@ -231,17 +231,17 @@ export default function Recommendations() {
             <div>
               <span>最高周预算</span>
               <strong>
-                {money(p.budget.maximum)} / {label(p.budget.scope)}
+                {money(p.budget?.maximum)} / {label(p.budget?.scope ?? "")}
               </strong>
             </div>
             <div>
               <span>最长通勤</span>
-              <strong>{p.commute.maximum_minutes} 分钟</strong>
+              <strong>{p.commute?.maximum_minutes} 分钟</strong>
             </div>
             <div>
               <span>必须满足</span>
               <strong>
-                {p.hard_requirements.map(label).join("、") || "无额外设施要求"}
+                {p.hard_requirements?.map(label).join("、") || "无额外设施要求"}
               </strong>
             </div>
           </section>
@@ -330,7 +330,7 @@ export default function Recommendations() {
                       </span>
                       <div>
                         <h2>{item.listing_id}</h2>
-                        <p>合成房源 · {label(p.rental_mode)}</p>
+                        <p>合成房源 · {label(p.rental_mode ?? "")}</p>
                       </div>
                     </div>
                     <div className="score">
@@ -352,7 +352,8 @@ export default function Recommendations() {
                     <div>
                       <span>可比周费用</span>
                       <strong>
-                        {money(item.weekly_cost)} / {label(p.budget.scope)}
+                        {money(item.weekly_cost)} /{" "}
+                        {label(p.budget?.scope ?? "")}
                       </strong>
                     </div>
                     <div>
@@ -365,7 +366,7 @@ export default function Recommendations() {
                     <div>
                       <span>账单范围</span>
                       <strong>
-                        {p.budget.includes_bills
+                        {p.budget?.includes_bills
                           ? "按含账单条件评估"
                           : "按不含账单条件评估"}
                       </strong>

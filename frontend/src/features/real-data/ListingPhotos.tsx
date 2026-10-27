@@ -8,9 +8,16 @@ function observedPhotos(listing: HousingAd): HousingPhoto[] {
   return (listing.photos ?? []).filter((photo) => {
     try {
       const url = new URL(photo.url);
+      const source = new URL(photo.photo_source_url ?? photo.source_url);
+      const sourceAllowed = source.protocol === "https:" &&
+        ["www.domain.com.au", "www.property.com.au", "www.realestate.com.au"].includes(source.hostname) &&
+        !source.username && !source.password && !source.port && !source.search && !source.hash;
+      const imageHost = source.hostname === "www.domain.com.au"
+        ? "rimh2.domainstatic.com.au" : "i2.au.reastatic.net";
       return (
+        sourceAllowed &&
         url.protocol === "https:" &&
-        url.hostname === "rimh2.domainstatic.com.au" &&
+        url.hostname === imageHost &&
         !url.username &&
         !url.password &&
         (!url.port || url.port === "443") &&
@@ -112,7 +119,7 @@ export function ListingGallery({ listing }: { listing: HousingAd }) {
       </Image.PreviewGroup>
       <div className="listing-photo-caption">
         <a
-          href={photos[0].source_url}
+          href={photos[0].photo_source_url ?? photos[0].source_url}
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -120,6 +127,8 @@ export function ListingGallery({ listing }: { listing: HousingAd }) {
         </a>
         <span>
           {photos.length} 张 · 照片采集于 {displayDate(photos[0].captured_at)}
+          {photos[0].photo_source_kind === "same_property_history" || photos[0].photo_source_kind === "same_property_reference"
+            ? " · 同址资料照片" : ""}
         </span>
       </div>
     </section>

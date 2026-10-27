@@ -7,6 +7,7 @@ import type {
   TenancyPreview,
 } from "../../api/living";
 import { newRequestId } from "../../api/client";
+import { Failure } from "../../components/Common";
 import { useAction } from "../../components/useAction";
 const labels: Partial<Record<keyof LivingProfile, string>> = {
   address: "居住地址",
@@ -22,9 +23,7 @@ const sourceLabel = (
   version: number | undefined,
 ) => {
   const title = label || "租约资料";
-  return version && !/\bv\d+\b/i.test(title)
-    ? `${title} · v${version}`
-    : title;
+  return version && !/\bv\d+\b/i.test(title) ? `${title} · v${version}` : title;
 };
 const nonempty = (value: unknown) =>
   value !== null &&
@@ -52,7 +51,7 @@ export default function TenancySource({
     [selected, setSelected] = useState<string[]>([]),
     [actual, setActual] = useState(false),
     [loading, setLoading] = useState(false),
-    [error, setError] = useState<string | null>(null);
+    [error, setError] = useState<unknown>(null);
   const action = useAction(),
     generation = useRef(0),
     { modal } = App.useApp();
@@ -85,10 +84,7 @@ export default function TenancySource({
         ),
       );
     } catch (error) {
-      if (token === generation.current)
-        setError(
-          error instanceof Error ? error.message : "租约来源暂时无法读取。",
-        );
+      if (token === generation.current) setError(error);
     } finally {
       if (token === generation.current) setLoading(false);
     }
@@ -149,11 +145,9 @@ export default function TenancySource({
     <section className="living-source-bar">
       <div>
         <strong>租约与生活资料</strong>
-        <p>
-          {record.tenancy_source
-            ? `已接入：${sourceLabel(record.tenancy_source.label, record.tenancy_source.version)}`
-            : "从已保存的租约核对地址、联系人与租期。"}
-        </p>
+        {record.tenancy_source && (
+          <p>{`已接入：${sourceLabel(record.tenancy_source.label, record.tenancy_source.version)}`}</p>
+        )}
       </div>
       <Button disabled={busy || action.busy} onClick={() => void read()}>
         查看租约来源
@@ -183,32 +177,23 @@ export default function TenancySource({
           </div>
         ) : (
           <>
-            {(error || action.error) && (
-              <Alert
-                type="error"
-                title="来源接入未完成"
-                description={
-                  error ||
-                  (action.error instanceof Error
-                    ? action.error.message
-                    : "请重新核对来源。")
-                }
-                action={
-                  <Space>
-                    {Boolean(action.error) && (
-                      <Button
-                        loading={action.busy}
-                        onClick={() => void action.retry()}
-                      >
-                        重试原接入
-                      </Button>
-                    )}
-                    <Button disabled={action.busy} onClick={() => void read()}>
-                      重新预览
+            {Boolean(error || action.error) && (
+              <>
+                <Failure error={error || action.error} />
+                <Space>
+                  {Boolean(action.error) && (
+                    <Button
+                      loading={action.busy}
+                      onClick={() => void action.retry()}
+                    >
+                      重试原接入
                     </Button>
-                  </Space>
-                }
-              />
+                  )}
+                  <Button disabled={action.busy} onClick={() => void read()}>
+                    重新预览
+                  </Button>
+                </Space>
+              </>
             )}
             {!preview?.source ? (
               <p className="muted">

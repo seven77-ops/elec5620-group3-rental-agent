@@ -28,7 +28,10 @@ def comparison_needs(case,conversation):
     confirmed=current_confirmed_profile(case)
     needs={}; sources=[]
     if confirmed:
-        needs={**confirmed.get('housing_preferences',{}),'max_weekly_rent':confirmed['budget']['maximum']}
+        from ..real_data.profile import supplied_profile
+        confirmed=supplied_profile(confirmed,case.get('requirements_contract')!='supplied-only-v1')
+        needs={**confirmed.get('housing_preferences',{})}
+        if 'maximum' in confirmed.get('budget',{}): needs['max_weekly_rent']=confirmed['budget']['maximum']
         sources.append('当前已确认偏好')
     def use_brief():
         needs.update({k:v for k,v in brief.items() if k in ('suburb','min_bedrooms','min_bathrooms','min_car_spaces')})
@@ -47,6 +50,9 @@ def comparison_needs(case,conversation):
 def build_comparison(cards,case,conversation):
     needs,basis,brief=comparison_needs(case,conversation)
     confirmed=current_confirmed_profile(case)
+    if confirmed:
+        from ..real_data.profile import supplied_profile
+        confirmed=supplied_profile(confirmed,case.get('requirements_contract')!='supplied-only-v1')
     hard_requirements=confirmed.get('hard_requirements',[]) if confirmed else []
     items=[]; ranks=[]
     for row in cards:
@@ -67,8 +73,8 @@ def build_comparison(cards,case,conversation):
             tradeoffs.append('已知为开放式睡眠空间，不符合已确认的独立卧室硬要求'); violations+=1
         ceiling=needs.get('max_weekly_rent')
         if ceiling is not None:
-            if row['weekly_rent']<=ceiling: matches.append(f"房源标示周租 AUD {row['weekly_rent']:g} 在查询金额上限 {ceiling:g} 内；个人费用待核实")
-            else: tradeoffs.append(f"房源标示周租高于查询金额上限 AUD {row['weekly_rent']-ceiling:g}；计价对象待核实"); violations+=1
+            if row['weekly_rent']<=ceiling: matches.append(f"房源标示周租 AUD {row['weekly_rent']:g} 在查询金额上限 {ceiling:g} 内")
+            else: tradeoffs.append(f"房源标示周租高于查询金额上限 AUD {row['weekly_rent']-ceiling:g}"); violations+=1
         if not matches and not tradeoffs: matches.append('可核对已展示的卧卫、车位和标示周租')
         checks=list(QUESTIONS)
         if row.get('advertised_bedrooms')==0: checks.append('房源为开放式空间，请确认是否符合独立卧室需求。')
@@ -82,7 +88,6 @@ def build_comparison(cards,case,conversation):
     else: summary='尚无个人条件，先比较已知房源差异；补充你更在意的条件后可进一步判断。'
     if cards:
         summary+=f"这些房源标示周租范围为 AUD {min(r['weekly_rent'] for r in cards):g}–{max(r['weekly_rent'] for r in cards):g}。"
-    summary+='计价对象、账单和在租状态待核实，不能据此认定个人总费用或实际性价比。'
     if brief.get('budget_amount') and brief.get('budget_period')!='week': summary+='月预算或未确认周期的预算未用于周租比较，请确认每周金额。'
     return {'basis':basis,'recommended_listing_id':recommended,'items':items,'summary':summary}
 

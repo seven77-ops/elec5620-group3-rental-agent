@@ -3,7 +3,6 @@ from ..real_data.preferences import preference_context
 from ..real_data.market import MarketData
 from .comparison import build_comparison,verification_checklist
 
-UNKNOWN = '是否仍在租、计价对象、账单、起租日期和通勤均待核实。'
 CLARIFY = '请确认预算是每周还是每月、按人还是整套，并补充区域、卧卫车位要求或明确房源编号。'
 CLARIFICATION_TEMPLATES = {
     'budget_units': '请确认预算金额是每周还是每月、按人、按房间还是整套，以及是否含账单。',
@@ -14,11 +13,13 @@ CLARIFICATION_TEMPLATES = {
 }
 
 
-def known_listings(conversation):
+def known_listings(conversation,preview=False):
     # Repeated cards regain their current display recency before the context bound.
     identifiers={}
     for message in conversation['messages']:
-        for row in message['listings']:
+        rows=message['listings']
+        if preview:rows=rows[:12]
+        for row in rows:
             identifiers.pop(row['listing_id'],None)
             identifiers[row['listing_id']]=True
     return list(identifiers)
@@ -28,23 +29,26 @@ def reference_listings(conversation):
     return next((m['listings'] for m in reversed(conversation['messages']) if m['listings']),[])
 
 
-def execute(intent,case,conversation,catalog,requested_ids):
+def execute(intent,case,conversation,catalog,requested_ids,ctx=None):
     name=intent['intent']; cards=[]; actions=[]
     if name=='workflow':
         from .workflow import execute_workflow
-        return execute_workflow(intent,case,conversation,catalog,requested_ids)
+        return execute_workflow(intent,case,conversation,catalog,requested_ids,ctx=ctx)
     agent={'update_preferences':'agent1','search':'agent2','compare':'agent2','explain':'agent2','market':'agent2','select':'agent2',
            'contract':'agent3','aftercare':'agent4','followup':'agent2','draft_contract':'agent3'}.get(name,'assistant')
     ids=requested_ids or intent.get('listing_ids',[])
     if not ids and name in ('compare','explain','select'):
         return {'intent':'clarify','agent':agent,'content':'请指出要讨论的房源，可提供房源编号或在卡片中选择。','listings':[],'actions':[]}
+    if name=='outside_scope':
+        return {'intent':name,'agent':'assistant','content':'当前找房面向悉尼大学 Camperdown / Darlington 主校区学生。暂不覆盖其他学校、其他校区或上班通勤；可以继续按你的预算、房型和到悉大时间找房。','listings':[],'actions':[]}
     if name=='search':
         # Unconfirmed drafts are context only; never silently used as confirmed filters.
-        filters=preference_context(case['confirmations'][-1]['profile'],catalog)['filters'] if (
+        filters=preference_context(case['confirmations'][-1]['profile'],catalog,
+            legacy=case.get('requirements_contract')!='supplied-only-v1')['filters'] if (
             case['confirmations'] and case['confirmations'][-1]['fingerprint']==case['draft']['fingerprint'] and
             case['confirmations'][-1]['draft_revision']==case['draft']['revision']) else {}
         filters={**(conversation.get('last_search_filters') or filters),**intent.get('filters',{})}
-        return search_answer(catalog,filters)
+        return search_answer(catalog,filters,ctx=ctx,case_id=case["case_id"])
     elif name in ('compare','explain','select'):
         cards=[catalog.get(i) for i in ids]
         if name=='compare' and len(cards)<2:
@@ -54,7 +58,7 @@ def execute(intent,case,conversation,catalog,requested_ids):
         if name=='select':
             actions=[{'type':'navigate','label':'前往候选页确认保存','page':'recommendations'}]
             lines.append('请在候选页按当前确认偏好生成报告，再明确确认保存。')
-        content='\n'.join(lines)+'\n'+UNKNOWN
+        content='\n'.join(lines)
     elif name=='followup':
         selection=case.get('selection')
         current=(selection and case['confirmations'] and
@@ -94,7 +98,7 @@ def execute(intent,case,conversation,catalog,requested_ids):
     if name=='compare':
         result['comparison']=build_comparison(cards,case,conversation)
         result['content']+='\n'+result['comparison']['summary']
-    if name in ('compare','explain') or (name=='clarify' and intent.get('clarification_reason')=='unknown_fact'):
+    if name=='clarify' and intent.get('clarification_reason')=='unknown_fact':
         result['verification_checklist']=verification_checklist()
     return result
 
@@ -107,11 +111,17 @@ def query_text(filters):
     return '，'.join(parts)
 
 
-def search_answer(catalog,filters):
-    result=catalog.search(filters,page_size=5)
+def search_answer(catalog,filters,ctx=None,case_id=None):
+    if ctx is not None and case_id and filters.get("usyd_max_minutes") is not None:
+        from ..commute.matching import matching_for_case
+        matched=matching_for_case(ctx,case_id,filters)
+        result={"items":matched,"total":len(matched),"filters":catalog.filters(filters)}
+    else:
+        f=catalog.filters(filters);matched=catalog.matching(f)
+        result={"items":matched,"total":len(matched),"filters":f}
     f=result['filters']; cards=result['items']; actions=[]
     if cards:
-        content=f"按这些条件找到 {result['total']} 条房源，先给你看 {len(cards)} 条。"+query_text(f)+'。'
+        content=f"按这些条件找到 {result['total']} 条房源。"+query_text(f)+'。'
     else:
         content='按'+query_text(f)+'，当前房源库没有匹配的房源。'
         if 'max_weekly_rent' in f:
@@ -133,37 +143,68 @@ def search_answer(catalog,filters):
                     'message':'只预览房源：'+query_text(elsewhere)+'。不要修改已保存的偏好。'})
         if actions: content+='\n你更愿意调整预算，还是扩大区域？我会等你选择。'
         else: content+='\n暂时没有只调整预算或区域就能匹配的方案。你愿意先调整哪项条件？'
-    content+='\n这是房源标价预览，偏好尚未修改；在租状态、账单和计价对象仍需核实。'
     return {'intent':'search','agent':'agent2','content':content,'listings':cards,'actions':actions,'_search_filters':f}
 
 
 def preference_summary(profile):
-    """Show all consequential inherited values before the explicit confirmation."""
-    b=profile['budget']; h=profile.get('housing_preferences',{}); c=profile['commute']; dates=profile['move_in_window']
-    scope={'per_person':'按人','per_room':'按房间','whole_property':'整套'}[b['scope']]
-    mode={'private_room':'独立单间','shared_room':'共享房间','whole_property':'整租','student_accommodation':'学生公寓'}[profile['rental_mode']]
-    budget_mode='按房源金额粗筛' if h.get('budget_match_mode','advertised_amount')=='advertised_amount' else '仅同计价对象筛预算'
-    labels={'commute':'通勤','cost':'费用','housing':'居住','amenities':'设施',
+    """Review supplied values only. Missing information is never a default preference."""
+    b=profile.get('budget',{}); h=profile.get('housing_preferences',{}); c=profile.get('commute',{})
+    labels={'per_person':'按人','per_room':'按房间','whole_property':'整套',
+        'private_room':'独立单间','shared_room':'共享房间','student_accommodation':'学生公寓',
+        'commute':'通勤','cost':'费用','housing':'居住','amenities':'设施',
         'private_bedroom':'独立卧室','private_bathroom':'独立卫浴','furnished':'家具',
         'laundry':'洗衣设施','kitchen_access':'厨房','public_transport':'公共交通',
         'walk':'步行','drive':'驾车','bike':'骑行'}
-    destination='悉尼大学（预设目的地，待核实）' if profile['destination_id']=='demo-usyd' else profile['destination_id']
-    def readable_values(values):
-        return '、'.join(labels.get(k,k)+' '+f'{v:g}' for k,v in values.items()) or '未指定'
-    result=[f"预算：偏好 {b['preferred']:g}，上限 {b['maximum']:g} AUD/周；{scope}，{'含账单' if b['includes_bills'] else '不含账单'}；{'硬上限' if b['hard_limit'] else '可协商'}。",
-        f"人数：{profile['occupants']}；租赁方式：{mode}。",
-        f"区域：{h.get('suburb') or '不限'}；至少卧室 {h.get('min_bedrooms') if h.get('min_bedrooms') is not None else '不限'}、浴室 {h.get('min_bathrooms') if h.get('min_bathrooms') is not None else '不限'}、车位 {h.get('min_car_spaces') if h.get('min_car_spaces') is not None else '不限'}；{budget_mode}。",
-        f"通勤：目的地 {destination}；方式 {'、'.join(labels.get(k,k) for k in c['modes'])}；偏好 {c['preferred_minutes']:g}、最长 {c['maximum_minutes']:g} 分钟；{'硬限制' if c['hard_limit'] else '可协商'}；到达 {profile['arrival_time']}（{profile['timezone']}）。",
-        f"入住：{dates['from']} 至 {dates['to']}；租期 {profile['lease_months']:g} 个月。",
-        '硬要求：'+('、'.join(labels.get(k,k) for k in profile['hard_requirements']) or '无')+'；软偏好：'+readable_values(profile['soft_preferences'])+'；权重：'+readable_values(profile['weights'])+'。',
-        '0卧开放式按1个睡眠空间计算；计价对象、账单、通勤和在租状态仍须核实。']
+    result=[]
+    budget=[]
+    for key,name in (('preferred','期望'),('maximum','上限')):
+        if key in b: budget.append(f"{name} {b[key]:g} AUD/周")
+    if 'scope' in b: budget.append(labels[b['scope']])
+    if 'includes_bills' in b: budget.append('含账单' if b['includes_bills'] else '不含账单')
+    if 'hard_limit' in b: budget.append('硬上限' if b['hard_limit'] else '可协商')
+    if budget: result.append('预算：'+'；'.join(budget)+'。')
+    living=[]
+    if 'occupants' in profile: living.append(f"{profile['occupants']} 人")
+    if 'rental_mode' in profile: living.append(labels.get(profile['rental_mode'],profile['rental_mode']))
+    if living: result.append('居住：'+'；'.join(living)+'。')
+    rooms=[]
+    if 'suburb' in h: rooms.append(h['suburb'] or '不限区域')
+    for key,name in (('min_bedrooms','卧室'),('min_bathrooms','浴室'),('min_car_spaces','车位')):
+        if h.get(key) is not None: rooms.append(f"{name}不限" if h[key]==0 else f"至少 {h[key]} {name}")
+    if rooms: result.append('房屋条件：'+'；'.join(rooms)+'。')
+    commute=[]
+    if 'destination_id' in profile: commute.append('目的地 '+profile['destination_id'])
+    if 'modes' in c: commute.append('、'.join(labels[k] for k in c['modes']))
+    for key,name in (('preferred_minutes','期望'),('maximum_minutes','最长')):
+        if key in c: commute.append(f"{name} {c[key]:g} 分钟")
+    if 'arrival_time' in profile: commute.append(profile['arrival_time']+' 到达')
+    if 'hard_limit' in c: commute.append('硬限制' if c['hard_limit'] else '可协商')
+    if commute: result.append('通勤：'+'；'.join(commute)+'。')
+    dates=profile.get('move_in_window',{})
+    if dates: result.append('入住：'+dates.get('from','未填写')+' 至 '+dates.get('to','未填写')+'。')
+    if 'lease_months' in profile: result.append(f"租期：{profile['lease_months']:g} 个月。")
+    if 'hard_requirements' in profile:
+        result.append('硬要求：'+('、'.join(labels[k] for k in profile['hard_requirements']) or '无额外要求')+'。')
+    for key,name in (('soft_preferences','软偏好'),('weights','权重')):
+        if profile.get(key): result.append(name+'：'+'、'.join(labels.get(k,k)+f' {v:g}' for k,v in profile[key].items())+'。')
+    if profile.get('student_commute'):
+        from ..commute.usyd import MODE_LABELS
+        student=profile['student_commute']
+        parts=[MODE_LABELS[student['mode']],f"单程最多 {student['maximum_minutes']} 分钟"]
+        if student.get('arrival_time'):parts.append(student['arrival_time']+' 前到达')
+        if student.get('travel_day'):parts.append('工作日' if student['travel_day']=='weekday' else '周末')
+        if student.get('travel_date'):parts.append(student['travel_date'])
+        if student.get('max_transfers') is not None:parts.append(f"最多换乘 {student['max_transfers']} 次")
+        result.append('悉大主校区：'+'，'.join(parts)+'。')
+    result.append('未提供的信息留空，不作为筛选条件。')
     return result
 
 
 def filter_summary(filters):
-    labels={'suburb':'区域','min_bedrooms':'至少卧室','min_bathrooms':'至少浴室','min_car_spaces':'至少车位','max_weekly_rent':'最高房源周租 AUD','sort':'排序'}
+    labels={'suburb':'区域','min_bedrooms':'至少卧室','min_bathrooms':'至少浴室','min_car_spaces':'至少车位','max_weekly_rent':'最高房源周租 AUD','sort':'排序','usyd_mode':'到校方式','usyd_max_minutes':'到悉大最多分钟','usyd_arrival_time':'到校时间','usyd_travel_day':'出行日','usyd_travel_date':'出行日期','usyd_max_transfers':'最多换乘次数'}
     orders={'rent_asc':'周租从低到高','rent_desc':'周租从高到低','bedrooms_desc':'卧室从多到少'}
-    return '，'.join(labels[k]+' '+(orders[v] if k=='sort' else str(v)) for k,v in filters.items()) or '所有房源'
+    from ..commute.usyd import MODE_LABELS
+    return '，'.join(labels[k]+' '+(orders[v] if k=='sort' else MODE_LABELS.get(v,str(v)) if k=='usyd_mode' else {'weekday':'工作日','weekend':'周末'}.get(v,str(v)) if k=='usyd_travel_day' else str(v)) for k,v in filters.items()) or '所有房源'
 
 
 CARD_CONTEXT_FIELDS = ('listing_id','address','suburb','postcode','bedrooms','advertised_bedrooms',
@@ -181,6 +222,12 @@ def listing_context(catalog,identifiers):
             if exc.code=='listing_not_found': continue
             raise
         result.append({key:row[key] for key in CARD_CONTEXT_FIELDS if key in row})
+        if row.get('usyd_commute'):
+            record=row['usyd_commute']
+            result[-1]['usyd_commute']={'destination':record['destination']['label'],
+                'straight_line_distance_m':record['straight_line_distance_m'],
+                'reference_arrival_at':record.get('reference_arrival_at'),
+                'modes':{key:{'minutes':r['duration_minutes'],'basis':r['status']} for key,r in record['modes'].items()}}
     return result
 
 

@@ -1,5 +1,5 @@
 import { api } from "./client";
-import type { HousingAd } from "./catalog";
+import type { HousingAd, UsydRoute } from "./catalog";
 import type { CaseState } from "./types";
 import type { LivingProvider } from "./living";
 import type { LeaseDraft, LeaseFields, LeaseQuestion } from "./leaseDraft";
@@ -22,6 +22,8 @@ export interface CommuteRecommendation {
   total_matching: number;
   evaluated_count: number;
   query_limit: number;
+  matching_count?: number;
+  basis?: string;
   areas: {
     suburb: string;
     count: number;
@@ -34,6 +36,7 @@ export interface CommuteRecommendation {
     area_context?: AreaContext;
   }[];
   routes: {
+    legs?: UsydRoute["legs"];
     listing_id: string;
     status: "ok" | "unavailable" | "unsupported" | "over_limit";
     duration_minutes: number | null;
@@ -45,9 +48,15 @@ export interface CommuteRecommendation {
     route_url?: string;
     origin_precision: string;
     reason: string;
+    mode?: string;
+    basis?: string;
+    transit_modes?: string[];
+    services?: string[];
+    distance_m?: number | null;
   }[];
   limitations: string[];
   pending_listings?: HousingAd[];
+  estimated_listings?: HousingAd[];
   area_knowledge_coverage?: {
     covered_suburbs: number;
     catalog_suburbs: number;
@@ -119,6 +128,16 @@ export interface AssistantAction {
   summary?: string[];
 }
 export interface AssistantMessage {
+  transit_information?: {
+    topic: "nearby" | "alerts";
+    listing_id: string;
+    address: string;
+    queried_at: string;
+    source_url: string;
+    stop_name: string | null;
+    stops: { id: string; name: string; distance_m: number }[];
+    alerts: { title: string; url: string | null }[];
+  };
   message_id: string;
   role: "user" | "assistant";
   content: string;
@@ -165,7 +184,8 @@ export interface RentalBrief {
   max_transfers?: number;
   travel_day?: "weekday" | "weekend";
   travel_date?: string;
-  commute_mode?: "public_transport" | "walk" | "drive" | "bike";
+  commute_mode?:
+    "public_transport" | "train" | "metro" | "bus" | "walk" | "drive" | "bike";
   suburb?: string | null;
   budget_amount?: number;
   budget_period?: "week" | "month" | "unknown";

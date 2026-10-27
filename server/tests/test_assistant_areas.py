@@ -21,7 +21,7 @@ class AssistantAreaTests(unittest.TestCase):
         self.assertEqual(r.status_code,200,r.text)
         c=r.json(); answer=c['messages'][-1]
         self.assertEqual(answer['intent'],'area_advice')
-        self.assertEqual(answer['area_advice']['coverage'],{'covered_suburbs':12,'catalog_suburbs':71})
+        self.assertEqual(answer['area_advice']['coverage'],{'covered_suburbs':12,'catalog_suburbs':72})
         self.assertTrue(answer['area_advice']['areas'][0]['evidence'])
         self.assertFalse(answer['listings']); self.assertFalse(answer['actions'])
         self.assertEqual(self.client.get('/api/v1/cases/'+self.case['case_id']).json(),self.case)
@@ -73,7 +73,7 @@ class AssistantAreaTests(unittest.TestCase):
         self.provider.result={'intent':'recommend_areas','brief_patch':AssistantCommuteTests.ready_brief(self)}
         c=self.send(c,'commute','帮我按预算和通勤推荐').json()
         c=self.ask(c,{'lifestyle_priorities':['parks']},['Rhodes'],request='area-after').json()
-        self.assertEqual(c['rental_brief']['destination_query'],'University of Sydney')
+        self.assertIn('Fisher Library',c['rental_brief']['destination_query'])
         self.assertEqual(c['dialogue_mode'],'recommend_areas')
 
     def test_commute_lifestyle_enrichment_does_not_change_hard_eligibility(self):

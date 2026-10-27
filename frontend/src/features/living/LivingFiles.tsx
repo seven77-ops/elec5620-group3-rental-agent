@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Alert, Button, Select, Space, Tag, Upload } from "antd";
+import { Button, Select, Space, Tag, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { getLivingAttachments, uploadLivingAttachment } from "../../api/living";
 import type { LivingAttachment, LivingRecord } from "../../api/living";
 import { newRequestId } from "../../api/client";
+import { Failure } from "../../components/Common";
 import { useAction } from "../../components/useAction";
 const purposes: Record<LivingAttachment["purpose"], string> = {
   repair: "报修照片或资料",
@@ -23,7 +24,7 @@ export default function LivingFiles({
   const [purpose, setPurpose] = useState<LivingAttachment["purpose"]>("repair"),
     [repairId, setRepairId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true),
-    [error, setError] = useState<string | null>(null);
+    [error, setError] = useState<unknown>(null);
   const generation = useRef(0),
     action = useAction();
   const load = useCallback(async () => {
@@ -34,10 +35,7 @@ export default function LivingFiles({
       const result = await getLivingAttachments(caseId);
       if (generation.current === token) setItems(result.items);
     } catch (error) {
-      if (generation.current === token)
-        setError(
-          error instanceof Error ? error.message : "附件列表暂时无法读取。",
-        );
+      if (generation.current === token) setError(error);
     } finally {
       if (generation.current === token) setLoading(false);
     }
@@ -89,7 +87,6 @@ export default function LivingFiles({
       <div className="living-section-heading">
         <div>
           <h2>照片与收据</h2>
-          <p>保存你自己的报修照片、收据或退租资料，不执行内容识别或核实。</p>
         </div>
         <Button
           aria-label="读取附件列表"
@@ -104,34 +101,23 @@ export default function LivingFiles({
         </Button>
       </div>
       {Boolean(error || action.error) && (
-        <Alert
-          type="error"
-          title="附件操作未完成"
-          description={
-            error ||
-            (action.error instanceof Error
-              ? action.error.message
-              : "请稍后重试。")
-          }
-          action={
+        <>
+          <Failure error={error || action.error} />
+          {Boolean(action.error) && (
             <Space wrap>
-              {Boolean(action.error) && (
-                <>
-                  <Button
-                    aria-label="重试原文件上传"
-                    loading={action.busy}
-                    onClick={() => void action.retry()}
-                  >
-                    重试原文件上传
-                  </Button>
-                  <Button disabled={action.busy} onClick={() => action.clear()}>
-                    取消本次上传
-                  </Button>
-                </>
-              )}
+              <Button
+                aria-label="重试原文件上传"
+                loading={action.busy}
+                onClick={() => void action.retry()}
+              >
+                重试原文件上传
+              </Button>
+              <Button disabled={action.busy} onClick={() => action.clear()}>
+                取消本次上传
+              </Button>
             </Space>
-          }
-        />
+          )}
+        </>
       )}
       <div className="living-file-controls">
         <label htmlFor="living-file-purpose">附件用途</label>

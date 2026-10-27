@@ -4,6 +4,7 @@ import hashlib
 from fastapi.responses import Response
 from ..common import ApiError
 from ..real_data.preferences import preference_context, POLICY
+from ..real_data.profile import validate_real_profile, supplied_profile
 from .profiles import ProfilesAdapter
 from ..common import now, require, shape, integer, opaque_ref, request_id
 from ..repository import canonical
@@ -13,7 +14,24 @@ def digest(value):
     return hashlib.sha256(canonical(value).encode()).hexdigest()
 
 
+def commute_evidence(rows,filters):
+    if 'usyd_max_minutes' not in filters:return None
+    mode=filters.get('usyd_mode','public_transport')
+    return digest([{'listing_id':row['listing_id'],
+                    'origin':(row.get('usyd_commute') or {}).get('origin'),
+                    'route':(row.get('usyd_commute') or {}).get('modes',{}).get(mode),
+                    'estimate':(row.get('usyd_commute') or {}).get('estimates',{}).get(mode)} for row in rows])
+
+
 class RealProfilesAdapter(ProfilesAdapter):
+    validate_profile = staticmethod(validate_real_profile)
+
+    def read_case(self, case_id: str):
+        case = super().read_case(case_id)
+        if case.get('requirements_contract') != 'supplied-only-v1':
+            case['requirements_profile'] = supplied_profile(case['draft']['profile'])
+        return case
+
     def recommendation_context(self, case_id: str):
         with self.ctx.repo.transaction() as db:
             case = self.ctx.get(db, 'case', case_id)
@@ -24,7 +42,8 @@ class RealProfilesAdapter(ProfilesAdapter):
                     raise
                 return {'profile_version':None, 'filters':{'sort':'rent_asc'},
                         'unverified_preferences':[], 'mapping_policy':POLICY}
-            return {**preference_context(confirmed['profile'],self.ctx.settings.catalog),
+            return {**preference_context(confirmed['profile'],self.ctx.settings.catalog,
+                        legacy=case.get('requirements_contract')!='supplied-only-v1'),
                     'profile_version':confirmed['version'], 'profile_fingerprint':confirmed['fingerprint']}
 
     def draft(self, case_id: str, body: dict):
@@ -46,10 +65,12 @@ class RealProfilesAdapter(ProfilesAdapter):
             old = self.ctx.receipt(db, 'real_evaluation_receipt', key, body)
             if old: return old['result']
             profile = deepcopy(confirmed['profile'])
-            context = preference_context(profile,catalog)
+            context = preference_context(profile,catalog,legacy=case.get('requirements_contract')!='supplied-only-v1')
             filters = catalog.filters(body['filters']) if 'filters' in body else context['filters']
             filter_source = 'manual' if 'filters' in body else 'confirmed_profile'
-            listings = catalog.matching(filters)
+            from ..commute.matching import matching_for_case
+            listings = matching_for_case(self.ctx,case_id,filters,db=db)
+            commute_version=commute_evidence(listings,filters)
             pending = []
             for item in listings:
                 pending.append({**item, 'status':'pending', 'rank':None, 'score':None, 'weekly_cost':None,
@@ -63,13 +84,14 @@ class RealProfilesAdapter(ProfilesAdapter):
                 if item['bedroom_count_basis'] == 'open_plan_as_one':
                     pending[-1]['evidence_refs']['bedrooms'].update(source_value=item['advertised_bedrooms'],
                         interpreted_value=1, interpretation='项目口径：0卧开放式房源按1个起居睡眠空间计算，非独立卧室。')
-            run_id = 'real-' + digest({'profile':profile,'dataset':catalog.fingerprint,'filters':filters,'mapping_policy':POLICY,'filter_source':filter_source})
+            run_id = 'real-' + digest({'profile':profile,'dataset':catalog.fingerprint,'filters':filters,'mapping_policy':POLICY,'filter_source':filter_source,'commute_evidence':commute_version})
             report = {'schema_version':'real-1.0','scoring_version':'real-facts-1.0','data_mode':'real_listings',
                 'recommendation_run_id':run_id,'search_id':case['search_id'],'profile':profile,
                 'profile_version':confirmed['version'],'profile_fingerprint':confirmed['fingerprint'],
                 'dataset_fingerprint':catalog.fingerprint,'as_of':catalog.as_of, 'evaluated_at':now(),
                 'report_status':'provisional','filters':filters,'catalog':catalog.metadata(),
                 'mapping_policy':POLICY,'filter_source':filter_source,'profile_filters':context['filters'],
+                'commute_evidence_fingerprint':commute_version,
                 'unverified_preferences':context['unverified_preferences'],
                 'counts':{'input':len(listings),'eligible':0,'pending':len(listings),'excluded':0,'duplicates':0},
                 'recommendations':pending[:5],'eligible':[],'pending_confirmation':pending,'excluded':[],
@@ -109,6 +131,13 @@ class RealProfilesAdapter(ProfilesAdapter):
             require(body['confirmed'] is True,422,'selection_confirmation_required','请明确确认保存此候选。')
             old = self.ctx.receipt(db,'real_selection_receipt',key,body)
             if old: return old['result']
+            filters=run['response']['report']['filters']
+            if 'usyd_max_minutes' in filters:
+                from ..commute.matching import matching_for_case
+                current_rows=matching_for_case(self.ctx,case_id,filters,db=db)
+                require(commute_evidence(current_rows,filters)==run['response']['report'].get('commute_evidence_fingerprint') and
+                    any(row['listing_id']==body['listing_id'] for row in current_rows),
+                    409,'stale_evaluation','到校路线已更新或过期，请按当前通勤要求重新生成候选。')
             listing = next((r for r in run['dataset']['listings'] if r['listing_id']==body['listing_id']),None)
             require(listing is not None,409,'listing_not_in_run','只能选择本次真实筛选结果内的房源。')
             selection = {'schema_version':'real-1.0','data_mode':'real_listings','listing_id':body['listing_id'],

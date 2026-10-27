@@ -7,8 +7,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from server.tests import test_assistant_api as harness
 
-DEST = {'id':'nsw-campus-1','label':'University of Sydney, Camperdown NSW',
-        'latitude':-33.888,'longitude':151.187,'precision':'address_point','source_url':'https://www.nsw.gov.au/'}
+from server.app.commute.usyd import DESTINATION as DEST
 
 class Resolver:
     def __init__(self):self.calls=[]
@@ -56,28 +55,49 @@ class AssistantCommuteTests(unittest.TestCase):
         self.assertEqual(c['dialogue_mode'],'recommend_areas')
         r=self.recommend(c,{'budget_amount':850,'budget_period':'week','budget_scope':'whole_property','min_bedrooms':2},'next','每周整套850，两卧')
         self.assertEqual(r.status_code,200,r.text);text=r.json()['messages'][-1]['content']
-        self.assertIn('学校',text);self.assertNotIn('想住哪个区域',text)
+        self.assertIn('悉大主校区',text);self.assertNotIn('想住哪个区域',text)
         self.assertEqual(self.client.get('/api/v1/cases/'+self.case['case_id']).json(),self.case)
 
-    def test_destination_lookup_requires_separate_data_consent_and_selection(self):
+    def test_transit_mode_reply_continues_without_asking_for_arrival_time(self):
+        from server.app.assistant.progress import pending_question
+        for mode in ('public_transport','train','metro','bus'):
+            with self.subTest(mode=mode):
+                brief=self.ready_brief()
+                for key in ('arrival_time','travel_day','commute_mode'):brief.pop(key)
+                response=self.recommend(self.conversation(),brief,'intake-'+mode)
+                self.assertEqual(response.status_code,200,response.text)
+                c=response.json()
+                self.assertEqual(c['messages'][-1]['commute_question']['fields'],['commute_mode'])
+                response=self.recommend(c,{'commute_mode':mode},'mode-'+mode,mode,allow_external_data=True)
+                self.assertEqual(response.status_code,200,response.text)
+                c=response.json();answer=c['messages'][-1]
+                self.assertNotIn('commute_question',answer)
+                self.assertIn('commute_recommendation',answer)
+                self.assertNotIn('几点',answer['content'])
+                self.assertNotIn('arrival_time',c['rental_brief'])
+                self.assertNotIn('travel_day',c['rental_brief'])
+                self.assertIsNone(pending_question(c))
+                self.assertEqual(self.client.get('/api/v1/cases/'+self.case['case_id']).json(),self.case)
+
+    def test_fixed_destination_skips_lookup_but_external_routes_still_need_consent(self):
         resolver=Resolver();c=self.conversation()
-        with patch('server.app.assistant.commute.resolver_for',return_value=resolver):
+        preview={'intent':'recommend_areas','agent':'agent2','content':'按主校区核对','listings':[],'actions':[]}
+        with patch('server.app.assistant.commute.resolver_for',return_value=resolver),patch('server.app.assistant.commute.plan_routes',return_value=preview) as planner:
             r=self.recommend(c,self.ready_brief())
-            self.assertEqual(r.status_code,200,r.text);c=r.json();self.assertFalse(resolver.calls)
-            self.assertIn('位置',c['messages'][-1]['content'])
-            r=self.recommend(c,{},'lookup','查询学校位置',allow_external_data=True)
             self.assertEqual(r.status_code,200,r.text);c=r.json()
-            self.assertEqual(resolver.calls,['University of Sydney'])
-            self.assertEqual(c['messages'][-1]['destination_options'][0],DEST)
-            self.assertNotIn('commute_recommendation',c['messages'][-1])
+            self.assertIn('外部交通',c['messages'][-1]['content']);planner.assert_not_called()
+            r=self.recommend(c,{},'lookup','继续核对通勤',allow_external_data=True)
+            self.assertEqual(r.status_code,200,r.text);c=r.json()
+            self.assertFalse(resolver.calls)
+            self.assertEqual(planner.call_args.args[2],DEST)
+            self.assertNotIn('destination_options',c['messages'][-1])
             r=self.recommend(c,{'destination_id':'nsw-other'},'bad','选择nsw-other',allow_external_data=True)
-            self.assertEqual(r.status_code,422)
-            r=self.recommend(c,{'destination_id':DEST['id']},'silent','就选第一个',allow_external_data=True)
-            self.assertEqual(r.status_code,422)
+            self.assertEqual(r.status_code,200,r.text)
+            self.assertEqual(r.json()['rental_brief']['destination_id'],DEST['id'])
 
     def test_selected_destination_generates_shared_preview_without_profile_write(self):
         resolver=Resolver();c=self.conversation()
-        def answer(ctx,brief,destination,allow_external):
+        def answer(ctx,brief,destination,allow_external,previous_reports=None):
             self.assertTrue(allow_external);self.assertEqual(destination,DEST)
             self.assertEqual(brief['commute_max_minutes'],40)
             return {'intent':'recommend_areas','agent':'agent2','content':'接口未配置，通勤待查询。','actions':[],
@@ -106,7 +126,7 @@ class AssistantCommuteTests(unittest.TestCase):
             repo.put(db,'assistant_conversation',c['conversation_id'],saved)
             repo.put(db,'assistant_commute_report',self.case['case_id'],{'conversation_id':c['conversation_id'],
                 'brief':{},'case_signature':signature(self.case),'catalog_fingerprint':self.client.get('/api/v1/listings?page_size=1').json()['catalog']['fingerprint'],
-                'created_at':now(),'message':{'commute_recommendation':{'status':'unavailable'}}})
+                'created_at':now(),'message':{'commute_recommendation':{'status':'unavailable','destination':DEST}}})
         self.assertFalse(self.client.get(self.base+'/commute-recommendation').json()['stale'])
         response=self.recommend(self.conversation(),{},'new-intake')
         self.assertEqual(response.status_code,200,response.text)
@@ -122,7 +142,8 @@ class AssistantCommuteTests(unittest.TestCase):
                 self.client.app.state.repository.put(db,'assistant_conversation',c['conversation_id'],stored)
             r=self.recommend(c,{'destination_query':'UNSW'},'new','目的地改为UNSW')
             self.assertEqual(r.status_code,200,r.text)
-            self.assertNotIn('destination_id',r.json()['rental_brief'])
+            self.assertEqual(r.json()['messages'][-1]['intent'],'outside_scope')
+            self.assertEqual(r.json()['rental_brief']['destination_id'],DEST['id'])
             self.assertFalse(r.json().get('commute_destination_options'))
 
     def test_explicit_choice_wins_over_model_rewriting_its_search_label(self):
@@ -132,7 +153,7 @@ class AssistantCommuteTests(unittest.TestCase):
             r=self.recommend(c,{'destination_id':DEST['id'],'destination_query':DEST['label']},'choice','我的通勤目的地选择：'+DEST['label']+'（地点编号 '+DEST['id']+'）',allow_external_data=True)
             self.assertEqual(r.status_code,200,r.text)
             self.assertEqual(r.json()['rental_brief']['destination_id'],DEST['id'])
-            self.assertEqual(len(resolver.calls),1)
+            self.assertEqual(len(resolver.calls),0)
 
     def test_schema_rejects_invented_coordinates_and_bad_times(self):
         for index,invalid in enumerate(({'latitude':-33.8},{'arrival_time':'28:90'},{'commute_max_minutes':0},{'commute_max_minutes':999})):
@@ -163,7 +184,7 @@ class AssistantCommuteTests(unittest.TestCase):
         self.assertEqual(response.status_code,200,response.text);c=response.json()
         self.assertEqual(c['dialogue_mode'],'recommend_areas')
         self.assertEqual(c['rental_brief']['budget_amount'],900)
-        self.assertEqual(c['rental_brief']['destination_query'],'University of Sydney')
+        self.assertEqual(c['rental_brief']['destination_query'],DEST['label'])
         self.assertEqual(c['rental_brief']['commute_max_minutes'],40)
         self.assertEqual(c['rental_brief']['min_bedrooms'],2)
         self.assertEqual(self.client.get('/api/v1/cases/'+self.case['case_id']).json(),self.case)

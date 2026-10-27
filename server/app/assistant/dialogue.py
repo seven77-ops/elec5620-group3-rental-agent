@@ -20,6 +20,9 @@ def merge_brief(conversation,intent):
     if brief and intent['intent']=='search':
         for key,value in intent.get('filters',{}).items():
             if key in BRIEF_SCHEMA['properties']: brief[key]=value
+            elif key=='usyd_mode':brief['commute_mode']=value
+            elif key=='usyd_max_minutes':brief['commute_max_minutes']=value;brief['commute_hard_limit']=True
+            elif key in ('usyd_arrival_time','usyd_travel_day','usyd_travel_date','usyd_max_transfers'):brief[key[5:]]=value
             elif key=='max_weekly_rent':
                 brief['budget_amount']=value
                 brief['budget_period']='week'
@@ -62,20 +65,35 @@ def next_question(brief):
 def brief_filters(brief):
     result={k:brief[k] for k in ('suburb','min_bedrooms','min_bathrooms','min_car_spaces') if k in brief and brief[k] is not None}
     result['max_weekly_rent']=brief['budget_amount']
+    if brief.get('commute_mode') and brief.get('commute_max_minutes'):
+        result.update(usyd_mode=brief['commute_mode'],usyd_max_minutes=brief['commute_max_minutes'])
+        for key in ('arrival_time','travel_day','travel_date','max_transfers'):
+            if brief.get(key) is not None:result['usyd_'+key]=brief[key]
     return result
 
 
 def brief_profile_patch(brief):
-    patch={'budget':{'maximum':brief['budget_amount'],'scope':brief['budget_scope']},
+    patch={'budget':{'currency':'AUD','period':'week','maximum':brief['budget_amount'],'scope':brief['budget_scope']},
         'housing_preferences':{k:brief[k] for k in ('suburb','min_bedrooms','min_bathrooms','min_car_spaces') if k in brief},
         'occupants':brief['occupants']}
     if 'rental_mode' in brief: patch['rental_mode']=brief['rental_mode']
+    if brief.get('commute_mode') and brief.get('commute_max_minutes'):
+        patch['student_commute']={'mode':brief['commute_mode'],'maximum_minutes':brief['commute_max_minutes']}
+        for key in ('arrival_time','travel_day','travel_date','max_transfers'):
+            if brief.get(key) is not None:patch['student_commute'][key]=brief[key]
     return patch
 
 
 def profile_brief(profile):
     housing=profile.get('housing_preferences',{})
-    return {'suburb':housing.get('suburb'),
-        **{key:housing.get(key) or 0 for key in ('min_bedrooms','min_bathrooms','min_car_spaces')},
-        'budget_amount':profile['budget']['maximum'],'budget_period':'week','budget_scope':profile['budget']['scope'],
-        'occupants':profile['occupants'],'rental_mode':profile['rental_mode']}
+    budget=profile.get('budget',{})
+    result={key:housing[key] for key in ('suburb','min_bedrooms','min_bathrooms','min_car_spaces') if key in housing}
+    for source,target in (('maximum','budget_amount'),('period','budget_period'),('scope','budget_scope')):
+        if source in budget: result[target]=budget[source]
+    student=profile.get('student_commute',{})
+    if student:
+        result.update(commute_mode=student['mode'],commute_max_minutes=student['maximum_minutes'],commute_hard_limit=True)
+        for key in ('arrival_time','travel_day','travel_date','max_transfers'):
+            if student.get(key) is not None:result[key]=student[key]
+    result.update({key:profile[key] for key in ('occupants','rental_mode') if key in profile})
+    return result

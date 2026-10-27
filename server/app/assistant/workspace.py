@@ -44,6 +44,7 @@ class AssistantWorkspace:
             if old: return old['result']
             c,case=self.context(db,case_id,conversation_id,body)
             base_profile=case['draft']['profile']
+            legacy=case.get('requirements_contract')!='supplied-only-v1'
             pending=next((a for a in c['messages'][-1]['actions'] if a['type']=='apply_preferences'),None) if c['messages'] else None
             if pending:
                 previous=self.ctx.get(db,'assistant_proposal',pending['proposal_id'])
@@ -51,11 +52,15 @@ class AssistantWorkspace:
                     previous['status']=='proposed' and previous['conversation_revision']==c['revision'] and
                     previous['case_signature']==signature(case),409,'stale_proposal','对话中的需求已过期，请重新整理并确认。')
                 base_profile=previous['profile']
-            profile=merge_profile(base_profile,brief_profile_patch(brief))
+                legacy=previous.get('requirements_contract')!='supplied-only-v1'
+            patch=brief_profile_patch(brief)
+            profile=merge_profile(base_profile,patch,legacy=legacy)
+            if 'student_commute' in patch:profile['student_commute']=deepcopy(patch['student_commute'])
+            else:profile.pop('student_commute',None)
             catalog.filters({k:v for k,v in profile.get('housing_preferences',{}).items() if k!='budget_match_mode'})
             p={'proposal_id':uid('proposal'),'case_id':case_id,'conversation_id':conversation_id,
                 'case_signature':signature(case),'conversation_revision':c['revision']+1,
-                'profile':profile,'status':'proposed'}
+                'profile':profile,'status':'proposed','requirements_contract':'supplied-only-v1'}
             summary=preference_summary(profile)
             c['rental_brief']=deepcopy(brief)
             self.ctx.repo.put(db,'assistant_commute_activity',case_id,{'conversation_id':conversation_id,'brief':brief})
@@ -76,12 +81,12 @@ class AssistantWorkspace:
         require(body['confirmed'] is True,422,'selection_confirmation_required','请明确确认保存此候选。')
         require(isinstance(body['listing_id'],str),422,'invalid_reference','请选择已展示的房源。')
         self.assistant.catalog()
-        with self.ctx.repo.transaction() as db:
+        with self.ctx.repo.transaction() as db, self.ctx.preferences.store.join(db):
             self.assistant.get(db,case_id,conversation_id)
             old=self.ctx.receipt(db,'assistant_select_receipt',key,{'conversation_id':conversation_id,**body})
             if old: return old['result']
             c,case=self.context(db,case_id,conversation_id,body)
-            require(body['listing_id'] in known_listings(c)[-100:],422,'invalid_reference','只能保存当前会话已展示的房源。')
+            require(body['listing_id'] in known_listings(c),422,'invalid_reference','只能保存当前会话已展示的房源。')
             displayed=next(row for m in reversed(c['messages']) for row in m['listings'] if row['listing_id']==body['listing_id'])
             row=self.assistant.catalog().get(body['listing_id'])
             require(all(displayed.get(key)==row.get(key) for key in ('address','suburb','bedrooms','bathrooms','car_spaces','weekly_rent','source_url','captured_at')),

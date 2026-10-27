@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { fillRentalNeeds, confirmRentalNeeds } from "./fillRentalNeeds";
 
 test("AI-collected needs prefill the panel and sync without retyping other conditions", async ({
   page,
@@ -53,9 +54,7 @@ test("AI-collected needs prefill the panel and sync without retyping other condi
     .getByRole("dialog", { name: "确认同步租房需求？", exact: true })
     .getByRole("button", { name: "确认同步并生成推荐", exact: true })
     .click();
-  await expect(page.getByTestId("assistant-needs-status")).toContainText(
-    "已同步 v1",
-  );
+  await expect(page.getByTestId("assistant-needs-status")).toHaveCount(0);
   await expect(drawer).not.toBeVisible();
   const saved = await (await request.get(`/api/v1/cases/${c.case_id}`)).json();
   expect(saved.confirmations[0].profile.budget).toMatchObject({
@@ -68,7 +67,7 @@ test("AI-collected needs prefill the panel and sync without retyping other condi
     min_bathrooms: 2,
     min_car_spaces: 0,
   });
-  await page.getByRole("button", { name: "查看房源推荐", exact: true }).click();
+  await page.getByRole("menuitem", { name: "房源推荐", exact: true }).click();
   await expect(
     page.getByRole("spinbutton", { name: "最高周租（AUD）", exact: true }),
   ).toHaveValue("900");
@@ -121,6 +120,16 @@ test("chat needs require confirmation, sync real recommendations and persist a s
   });
   await expect(modal).toContainText("1500");
   await expect(modal).toContainText("Rhodes");
+  for (const preset of [
+    "450",
+    "demo-usyd",
+    "2027-02-01",
+    "含账单",
+    "软偏好",
+    "权重",
+    "悉尼大学",
+  ])
+    await expect(modal).not.toContainText(preset);
   await modal.getByRole("button", { name: "继续修改", exact: true }).click();
   expect(
     (await (await request.get(`/api/v1/cases/${c.case_id}`)).json())
@@ -133,9 +142,7 @@ test("chat needs require confirmation, sync real recommendations and persist a s
     .getByRole("button", { name: "确认同步并生成推荐", exact: true })
     .click();
   await expect(drawer).not.toBeVisible();
-  await expect(page.getByTestId("assistant-needs-status")).toContainText(
-    "已同步",
-  );
+  await expect(page.getByTestId("assistant-needs-status")).toHaveCount(0);
   const card = page.locator(".assistant-listing").first();
   await expect(card).toBeVisible();
   const address = await card.locator("h3").innerText();
@@ -152,10 +159,10 @@ test("chat needs require confirmation, sync real recommendations and persist a s
       .first()
       .getByText("当前候选", { exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "查看房源推荐", exact: true }).click();
-  await expect(page.getByTestId("preference-linkage")).toContainText("v1");
+  await page.getByRole("menuitem", { name: "房源推荐", exact: true }).click();
   await expect(page.getByText(address, { exact: true }).first()).toBeVisible();
   const saved = await (await request.get(`/api/v1/cases/${c.case_id}`)).json();
+  expect(saved.confirmations.at(-1).version).toBe(1);
   expect(saved.selection.listing_snapshot.address).toBe(address);
   expect(saved.confirmations[0].profile.housing_preferences).toMatchObject({
     suburb: "Rhodes",
@@ -186,4 +193,71 @@ test("mobile chat keeps needs management inside the conversation page", async ({
   await expect(
     page.getByRole("textbox", { name: "给租房助手的消息" }),
   ).toBeVisible();
+});
+
+test("new needs remain blank and optional dates do not block saving a real budget", async ({
+  page,
+  request,
+}) => {
+  const c = await (await request.post("/api/v1/cases", { data: {} })).json();
+  expect(c.draft.profile).toEqual({
+    schema_version: "1.0",
+    search_id: c.search_id,
+    profile_version: 1,
+  });
+  await page.goto(`/cases/${c.case_id}/assistant`);
+  await page.getByRole("button", { name: "我的租房需求", exact: true }).click();
+  const drawer = page.getByRole("dialog", {
+    name: "我的租房需求",
+    exact: true,
+  });
+  await expect(
+    drawer.getByRole("spinbutton", { name: "最高预算（AUD）", exact: true }),
+  ).toHaveValue("");
+  await expect(
+    drawer.getByRole("spinbutton", { name: "居住人数", exact: true }),
+  ).toHaveValue("");
+  await expect(
+    drawer.getByRole("spinbutton", { name: "至少卧室", exact: true }),
+  ).toHaveValue("");
+  await page.goto(`/cases/${c.case_id}/preferences`);
+  await expect(page).toHaveURL(
+    new RegExp(`/cases/${c.case_id}/assistant\\?needs=1$`),
+  );
+  await expect(
+    page.getByRole("heading", { name: "房屋条件", exact: true }),
+  ).toHaveCount(0);
+  const panel = await fillRentalNeeds(page, { budget: 1000 });
+  for (const copy of [
+    "AI 整理的条件",
+    "数量填 0",
+    "上课前到达时间",
+    "出行日",
+    "记录你看重什么",
+  ])
+    await expect(panel).not.toContainText(copy);
+  await expect(
+    panel.getByRole("button", { name: "其他偏好与完整设置", exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    panel.getByRole("button", { name: "查看房源推荐", exact: true }),
+  ).toHaveCount(0);
+  await page.screenshot({ path: "/tmp/rental-needs-cleanup-desktop.png" });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await panel
+    .getByRole("button", { name: "确认并同步需求", exact: true })
+    .scrollIntoViewIfNeeded();
+  await expect.poll(async () => {
+    const box = await panel.boundingBox();
+    return !!box && box.x >= 0 && box.x + box.width <= 391;
+  }).toBe(true);
+  await page.screenshot({ path: "/tmp/rental-needs-cleanup-mobile.png" });
+  await confirmRentalNeeds(page);
+  const saved = await (await request.get(`/api/v1/cases/${c.case_id}`)).json();
+  expect(saved.draft.profile.budget.maximum).toBe(1000);
+  expect(saved.confirmations.at(-1).profile.budget.maximum).toBe(1000);
+  expect(saved.draft.profile).not.toHaveProperty("commute");
+  expect(saved.draft.profile).not.toHaveProperty("move_in_window");
+  expect(saved.draft.profile).not.toHaveProperty("hard_requirements");
+  expect(saved.draft.profile).not.toHaveProperty("soft_preferences");
 });

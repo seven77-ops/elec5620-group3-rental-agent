@@ -23,7 +23,7 @@ def enrich_commute(answer,catalog,knowledge=None):
     if not report:return answer
     knowledge=knowledge or AreaKnowledge()
     names=[a['suburb'] for a in report['areas']]
-    context=knowledge.advice(catalog,report['criteria'],names,limit=5) if names else None
+    context=knowledge.advice(catalog,report['criteria'],names,limit=len(names)) if names else None
     report['area_knowledge_fingerprint']=knowledge.fingerprint
     report['area_knowledge_coverage']=(context or knowledge.advice(catalog,{},[],limit=0))['coverage']
     for area,details in zip(report['areas'],context['areas'] if context else []):

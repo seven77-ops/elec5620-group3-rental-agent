@@ -336,7 +336,7 @@ test("mobile contract assistant fits and missing candidate has a useful next ste
   await page.setViewportSize({ width: 360, height: 800 });
   await page.goto(`/cases/${c.case_id}/contract?mode=draft`);
   await expect(
-    page.getByRole("button", { name: "前往房源推荐", exact: true }),
+    page.getByRole("button", { name: "我的租房需求", exact: true }),
   ).toBeVisible();
   expect(
     await page.evaluate(

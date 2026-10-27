@@ -69,6 +69,45 @@ class ListingPhotosTests(unittest.TestCase):
         c = RealCatalog(self.path, photos_path=Path(self.temp.name) / 'absent.json')
         self.assertEqual(c.get(self.entry['listing_id'])['photos'], [])
 
+    def test_same_property_reference_preserves_actual_photo_source(self):
+        self.entry.update(photo_source_url='https://www.property.com.au/nsw/example-2000/street/1-pid-123/',
+                          photo_source_kind='same_property_reference',
+                          image_urls=['https://i2.au.reastatic.net/800x600/observed-photo/main.jpg'])
+        self.write()
+        photo = RealCatalog(self.path).get(self.entry['listing_id'])['photos'][0]
+        self.assertEqual(photo['source_url'], self.entry['source_url'])
+        self.assertEqual(photo['photo_source_url'], self.entry['photo_source_url'])
+        self.assertEqual(photo['photo_source_kind'], 'same_property_reference')
+
+    def test_relisted_property_retains_observed_source_page(self):
+        self.entry.update(photo_source_url='https://www.domain.com.au/observed-property-12345678',
+                          photo_source_kind='same_property_advertisement')
+        self.write()
+        photo = RealCatalog(self.path).get(self.entry['listing_id'])['photos'][0]
+        self.assertEqual(photo['photo_source_url'], self.entry['photo_source_url'])
+
+    def test_reference_photos_require_allowlisted_page_and_matching_cdn(self):
+        valid = {**self.entry, 'photo_source_url':'https://www.realestate.com.au/property-apartment-nsw-example-123456',
+                 'photo_source_kind':'same_property_advertisement',
+                 'image_urls':['https://i2.au.reastatic.net/800x600/photo/image.jpg']}
+        for change in (
+            {'photo_source_url':'https://www.property.com.au.evil.test/nsw/example'},
+            {'photo_source_url':'javascript:alert(1)'},
+            {'photo_source_url':'https://user@www.realestate.com.au/property-example'},
+            {'photo_source_url':'https://www.realestate.com.au:444/property-example'},
+            {'photo_source_url':'https://www.realestate.com.au/property-example#fragment'},
+            {'photo_source_url':self.entry['source_url']},
+            {'image_urls':['https://i2.au.reastatic.net.evil.test/photo.jpg']},
+            {'photo_source_kind':'verified_current_photo'},
+        ):
+            with self.subTest(change=change):
+                self.write([{**valid, **change}])
+                with self.assertRaises(ValueError):
+                    RealCatalog(self.path)
+        self.write([{**self.entry, 'image_urls':valid['image_urls']}])
+        with self.assertRaises(ValueError):
+            RealCatalog(self.path)
+
 
 if __name__ == '__main__':
     unittest.main()

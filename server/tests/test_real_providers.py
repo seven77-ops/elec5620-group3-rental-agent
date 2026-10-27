@@ -86,8 +86,8 @@ class RealProviderTests(unittest.TestCase):
         self.assertEqual(request.url.host, 'api.transport.nsw.gov.au')
         self.assertEqual(request.headers['Authorization'], 'apikey ' + KEY)
         self.assertEqual(request.url.params['depArrMacro'], 'arr')
-        self.assertEqual(request.url.params['name_origin'], '151.18:-33.89:EPSG:4326')
-        self.assertEqual(request.url.params['name_destination'], '151.19:-33.889:EPSG:4326')
+        self.assertEqual(request.url.params['name_origin'], '151.1800000:-33.8900000:EPSG:4326')
+        self.assertEqual(request.url.params['name_destination'], '151.1900000:-33.8890000:EPSG:4326')
         self.assertEqual(result['query'], body)
         route = result['journeys'][0]
         self.assertEqual(route['duration_minutes'], 20)

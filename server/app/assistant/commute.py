@@ -4,6 +4,7 @@ from datetime import datetime,timezone
 import re
 import json
 from ..common import ApiError,require,now
+from ..commute.usyd import DESTINATION,MODES,student_brief
 
 COMMUTE_PROPERTIES={
     'recommend_areas':{'type':'boolean'},
@@ -16,7 +17,7 @@ COMMUTE_PROPERTIES={
     'max_transfers':{'type':'integer','minimum':0,'maximum':5},
     'travel_day':{'enum':['weekday','weekend']},
     'travel_date':{'type':'string','format':'date'},
-    'commute_mode':{'enum':['public_transport','walk','drive','bike']}}
+    'commute_mode':{'enum':list(MODES)}}
 
 ALIASES={'悉尼大学':'University of Sydney','悉大':'University of Sydney',
     '新南威尔士大学':'University of New South Wales','新南':'University of New South Wales',
@@ -51,10 +52,11 @@ def resolver_for(ctx):
     return ctx.commute_resolver
 
 
-def plan_routes(ctx,brief,destination,allow_external):
+def plan_routes(ctx,brief,destination,allow_external,previous_reports=None):
     from ..commute.planner import CommutePlanner
     from .areas import enrich_commute
-    return enrich_commute(CommutePlanner(ctx,resolver=resolver_for(ctx)).prepare(brief,destination,allow_external=allow_external),ctx.settings.catalog)
+    return enrich_commute(CommutePlanner(ctx,resolver=resolver_for(ctx)).prepare(brief,destination,allow_external=allow_external,
+        previous_reports=previous_reports),ctx.settings.catalog)
 
 
 def question_fields(brief):
@@ -62,9 +64,7 @@ def question_fields(brief):
     if brief.get('budget_period')!='week':return ['budget_period']
     if brief.get('budget_scope') not in ('whole_property','per_room','per_person'):return ['budget_scope']
     if 'min_bedrooms' not in brief:return ['min_bedrooms']
-    if not brief.get('destination_query'):return ['destination_query']
-    if not brief.get('arrival_time') or 'commute_max_minutes' not in brief:
-        return [k for k in ('arrival_time','commute_max_minutes') if not brief.get(k)]
+    if 'commute_max_minutes' not in brief:return ['commute_max_minutes']
     if not brief.get('commute_mode'):return ['commute_mode']
     return []
 
@@ -74,27 +74,19 @@ def next_question(brief):
     if brief.get('budget_period')!='week':return '这笔预算是每周还是每月？房源按周报价，请确认每周最高金额。'
     if brief.get('budget_scope') not in ('whole_property','per_room','per_person'):return '这个每周预算是整套、每个房间，还是每人承担的金额？'
     if 'min_bedrooms' not in brief:return '至少需要几间卧室？浴室和车位有要求的话也可以一起告诉我。'
-    if not brief.get('destination_query'):return '你主要去哪个学校或公司？请告诉我校区、办公楼或街道地址，我会先核对具体位置。'+(' 生活上更看重公园、餐饮购物、图书馆还是安静？也可以一起告诉我。' if 'lifestyle_priorities' not in brief else '')
-    if not brief.get('arrival_time') or 'commute_max_minutes' not in brief:
-        prefix='已记下目的地关键词：'+brief['destination_query']+'，具体位置稍后核对。'
-        if brief.get('arrival_time'):return prefix+' 单程最多能接受多少分钟？'
-        if 'commute_max_minutes' in brief:return prefix+' 通常几点需要到达学校或公司？'
-        return prefix+' 通常几点需要到达学校或公司？单程最多能接受多少分钟？'
-    if not brief.get('commute_mode'):return '通勤主要乘公共交通、步行、开车还是骑车？当前自动路线查询支持公共交通。'
+    if 'commute_max_minutes' not in brief:return '到悉大主校区，单程最多接受多少分钟？'
+    if not brief.get('commute_mode'):return '通勤选公共交通、火车、地铁、公交车、开车、骑行还是步行？'
     return None
 
 
-def prepare(ctx,conversation,brief,patch,text,allow_external):
+def prepare(ctx,conversation,brief,patch,text,allow_external,refresh=False):
+    query=patch.get('destination_query','')
+    if query and (re.search(r'camden|cumberland|westmead|unsw|new south wales|technology|macquarie|公司|上班|新南|科技大学|麦考',query,re.I)):
+        brief.update(student_brief(brief))
+        return {'intent':'outside_scope','agent':'assistant','content':'当前找房只面向悉尼大学 Camperdown / Darlington 主校区学生，暂不覆盖其他校区、其他学校或公司通勤。你的预算和房型需求已保留。','listings':[],'actions':[]},[]
     brief['recommend_areas']=True
-    options=deepcopy(conversation.get('commute_destination_options',[]))
-    if 'destination_id' in patch:
-        identifier=patch['destination_id']
-        require(identifier in text and any(o['id']==identifier for o in options),422,'invalid_destination','请使用当前对话提供的地点选项确认目的地。')
-        # A chosen server option is authoritative even if the model repeats its
-        # display label as a different query. It must not invalidate itself.
-        brief['destination_query']=conversation.get('rental_brief',{}).get('destination_query',brief.get('destination_query'))
-    elif patch.get('destination_query') and patch['destination_query']!=conversation.get('rental_brief',{}).get('destination_query'):
-        options=[];brief.pop('destination_id',None)
+    brief.update(student_brief(brief))
+    options=[]
     answer={'intent':'recommend_areas','agent':'agent1','content':'','listings':[],'actions':[]}
     question=next_question(brief)
     if question:
@@ -102,29 +94,25 @@ def prepare(ctx,conversation,brief,patch,text,allow_external):
         answer['commute_question']={'fields':question_fields(brief)}
         return answer,options
     if not allow_external:
-        answer['content']='需求已记下。查询学校或公司位置及公共交通路线，需要勾选本次外部位置与交通查询同意后再发送；此时不会查询或猜测通勤时长。'
+        answer['content']='需求已记下。本次没有启用外部交通查询；已保留到悉大主校区的条件，不会猜测实时通勤。'
         return answer,options
-    destination=next((o for o in options if o['id']==brief.get('destination_id')),None)
-    if destination is None:
-        if not options:
-            try:options=resolver_for(ctx).search(normalized_query(brief['destination_query']),limit=5)
-            except ApiError:
-                answer['content']='暂时无法查询目的地位置。已保留你的需求，请稍后重试，或提供更具体的校区、办公楼或街道地址。'
-                return answer,[]
-        if not options:
-            answer['content']='还没有找到可核对的目的地位置。请补充英文校区名、办公楼名或完整街道地址；我不会把区域中心点当成你的目的地。'
-        else:
-            answer['content']='请确认具体的通勤目的地。相近名称可能对应不同校区或建筑；选择下方地点后发送确认，我再计算路线。'
-            answer['destination_options']=options
-        return answer,options
-    answer=plan_routes(ctx,deepcopy(brief),deepcopy(destination),allow_external)
+    destination=deepcopy(DESTINATION)
+    previous=[m['commute_recommendation'] for m in conversation.get('messages',[]) if m.get('commute_recommendation')]
+    refresh=refresh or bool(previous and previous[-1].get('criteria')==brief)
+    if refresh and brief.get('arrival_time'):
+        answer=plan_routes(ctx,deepcopy(brief),deepcopy(destination),allow_external,previous_reports=previous)
+    else:
+        answer=plan_routes(ctx,deepcopy(brief),deepcopy(destination),allow_external)
     answer.setdefault('intent','recommend_areas')
+    from .recommendation_order import arrange
+    answer=arrange(answer,conversation,brief,refresh)
     return answer,options
 
 
 def brief_context(conversation):
-    return {'destination_options':[{'id':o['id'],'label':o['label']} for o in conversation.get('commute_destination_options',[])],
-            'public_transport_available':'requires_server_lookup','supported_mode':'public_transport'}
+    return {'destination_options':[],
+            'destination':deepcopy(DESTINATION),'audience':'USYD students at Camperdown/Darlington only',
+            'public_transport_available':'requires_server_lookup','supported_modes':list(MODES)}
 
 
 def latest(ctx,case_id):
@@ -137,6 +125,8 @@ def latest(ctx,case_id):
         activity=ctx.repo.get(db,'assistant_commute_activity',case_id)
     result=deepcopy(saved)
     reasons=[]
+    if saved.get('message',{}).get('commute_recommendation',{}).get('destination',{}).get('id')!=DESTINATION['id']:
+        reasons.append('已改为悉大主校区专用找房，请重新生成到主校区的通勤推荐。')
     if activity and (activity['conversation_id']!=saved['conversation_id'] or activity['brief']!=saved['brief']):
         reasons.append('已有新的区域或通勤需求，请在最新对话重新生成推荐。')
     if not conversation or conversation.get('rental_brief')!=saved['brief']:reasons.append('聊天需求已更新，请重新生成推荐。')
