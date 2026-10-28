@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { commuteSummary } from "../src/features/real-data/commuteSummary";
+import { selectedCommute } from "../src/features/real-data/commuteSummary";
 
 const destination = {
   id: "usyd:camperdown-darlington:fisher-library",
@@ -171,7 +171,7 @@ test("commute results remain in chat and recommendations only show catalogue fil
   ).toBeVisible();
   await expect(
     page.getByText(
-      `平均通勤约 ${commuteSummary(rows[0].usyd_commute).average} 分钟`,
+      selectedCommute(rows[0].usyd_commute, "public_transport")!.text,
       { exact: true },
     ),
   ).toBeVisible();

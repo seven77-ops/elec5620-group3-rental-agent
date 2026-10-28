@@ -419,7 +419,7 @@ test("failed stale import preserves choices and a refreshed stale source cannot 
     .getByRole("button", { name: "确认接入租约资料", exact: true })
     .click();
   await expect(
-    modal.getByText("资料版本已变化，请重新预览。", { exact: true }),
+    modal.getByText("资料已更新", { exact: true }),
   ).toBeVisible();
   await expect(field).toBeChecked();
   expect(imports).toBe(1);

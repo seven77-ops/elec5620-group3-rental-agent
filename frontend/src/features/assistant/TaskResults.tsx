@@ -11,6 +11,7 @@ import {
   recommendationCopy,
 } from "../real-data/listingPresentation";
 import "./taskResults.css";
+import ListingActions from "../favorites/ListingActions";
 
 function Points({ label, items }: { label: string; items: string[] }) {
   return items.length ? (
@@ -29,13 +30,11 @@ export default function TaskResults({
   onView,
   onSave,
   disabled,
-  selectedListingId,
 }: {
   message: AssistantMessage;
   onView?: (listing: HousingAd) => void;
   onSave?: (listing: HousingAd) => void;
   disabled?: boolean;
-  selectedListingId?: string;
 }) {
   const { message: toast } = App.useApp();
   const comparison = message.comparison,
@@ -97,17 +96,11 @@ export default function TaskResults({
                       <Button size="small" onClick={() => onView?.(listing)}>
                         房源详情
                       </Button>
-                      {selectedListingId === listing.listing_id ? (
-                        <Tag color="blue">当前候选</Tag>
-                      ) : (
-                        <Button
-                          size="small"
-                          disabled={disabled}
-                          onClick={() => onSave?.(listing)}
-                        >
-                          保存为候选
-                        </Button>
-                      )}
+                      <ListingActions
+                        listing={listing}
+                        onSelect={onSave}
+                        disabled={disabled}
+                      />
                     </div>
                   )}
                 </article>

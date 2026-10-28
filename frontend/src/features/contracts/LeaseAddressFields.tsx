@@ -9,6 +9,18 @@ import NoticeAddressFields from "./NoticeAddressFields";
 import "./leaseAutofill.css";
 
 export const addressGroups = {
+  tenant_agent_notice_address: {
+    prefix: "租客代理",
+    suburb: "tenant_agent_notice_suburb",
+    state: "tenant_agent_notice_state",
+    postcode: "tenant_agent_notice_postcode",
+  },
+  corporation_address: {
+    prefix: "出租公司",
+    suburb: "corporation_suburb",
+    state: "corporation_state",
+    postcode: "corporation_postcode",
+  },
   address: {
     prefix: "房屋",
     suburb: "suburb",
@@ -28,7 +40,7 @@ export const addressGroups = {
     postcode: "tenant_notice_postcode",
   },
   agent_notice_address: {
-    prefix: "代理",
+    prefix: "出租方中介",
     suburb: "agent_notice_suburb",
     state: "agent_notice_state",
     postcode: "agent_notice_postcode",
@@ -43,6 +55,7 @@ type AddressProps = {
   form: FormInstance<LeaseFields>;
   onEdited: () => void;
   source?: string;
+  requiredFields?: readonly (keyof LeaseFields)[];
 };
 export default function LeaseAddressFields(props: AddressProps) {
   return props.name === "address" ? (
@@ -54,10 +67,17 @@ export default function LeaseAddressFields(props: AddressProps) {
       group={addressGroups[props.name]}
       form={props.form}
       onEdited={props.onEdited}
+      requiredFields={props.requiredFields}
     />
   );
 }
-function PropertyAddressFields({ name, form, onEdited, source }: AddressProps) {
+function PropertyAddressFields({
+  name,
+  form,
+  onEdited,
+  source,
+  requiredFields,
+}: AddressProps) {
   const group = addressGroups[name];
   const [query, setQuery] = useState("");
   const [items, setItems] = useState<LeaseAddressSuggestion[]>([]);
@@ -110,7 +130,12 @@ function PropertyAddressFields({ name, form, onEdited, source }: AddressProps) {
   };
   return (
     <div className="lease-address-fields lease-field-wide">
-      <Form.Item name={name} label={leaseLabels[name]} extra={source}>
+      <Form.Item
+        name={name}
+        label={leaseLabels[name]}
+        required={requiredFields?.includes(name)}
+        extra={source}
+      >
         <AutoComplete
           options={items.map((item) => ({
             value: item.id,
@@ -161,16 +186,25 @@ function PropertyAddressFields({ name, form, onEdited, source }: AddressProps) {
         </AutoComplete>
       </Form.Item>
       <div className="lease-address-parts">
-        <Form.Item name={group.suburb} label={`${group.prefix}区域（Suburb）`}>
+        <Form.Item
+          name={group.suburb}
+          label={`${group.prefix}区域（Suburb）`}
+          required={requiredFields?.includes(group.suburb)}
+        >
           <Input maxLength={80} />
         </Form.Item>
-        <Form.Item name={group.state} label={`${group.prefix} State`}>
+        <Form.Item
+          name={group.state}
+          label={`${group.prefix} State`}
+          required={requiredFields?.includes(group.state)}
+        >
           <AutoComplete options={states}>
             <Input maxLength={40} />
           </AutoComplete>
         </Form.Item>
         <Form.Item
           name={group.postcode}
+          required={requiredFields?.includes(group.postcode)}
           label={`${group.prefix}邮编`}
           rules={[{ pattern: /^\d{4}$/, message: "邮编须为4位数字。" }]}
         >

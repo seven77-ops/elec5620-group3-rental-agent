@@ -104,6 +104,65 @@
   color: #174ea6;
   font-size: 11px;
 }
+.living-provider-trigger {
+  width: 100%;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.living-provider-trigger:hover {
+  border-color: #7aa2d8;
+  background: #f8faff;
+}
+.living-provider-trigger:focus-visible {
+  outline: 2px solid #174ea6;
+  outline-offset: 3px;
+}
+.living-provider-name {
+  font-size: 20px;
+  font-weight: 550;
+}
+.living-provider-coverage {
+  font-size: 12px;
+}
+.living-provider-card-action {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+  color: #174ea6;
+  font-size: 12px;
+}
+.living-provider-details {
+  line-height: 1.7;
+}
+.living-provider-source {
+  margin-top: 16px;
+  font-size: 12px;
+}
+.living-service-group + .living-service-group {
+  margin-top: 32px;
+}
+.living-service-group-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 24px;
+}
+.living-service-group-heading h3 {
+  margin: 0;
+  font-size: 16px;
+}
+.living-service-group-heading span {
+  font-size: 12px;
+}
+.living-service-group .living-provider-grid {
+  margin-top: 16px;
+}
 .living-provider-card h3 {
   font-size: 20px;
   font-weight: 550;
@@ -459,6 +518,13 @@
   flex-wrap: wrap;
   margin-top: 16px;
 }
+.living-polished-email {
+  margin: 24px 0;
+  padding: 24px;
+  border: 1px solid #dbe5f3;
+  border-radius: 12px;
+  background: #f8faff;
+}
 .living-repair-followup-actions .ant-btn {
   font-size: 12px;
 }
@@ -484,6 +550,9 @@
   font-size: 10px;
 }
 @media (max-width: 767px) {
+  .living-polished-email {
+    padding: 16px;
+  }
   .living-source-bar {
     align-items: flex-start;
     flex-direction: column;

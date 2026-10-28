@@ -35,6 +35,15 @@ TEXT_MAP.update({'suburb':None,'state':None,'postcode':None,
     'plumbing_repair_name':'Text field 4.7','plumbing_repair_phone':'Text field 4.8',
     'other_repair_name':'Text field 4.9','other_repair_phone':'Text field 4.10'})
 DATE_MAP={'agreement_date':'Text field 1.1','start_date':'Text field 3.9','end_date':'Text field 3.10','first_rent_date':'Text field 3.19'}
+TEXT_MAP.update({'tenant_agent_name':'Text field 2.21','tenant_agent_notice_address':'Text field 2.22',
+    'tenant_agent_notice_suburb':'Text field 2.23','tenant_agent_notice_state':'Text field 2.24',
+    'tenant_agent_notice_postcode':'Text field 2.25','tenant_agent_contact':'Text field 2.26',
+    'corporation_name':'Text field 2.1','corporation_address':'Text field 2.2','corporation_suburb':'Text field 2.3',
+    'corporation_state':'Text field 2.4','corporation_postcode':'Text field 2.5'})
+YES_NO_MAP={'water_usage':'Check Box 4.8','electricity_embedded':'Check Box 4.9','gas_embedded':'Check Box 4.10',
+    'smoke_battery_replaceable':'Check Box 4.13','smoke_backup_replaceable':'Check Box 4.19',
+    'smoke_strata_responsible':'Check Box 4.22','strata_bylaws':'Check Box 5.1',
+    'landlord_email_consent':'Check Box 5.3','tenant_email_consent':'Check Box 5.6'}
 
 
 def template_metadata():
@@ -96,6 +105,22 @@ def field_values(fields):
             else:result['Text field 3.2']=str((end-start).days)+' days'
     method=fields['payment_method']
     if method:result['Check Box 3.20']={'bank_transfer':'/Paid by approved electronic bank transfer','centrepay':'/Paid by Centrepay','other':'/Paid by Other'}[method]
+    for key,name in YES_NO_MAP.items():
+        value=fields.get(key)
+        if value in ('yes','no'):result[name]='/Yes' if value=='yes' else '/No'
+    kind=fields.get('smoke_alarm_type')
+    if kind:
+        result['Check Box 4.11']='/Yes' if kind in ('hardwired','both') else '/Off'
+        result['Check Box 4.12']='/Yes' if kind in ('battery','both') else '/Off'
+    for kind,condition,name in (('smoke_battery_type','smoke_battery_replaceable','Text field 4.18'),
+                               ('smoke_backup_type','smoke_backup_replaceable','Text field 4.21'),
+                               ('landlord_notice_email','landlord_email_consent','Text field 5.5'),
+                               ('tenant_notice_email','tenant_email_consent','Text field 5.8')):
+        if fields.get(condition)=='yes' and fields.get(kind):result[name]=fields[kind]
+    recipient=fields.get('bond_recipient')
+    if recipient:
+        result['Check Box 4.1']={'landlord':'/the landlord or another person','agent':'/the landlord誷 agent',
+                               'rbo':'/NSW Fair Trading through Rental Bond Online'}[recipient]
     return result
 
 
@@ -173,6 +198,9 @@ def cover_pages(draft):
         **{prefix+'_'+part:label+' '+part for prefix,label in (('landlord_notice','Landlord notice'),('tenant_notice','Tenant notice'),('agent_notice','Agent notice')) for part in ('suburb','state','postcode')},
         **{kind+'_repair_'+part:kind.capitalize()+' repair '+part for kind in ('electrical','plumbing','other') for part in ('name','phone')},
         'lease_term_months':'Calendar lease months'})
+    from .fields import LABELS
+    labels.update({k:v for k,v in LABELS.items() if k not in labels})
+    labels.update(agent_name='Landlord agent',agent_contact='Landlord agent contact',agent_notice_address='Landlord agent notice address')
     rows=[]
     for key,label in labels.items():
         value=f.get(key)
@@ -203,6 +231,11 @@ def generate_pdf(draft):
     for page in writer.pages:
         for ref in page.get('/Annots',[]):
             obj=ref.get_object();name=widget_name(obj)
+            # Radio widgets keep their own appearance state, while the value
+            # belongs to their shared field. Remove pypdf's redundant child /V.
+            parent=obj.get('/Parent')
+            if parent and name.startswith('Check Box') and parent.get_object().get('/FT')=='/Btn' and '/V' in parent.get_object():
+                obj.pop(NameObject('/V'),None)
             if name in unicode_values:
                 target=obj
                 while '/T' not in target and target.get('/Parent'):

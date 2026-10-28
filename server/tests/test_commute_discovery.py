@@ -41,8 +41,9 @@ class DiscoveryTests(unittest.TestCase):
         result=reference_answer(catalog,brief,DESTINATION)
         self.assertEqual([r['listing_id'] for r in result['listings']],['domain:1'])
         self.assertEqual(result['listings'][0]['usyd_commute']['estimates'],coarse['usyd_commute']['estimates'])
-        for change in ({'commute_max_minutes':25},{'max_transfers':0},{'travel_date':'2099-01-01'}):
+        for change in ({'commute_max_minutes':25},{'max_transfers':0}):
             self.assertEqual(reference_answer(catalog,{**brief,**change},DESTINATION)['listings'],[])
+        self.assertEqual(len(reference_answer(catalog,{**brief,'travel_date':'2099-01-01'},DESTINATION)['listings']),1)
 
     def test_refresh_changes_first_page_but_preserves_every_match_and_criteria(self):
         from server.app.assistant.commute import prepare

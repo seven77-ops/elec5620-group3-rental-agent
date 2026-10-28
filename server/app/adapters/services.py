@@ -22,6 +22,8 @@ class Services:
         from ..commute.mcp_transit import TransitProvider
         self.transit_provider = TransitProvider(self.data_provider)
         self.repo = Repository(settings.runtime_dir)
+        from ..living.utility_catalog import UtilityPlanCatalog
+        self.utility_plans = UtilityPlanCatalog(self.repo.directory / 'utility_catalog.sqlite3')
         self.preferences = Agent1Bridge(self.repo, real=settings.catalog is not None)
         self.aftercare = AftercareAgent(self.repo.directory / 'aftercare.sqlite3', operator_ids={OPERATOR}, gateway=None)
 

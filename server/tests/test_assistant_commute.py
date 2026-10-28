@@ -173,7 +173,7 @@ class AssistantCommuteTests(unittest.TestCase):
         applied=self.client.post(self.base+'/proposals/'+prepared.json()['proposal_id']+'/apply',json={'request_id':'apply-sync','confirmed':True})
         self.assertEqual(applied.status_code,200,applied.text)
         conversation=applied.json()['conversation']
-        self.assertEqual(conversation['rental_brief']['arrival_time'],'09:00')
+        self.assertNotIn('arrival_time',conversation['rental_brief'])
         self.assertEqual(conversation['rental_brief']['commute_max_minutes'],40)
         self.assertEqual(conversation['dialogue_mode'],'recommend_areas')
 

@@ -6,8 +6,23 @@ export const pendingNeeds = (conversation: Conversation | null) =>
   Boolean(
     conversation?.messages
       .at(-1)
-      ?.actions.some((action) => action.type === "apply_preferences"),
+      ?.actions.some(
+        (action) =>
+          action.type === "apply_preferences" &&
+          !action.applied &&
+          !action.superseded,
+      ),
   );
+
+export const approximateNeeds = (brief: RentalBrief): RentalBrief => {
+  const {
+    arrival_time: _clock,
+    travel_day: _day,
+    travel_date: _date,
+    ...rest
+  } = brief;
+  return rest;
+};
 
 export function profileNeeds(profile?: Profile): RentalBrief {
   if (!profile) return {};
@@ -23,9 +38,6 @@ export function profileNeeds(profile?: Profile): RentalBrief {
       ? {
           commute_mode: profile.student_commute.mode,
           commute_max_minutes: profile.student_commute.maximum_minutes,
-          arrival_time: profile.student_commute.arrival_time,
-          travel_day: profile.student_commute.travel_day,
-          travel_date: profile.student_commute.travel_date,
           max_transfers: profile.student_commute.max_transfers,
         }
       : {}),
@@ -47,7 +59,7 @@ export function conversationNeeds(
       conversation?.dialogue_mode === "recommend_areas") &&
     conversation.rental_brief
   )
-    return { ...conversation.rental_brief };
+    return approximateNeeds(conversation.rental_brief);
   const result = { ...profileNeeds(profile), ...conversation?.rental_brief };
   const filters = conversation?.last_search_filters;
   if (filters) {
@@ -62,12 +74,6 @@ export function conversationNeeds(
       result.commute_mode = filters.usyd_mode as RentalBrief["commute_mode"];
     if (filters.usyd_max_minutes !== undefined)
       result.commute_max_minutes = filters.usyd_max_minutes;
-    if (filters.usyd_arrival_time !== undefined)
-      result.arrival_time = filters.usyd_arrival_time;
-    if (filters.usyd_travel_day !== undefined)
-      result.travel_day = filters.usyd_travel_day as RentalBrief["travel_day"];
-    if (filters.usyd_travel_date !== undefined)
-      result.travel_date = filters.usyd_travel_date;
     if (filters.usyd_max_transfers !== undefined)
       result.max_transfers = filters.usyd_max_transfers;
     if (filters.max_weekly_rent !== undefined) {
@@ -75,7 +81,7 @@ export function conversationNeeds(
       result.budget_period = "week";
     }
   }
-  return result;
+  return approximateNeeds(result);
 }
 
 export function needsMatch(brief: RentalBrief, profile?: Profile) {

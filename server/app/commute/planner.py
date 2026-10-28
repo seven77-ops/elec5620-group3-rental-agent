@@ -100,7 +100,7 @@ class CommutePlanner:
         self.ctx=ctx
         self.resolver=resolver or LocationResolver()
 
-    def prepare(self,brief,destination,allow_external=False,previous_reports=None):
+    def prepare(self,brief,destination,allow_external=False,previous_reports=None,listing_ids=None):
         require(isinstance(brief,dict),422,'invalid_commute_brief','通勤条件无效。')
         require(valid_point(destination) and all(isinstance(destination.get(k),str) and destination[k]
                 for k in ('id','label','precision','source_url')),422,'invalid_destination','请选择服务器返回的目的地。')
@@ -133,6 +133,8 @@ class CommutePlanner:
         else:
             limitations.append('预算周期或计价对象无法与广告周租直接比较，未用预算筛除房源，也未按人数乘除租金。')
         rows=catalog.matching(filters)
+        if listing_ids is not None:
+            rows=[row for row in rows if row['listing_id'] in listing_ids]
         from .history import recent_routes
         reused=recent_routes(previous_reports,brief,destination,arrival,{r['listing_id'] for r in rows},catalog.fingerprint)
         remaining=[r for r in rows if r['listing_id'] not in reused]

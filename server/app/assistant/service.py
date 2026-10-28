@@ -280,7 +280,6 @@ class AssistantService:
                         if changed.get('student_commute'):
                             student=profile['student_commute']
                             kept.update(commute_mode=student['mode'],commute_max_minutes=student['maximum_minutes'],commute_hard_limit=True)
-                            if student.get('arrival_time'):kept['arrival_time']=student['arrival_time']
                         current['rental_brief']=kept
                         current['dialogue_mode']='recommend_areas'
                     else:
@@ -346,8 +345,21 @@ class AssistantService:
             run=adapter.evaluation(case_id,{'request_id':'assistant-'+p['proposal_id'],'confirmation_version':case['confirmations'][-1]['version']})
             case=self.ctx.get(db,'case',case_id)
             cards=deepcopy(run['report']['pending_confirmation'])
-            c['messages'].append(message('assistant',f"Agent1 已确认偏好版本 {case['confirmations'][-1]['version']}，Agent2 找到 {run['report']['counts']['input']} 条房源候选。",
-                'agent2',intent='search',listings=cards,actions=[{'type':'navigate','label':'查看候选报告','page':'recommendations','run_id':run['run_id']}]))
+            previous = next((m for m in reversed(c['messages']) if m.get('listings') or m.get('commute_recommendation')), None)
+            from .recommendation_options import filters_for
+            previous_filters = previous.get('recommendation_filters') if previous else None
+            if previous and previous.get('commute_recommendation'):
+                previous_filters = filters_for(previous['commute_recommendation']['criteria'])
+            if previous_filters is None: previous_filters = c.get('last_search_filters', {})
+            def effective(filters): return {k:v for k,v in filters.items() if k != 'sort' and v is not None}
+            fields = ('listing_id', 'address', 'weekly_rent', 'bedrooms', 'bathrooms', 'car_spaces', 'captured_at')
+            def facts(rows): return {r['listing_id']: tuple(r.get(k) for k in fields) for r in rows}
+            if previous is None or effective(previous_filters) != effective(run['report']['filters']) or facts(previous['listings']) != facts(cards):
+                c['messages'].append(message('assistant',f"找房条件已保存，筛选出 {len(cards)} 套房源。",
+                    'agent2',intent='search',listings=cards))
+            for item in c['messages']:
+                for action in item['actions']:
+                    if action['type'] == 'apply_preferences': action['applied'] = True
             c['last_search_filters']=run['report']['filters']
             if c.get('rental_brief',{}).get('recommend_areas'):
                 c['rental_brief']={**c['rental_brief'],**profile_brief(p['profile'])}

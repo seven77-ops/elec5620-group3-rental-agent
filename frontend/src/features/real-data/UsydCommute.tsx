@@ -1,15 +1,35 @@
 import type { HousingAd } from "../../api/catalog";
+import { useContext } from "react";
+import { CaseContext, currentConfirmation } from "../../app/context";
 import { usydDirections } from "./directions";
-import { commuteSummary } from "./commuteSummary";
+import { commuteSummary, selectedCommute } from "./commuteSummary";
 import "./usydCommute.css";
 export { commuteModes } from "./commuteSummary";
 
-export function UsydCommuteMini({ listing }: { listing: HousingAd }) {
-  const { average } = commuteSummary(listing.usyd_commute);
+function useMode(listing: HousingAd, mode?: string) {
+  const context = useContext(CaseContext);
+  return (
+    mode ||
+    listing.recommendation_mode ||
+    (context
+      ? currentConfirmation(context.current)?.profile?.student_commute?.mode
+      : undefined) ||
+    "public_transport"
+  );
+}
+export function UsydCommuteMini({
+  listing,
+  mode,
+}: {
+  listing: HousingAd;
+  mode?: string;
+}) {
+  const chosen = useMode(listing, mode);
+  const summary = selectedCommute(listing.usyd_commute, chosen);
   return (
     <span className="usyd-commute-mini">
-      {average !== null ? (
-        <strong className="commute-time">平均通勤约 {average} 分钟</strong>
+      {summary ? (
+        <strong className="commute-time">{summary.text}</strong>
       ) : (
         <small>通勤参考待补充</small>
       )}
@@ -19,7 +39,21 @@ export function UsydCommuteMini({ listing }: { listing: HousingAd }) {
 
 export default function UsydCommute({ listing }: { listing: HousingAd }) {
   const data = listing.usyd_commute;
-  const { items, average } = commuteSummary(data);
+  const { items: references } = commuteSummary(data);
+  const mode = useMode(listing);
+  const summary = selectedCommute(data, mode);
+  const items = references.flatMap((item) => {
+    const current = selectedCommute(data, item.value);
+    return current ? [{ ...item, selected: current }] : [];
+  });
+  if (summary && !items.some((item) => item.value === mode))
+    items.push({
+      value: mode,
+      label: summary.label,
+      minutes: summary.upper,
+      estimated: summary.estimated,
+      selected: summary,
+    });
   return (
     <section
       className="listing-detail-section usyd-commute"
@@ -27,7 +61,7 @@ export default function UsydCommute({ listing }: { listing: HousingAd }) {
     >
       <div className="usyd-commute-title">
         <h3>到悉大主校区</h3>
-        {average !== null && <span>平均通勤约 {average} 分钟</span>}
+        {summary && <span>{summary.text}</span>}
       </div>
       <p className="muted small">Camperdown / Darlington · Fisher Library</p>
       <dl className="usyd-mode-grid">
@@ -36,7 +70,9 @@ export default function UsydCommute({ listing }: { listing: HousingAd }) {
             <dt>{mode.label}</dt>
             <dd>
               <strong>
-                约 {mode.minutes}
+                {mode.selected?.estimated
+                  ? `估算 ${mode.selected.lower}–${mode.selected.upper}`
+                  : `约 ${mode.minutes}`}
                 <small> 分钟</small>
               </strong>
               <a

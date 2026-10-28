@@ -47,7 +47,7 @@ def execute(intent,case,conversation,catalog,requested_ids,ctx=None):
             legacy=case.get('requirements_contract')!='supplied-only-v1')['filters'] if (
             case['confirmations'] and case['confirmations'][-1]['fingerprint']==case['draft']['fingerprint'] and
             case['confirmations'][-1]['draft_revision']==case['draft']['revision']) else {}
-        filters={**(conversation.get('last_search_filters') or filters),**intent.get('filters',{})}
+        filters={**filters,**(conversation.get('last_search_filters') or {}),**intent.get('filters',{})}
         return search_answer(catalog,filters,ctx=ctx,case_id=case["case_id"])
     elif name in ('compare','explain','select'):
         cards=[catalog.get(i) for i in ids]
@@ -143,7 +143,9 @@ def search_answer(catalog,filters,ctx=None,case_id=None):
                     'message':'只预览房源：'+query_text(elsewhere)+'。不要修改已保存的偏好。'})
         if actions: content+='\n你更愿意调整预算，还是扩大区域？我会等你选择。'
         else: content+='\n暂时没有只调整预算或区域就能匹配的方案。你愿意先调整哪项条件？'
-    return {'intent':'search','agent':'agent2','content':content,'listings':cards,'actions':actions,'_search_filters':f}
+    from .recommendation_options import metadata
+    return {'intent':'search','agent':'agent2','content':content,'listings':cards,'actions':actions,'_search_filters':f,
+            **metadata(catalog,f,total=len(cards))}
 
 
 def preference_summary(profile):
@@ -177,7 +179,6 @@ def preference_summary(profile):
     if 'modes' in c: commute.append('、'.join(labels[k] for k in c['modes']))
     for key,name in (('preferred_minutes','期望'),('maximum_minutes','最长')):
         if key in c: commute.append(f"{name} {c[key]:g} 分钟")
-    if 'arrival_time' in profile: commute.append(profile['arrival_time']+' 到达')
     if 'hard_limit' in c: commute.append('硬限制' if c['hard_limit'] else '可协商')
     if commute: result.append('通勤：'+'；'.join(commute)+'。')
     dates=profile.get('move_in_window',{})
@@ -191,7 +192,6 @@ def preference_summary(profile):
         from ..commute.usyd import MODE_LABELS
         student=profile['student_commute']
         parts=[MODE_LABELS[student['mode']],f"单程最多 {student['maximum_minutes']} 分钟"]
-        if student.get('arrival_time'):parts.append(student['arrival_time']+' 前到达')
         if student.get('travel_day'):parts.append('工作日' if student['travel_day']=='weekday' else '周末')
         if student.get('travel_date'):parts.append(student['travel_date'])
         if student.get('max_transfers') is not None:parts.append(f"最多换乘 {student['max_transfers']} 次")

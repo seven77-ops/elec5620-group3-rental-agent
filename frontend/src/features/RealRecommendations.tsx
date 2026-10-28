@@ -7,7 +7,6 @@ import {
   Empty,
   Form,
   InputNumber,
-  Input,
   Select,
   Space,
   Table,
@@ -29,11 +28,16 @@ import { ListingThumbnail } from "./real-data/ListingPhotos";
 
 import { UsydCommuteMini, commuteModes } from "./real-data/UsydCommute";
 import ListingDetails from "./real-data/ListingDetails";
+import ListingActions from "./favorites/ListingActions";
+import { useFavorites } from "./favorites/FavoritesContext";
+import FavoritesDrawer from "./favorites/FavoritesDrawer";
+import ListingReasons from "./assistant/ListingReasons";
+import type { RecommendationAlternative } from "../api/assistant";
 const CandidateFollowup = lazy(() => import("./candidate/CandidateFollowup"));
 
 export default function RealRecommendations() {
   const { current, refresh, go } = useCase();
-  const { modal, message } = App.useApp();
+  const { message } = App.useApp();
   const [form] = Form.useForm<HousingFilters>();
   const [filters, setFilters] = useState<HousingFilters>({ sort: "rent_asc" });
   const filtersTouched = useRef(false);
@@ -43,6 +47,14 @@ export default function RealRecommendations() {
   const [filterDirty, setFilterDirty] = useState(false);
   const [page, setPage] = useState(1);
   const [result, setResult] = useState<HousingPage | null>(null);
+  const [alternatives, setAlternatives] = useState<RecommendationAlternative[]>(
+    [],
+  );
+  const [filterChange, setFilterChange] = useState<{
+    key: string;
+    label: string;
+    before: number;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<unknown>(null);
   const [revision, setRevision] = useState(0);
@@ -53,6 +65,7 @@ export default function RealRecommendations() {
   const [reportRevision, setReportRevision] = useState(0);
   const latest = current.evaluations.at(-1)?.run_id;
   const action = useAction();
+  const favorites = useFavorites();
   const confirmed = currentConfirmation(current);
   useEffect(() => {
     if (!contextReady) return;
@@ -80,6 +93,24 @@ export default function RealRecommendations() {
       valid = false;
     };
   }, [filters, page, revision, contextReady]);
+  useEffect(() => {
+    let valid = true;
+    setAlternatives([]);
+    if (loading || error || !result || result.total !== 0) return;
+    post<{ alternatives: RecommendationAlternative[] }>(
+      `/cases/${encodeURIComponent(current.case_id)}/assistant/recommendation-preview`,
+      { filters },
+    )
+      .then((value) => {
+        if (valid) setAlternatives(value.alternatives);
+      })
+      .catch(() => {
+        if (valid) setAlternatives([]);
+      });
+    return () => {
+      valid = false;
+    };
+  }, [current.case_id, result, filters, loading, error]);
   useEffect(() => {
     let valid = true;
     setReportError(null);
@@ -137,9 +168,6 @@ export default function RealRecommendations() {
     report.dataset_fingerprint === result?.catalog.fingerprint &&
     filterKey(reportFilters ?? {}) === filterKey(filters),
   );
-  const allowed = new Set(
-    report?.pending_confirmation.map((r) => r.listing_id) ?? [],
-  );
   const generate = () => {
     if (!confirmed) return;
     const body = {
@@ -163,33 +191,6 @@ export default function RealRecommendations() {
       message.success("真实候选报告已保存。");
     });
   };
-  const choose = (item: HousingAd) => {
-    const body = {
-      request_id: newRequestId(),
-      run_id: evaluation!.run_id,
-      listing_id: item.listing_id,
-      confirmed: true,
-    };
-    return modal.confirm({
-      title: "保存这条真实房源候选？",
-      content: (
-        <>
-          <p>
-            {item.address} · AUD {item.weekly_rent}/周（房源标价）
-          </p>
-          <p>保存后可准备看房询问、记录中介回复，或上传已有合同复核。</p>
-        </>
-      ),
-      okText: "确认保存候选",
-      cancelText: "继续查看",
-      onOk: () =>
-        action.run(async () => {
-          await post(`/cases/${current.case_id}/selections`, body);
-          await refresh();
-          message.success("真实房源候选已保存。");
-        }),
-    });
-  };
   const selection =
     current.selection?.data_mode === "real_listings" ? current.selection : null;
   return (
@@ -198,6 +199,10 @@ export default function RealRecommendations() {
         title="真实房源推荐"
         extra={
           <Space wrap>
+            <FavoritesDrawer
+              commuteMode={filters.usyd_mode}
+              selectionSource={{ filters }}
+            />
             <Button onClick={() => go("assistant")}>用对话找房</Button>
             <Button onClick={() => go("assistant?needs=1")}>
               我的租房需求
@@ -285,18 +290,11 @@ export default function RealRecommendations() {
             precision={0}
           />
         </Form.Item>
-        <Form.Item name="usyd_arrival_time" hidden>
-          <Input />
-        </Form.Item>
+
         <Form.Item name="usyd_max_transfers" hidden>
           <InputNumber min={0} max={5} precision={0} />
         </Form.Item>
-        <Form.Item name="usyd_travel_day" hidden>
-          <Input />
-        </Form.Item>
-        <Form.Item name="usyd_travel_date" hidden>
-          <Input />
-        </Form.Item>
+
         <Form.Item name="sort" label="排序">
           <Select
             aria-label="房源排序"
@@ -381,12 +379,60 @@ export default function RealRecommendations() {
           showIcon
         />
       )}
-      <p className="real-save-hint muted">生成当前筛选报告后可保存候选。</p>
+      <p className="real-save-hint muted">
+        可以直接选定一套开始跟进，也可以收藏多套再比较。
+      </p>
       <section className="panel real-catalog-table" data-testid="real-catalog">
         <h2>
           筛选结果 ·{" "}
           {loading ? "读取中" : error ? "读取失败" : (result?.total ?? 0)} 条
         </h2>
+        {filterChange?.key === filterKey(filters) && !loading && !error && (
+          <p className="recommendation-change-summary" role="status">
+            {filterChange.label} · 房源 {filterChange.before} →{" "}
+            {result?.total ?? 0} 套
+          </p>
+        )}
+        {!loading &&
+          !error &&
+          result?.total === 0 &&
+          alternatives.length > 0 && (
+            <div
+              className="recommendation-alternatives"
+              aria-label="无结果调整方案"
+            >
+              <p>只调整下面一项，其余条件保持不变：</p>
+              {alternatives.map((option) => (
+                <Button
+                  key={option.id}
+                  disabled={option.count === 0}
+                  onClick={() => {
+                    const next = { ...filters };
+                    if (option.patch.budget_amount != null)
+                      next.max_weekly_rent = option.patch.budget_amount;
+                    if (option.patch.commute_max_minutes != null)
+                      next.usyd_max_minutes = option.patch.commute_max_minutes;
+                    if (option.patch.suburb === null) delete next.suburb;
+                    setFilterChange({
+                      key: filterKey(next),
+                      label: option.label,
+                      before: 0,
+                    });
+                    filtersTouched.current = true;
+                    form.resetFields();
+                    form.setFieldsValue(next);
+                    setFilters(next);
+                    setPage(1);
+                    setManualFilters(true);
+                    setFilterDirty(false);
+                  }}
+                >
+                  {option.label} ·{" "}
+                  {option.count ? `可找到 ${option.count} 套` : "仍无匹配"}
+                </Button>
+              ))}
+            </div>
+          )}
         <Table<HousingAd>
           rowKey="listing_id"
           loading={loading}
@@ -416,13 +462,19 @@ export default function RealRecommendations() {
                   <ListingThumbnail
                     key={`${r.listing_id}:${r.photos?.[0]?.url ?? "none"}`}
                     listing={r}
-                    onOpen={() => setDetail(r)}
+                    onOpen={() =>
+                      setDetail({
+                        ...r,
+                        recommendation_mode: filters.usyd_mode,
+                      })
+                    }
                   />
                   <div>
                     <strong>{r.address}</strong>
                     <div className="muted">
                       {r.suburb} · {r.postcode}
                     </div>
+                    <ListingReasons listing={r} filters={filters} />
                   </div>
                 </div>
               ),
@@ -445,35 +497,36 @@ export default function RealRecommendations() {
               title: "到悉大",
               key: "usyd",
               width: 150,
-              render: (_, row) => <UsydCommuteMini listing={row} />,
+              render: (_, row) => (
+                <UsydCommuteMini listing={row} mode={filters.usyd_mode} />
+              ),
             },
             {
               title: "操作",
               key: "actions",
-              width: 245,
+              width: 320,
               render: (_, r) => (
                 <Space wrap>
                   <Button
                     size="small"
                     aria-label="查看房源详情"
                     disabled={loading || Boolean(error)}
-                    onClick={() => setDetail(r)}
+                    onClick={() =>
+                      setDetail({
+                        ...r,
+                        recommendation_mode: filters.usyd_mode,
+                      })
+                    }
                   >
                     详情
                   </Button>
-                  <Button
-                    size="small"
-                    disabled={
-                      !reportCurrent ||
-                      !allowed.has(r.listing_id) ||
-                      loading ||
-                      Boolean(error) ||
-                      action.busy
+                  <ListingActions
+                    listing={r}
+                    onSelect={(listing) =>
+                      favorites.choose(listing, { filters })
                     }
-                    onClick={() => choose(r)}
-                  >
-                    保存候选
-                  </Button>
+                    disabled={loading || Boolean(error) || action.busy}
+                  />
                 </Space>
               ),
             },

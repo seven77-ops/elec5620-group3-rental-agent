@@ -152,7 +152,7 @@ test("workflow retains additional search cards alongside a comparison", async ({
     extra.getByRole("button", { name: "房源详情", exact: true }),
   ).toBeVisible();
   await expect(
-    extra.getByRole("button", { name: "保存为候选", exact: true }),
+    extra.getByRole("button", { name: "选定并跟进", exact: true }),
   ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: listings[0].address, exact: true }),

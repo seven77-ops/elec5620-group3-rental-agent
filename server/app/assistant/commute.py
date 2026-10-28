@@ -55,7 +55,7 @@ def resolver_for(ctx):
 def plan_routes(ctx,brief,destination,allow_external,previous_reports=None):
     from ..commute.planner import CommutePlanner
     from .areas import enrich_commute
-    return enrich_commute(CommutePlanner(ctx,resolver=resolver_for(ctx)).prepare(brief,destination,allow_external=allow_external,
+    return enrich_commute(CommutePlanner(ctx,resolver=resolver_for(ctx)).prepare(student_brief(brief),destination,allow_external=allow_external,
         previous_reports=previous_reports),ctx.settings.catalog)
 
 
@@ -80,6 +80,7 @@ def next_question(brief):
 
 
 def prepare(ctx,conversation,brief,patch,text,allow_external,refresh=False):
+    for key in ('arrival_time','travel_day','travel_date'):brief.pop(key,None)
     query=patch.get('destination_query','')
     if query and (re.search(r'camden|cumberland|westmead|unsw|new south wales|technology|macquarie|公司|上班|新南|科技大学|麦考',query,re.I)):
         brief.update(student_brief(brief))
@@ -99,10 +100,7 @@ def prepare(ctx,conversation,brief,patch,text,allow_external,refresh=False):
     destination=deepcopy(DESTINATION)
     previous=[m['commute_recommendation'] for m in conversation.get('messages',[]) if m.get('commute_recommendation')]
     refresh=refresh or bool(previous and previous[-1].get('criteria')==brief)
-    if refresh and brief.get('arrival_time'):
-        answer=plan_routes(ctx,deepcopy(brief),deepcopy(destination),allow_external,previous_reports=previous)
-    else:
-        answer=plan_routes(ctx,deepcopy(brief),deepcopy(destination),allow_external)
+    answer=plan_routes(ctx,deepcopy(brief),deepcopy(destination),allow_external)
     answer.setdefault('intent','recommend_areas')
     from .recommendation_order import arrange
     answer=arrange(answer,conversation,brief,refresh)
@@ -137,9 +135,7 @@ def latest(ctx,case_id):
         from ..areas.evidence import AreaKnowledge, needs_review
         if evidence_fingerprint!=AreaKnowledge().fingerprint:reasons.append('区域资料已更新，请重新生成推荐。')
         if needs_review(saved['message']['commute_recommendation']):reasons.append('区域资料已到重新核对时间，请重新生成推荐。')
-    try:
-        age=(datetime.now(timezone.utc)-datetime.fromisoformat(saved['created_at'].replace('Z','+00:00'))).total_seconds()
-        if age>1800:reasons.append('路线查询已超过30分钟，请重新查询。')
-    except (ValueError,TypeError):reasons.append('查询时间待重新核对。')
+    # Approximate rental discovery has no thirty-minute arrival/session deadline.
+    # Source-route freshness is checked by snapshot.observation during matching.
     result.update(stale=bool(reasons),stale_reasons=reasons)
     return result

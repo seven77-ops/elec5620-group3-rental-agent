@@ -2,6 +2,30 @@ import { api, post } from "./client";
 export type Utility = "electricity" | "gas" | "internet" | "water";
 export type ProviderCategory =
   "electricity" | "gas" | "internet" | "water" | "removalist" | "cleaner";
+export interface UtilityPlan {
+  id: string;
+  provider_id: string;
+  category: Utility;
+  name: string;
+  external_plan_id?: string;
+  source_url: string;
+  observed_at: string;
+  valid_to: string | null;
+  status: "current" | "expired" | "stale" | "not_yet_effective";
+  availability: "address_unconfirmed";
+  network_label: string;
+  price_summary: string;
+  pricing_lines: string[];
+  conditions: string[];
+  pricing: {
+    monthly_aud?: number;
+    offer_ends_on?: string;
+    technology?: string[];
+    tenancy_source_url?: string;
+    fees?: { type: string; amount?: string; description?: string }[];
+    [key: string]: unknown;
+  };
+}
 export interface LivingProvider {
   id: string;
   name: string;
@@ -13,6 +37,7 @@ export interface LivingProvider {
   source_url: string;
   checked_on: string;
   notes: string;
+  plans?: UtilityPlan[];
 }
 export interface ProviderDirectory {
   checked_on: string;
@@ -46,7 +71,40 @@ export interface RepairValues {
   description: string;
   location: string;
   priority: "normal" | "urgent";
+  recipient_name?: string;
+  email_draft?: RepairEmailDraft;
 }
+export interface RepairEmailDraft {
+  subject: string;
+  body: string;
+}
+export interface RepairPolishInput {
+  draft: string;
+  recipient_name: string;
+  language: "en" | "zh";
+  tone: RepairTone;
+  title: string;
+  location: string;
+  priority: "normal" | "urgent";
+}
+export const polishRepairEmail = (
+  caseId: string,
+  input: RepairPolishInput,
+  requestId: string,
+) =>
+  api<RepairEmailDraft>(
+    `/cases/${encodeURIComponent(caseId)}/living-services/repair-email/polish`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...input,
+        request_id: requestId,
+        allow_external_ai: true,
+      }),
+    },
+    { timeoutMs: 120_000 },
+  );
 export type RepairTone = "standard" | "polite" | "concise";
 export interface RepairUpdateValues {
   status?: RepairStatus;

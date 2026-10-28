@@ -48,11 +48,7 @@ test("AI-collected needs prefill the panel and sync without retyping other condi
     .getByRole("spinbutton", { name: "最高预算（AUD）", exact: true })
     .fill("900");
   await drawer
-    .getByRole("button", { name: "确认并同步需求", exact: true })
-    .click();
-  await page
-    .getByRole("dialog", { name: "确认同步租房需求？", exact: true })
-    .getByRole("button", { name: "确认同步并生成推荐", exact: true })
+    .getByRole("button", { name: "保存找房条件", exact: true })
     .click();
   await expect(page.getByTestId("assistant-needs-status")).toHaveCount(0);
   await expect(drawer).not.toBeVisible();
@@ -112,52 +108,25 @@ test("chat needs require confirmation, sync real recommendations and persist a s
     .getByRole("spinbutton", { name: "至少车位", exact: true })
     .fill("1");
   await drawer
-    .getByRole("button", { name: "确认并同步需求", exact: true })
-    .click();
-  const modal = page.getByRole("dialog", {
-    name: "确认同步租房需求？",
-    exact: true,
-  });
-  await expect(modal).toContainText("1500");
-  await expect(modal).toContainText("Rhodes");
-  for (const preset of [
-    "450",
-    "demo-usyd",
-    "2027-02-01",
-    "含账单",
-    "软偏好",
-    "权重",
-    "悉尼大学",
-  ])
-    await expect(modal).not.toContainText(preset);
-  await modal.getByRole("button", { name: "继续修改", exact: true }).click();
-  expect(
-    (await (await request.get(`/api/v1/cases/${c.case_id}`)).json())
-      .confirmations,
-  ).toHaveLength(0);
-  await drawer
-    .getByRole("button", { name: "确认并同步需求", exact: true })
-    .click();
-  await modal
-    .getByRole("button", { name: "确认同步并生成推荐", exact: true })
+    .getByRole("button", { name: "保存找房条件", exact: true })
     .click();
   await expect(drawer).not.toBeVisible();
   await expect(page.getByTestId("assistant-needs-status")).toHaveCount(0);
   const card = page.locator(".assistant-listing").first();
   await expect(card).toBeVisible();
   const address = await card.locator("h3").innerText();
-  await card.getByRole("button", { name: "保存为候选", exact: true }).click();
+  await card.getByRole("button", { name: "选定并跟进", exact: true }).click();
   await page
-    .getByRole("dialog", { name: "保存这条真实房源候选？", exact: true })
-    .getByRole("button", { name: "确认保存候选", exact: true })
+    .getByRole("dialog", { name: "选定这套房并开始跟进？", exact: true })
+    .getByRole("button", { name: "确认并开始跟进", exact: true })
     .click();
-  await expect(card.getByText("当前候选", { exact: true })).toBeVisible();
+  await expect(card.getByText("当前跟进房源", { exact: true })).toBeVisible();
   await page.reload();
   await expect(
     page
       .locator(".assistant-listing")
       .first()
-      .getByText("当前候选", { exact: true }),
+      .getByText("当前跟进房源", { exact: true }),
   ).toBeVisible();
   await page.getByRole("menuitem", { name: "房源推荐", exact: true }).click();
   await expect(page.getByText(address, { exact: true }).first()).toBeVisible();
@@ -245,12 +214,14 @@ test("new needs remain blank and optional dates do not block saving a real budge
   await page.screenshot({ path: "/tmp/rental-needs-cleanup-desktop.png" });
   await page.setViewportSize({ width: 390, height: 844 });
   await panel
-    .getByRole("button", { name: "确认并同步需求", exact: true })
+    .getByRole("button", { name: "保存找房条件", exact: true })
     .scrollIntoViewIfNeeded();
-  await expect.poll(async () => {
-    const box = await panel.boundingBox();
-    return !!box && box.x >= 0 && box.x + box.width <= 391;
-  }).toBe(true);
+  await expect
+    .poll(async () => {
+      const box = await panel.boundingBox();
+      return !!box && box.x >= 0 && box.x + box.width <= 391;
+    })
+    .toBe(true);
   await page.screenshot({ path: "/tmp/rental-needs-cleanup-mobile.png" });
   await confirmRentalNeeds(page);
   const saved = await (await request.get(`/api/v1/cases/${c.case_id}`)).json();

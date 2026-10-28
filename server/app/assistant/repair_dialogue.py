@@ -41,6 +41,10 @@ def propose_update(ctx, intent, case_id, record, focus, user_message):
     patch=deepcopy(intent.get('repair_update',{}))
     service=LivingService(ctx)
     if rid:
+        target=next((r for r in record['repairs'] if r['repair_id']==rid),None)
+        if target and target.get('email_draft') and 'email_tone' in patch:
+            return {'content':'这封邮件已经过润色。请在日常报修页面粘贴原稿，选择语气后重新润色；已保存的邮件仍会保留。',
+                    'actions':[{'type':'navigate','label':'润色报修邮件','page':'aftercare?tab=repairs'}]}
         values={}
         if pending and pending['kind']=='repair_update' and pending['values'].get('repair_id')==rid:
             values=deepcopy(pending['values'])

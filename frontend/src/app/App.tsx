@@ -27,6 +27,7 @@ const Assistant = lazy(() => import("../features/assistant/Assistant"));
 const Preferences = lazy(() => import("../features/Preferences"));
 const LegacyRecommendations = lazy(() => import("../features/Recommendations"));
 const Recommendations = lazy(() => import("../features/RealRecommendations"));
+import FavoritesProvider from "../features/favorites/FavoritesContext";
 const Contract = lazy(() => import("../features/contracts/ContractAssistant"));
 const Aftercare = lazy(() => import("../features/Aftercare"));
 const LivingHub = lazy(() => import("../features/living/LivingHub"));
@@ -293,13 +294,15 @@ export default function App() {
                   <CaseContext.Provider
                     value={{ current, config, refresh, go }}
                   >
-                    <div id="page-content" key={`${current.case_id}:${page}`}>
-                      <ErrorBoundary>
-                        <Suspense fallback={<Loading />}>
-                          {pages[page] ?? pages.assistant}
-                        </Suspense>
-                      </ErrorBoundary>
-                    </div>
+                    <FavoritesProvider key={current.case_id}>
+                      <div id="page-content" key={`${current.case_id}:${page}`}>
+                        <ErrorBoundary>
+                          <Suspense fallback={<Loading />}>
+                            {pages[page] ?? pages.assistant}
+                          </Suspense>
+                        </ErrorBoundary>
+                      </div>
+                    </FavoritesProvider>
                   </CaseContext.Provider>
                 )}
               </>

@@ -41,8 +41,8 @@ test("notice street fields preserve independent manual metadata and never search
   const property = await page
     .getByLabel("房屋地址", { exact: true })
     .inputValue();
-  await page.getByText("代理信息（如适用）", { exact: true }).click();
-  for (const prefix of ["出租方", "租客", "代理"]) {
+  await page.getByText("出租方中介（如适用）", { exact: true }).click();
+  for (const prefix of ["出租方", "租客", "出租方中介"]) {
     await page
       .getByLabel(`${prefix}区域（Suburb）`, { exact: true })
       .fill("West Footscray");
@@ -73,7 +73,7 @@ test("independent postal choices handle same-name suburbs and leading zeros, the
 }) => {
   const { c, root } = await seed(request);
   await page.goto(`/cases/${c.case_id}/contract?mode=draft`);
-  await page.getByText("代理信息（如适用）", { exact: true }).click();
+  await page.getByText("出租方中介（如适用）", { exact: true }).click();
   const parties = [
     {
       prefix: "出租方",
@@ -92,7 +92,7 @@ test("independent postal choices handle same-name suburbs and leading zeros, the
       postcode: "0800",
     },
     {
-      prefix: "代理",
+      prefix: "出租方中介",
       field: "agent",
       street: "30 Example Avenue",
       suburb: "Burwood",
@@ -125,18 +125,20 @@ test("independent postal choices handle same-name suburbs and leading zeros, the
     ).toHaveValue(p.postcode);
   }
   // Selecting another same-name locality is explicit; street text remains the user's.
-  await page.getByLabel("代理 State", { exact: true }).fill("VIC");
-  await page.getByLabel("代理区域（Suburb）", { exact: true }).fill("Burwood");
+  await page.getByLabel("出租方中介 State", { exact: true }).fill("VIC");
+  await page
+    .getByLabel("出租方中介区域（Suburb）", { exact: true })
+    .fill("Burwood");
   await page
     .locator("#agent_notice_suburb_list")
     .getByRole("option", { name: "Burwood · VIC 3125", exact: true })
     .click();
-  await expect(page.getByLabel("代理邮编", { exact: true })).toHaveValue(
+  await expect(page.getByLabel("出租方中介邮编", { exact: true })).toHaveValue(
     "3125",
   );
-  await expect(page.getByLabel("代理送达地址", { exact: true })).toHaveValue(
-    "30 Example Avenue",
-  );
+  await expect(
+    page.getByLabel("出租方中介送达地址", { exact: true }),
+  ).toHaveValue("30 Example Avenue");
   // Postal lookup also permits explicit selection and retains NT's leading zero.
   await page.getByLabel("租客邮编", { exact: true }).fill("080");
   await page

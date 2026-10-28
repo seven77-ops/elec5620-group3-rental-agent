@@ -58,11 +58,13 @@ export default function NoticeAddressFields({
   group,
   form,
   onEdited,
+  requiredFields,
 }: {
   name: keyof LeaseFields;
   group: Group;
   form: FormInstance<LeaseFields>;
   onEdited: () => void;
+  requiredFields?: readonly (keyof LeaseFields)[];
 }) {
   const state = String(
     Form.useWatch(group.state, { form, preserve: true }) ?? "",
@@ -107,11 +109,19 @@ export default function NoticeAddressFields({
     }));
   return (
     <div className="lease-address-fields lease-field-wide">
-      <Form.Item name={name} label={leaseLabels[name]}>
+      <Form.Item
+        name={name}
+        label={leaseLabels[name]}
+        required={requiredFields?.includes(name)}
+      >
         <Input maxLength={200} placeholder="手动填写房号、门牌号和街道名" />
       </Form.Item>
       <div className="lease-address-parts">
-        <Form.Item name={group.suburb} label={`${group.prefix}区域（Suburb）`}>
+        <Form.Item
+          name={group.suburb}
+          label={`${group.prefix}区域（Suburb）`}
+          required={requiredFields?.includes(group.suburb)}
+        >
           <AutoComplete
             options={options(suburbs.items)}
             virtual={false}
@@ -136,7 +146,11 @@ export default function NoticeAddressFields({
             />
           </AutoComplete>
         </Form.Item>
-        <Form.Item name={group.state} label={`${group.prefix} State`}>
+        <Form.Item
+          name={group.state}
+          label={`${group.prefix} State`}
+          required={requiredFields?.includes(group.state)}
+        >
           <AutoComplete
             options={noticeStates}
             virtual={false}
@@ -149,6 +163,7 @@ export default function NoticeAddressFields({
         </Form.Item>
         <Form.Item
           name={group.postcode}
+          required={requiredFields?.includes(group.postcode)}
           label={`${group.prefix}邮编`}
           rules={[{ pattern: /^\d{4}$/, message: "邮编须为4位数字。" }]}
         >

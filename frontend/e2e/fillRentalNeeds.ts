@@ -47,11 +47,7 @@ export async function confirmRentalNeeds(page: Page) {
     exact: true,
   });
   await drawer
-    .getByRole("button", { name: "确认并同步需求", exact: true })
-    .click();
-  await page
-    .getByRole("dialog", { name: "确认同步租房需求？", exact: true })
-    .getByRole("button", { name: "确认同步并生成推荐", exact: true })
+    .getByRole("button", { name: "保存找房条件", exact: true })
     .click();
   await expect(drawer).not.toBeVisible();
 }

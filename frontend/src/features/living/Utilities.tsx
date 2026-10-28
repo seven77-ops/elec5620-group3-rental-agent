@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { Alert, App, Button, Form, Select, Space } from "antd";
+import { Alert, App, Button, Form, Select } from "antd";
 import type {
   LivingRecord,
   LivingProvider,
   LivingWrite,
   Utility,
 } from "../../api/living";
+import UtilityProviderDetails, {
+  providerCategories,
+} from "./UtilityProviderDetails";
 const fields: { key: Utility; label: string; category: string }[] = [
   { key: "electricity", label: "电力供应商", category: "electricity" },
   { key: "gas", label: "燃气供应商", category: "gas" },
@@ -25,6 +28,8 @@ export default function Utilities({
 }) {
   const [form] = Form.useForm();
   const [dirty, setDirty] = useState(false);
+  const [detailsId, setDetailsId] = useState<string | null>(null);
+  useEffect(() => setDetailsId(null), [record.case_id]);
   const snapshot = useRef(record);
   const { modal } = App.useApp();
   useEffect(() => {
@@ -135,56 +140,33 @@ export default function Utilities({
             ),
           )
           .map((p) => (
-            <article
-              className="living-provider-card"
+            <button
+              type="button"
+              className="living-provider-card living-provider-trigger"
               key={p.id}
               data-provider-id={p.id}
+              aria-label={`${p.name}，查看供应商详情`}
+              aria-haspopup="dialog"
+              onClick={() => setDetailsId(p.id)}
             >
-              <span className="living-category">
-                {p.categories
-                  .map(
-                    (c) =>
-                      ({
-                        electricity: "电力",
-                        gas: "燃气",
-                        internet: "网络",
-                        water: "供水",
-                        removalist: "搬运",
-                        cleaner: "清洁",
-                      })[c],
-                  )
-                  .join(" · ")}
+              <span className="living-category">{providerCategories(p)}</span>
+              <strong className="living-provider-name">{p.name}</strong>
+              <span className="living-provider-coverage">{p.coverage}</span>
+              <span className="living-provider-card-action">
+                <span className="muted">
+                  {p.plans?.length
+                    ? `${p.plans.length} 个套餐 / 费率方案`
+                    : "服务与联系方式"}
+                </span>
+                <span>查看详情 →</span>
               </span>
-              <h3>{p.name}</h3>
-              <p>{p.coverage}</p>
-              {p.notes && <p className="muted">{p.notes}</p>}
-              <Space wrap>
-                <a href={p.website} target="_blank" rel="noopener noreferrer">
-                  官方网站
-                </a>
-                <a
-                  href={p.contact_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  联系页面
-                </a>
-                {p.phone && <a href={`tel:${p.phone}`}>{p.phone}</a>}
-              </Space>
-              <small>
-                来源：
-                <a
-                  href={p.source_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  官方页面
-                </a>{" "}
-                · 核对日期 {p.checked_on}
-              </small>
-            </article>
+            </button>
           ))}
       </div>
+      <UtilityProviderDetails
+        provider={providers.find((p) => p.id === detailsId)}
+        onClose={() => setDetailsId(null)}
+      />
     </section>
   );
 }

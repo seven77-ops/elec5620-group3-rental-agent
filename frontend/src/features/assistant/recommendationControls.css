@@ -1,0 +1,95 @@
+.recommendation-controls {
+  padding: 14px 22px;
+  border-bottom: 1px solid #e6ecf4;
+  background: #fbfcfe;
+  flex-shrink: 0;
+}
+.recommendation-controls-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+.recommendation-controls-heading span {
+  color: #71819b;
+  font-size: 11px;
+}
+.recommendation-condition-buttons,
+.recommendation-alternatives {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.recommendation-condition-buttons .ant-btn {
+  height: auto;
+  min-height: 30px;
+  padding: 4px 10px;
+  white-space: normal;
+  font-size: 12px;
+}
+.recommendation-alternatives {
+  margin-top: 12px;
+}
+.recommendation-alternatives p {
+  flex-basis: 100%;
+  margin: 0;
+  color: #6b7d97;
+  font-size: 12px;
+}
+.recommendation-alternatives .ant-btn {
+  height: auto;
+  white-space: normal;
+  text-align: left;
+  padding: 5px 10px;
+  font-size: 12px;
+}
+.recommendation-edit-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.recommendation-reasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 12px;
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+  color: #37639a;
+  font-size: 12px;
+  line-height: 1.65;
+}
+.recommendation-reasons li::before {
+  content: "✓";
+  margin-right: 5px;
+}
+.commute-home > .recommendation-reasons {
+  grid-column: 1 / -1;
+}
+.commute-results .recommendation-reasons {
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+}
+.recommendation-change-summary {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #f1f6ff;
+  color: #2b5a9a;
+  font-size: 12px;
+}
+@media (max-width: 600px) {
+  .recommendation-controls {
+    padding: 12px;
+  }
+  .recommendation-condition-buttons {
+    gap: 6px;
+  }
+  .recommendation-condition-buttons .ant-btn {
+    font-size: 11px;
+  }
+  .recommendation-edit-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

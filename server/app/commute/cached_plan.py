@@ -25,6 +25,8 @@ def road_answer(catalog,brief,destination):
 def reference_answer(catalog,brief,destination):
     """Use stored route facts for discovery without creating a user arrival deadline."""
     from .planner import directions_url
+    from .usyd import student_brief
+    brief=student_brief(brief)
     from .matching import reference_matches
     from .estimates import estimate_for
     from ..real_data.providers import TFNSW_DOC
@@ -57,7 +59,7 @@ def reference_answer(catalog,brief,destination):
                'distance_m':item.get('distance_m') if item else None}
         routes.append(route)
         if estimate and ok:route['reason']='按街道、区域或邮区的路线范围筛选；以区间上限核对通勤条件。'
-        card={**row,'commute_minutes':minutes,'commute_status':route['status']}
+        card={**row,'commute_minutes':minutes,'commute_status':route['status'],'recommendation_mode':mode}
         (eligible if ok else pending).append(card)
     rent_floor=max(min((r['weekly_rent'] for r in eligible),default=1),1)
     time_floor=max(min((r['commute_minutes'] for r in eligible),default=1),1)
@@ -84,6 +86,7 @@ def reference_answer(catalog,brief,destination):
                 '公共交通使用已有班次通勤参考；未按个人到校时间核对当天班次。' if transit else '开车、骑行、步行均使用各自路网；估算不含实时交通。',
                 f'已检查全部{len(rows)}套符合房型和预算的房源标注，返回全部{len(eligible)}套符合通勤上限的房源。']}
     from .estimates import attach_estimates
-    return attach_estimates({'intent':'recommend_areas','agent':'agent2','content':f"按你的预算和房型，找到{len(eligible)}套{MODE_LABELS[mode]}到悉大主校区约{maximum}分钟内的房源。"+
+    from ..assistant.recommendation_options import metadata, filters_for
+    return attach_estimates({'intent':'recommend_areas','agent':'agent2',**metadata(catalog,filters_for(brief),brief,len(eligible)), 'content':f"按你的预算和房型，找到{len(eligible)}套{MODE_LABELS[mode]}到悉大主校区约{maximum}分钟内的房源。"+
             ('可以提高预算、调整房型或明确放宽通勤上限。' if not eligible else ''),
             'listings':eligible,'actions':[],'commute_recommendation':report},rows,brief)

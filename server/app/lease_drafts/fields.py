@@ -18,6 +18,16 @@ OPTIONAL_TEXT_LIMITS={'suburb':80,'state':40,'postcode':4,
     'agreement_place':100,'landlord_name_2':100,'landlord_residence':200,'landlord_phone':60,
     **{kind+'_repair_'+part:(100 if part=='name' else 60)
        for kind in ('electrical','plumbing','other') for part in ('name','phone')}}
+OPTIONAL_TEXT_LIMITS.update({'tenant_agent_name':100,'tenant_agent_contact':160,'tenant_agent_notice_address':200,
+    'tenant_agent_notice_suburb':80,'tenant_agent_notice_state':40,'tenant_agent_notice_postcode':4,
+    'corporation_name':100,'corporation_address':200,'corporation_suburb':80,'corporation_state':40,'corporation_postcode':4,
+    'smoke_battery_type':80,'smoke_backup_type':80,'landlord_notice_email':160,'tenant_notice_email':160})
+YES_NO_FIELDS=('water_usage','electricity_embedded','gas_embedded','smoke_battery_replaceable',
+    'smoke_backup_replaceable','smoke_strata_responsible','strata_bylaws','landlord_email_consent','tenant_email_consent')
+MANUAL_CHOICE_FIELDS=(*YES_NO_FIELDS,'smoke_alarm_type','bond_recipient')
+ENUMS.update({**{k:{'yes','no'} for k in YES_NO_FIELDS},'smoke_alarm_type':{'hardwired','battery','both'},
+    'bond_recipient':{'landlord','agent','rbo'}})
+DEFAULTS.update({k:None for k in ENUMS if k not in DEFAULTS})
 DEFAULTS.update({**{k:'' for k in OPTIONAL_TEXT_LIMITS},'agreement_date':None,'lease_term_months':None})
 TEXT_LIMITS.update(OPTIONAL_TEXT_LIMITS)
 TERM_MONTHS=(6,12,24,36,60)
@@ -35,8 +45,26 @@ LABELS.update({'suburb':'区域','state':'州','postcode':'邮编','agreement_da
        for part,suffix in (('suburb','区域'),('state','州'),('postcode','邮编'))},
     **{kind+'_repair_'+part:label+suffix for kind,label in (('electrical','电力维修'),('plumbing','管道维修'),('other','其他维修'))
        for part,suffix in (('name','联系人'),('phone','电话'))}})
+LABELS.update({'agent_name':'出租方中介姓名 / 公司','agent_contact':'出租方中介联系方式（须含电话）',
+    'agent_notice_address':'出租方中介送达地址','tenant_agent_name':'租客代理姓名 / 公司','tenant_agent_contact':'租客代理联系方式',
+    'tenant_agent_notice_address':'租客代理送达地址','tenant_agent_notice_suburb':'租客代理区域',
+    'tenant_agent_notice_state':'租客代理州','tenant_agent_notice_postcode':'租客代理邮编',
+    'corporation_name':'出租公司登记名称','corporation_address':'出租公司营业地址','corporation_suburb':'出租公司区域',
+    'corporation_state':'出租公司州','corporation_postcode':'出租公司邮编',
+    'water_usage':'是否另付用水费','electricity_embedded':'是否为嵌入式供电','gas_embedded':'是否为嵌入式供气',
+    'smoke_alarm_type':'烟雾报警器类型','smoke_battery_replaceable':'报警器电池是否可由租客更换',
+    'smoke_battery_type':'报警器电池型号','smoke_backup_replaceable':'备用电池是否可由租客更换',
+    'smoke_backup_type':'备用电池型号','smoke_strata_responsible':'物业法人是否负责烟雾报警器维修更换',
+    'strata_bylaws':'是否适用物业 / 社区规约','landlord_email_consent':'出租方是否同意电子送达',
+    'tenant_email_consent':'租客是否同意电子送达','landlord_notice_email':'出租方电子送达邮箱',
+    'tenant_notice_email':'租客电子送达邮箱','bond_recipient':'押金实际交付对象'})
 REQUIRED=('rental_mode','address','landlord_name','landlord_contact','landlord_notice_address',
     'tenant_names','tenant_contact','lease_type','start_date','rent_amount','rent_period','bond')
+REQUIRED=tuple(k for k in REQUIRED if k!='landlord_notice_address')+('tenant_notice_address','max_occupants',
+    'payment_method','payment_details','first_rent_date','rent_due_day','water_usage','electricity_embedded','gas_embedded',
+    'smoke_alarm_type','strata_bylaws','landlord_email_consent','tenant_email_consent',
+    'electrical_repair_name','electrical_repair_phone','plumbing_repair_name','plumbing_repair_phone')
+REQUIRED+=('suburb','state','postcode','tenant_notice_suburb','tenant_notice_state','tenant_notice_postcode')
 QUESTIONS={'rental_mode':'请确认是否为新州普通整租住宅；单间分租及室友协议暂不适用。',
     'landlord_name':'出租方的完整姓名是什么？','landlord_contact':'出租方的联系方式是什么？',
     'landlord_notice_address':'出租方用于送达通知的地址是什么？',
@@ -84,7 +112,7 @@ def validate_fields(value):
         try: valid=date.fromisoformat(value[key]).isoformat()==value[key]
         except ValueError:valid=False
         require(valid,422,'invalid_draft_fields','日期须为 YYYY-MM-DD。')
-    for key in ('postcode','landlord_notice_postcode','tenant_notice_postcode','agent_notice_postcode'):
+    for key in ('postcode','landlord_notice_postcode','tenant_notice_postcode','agent_notice_postcode','tenant_agent_notice_postcode','corporation_postcode'):
         require(not result[key] or (len(result[key])==4 and result[key].isascii() and result[key].isdigit()),
             422,'invalid_draft_fields',LABELS[key]+'须为四位数字，未知时留空。')
     months=result['lease_term_months']
@@ -109,17 +137,47 @@ def validate_fields(value):
     names=[n.strip() for n in result['tenant_names'].splitlines() if n.strip()]
     require(len(names)<=6 and all(len(n)<=80 for n in names),422,'invalid_draft_fields','最多填写6名租客，每行一名，姓名不超过80字。')
     result['tenant_names']='\n'.join(names)
+    import re
+    for key in ('landlord_notice_email','tenant_notice_email'):
+        if result[key.replace('_notice_email','_email_consent')]!='yes':result[key]=''
+        require(not result[key] or re.fullmatch(r'[^\s@]+@[^\s@]+\.[^\s@]+',result[key]),
+                422,'invalid_draft_fields',LABELS[key]+'格式无效。')
+    for kind,allowed in (('battery',('battery','both')),('backup',('hardwired','both'))):
+        if result['smoke_alarm_type'] not in allowed:
+            result['smoke_'+kind+'_replaceable']=None
+            result['smoke_'+kind+'_type']=''
+        elif result['smoke_'+kind+'_replaceable']!='yes':result['smoke_'+kind+'_type']=''
+    if result['strata_bylaws']!='yes':result['smoke_strata_responsible']=None
     return result
 
 
 def questions(fields):
-    required=REQUIRED+('end_date',) if fields['lease_type']=='fixed' else REQUIRED
-    return [{'field':k,'label':LABELS[k],'question':QUESTIONS[k]} for k in required if fields[k] in (None,'')]
+    fields={**DEFAULTS,**fields}
+    required=list(REQUIRED)
+    if fields['lease_type']=='fixed':required.append('end_date')
+    for prefix,parts in (('agent',('name','contact','notice_address','notice_suburb','notice_state','notice_postcode')),
+                         ('tenant_agent',('name','contact','notice_address','notice_suburb','notice_state','notice_postcode')),
+                         ('corporation',('name','address','suburb','state','postcode'))):
+        if any(fields[prefix+'_'+part] for part in parts):required.extend(prefix+'_'+part for part in parts)
+    if not any(fields['agent_'+part] for part in ('name','contact','notice_address')):
+        required.extend(('landlord_notice_address','landlord_notice_suburb','landlord_notice_state','landlord_notice_postcode','landlord_phone'))
+    if fields['other_repair_name'] or fields['other_repair_phone']:required.extend(('other_repair_name','other_repair_phone'))
+    if fields['smoke_alarm_type'] in ('battery','both'):
+        required.append('smoke_battery_replaceable')
+        if fields['smoke_battery_replaceable']=='yes':required.append('smoke_battery_type')
+    if fields['smoke_alarm_type'] in ('hardwired','both'):
+        required.append('smoke_backup_replaceable')
+        if fields['smoke_backup_replaceable']=='yes':required.append('smoke_backup_type')
+    if fields['strata_bylaws']=='yes':required.append('smoke_strata_responsible')
+    for person in ('landlord','tenant'):
+        if fields[person+'_email_consent']=='yes':required.append(person+'_notice_email')
+    return [{'field':k,'label':LABELS[k],'question':QUESTIONS.get(k,'请确认'+LABELS[k]+'。')}
+            for k in dict.fromkeys(required) if fields[k] in (None,'')]
 
 
 def warnings(fields):
     result=['此文件是未签署草稿，须由双方完善、核对并确认；不会自动表示对方同意。',
-        '官方表单中的紧急维修联系人、水费、供电供气、烟雾报警器、通知送达及相关附件仍需逐项完善；未知项保持空白。']
+        '请与双方核对维修联系人、费用、烟雾报警器、电子送达选择及相关附件；未确认项目保持空白。']
     rent=fields['rent_amount'];period=fields['rent_period'];bond=fields['bond']
     if rent is not None and period and bond is not None:
         weekly=rent if period=='week' else rent/2 if period=='fortnight' else rent*12/52
@@ -130,5 +188,5 @@ def warnings(fields):
 def extraction_schema():
     return {'type':'object','required':['fields'],'additionalProperties':False,'properties':{'fields':{
         'type':'array','maxItems':len(DEFAULTS),'items':{'type':'object','required':['field','value','quote'],
-            'additionalProperties':False,'properties':{'field':{'enum':list(DEFAULTS)},
+            'additionalProperties':False,'properties':{'field':{'enum':[k for k in DEFAULTS if k not in MANUAL_CHOICE_FIELDS]},
                 'value':{'type':['string','number','null']},'quote':{'type':'string','minLength':1,'maxLength':500}}}}}}

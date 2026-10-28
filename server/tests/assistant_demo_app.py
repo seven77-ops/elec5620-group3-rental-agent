@@ -13,6 +13,11 @@ class AssistantDemoProvider:
                 'model':'assistant-ui-test-only','timeout_seconds':12}
 
     def call(self, context):
+        if context['task']=='repair_email_polish':
+            return {'subject':'Kitchen tap repair request',
+                    'body':f"Dear {context['recipient_name'] or 'Property Manager'},\n\nThe kitchen tap is leaking. Could you please arrange a repair?\n\nThank you."}, {
+                'task':context['task'],'provider':'test_stub','model':'assistant-ui-test-only',
+                'status':'succeeded','attempted':True,'simulated':True}
         if context['task']=='assistant_preferences_reply':
             return {'is_reply':False,'brief_patch':{}},{'task':context['task'],'provider':'test_stub','status':'succeeded','attempted':True,'simulated':True}
         if context['task']=='assistant_area_followup':
@@ -30,7 +35,13 @@ class AssistantDemoProvider:
         if context['task'] != 'assistant_intent':
             raise ValueError('UI fixture only accepts assistant intent')
         message = context.get('message') or context.get('latest_user_message') or context.get('query') or ''
-        if '悉大' in message and '步行20分钟' in message:
+        if '网络套餐' in message:
+            result={'intent':'living_services','topic':'utilities','service_action':'recommend','provider_category':'internet'}
+        elif 'AGL电费' in message:
+            result={'intent':'living_services','topic':'utilities','service_action':'recommend','provider_category':'electricity'}
+        elif '水费怎么收' in message:
+            result={'intent':'living_services','topic':'utilities','service_action':'view','provider_category':'water'}
+        elif '悉大' in message and '步行20分钟' in message:
             result={'intent':'recommend_areas','brief_patch':{'suburb':None,'budget_amount':1200,'budget_period':'week','budget_scope':'whole_property','rental_mode':'whole_property','min_bedrooms':1,'min_bathrooms':1,'min_car_spaces':0,'occupants':1,'commute_mode':'walk','commute_max_minutes':20}}
         elif message.strip()=='20分钟':
             result={'intent':'recommend_areas','brief_patch':{'commute_max_minutes':20}}

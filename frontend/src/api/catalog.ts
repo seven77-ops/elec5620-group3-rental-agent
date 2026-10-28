@@ -81,6 +81,7 @@ export interface UsydCommute {
   reference_note: string;
 }
 export interface HousingAd {
+  recommendation_mode?: string;
   usyd_commute?: UsydCommute | null;
   property_type?: string | null;
   bond?: number | null;

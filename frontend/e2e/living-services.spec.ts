@@ -162,13 +162,17 @@ test("provider cards use directory sources and save quote records on mobile", as
   expect(provider).toBeTruthy();
   await page.goto(`/cases/${c.case_id}/aftercare?tab=services`);
   const card = page.locator(`[data-provider-id="${provider.id}"]`);
+  await card.click();
+  const details = page.getByRole("dialog", {
+    name: `${provider.name} · 服务商详情`,
+    exact: true,
+  });
   await expect(
-    card.getByRole("link", { name: "公司网站", exact: true }),
+    details.getByRole("link", { name: "公司网站", exact: true }),
   ).toHaveAttribute("href", provider.website);
-  await expect(
-    card.getByRole("link", { name: "来源", exact: true }),
-  ).toHaveAttribute("href", provider.source_url);
-  await card
+  await expect(details.getByRole("link")).toHaveCount(1);
+  await expect(details).not.toContainText("路线");
+  await details
     .getByRole("button", { name: "记录报价或预约", exact: true })
     .click();
   const dialog = page.getByRole("dialog");

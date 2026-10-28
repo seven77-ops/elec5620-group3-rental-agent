@@ -6,20 +6,20 @@ import {
   Drawer,
   Form,
   InputNumber,
-  Input,
   Select,
   Space,
   Tag,
 } from "antd";
 import { useCase, currentConfirmation } from "../../app/context";
-import {
-  applyAssistantProposal,
-  createConversation,
-  prepareAssistantNeeds,
-} from "../../api/assistant";
+import { createConversation, saveAssistantNeeds } from "../../api/assistant";
 import type { Conversation, RentalBrief } from "../../api/assistant";
 import { newRequestId } from "../../api/client";
-import { conversationNeeds, needsMatch, pendingNeeds } from "./needs";
+import {
+  conversationNeeds,
+  needsMatch,
+  pendingNeeds,
+  approximateNeeds,
+} from "./needs";
 import { commuteModes } from "../real-data/UsydCommute";
 import { lifestyleTopics } from "../../api/areas";
 
@@ -28,11 +28,11 @@ const fieldsFrom = (brief: RentalBrief): Fields => ({
   ...brief,
   suburb: brief.suburb === null ? "__all__" : brief.suburb,
 });
-const briefFrom = (values: Fields): RentalBrief => ({
-  ...values,
-  arrival_time: values.arrival_time || undefined,
-  suburb: values.suburb === "__all__" ? null : values.suburb,
-});
+const briefFrom = (values: Fields): RentalBrief =>
+  approximateNeeds({
+    ...values,
+    suburb: values.suburb === "__all__" ? null : values.suburb,
+  });
 
 export default function RentalNeeds({
   open,
@@ -60,7 +60,7 @@ export default function RentalNeeds({
   isCurrent: (id: string) => boolean;
 }) {
   const { current, config, refresh } = useCase();
-  const { modal, message } = App.useApp();
+  const { message } = App.useApp();
   const [form] = Form.useForm<Fields>();
   const [dirty, setDirty] = useState(false);
   const [baseline, setBaseline] = useState({
@@ -122,7 +122,7 @@ export default function RentalNeeds({
         if (!alive.current) return;
         onConversation(target);
       }
-      const proposal = await prepareAssistantNeeds(
+      const result = await saveAssistantNeeds(
         current.case_id,
         target.conversation_id,
         {
@@ -130,45 +130,16 @@ export default function RentalNeeds({
           expected_revision: baseline.revision,
           expected_profile_fingerprint: baseline.fingerprint,
           brief,
+          confirmed: true,
         },
       );
-      if (!alive.current) return;
-      onConversation(proposal.conversation);
+      if (!alive.current || !isCurrent(result.conversation.conversation_id))
+        return;
+      onConversation(result.conversation);
+      await refresh();
       setDirty(false);
-      const applyId = newRequestId();
-      modal.confirm({
-        title: "确认同步租房需求？",
-        content: (
-          <>
-            <p>确认后保存新的偏好版本，并按同一份条件更新房源推荐。</p>
-            <ul className="assistant-proposal-summary">
-              {proposal.summary.map((line) => (
-                <li key={line}>{line}</li>
-              ))}
-            </ul>
-          </>
-        ),
-        okText: "确认同步并生成推荐",
-        cancelText: "继续修改",
-        onOk: () =>
-          execute(async () => {
-            if (
-              !alive.current ||
-              !isCurrent(proposal.conversation.conversation_id)
-            )
-              return;
-            const result = await applyAssistantProposal(
-              current.case_id,
-              proposal.proposal_id,
-              applyId,
-            );
-            if (!alive.current) return;
-            onConversation(result.conversation);
-            await refresh();
-            onClose();
-            message.success("租房需求和房源推荐已同步。");
-          }),
-      });
+      onClose();
+      message.success("找房条件已保存。");
     });
   };
   const required = [{ required: true, message: "请填写或选择这一项" }];
@@ -183,7 +154,7 @@ export default function RentalNeeds({
     >
       <div className="assistant-needs-intro">
         <Tag color={synced ? "blue" : "orange"}>
-          {synced ? `已同步 v${confirmed?.version}` : "待确认同步"}
+          {synced ? `已保存 v${confirmed?.version}` : "当前找房条件"}
         </Tag>
       </div>
       {error && (
@@ -340,16 +311,10 @@ export default function RentalNeeds({
           <Form.Item name="commute_max_minutes" label="单程最多（分钟）">
             <InputNumber min={1} max={240} precision={0} />
           </Form.Item>
-          <Form.Item name="arrival_time" hidden>
-            <Input />
-          </Form.Item>
         </div>
         <div className="form-grid">
           <Form.Item name="max_transfers" label="最多换乘（可选）">
             <InputNumber min={0} max={5} precision={0} />
-          </Form.Item>
-          <Form.Item name="travel_day" hidden>
-            <Input />
           </Form.Item>
         </div>
         <Form.Item name="lifestyle_priorities" label="生活偏好（用于区域参考）">
@@ -364,14 +329,14 @@ export default function RentalNeeds({
           />
         </Form.Item>
         <Button
-          aria-label="确认并同步需求"
+          aria-label="保存找房条件"
           type="primary"
           htmlType="submit"
           block
           loading={busy}
           disabled={stale || canRetry || (synced && !dirty)}
         >
-          确认并同步需求
+          保存找房条件
         </Button>
       </Form>
     </Drawer>

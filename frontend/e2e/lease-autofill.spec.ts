@@ -79,10 +79,10 @@ test("chosen addresses populate structured PDF boxes, additional fields and a st
   for (const [prefix, street, suburb, postcode] of [
     ["出租方", "1 Example Street", "Redfern", "2016"],
     ["租客", "Unit 2001, 10 Example Street", "Redfern", "2016"],
-    ["代理", "2 Example Road", "Burwood", "2134"],
+    ["出租方中介", "2 Example Road", "Burwood", "2134"],
   ]) {
-    if (prefix === "代理")
-      await page.getByText("代理信息（如适用）", { exact: true }).click();
+    if (prefix === "出租方中介")
+      await page.getByText("出租方中介（如适用）", { exact: true }).click();
     await page.getByLabel(`${prefix}送达地址`, { exact: true }).fill(street);
     await page.getByLabel(`${prefix} State`, { exact: true }).fill("NSW");
     await page

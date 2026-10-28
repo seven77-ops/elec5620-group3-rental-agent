@@ -28,7 +28,8 @@ def styled_email(body, tone):
 
 def add_repair(record, values):
     values=repair_values(values);profile=record['profile']
-    body=[f"您好{('，'+profile['agent_name']) if profile['agent_name'] else ''}：",'', '请协助安排以下维修：']
+    name=values.get('recipient_name',profile['agent_name'])
+    body=[f"您好{('，'+name) if name else ''}：",'', '请协助安排以下维修：']
     if profile['address']:body.append('地址：'+profile['address'])
     body.extend(['维修事项：'+values['title'],'位置：'+(values['location'] or '待补充'),
         '情况描述：'+values['description'],'优先级：'+('紧急' if values['priority']=='urgent' else '普通'),
@@ -37,6 +38,8 @@ def add_repair(record, values):
     entry={**values,'email_tone':tone,'repair_id':uid('repair'),'status':'prepared','created_at':now(),'updates':[],
         'email':{'to':profile['agent_email'],'subject':'维修申请：'+values['title'],
             'body':styled_email('\n'.join(body),tone),'delivery_status':'prepared_not_sent'}}
+    if 'email_draft' in values:
+        entry['email'].update(values['email_draft'])
     record['repairs'].append(entry)
     return entry['repair_id']
 
@@ -45,6 +48,8 @@ def update_repair(record, repair_id, values):
     values=status_values(values)
     entry=next((r for r in record['repairs'] if r['repair_id']==repair_id),None)
     require(entry is not None,404,'not_found','未找到此案例的维修记录。')
+    require('email_tone' not in values or not entry.get('email_draft'),422,'custom_email_requires_polish',
+            '这封邮件已使用润色稿，不能套用固定模板语气。请在日常报修页面润色邮件。')
     updates=entry.setdefault('updates',[])
     require(len(updates)<100,409,'repair_update_limit','此报修的更新已达上限，请保留现有记录。')
     if 'status' in values:entry['status']=values['status']

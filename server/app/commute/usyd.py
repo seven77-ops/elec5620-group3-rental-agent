@@ -19,7 +19,7 @@ MODE_LABELS = {'public_transport':'公共交通','train':'火车','metro':'地�
 
 
 def student_brief(brief):
-    result=deepcopy(brief)
+    result={key:deepcopy(value) for key,value in brief.items() if key not in ("arrival_time","travel_day","travel_date")}
     result.update(destination_query=DESTINATION['label'],destination_id=DESTINATION['id'])
     # "最多 N 分钟" is an actual ceiling. Flexibility requires a new explicit ceiling.
     if 'commute_max_minutes' in result: result['commute_hard_limit']=True

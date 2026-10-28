@@ -141,13 +141,30 @@ test("shared assistant sends directly, records a turn and restores server histor
   await expect(
     page.getByRole("heading", { name: "今天，想住在哪里？" }),
   ).toBeVisible();
-  for (const copy of ["面向悉大学生", "尚未同步需求", "你的需求，你来决定", "修改偏好前会请你确认", "独立的业务参考时间"]) await expect(page.locator("body")).not.toContainText(copy);
-  await expect(page.getByRole("button", { name: "资料与设置", exact: true })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "演示与证据", exact: true })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "我的租房需求", exact: true })).toBeVisible();
+  for (const copy of [
+    "面向悉大学生",
+    "尚未同步需求",
+    "你的需求，你来决定",
+    "修改偏好前会请你确认",
+    "独立的业务参考时间",
+  ])
+    await expect(page.locator("body")).not.toContainText(copy);
+  await expect(
+    page.getByRole("button", { name: "资料与设置", exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: "演示与证据", exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: "我的租房需求", exact: true }),
+  ).toBeVisible();
   await expect(page.getByTestId("assistant-needs-status")).toHaveCount(0);
-  await expect(page.getByRole("heading", { name: "AI租房助手", exact: true })).toHaveCSS("color", "rgb(17, 17, 17)");
-  await expect(page.getByRole("button", { name: "我的租房需求", exact: true })).toHaveCSS("color", "rgb(17, 17, 17)");
+  await expect(
+    page.getByRole("heading", { name: "AI租房助手", exact: true }),
+  ).toHaveCSS("color", "rgb(17, 17, 17)");
+  await expect(
+    page.getByRole("button", { name: "我的租房需求", exact: true }),
+  ).toHaveCSS("color", "rgb(17, 17, 17)");
 
   const input = page.getByRole("textbox", { name: "给租房助手的消息" });
   await input.fill("帮我找租房");
@@ -334,20 +351,8 @@ test("proposal displays consequential conditions and applies only after confirma
   await expect(page.locator(".assistant-proposal-summary")).not.toContainText(
     "广告",
   );
-  await page
-    .getByRole("button", { name: "确认并同步需求", exact: true })
-    .click();
-  expect(applies).toBe(0);
-  await expect(page.getByRole("dialog")).toContainText(summary[0]);
-  await expect(page.getByRole("dialog")).not.toContainText("广告");
-  await page.getByRole("button", { name: "继续聊聊", exact: true }).click();
-  expect(applies).toBe(0);
-  await page
-    .getByRole("button", { name: "确认并同步需求", exact: true })
-    .click();
-  await page
-    .getByRole("button", { name: "确认同步并生成推荐", exact: true })
-    .click();
+  await page.getByRole("button", { name: "保存找房条件", exact: true }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(
     page.getByText("新偏好与房源报告已保存。", { exact: true }),
   ).toBeVisible();
@@ -394,7 +399,9 @@ test("real catalogue cards retain source facts and send explicit comparison IDs"
   await expect(first.getByRole("link", { name: "原始房源 ↗" })).toHaveCount(0);
   await first.getByRole("button", { name: "房源详情", exact: true }).click();
   await expect(page.getByRole("dialog")).not.toContainText("待确认事项");
-  await expect(page.getByRole("dialog").getByRole("link", { name: "查看 Domain 房源" })).toHaveAttribute("href", listings[0].source_url);
+  await expect(
+    page.getByRole("dialog").getByRole("link", { name: "查看 Domain 房源" }),
+  ).toHaveAttribute("href", listings[0].source_url);
   await page.keyboard.press("Escape");
   for (const listing of listings)
     await page

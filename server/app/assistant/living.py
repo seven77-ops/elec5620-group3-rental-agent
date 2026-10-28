@@ -41,6 +41,7 @@ def model_context(record, directory, focus=None):
         ('suburb','bedrooms','bathrooms','carpeted','has_pets','move_out_date','utilities')},
         'repairs':[{k:r[k] for k in ('repair_id','title','description','location','status')} |
                    {'latest_update':r.get('updates',[])[-1:] } for r in record['repairs'][-20:]],
+        'utility_plan_catalog':directory.get('plan_catalog'),
         **(focus or {}),
         'providers':[{k:p[k] for k in ('id','name','categories')} for p in directory['providers']]}
 
@@ -117,10 +118,16 @@ def answer_living(ctx, intent, case_id, conversation, user_message, expected_ver
         labels={'electricity':'电力','gas':'燃气','internet':'网络','water':'供水'}
         selected=[labels[k]+'：'+providers[v]['name'] for k,v in record['profile']['utilities'].items() if v in providers]
         answer['content']=('已保存的公司：'+'；'.join(selected)+'。\n' if selected else '目前还没有保存水电气网公司。\n')
-        answer['content']+='下面是可核对的官方入口，先按房屋地址确认可用服务，再比较套餐；目录没有实时费率，不能据此判断哪家最便宜。供水方依地址确认。'
-        category=intent.get('provider_category')
-        answer['providers']=[p for p in directory['providers'] if
-            category in p['categories']] if category else [p for p in directory['providers'] if set(p['categories'])&set(CATEGORIES)]
+        from ..living.utility_advice import advise
+        result=advise(ctx.utility_plans,user_message,category=intent.get('provider_category'),profile=record['profile'])
+        answer['content']+=result['content']
+        answer['utility_search']=result['criteria']
+        grouped={}
+        for plan in result['plans']:
+            identifier=plan['provider_id']
+            if identifier not in providers:continue
+            grouped.setdefault(identifier,{**providers[identifier],'plans':[]})['plans'].append(plan)
+        answer['providers']=list(grouped.values())
     elif topic in ('moving','cleaning'):
         category='removalist' if topic=='moving' else 'cleaner'
         answer['providers']=[p for p in directory['providers'] if category in p['categories']]

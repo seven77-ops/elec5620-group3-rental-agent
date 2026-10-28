@@ -92,9 +92,11 @@ export default function RepairFollowup({
         <Button disabled={busy} onClick={start}>
           记录后续
         </Button>
-        <Button disabled={busy} onClick={start}>
-          调整邮件语气
-        </Button>
+        {!repair.email_draft && (
+          <Button disabled={busy} onClick={start}>
+            调整邮件语气
+          </Button>
+        )}
       </Space>
       <Modal
         forceRender
@@ -140,17 +142,21 @@ export default function RepairFollowup({
               }))}
             />
           </Form.Item>
-          <Form.Item name="email_tone" label="邮件语气">
-            <Select
-              options={Object.entries(tones).map(([value, label]) => ({
-                value,
-                label,
-              }))}
-            />
-          </Form.Item>
+          {!snapshot.repair.email_draft && (
+            <Form.Item name="email_tone" label="邮件语气">
+              <Select
+                options={Object.entries(tones).map(([value, label]) => ({
+                  value,
+                  label,
+                }))}
+              />
+            </Form.Item>
+          )}
         </Form>
         <p className="living-note">
-          只调整邮件草稿措辞，原始问题和收件人保持不变。没有确定的预约时间请直接注明尚未确定。
+          {snapshot.repair.email_draft
+            ? "记录处理进展会保留你已核对的邮件原文。"
+            : "只调整邮件草稿措辞，原始问题和收件人保持不变。没有确定的预约时间请直接注明尚未确定。"}
         </p>
       </Modal>
     </>

@@ -76,11 +76,13 @@ class AssistantWorkspace:
             return result
 
     def select(self,case_id: str,conversation_id: str,body: dict):
-        shape(body,('request_id','expected_revision','expected_profile_fingerprint','listing_id','confirmed'))
+        shape(body,('request_id','expected_revision','expected_profile_fingerprint','listing_id','confirmed'),('allow_external_data',))
         key=case_id+':'+request_id(body['request_id'])
         require(body['confirmed'] is True,422,'selection_confirmation_required','请明确确认保存此候选。')
         require(isinstance(body['listing_id'],str),422,'invalid_reference','请选择已展示的房源。')
         self.assistant.catalog()
+        if 'allow_external_data' in body:
+            require(type(body['allow_external_data']) is bool,422,'invalid_input','外部路线查询选项无效。')
         with self.ctx.repo.transaction() as db, self.ctx.preferences.store.join(db):
             self.assistant.get(db,case_id,conversation_id)
             old=self.ctx.receipt(db,'assistant_select_receipt',key,{'conversation_id':conversation_id,**body})
@@ -101,8 +103,8 @@ class AssistantWorkspace:
                 'listing_id':body['listing_id'],'confirmed':True})
             case=self.ctx.get(db,'case',case_id)
             row=self.assistant.catalog().get(body['listing_id'])
-            c['messages'].append(message('assistant','已保存 '+row['address']+' 为当前候选，可在房源推荐页继续查看。',
-                'agent2',intent='select',actions=[{'type':'navigate','label':'查看已保存候选','page':'recommendations'}]))
+            c['messages'].append(message('assistant','已选定 '+row['address']+' 为当前跟进房源，可准备看房或进入合同流程。',
+                'agent2',intent='select',actions=[{'type':'navigate','label':'查看当前跟进房源','page':'recommendations'}]))
             c['revision']+=1
             self.assistant.save(db,c)
             result={'case':case,'conversation':c}

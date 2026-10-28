@@ -112,6 +112,7 @@ class LocationsTests(unittest.TestCase):
 
 class Catalog:
     def __init__(self,rows): self.rows=rows; self.last_filters=None; self.fingerprint='unchanged'
+    def filters(self,values):return {k:deepcopy(v) for k,v in values.items() if v is not None}
     def matching(self,filters):
         self.last_filters=filters
         return [deepcopy(r) for r in self.rows if
@@ -213,8 +214,7 @@ class PlannerTests(unittest.TestCase):
         self.assertEqual(report['arrival_time'],'')
         self.assertEqual(report['routes'][0]['transfers'],1)
         self.assertEqual(brief,before)
-        for changes in ({'max_transfers':0},{'commute_max_minutes':20},{'commute_mode':'train'},
-                        {'travel_day':'weekend'},{'travel_date':'2099-01-01'}):
+        for changes in ({'max_transfers':0},{'commute_max_minutes':20},{'commute_mode':'train'}):
             with self.subTest(changes=changes):
                 result=self.planner.prepare({**brief,**changes},DESTINATION,allow_external=True)
                 self.assertEqual(result['listings'],[])

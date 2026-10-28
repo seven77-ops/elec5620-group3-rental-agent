@@ -136,7 +136,9 @@ class LeaseDraftTests(unittest.TestCase):
             'Content-Type':'application/octet-stream','X-Consent-Id':consent,
             'X-Request-Id':'official-form','X-Filename':'unsigned-official-form.pdf'})
         self.assertEqual(r.status_code,200,r.text)
-        self.assertEqual(r.json()['review']['document']['page_count'],21)
+        page_count=len(PdfReader(BytesIO(pdf)).pages)
+        self.assertGreaterEqual(page_count,21)  # Official 20 pages plus variable draft cover/questions.
+        self.assertEqual(r.json()['review']['document']['page_count'],page_count)
         # The original CLI/prototype policy remains at ten pages unless opted in.
         from contract_agent.document import load_document
         from contract_agent.errors import ContractError
@@ -144,7 +146,7 @@ class LeaseDraftTests(unittest.TestCase):
         path=Path(self.temp.name)/'standard-draft.pdf';path.write_bytes(pdf)
         with self.assertRaisesRegex(ContractError,'10-page'):
             load_document(path,consent=True)
-        self.assertEqual(load_document(path,consent=True,max_pdf_pages=30)['page_count'],21)
+        self.assertEqual(load_document(path,consent=True,max_pdf_pages=30)['page_count'],page_count)
 
         self.assertIsNone(r.json()['review']['selection_evidence'])
 
@@ -267,7 +269,7 @@ class LeaseDraftTests(unittest.TestCase):
                 while '/V' not in node and node.get('/Parent'):node=node['/Parent'].get_object()
                 if name.startswith('Check Box'):
                     expected_widget=expected[name] if expected[name] in obj['/AP']['/N'] else '/Off'
-                    self.assertEqual(str(node.get('/V')),expected_widget,name)
+                    self.assertEqual(str(node.get('/V')),expected[name],name)
                     self.assertEqual(str(obj.get('/AS')),expected_widget,name)
                 else:self.assertEqual(str(node.get('/V')),expected[name],name)
                 self.assertTrue(obj['/AP']['/N'])

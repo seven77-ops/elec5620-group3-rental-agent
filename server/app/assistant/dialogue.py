@@ -26,7 +26,7 @@ def merge_brief(conversation,intent):
             elif key=='max_weekly_rent':
                 brief['budget_amount']=value
                 brief['budget_period']='week'
-    return brief
+    return {k:v for k,v in brief.items() if k not in ("arrival_time","travel_day","travel_date")}
 
 
 def brief_summary(brief):
@@ -67,7 +67,7 @@ def brief_filters(brief):
     result['max_weekly_rent']=brief['budget_amount']
     if brief.get('commute_mode') and brief.get('commute_max_minutes'):
         result.update(usyd_mode=brief['commute_mode'],usyd_max_minutes=brief['commute_max_minutes'])
-        for key in ('arrival_time','travel_day','travel_date','max_transfers'):
+        for key in ('max_transfers',):
             if brief.get(key) is not None:result['usyd_'+key]=brief[key]
     return result
 
@@ -79,7 +79,7 @@ def brief_profile_patch(brief):
     if 'rental_mode' in brief: patch['rental_mode']=brief['rental_mode']
     if brief.get('commute_mode') and brief.get('commute_max_minutes'):
         patch['student_commute']={'mode':brief['commute_mode'],'maximum_minutes':brief['commute_max_minutes']}
-        for key in ('arrival_time','travel_day','travel_date','max_transfers'):
+        for key in ('max_transfers',):
             if brief.get(key) is not None:patch['student_commute'][key]=brief[key]
     return patch
 
@@ -93,7 +93,7 @@ def profile_brief(profile):
     student=profile.get('student_commute',{})
     if student:
         result.update(commute_mode=student['mode'],commute_max_minutes=student['maximum_minutes'],commute_hard_limit=True)
-        for key in ('arrival_time','travel_day','travel_date','max_transfers'):
+        for key in ('max_transfers',):
             if student.get(key) is not None:result[key]=student[key]
     result.update({key:profile[key] for key in ('occupants','rental_mode') if key in profile})
     return result

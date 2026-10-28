@@ -18,6 +18,16 @@ def register_routes(app, services):
     app.post('/api/v1/cases/{case_id}/profile-confirmations')(profiles.confirm)
     if services.settings.catalog is not None:
         app.get('/api/v1/cases/{case_id}/recommendation-context')(profiles.recommendation_context)
+        from .adapters.favorites import FavoritesAdapter
+        favorites = FavoritesAdapter(services)
+        app.get('/api/v1/cases/{case_id}/favorites')(favorites.read)
+        app.post('/api/v1/cases/{case_id}/favorites')(favorites.save)
+        app.post('/api/v1/cases/{case_id}/followup-selection')(favorites.select)
+        from .assistant.followup_start import FollowupStart
+        from .assistant.requirements import RequirementsService
+        app.post('/api/v1/cases/{case_id}/followup-preview')(FollowupStart(services).preview)
+        app.post('/api/v1/cases/{case_id}/followup-start')(FollowupStart(services).start)
+        app.post('/api/v1/cases/{case_id}/assistant/conversations/{conversation_id}/requirements')(RequirementsService(services).save)
     app.post('/api/v1/cases/{case_id}/evaluations')(profiles.evaluation)
     app.get('/api/v1/evaluations/{run_id}')(profiles.read_evaluation)
     app.get('/api/v1/evaluations/{run_id}/export')(profiles.export_evaluation)
@@ -76,6 +86,8 @@ def register_routes(app, services):
     app.post(living_base+'/tenancy-import')(tenancy.apply)
     app.post(living_base+'/profile')(living.profile)
     app.post(living_base+'/repairs')(living.repair)
+    from .living.email_ai import RepairEmailAI
+    app.post(living_base+'/repair-email/polish')(RepairEmailAI(services).polish)
     app.post(living_base+'/repairs/{repair_id}')(living.update_repair)
     app.post(living_base+'/bookings')(living.booking)
     app.post(living_base+'/proposals/{proposal_id}/apply')(living.apply)

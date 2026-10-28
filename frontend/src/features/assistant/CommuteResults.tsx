@@ -3,8 +3,10 @@ import { useRef, useState } from "react";
 import type { AssistantMessage } from "../../api/assistant";
 import type { HousingAd } from "../../api/catalog";
 import "./commuteResults.css";
+import ListingActions from "../favorites/ListingActions";
 import { commuteModes, UsydCommuteMini } from "../real-data/UsydCommute";
 import { usydDirections } from "../real-data/directions";
+import ListingReasons from "./ListingReasons";
 
 export default function CommuteResults({
   message,
@@ -160,23 +162,27 @@ export default function CommuteResults({
                     </strong>
                   </div>
                   <div className="commute-route">
-                    <UsydCommuteMini listing={listing} />
+                    <UsydCommuteMini
+                      listing={listing}
+                      mode={result.criteria.commute_mode}
+                    />
                   </div>
+                  <ListingReasons
+                    listing={listing}
+                    criteria={result.criteria}
+                    filters={message.recommendation_filters}
+                  />
                   <div className="commute-actions">
                     {onView ? (
                       <Button size="small" onClick={() => onView(listing)}>
                         房源详情
                       </Button>
                     ) : null}
-                    {onSave ? (
-                      <Button
-                        size="small"
-                        disabled={disabled}
-                        onClick={() => onSave(listing)}
-                      >
-                        保存为候选
-                      </Button>
-                    ) : null}
+                    <ListingActions
+                      listing={listing}
+                      onSelect={onSave}
+                      disabled={disabled}
+                    />
                     <a
                       href={usydDirections(
                         listing,
@@ -210,7 +216,7 @@ export default function CommuteResults({
               />
             </nav>
           )}
-          {onSuggest ? (
+          {onSuggest && message.listings.length > 0 ? (
             <div className="commute-actions">
               <Button
                 disabled={disabled}

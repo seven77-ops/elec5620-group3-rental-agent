@@ -1,5 +1,5 @@
 """Translate confirmed preferences into supported advertisement facts, without inventing costs."""
-POLICY = 'confirmed-facts-1.4-usyd-ranges'
+POLICY = 'confirmed-facts-1.5-usyd-duration'
 
 
 def preference_context(profile, catalog, legacy=False):
@@ -15,9 +15,9 @@ def preference_context(profile, catalog, legacy=False):
     student=profile.get('student_commute')
     if student:
         filters.update(usyd_mode=student['mode'],usyd_max_minutes=student['maximum_minutes'])
-        for key in ('arrival_time','travel_day','travel_date','max_transfers'):
+        for key in ('max_transfers',):
             if student.get(key) is not None:filters['usyd_'+key]=student[key]
-        notes.insert(0,'到校通勤按每套房源的悉大主校区标注筛选；公共交通是所列工作日基准时刻，出行前请按课程时间复核。')
+        notes.insert(0,'到校通勤按每套房源的参考路线或估算区间筛选；为大概时长，不绑定上课时间或具体班次。')
     budget = profile.get('budget',{})
     if 'maximum' not in budget:
         notes.insert(0,'尚未填写预算上限，暂不按价格排除房源。')

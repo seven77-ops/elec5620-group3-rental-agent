@@ -28,6 +28,8 @@
 
 ## 真实公司目录
 
+后续更新（2026-10-28）：公司目录扩至33家，其中搬运12家、清洁12家，各新增9家。水电气网的9家供应商仍保留，并另接入[165条套餐与费率](2026-10-28-utility-plans.md)。下表保留最初15家记录，新增条目见文末；联系方式以每条核对日期为准。
+
 来源为公司官方网站，核对日期 **2026-10-22**。目录含 15 家：3 家电力/燃气、5 家网络、1 家水务、3 家搬运、3 家清洁。电力和燃气共用的公司不重复计数。具体覆盖、地址可用方案、套餐费率、服务范围和档期仍由供应商确认，未接入实时比价或商家预订接口。电话未核实的项目保留为空并提供官方联系入口。
 
 | 公司 | 类别 | 电话 / 联系方式 | 来源 |
@@ -71,3 +73,32 @@
 - 在用户原案例进行只读浏览检查：未保存任何新资料，原案例及聊天历史摘要哈希与检查前一致。
 
 测试使用隔离运行目录；原预览继续在 5191 / 8011 运行。未发送邮件、提交外部预约、支付或修改供应商账户；未提交 Git 或发布部署。
+
+## 2026-10-28 搬运与清洁扩容
+
+新增18条官网资料，未改动原有公司ID，历史报价与预约记录仍可读取。页面与AI按同一目录查询；新增公司可记录用户自行取得的报价，不会自动联系或预订。没有从商家宣传推断星级、保险承保范围或押金必退。
+
+| 公司 | 类别 | 电话/入口 | 来源 |
+| --- | --- | --- | --- |
+| Men That Move | 搬运 | 1800 438 668 | [官方来源](https://menthatmove.com/contact-us/) |
+| Holloway Removals & Storage | 搬运 | 02 8503 4444 | [官方来源](https://hollowayremovals.com.au/contact-us/) |
+| Removal Brothers | 搬运 | 0405 919 600 | [官方来源](https://removalbrothers.com.au/) |
+| Moveworx Removals & Storage | 搬运 | 1300 731 730 | [官方来源](https://moveworx.com.au/) |
+| Optimove | 搬运 | 1300 400 874 | [官方来源](https://www.optimove.com.au/) |
+| Man And His Van | 搬运 | 02 9907 3300 | [官方来源](https://manandhisvan.com.au/contact/) |
+| NUSS Removals | 搬运 | 02 9425 4600 | [官方来源](https://www.nuss.com.au/) |
+| Chess Moving Sydney | 搬运 | 02 9671 8400 | [官方来源](https://www.chessmoving.com.au/about/office-locations/sydney) |
+| CityMove Removals | 搬运 | 1300 729 994 | [官方来源](https://www.citymove.com.au/) |
+| Maid2Match | 清洁 | 1800 207 686 | [官方来源](https://www.maid2match.com.au/cleaners-sydney/) |
+| Absolute Domestics | 清洁 | 1300 364 646 | [官方来源](https://www.absolutedomestics.com.au/services/end-of-lease-cleaning/sydney/) |
+| This Is Neat Cleaning | 清洁 | 官网报价表单 | [官方来源](https://thisisneat.com.au/end-of-lease-cleaning/sydney) |
+| MaidForYou | 清洁 | 1300 138 892 | [官方来源](https://www.maidforyou.com.au/contact-us/) |
+| Maid2Go Cleaning | 清洁 | 02 7256 7367 | [官方来源](https://maid2gocleaning.com.au/) |
+| 1800 CLEANER | 清洁 | 1800 253 263 | [官方来源](https://1800cleaner.com.au/contact-1800-cleaner/) |
+| Jim’s Cleaning Group | 清洁 | 131 546 | [官方来源](https://jimscleaning.com.au/local/carpet-cleaning/nsw/sydney/) |
+| Call The Cleaners | 清洁 | 0451 550 849 | [官方来源](https://callthecleaners.com.au/sydney/) |
+| Clean Australia Service | 清洁 | 1300 034 788 | [官方来源](https://www.cleanaustraliaservice.com.au/) |
+
+核对时排除了MiniMovers：其官网明确已退出悉尼业务。This Is Neat只记为退租/搬入搬出清洁，不误写为日常家政。Holloway的缓存代理出现不同营销号码，采用直接官网联系页与公开网页均可核对的02 8503 4444。部分号码/链接以公开索引核对，不代表已实际拨通或查询到实时空档。
+
+本次验证：38项后端测试、10项浏览器测试通过，TypeScript与生产构建通过。5191实际预览只读核对搬运12家、清洁12家，桌面与390px手机布局正常；原有15条供应商对象保持一致，3个实际SQLite数据库的表行数与内容哈希均未变，1000套房源和165条公用事业套餐保留。浏览器新增报价测试仅在隔离测试目录运行。

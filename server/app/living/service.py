@@ -11,9 +11,19 @@ class LivingService:
     def __init__(self, ctx, providers=None):
         self.ctx = ctx
         self.catalog = ProviderCatalog(providers)
+        self.enrich_plans = providers is None
 
     def directory(self):
-        return self.catalog.directory()
+        directory = self.catalog.directory()
+        if self.enrich_plans:
+            directory['plan_catalog'] = self.ctx.utility_plans.summary()
+            from .utility_catalog import public_plan
+            plans = [public_plan(p) for p in self.ctx.utility_plans.search(include_unavailable=True)]
+            for provider in directory['providers']:
+                provider['plans'] = [p for p in plans if p['provider_id'] == provider['id']]
+                if provider['plans']:
+                    provider['notes'] = '已收录官方套餐与计价参考；可用性、促销资格和最终费用须按地址及条款核对。'
+        return directory
 
     def _record(self, db, case_id):
         self.ctx.get(db, 'case', case_id)

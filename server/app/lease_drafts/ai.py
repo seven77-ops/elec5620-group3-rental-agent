@@ -5,7 +5,7 @@ import re
 from time import time
 from ..common import require, shape, request_id, uid, now
 from ..ai.provider import ProviderError
-from .fields import DEFAULTS, ENUMS, validate_fields, questions, extraction_schema, add_months, TERM_MONTHS
+from .fields import DEFAULTS, ENUMS, validate_fields, questions, extraction_schema, add_months, TERM_MONTHS, MANUAL_CHOICE_FIELDS
 
 PERIOD_WORDS={'week':r'每周|一周|周租|weekly|per week', 'fortnight':r'两周|二周|fortnight', 'month':r'每月|月租|monthly|per month'}
 
@@ -65,6 +65,7 @@ def grounded_patch(response,message):
     for item in response['fields']:
         require(isinstance(item,dict) and set(item)=={'field','value','quote'},502,'ai_invalid_response','AI 字段格式无效。')
         key=item['field'];value=item['value'];quote=item['quote']
+        require(key not in MANUAL_CHOICE_FIELDS,502,'ai_invalid_response','费用、设施及电子送达选择请在表单中明确确认。')
         require(isinstance(key,str) and key in DEFAULTS and key not in patch and
                 isinstance(quote,str) and 0<len(quote)<=500 and quote in message,
                 502,'ai_ungrounded','AI 提取缺少有效的用户原文。')

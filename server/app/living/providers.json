@@ -1,20 +1,470 @@
 {
-  "checked_on": "2026-10-22",
+  "checked_on": "2026-10-28",
   "providers": [
-    {"id":"agl","name":"AGL","categories":["electricity","gas"],"website":"https://www.agl.com.au/","contact_url":"https://www.agl.com.au/help-support/contact-us","phone":"131 245","coverage":"NSW；按地址确认服务","source_url":"https://www.agl.com.au/help-support/contact-us","checked_on":"2026-10-22","notes":"电力、天然气及搬家服务；具体套餐、费率和开户条件请在官网核对。"},
-    {"id":"origin","name":"Origin Energy","categories":["electricity","gas"],"website":"https://www.originenergy.com.au/","contact_url":"https://www.originenergy.com.au/electricity-gas/","phone":"13 24 61","coverage":"NSW；按地址确认服务","source_url":"https://www.originenergy.com.au/contact-us/complaints/","checked_on":"2026-10-22","notes":"电力与天然气；客服电话取自官网。按地址查询可用方案，未接入实时费率。"},
-    {"id":"energyaustralia","name":"EnergyAustralia","categories":["electricity","gas"],"website":"https://www.energyaustralia.com.au/","contact_url":"https://www.energyaustralia.com.au/home/help-and-support/contact-us","phone":"133 466","coverage":"NSW；按地址确认服务","source_url":"https://www.energyaustralia.com.au/home/help-and-support/contact-us","checked_on":"2026-10-22","notes":"电力、天然气和搬家咨询；适用套餐由商家按地址核实。"},
-    {"id":"telstra","name":"Telstra","categories":["internet"],"website":"https://www.telstra.com.au/","contact_url":"https://www.telstra.com.au/contact-us","phone":null,"coverage":"Sydney / NSW；按地址确认网络类型","source_url":"https://www.telstra.com.au/contact-us","checked_on":"2026-10-22","notes":"家庭网络、故障与迁移服务；通过官网选择对应联系方式，速度及开通日期需确认。"},
-    {"id":"optus","name":"Optus","categories":["internet"],"website":"https://www.optus.com.au/","contact_url":"https://www.optus.com.au/support/contact-us","phone":"133 937","coverage":"Sydney / NSW；按地址确认网络类型","source_url":"https://www.optus.com.au/support/contact-us","checked_on":"2026-10-22","notes":"家庭网络及账户支持；是否可接入 nbn、5G 等以地址查询为准。"},
-    {"id":"tpg","name":"TPG","categories":["internet"],"website":"https://www.tpg.com.au/","contact_url":"https://www.tpg.com.au/contact","phone":"13 14 23","coverage":"Sydney / NSW；按地址确认网络类型","source_url":"https://www.tpg.com.au/contact","checked_on":"2026-10-22","notes":"官网列出技术支持、账单与搬家分线；这里提供总咨询入口。"},
-    {"id":"aussie-broadband","name":"Aussie Broadband","categories":["internet"],"website":"https://www.aussiebroadband.com.au/","contact_url":"https://www.aussiebroadband.com.au/contact/","phone":"1300 880 905","coverage":"Sydney / NSW；按地址确认网络类型","source_url":"https://www.aussiebroadband.com.au/contact/","checked_on":"2026-10-22","notes":"家庭网络、技术支持、账单及订单咨询；可用网络与档期请向官网确认。"},
-    {"id":"superloop","name":"Superloop","categories":["internet"],"website":"https://www.superloop.com/","contact_url":"https://www.superloop.com/contact/","phone":"1800 57 87 37","coverage":"Sydney / NSW；按地址确认网络类型","source_url":"https://www.superloop.com/contact/","checked_on":"2026-10-22","notes":"家庭网络销售、技术支持和账单咨询；未接入实时套餐或地址覆盖查询。"},
-    {"id":"sydney-water","name":"Sydney Water","categories":["water"],"website":"https://www.sydneywater.com.au/","contact_url":"https://www.sydneywater.com.au/contact-us.html","phone":"13 20 92","coverage":"Sydney Water 服务区域；须按房屋地址核对","source_url":"https://www.sydneywater.com.au/contact-us.html","checked_on":"2026-10-22","notes":"账户与账单咨询。供水方由地址决定，此处只记录，不能像电力零售商一样自由切换；费用责任另按租约及实际账单核实。"},
-    {"id":"two-men-and-a-truck","name":"TWO MEN AND A TRUCK","categories":["removalist"],"website":"https://www.twomen.com.au/","contact_url":"https://www.twomen.com.au/contact-us/","phone":"1300 880 412","coverage":"Sydney；具体路线由商家确认","source_url":"https://www.twomen.com.au/contact-us/","checked_on":"2026-10-22","notes":"悉尼搬运咨询；询价时说明出发地、目的地、楼层、电梯与家具清单，价格和档期待商家确认。"},
-    {"id":"grace","name":"Grace Removals","categories":["removalist"],"website":"https://www.grace.com.au/","contact_url":"https://www.grace.com.au/location/sydney-seven-hills/","phone":"02 9838 5600","coverage":"Sydney 分公司；具体路线由商家确认","source_url":"https://www.grace.com.au/location/sydney-seven-hills/","checked_on":"2026-10-22","notes":"悉尼 Seven Hills 分公司联系方式；搬运和储存需求、物品范围及费用向商家核对。"},
-    {"id":"kent","name":"Kent Removals & Storage","categories":["removalist"],"website":"https://www.kentremovalsstorage.com.au/","contact_url":"https://www.kentremovalsstorage.com.au/contact-us","phone":"1300 490 557","coverage":"Sydney / NSW；具体路线由商家确认","source_url":"https://www.kentremovalsstorage.com.au/contact-us","checked_on":"2026-10-22","notes":"住宅搬运与储存询价；未查询实时空档，不代表已经预订。"},
-    {"id":"simply-maid","name":"Simply Maid","categories":["cleaner"],"website":"https://simplymaid.com.au/","contact_url":"https://simplymaid.com.au/services/end-of-lease-cleaning/sydney","phone":null,"coverage":"Sydney；按 suburb / postcode 确认","source_url":"https://simplymaid.com.au/services/end-of-lease-cleaning/sydney","checked_on":"2026-10-22","notes":"官网提供悉尼退租清洁询价；核对卧卫数量、空房条件、烤箱和窗户等服务范围，地毯等加项单独确认。"},
-    {"id":"fantastic-cleaners","name":"Fantastic Cleaners","categories":["cleaner"],"website":"https://fantasticcleaners.com.au/","contact_url":"https://fantasticcleaners.com.au/contact-us/","phone":"02 8103 2006","coverage":"Sydney；按地址确认服务","source_url":"https://fantasticcleaners.com.au/contact-us/","checked_on":"2026-10-22","notes":"日常及退租清洁咨询；地毯、窗户、返工条件与费用需在报价中确认。"},
-    {"id":"calibre-cleaning","name":"Calibre Cleaning","categories":["cleaner"],"website":"https://www.calibrecleaning.com.au/","contact_url":"https://www.calibrecleaning.com.au/contact/","phone":"1300 991 368","coverage":"Sydney；按地址确认服务","source_url":"https://www.calibrecleaning.com.au/contact/","checked_on":"2026-10-22","notes":"官网提供悉尼日常和退租清洁；报价、加项与返工政策需向商家确认，不能据此保证押金退还。"}
+    {
+      "id": "agl",
+      "name": "AGL",
+      "categories": [
+        "electricity",
+        "gas"
+      ],
+      "website": "https://www.agl.com.au/",
+      "contact_url": "https://www.agl.com.au/help-support/contact-us",
+      "phone": "131 245",
+      "coverage": "NSW；按地址确认服务",
+      "source_url": "https://www.agl.com.au/help-support/contact-us",
+      "checked_on": "2026-10-22",
+      "notes": "电力、天然气及搬家服务；具体套餐、费率和开户条件请在官网核对。"
+    },
+    {
+      "id": "origin",
+      "name": "Origin Energy",
+      "categories": [
+        "electricity",
+        "gas"
+      ],
+      "website": "https://www.originenergy.com.au/",
+      "contact_url": "https://www.originenergy.com.au/electricity-gas/",
+      "phone": "13 24 61",
+      "coverage": "NSW；按地址确认服务",
+      "source_url": "https://www.originenergy.com.au/contact-us/complaints/",
+      "checked_on": "2026-10-22",
+      "notes": "电力与天然气；客服电话取自官网。按地址查询可用方案，未接入实时费率。"
+    },
+    {
+      "id": "energyaustralia",
+      "name": "EnergyAustralia",
+      "categories": [
+        "electricity",
+        "gas"
+      ],
+      "website": "https://www.energyaustralia.com.au/",
+      "contact_url": "https://www.energyaustralia.com.au/home/help-and-support/contact-us",
+      "phone": "133 466",
+      "coverage": "NSW；按地址确认服务",
+      "source_url": "https://www.energyaustralia.com.au/home/help-and-support/contact-us",
+      "checked_on": "2026-10-22",
+      "notes": "电力、天然气和搬家咨询；适用套餐由商家按地址核实。"
+    },
+    {
+      "id": "telstra",
+      "name": "Telstra",
+      "categories": [
+        "internet"
+      ],
+      "website": "https://www.telstra.com.au/",
+      "contact_url": "https://www.telstra.com.au/contact-us",
+      "phone": null,
+      "coverage": "Sydney / NSW；按地址确认网络类型",
+      "source_url": "https://www.telstra.com.au/contact-us",
+      "checked_on": "2026-10-22",
+      "notes": "家庭网络、故障与迁移服务；通过官网选择对应联系方式，速度及开通日期需确认。"
+    },
+    {
+      "id": "optus",
+      "name": "Optus",
+      "categories": [
+        "internet"
+      ],
+      "website": "https://www.optus.com.au/",
+      "contact_url": "https://www.optus.com.au/support/contact-us",
+      "phone": "133 937",
+      "coverage": "Sydney / NSW；按地址确认网络类型",
+      "source_url": "https://www.optus.com.au/support/contact-us",
+      "checked_on": "2026-10-22",
+      "notes": "家庭网络及账户支持；是否可接入 nbn、5G 等以地址查询为准。"
+    },
+    {
+      "id": "tpg",
+      "name": "TPG",
+      "categories": [
+        "internet"
+      ],
+      "website": "https://www.tpg.com.au/",
+      "contact_url": "https://www.tpg.com.au/contact",
+      "phone": "13 14 23",
+      "coverage": "Sydney / NSW；按地址确认网络类型",
+      "source_url": "https://www.tpg.com.au/contact",
+      "checked_on": "2026-10-22",
+      "notes": "官网列出技术支持、账单与搬家分线；这里提供总咨询入口。"
+    },
+    {
+      "id": "aussie-broadband",
+      "name": "Aussie Broadband",
+      "categories": [
+        "internet"
+      ],
+      "website": "https://www.aussiebroadband.com.au/",
+      "contact_url": "https://www.aussiebroadband.com.au/contact/",
+      "phone": "1300 880 905",
+      "coverage": "Sydney / NSW；按地址确认网络类型",
+      "source_url": "https://www.aussiebroadband.com.au/contact/",
+      "checked_on": "2026-10-22",
+      "notes": "家庭网络、技术支持、账单及订单咨询；可用网络与档期请向官网确认。"
+    },
+    {
+      "id": "superloop",
+      "name": "Superloop",
+      "categories": [
+        "internet"
+      ],
+      "website": "https://www.superloop.com/",
+      "contact_url": "https://www.superloop.com/contact/",
+      "phone": "1800 57 87 37",
+      "coverage": "Sydney / NSW；按地址确认网络类型",
+      "source_url": "https://www.superloop.com/contact/",
+      "checked_on": "2026-10-22",
+      "notes": "家庭网络销售、技术支持和账单咨询；未接入实时套餐或地址覆盖查询。"
+    },
+    {
+      "id": "sydney-water",
+      "name": "Sydney Water",
+      "categories": [
+        "water"
+      ],
+      "website": "https://www.sydneywater.com.au/",
+      "contact_url": "https://www.sydneywater.com.au/contact-us.html",
+      "phone": "13 20 92",
+      "coverage": "Sydney Water 服务区域；须按房屋地址核对",
+      "source_url": "https://www.sydneywater.com.au/contact-us.html",
+      "checked_on": "2026-10-22",
+      "notes": "账户与账单咨询。供水方由地址决定，此处只记录，不能像电力零售商一样自由切换；费用责任另按租约及实际账单核实。"
+    },
+    {
+      "id": "two-men-and-a-truck",
+      "name": "TWO MEN AND A TRUCK",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://www.twomen.com.au/",
+      "contact_url": "https://www.twomen.com.au/contact-us/",
+      "phone": "1300 880 412",
+      "coverage": "Sydney；具体路线由商家确认",
+      "source_url": "https://www.twomen.com.au/contact-us/",
+      "checked_on": "2026-10-22",
+      "notes": "悉尼搬运咨询；询价时说明出发地、目的地、楼层、电梯与家具清单，价格和档期待商家确认。"
+    },
+    {
+      "id": "grace",
+      "name": "Grace Removals",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://www.grace.com.au/",
+      "contact_url": "https://www.grace.com.au/location/sydney-seven-hills/",
+      "phone": "02 9838 5600",
+      "coverage": "Sydney 分公司；具体路线由商家确认",
+      "source_url": "https://www.grace.com.au/location/sydney-seven-hills/",
+      "checked_on": "2026-10-22",
+      "notes": "悉尼 Seven Hills 分公司联系方式；搬运和储存需求、物品范围及费用向商家核对。"
+    },
+    {
+      "id": "kent",
+      "name": "Kent Removals & Storage",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://www.kentremovalsstorage.com.au/",
+      "contact_url": "https://www.kentremovalsstorage.com.au/contact-us",
+      "phone": "1300 490 557",
+      "coverage": "Sydney / NSW；具体路线由商家确认",
+      "source_url": "https://www.kentremovalsstorage.com.au/contact-us",
+      "checked_on": "2026-10-22",
+      "notes": "住宅搬运与储存询价；未查询实时空档，不代表已经预订。"
+    },
+    {
+      "id": "simply-maid",
+      "name": "Simply Maid",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://simplymaid.com.au/",
+      "contact_url": "https://simplymaid.com.au/services/end-of-lease-cleaning/sydney",
+      "phone": null,
+      "coverage": "Sydney；按 suburb / postcode 确认",
+      "source_url": "https://simplymaid.com.au/services/end-of-lease-cleaning/sydney",
+      "checked_on": "2026-10-22",
+      "notes": "官网提供悉尼退租清洁询价；核对卧卫数量、空房条件、烤箱和窗户等服务范围，地毯等加项单独确认。"
+    },
+    {
+      "id": "fantastic-cleaners",
+      "name": "Fantastic Cleaners",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://fantasticcleaners.com.au/",
+      "contact_url": "https://fantasticcleaners.com.au/contact-us/",
+      "phone": "02 8103 2006",
+      "coverage": "Sydney；按地址确认服务",
+      "source_url": "https://fantasticcleaners.com.au/contact-us/",
+      "checked_on": "2026-10-22",
+      "notes": "日常及退租清洁咨询；地毯、窗户、返工条件与费用需在报价中确认。"
+    },
+    {
+      "id": "calibre-cleaning",
+      "name": "Calibre Cleaning",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://www.calibrecleaning.com.au/",
+      "contact_url": "https://www.calibrecleaning.com.au/contact/",
+      "phone": "1300 991 368",
+      "coverage": "Sydney；按地址确认服务",
+      "source_url": "https://www.calibrecleaning.com.au/contact/",
+      "checked_on": "2026-10-22",
+      "notes": "官网提供悉尼日常和退租清洁；报价、加项与返工政策需向商家确认，不能据此保证押金退还。"
+    },
+    {
+      "id": "men-that-move",
+      "name": "Men That Move",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://menthatmove.com/",
+      "contact_url": "https://menthatmove.com/contact-us/",
+      "phone": "1800 438 668",
+      "coverage": "Sydney；Marrickville设点，具体路线按地址确认",
+      "source_url": "https://menthatmove.com/contact-us/",
+      "checked_on": "2026-10-28",
+      "notes": "家具和住宅搬运；官网提供可重复使用搬家箱租借及询价入口。少量物品也应说明清单、楼层、电梯和停车条件，箱子及运输条件另核。"
+    },
+    {
+      "id": "holloway",
+      "name": "Holloway Removals & Storage",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://hollowayremovals.com.au/",
+      "contact_url": "https://hollowayremovals.com.au/contact-us/",
+      "phone": "02 8503 4444",
+      "coverage": "Sydney及周边；悉尼办公室位于Wolli Creek",
+      "source_url": "https://hollowayremovals.com.au/contact-us/",
+      "checked_on": "2026-10-28",
+      "notes": "本地、跨州搬家、打包拆包及仓储；可申请上门或视频查看物品后报价。特殊大件、保险范围、日期变化及楼栋进出条件须提前确认。"
+    },
+    {
+      "id": "removal-brothers",
+      "name": "Removal Brothers",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://removalbrothers.com.au/",
+      "contact_url": "https://removalbrothers.com.au/",
+      "phone": "0405 919 600",
+      "coverage": "Sydney；覆盖东区、Inner West、北岸等，其他路线另询",
+      "source_url": "https://removalbrothers.com.au/",
+      "checked_on": "2026-10-28",
+      "notes": "住宅、公寓搬运、打包、仓储及跨州运输；官网列出按车辆和人数计价的参考，周日、最低时长及行程费用需单独核对，不视为已取得报价。"
+    },
+    {
+      "id": "moveworx",
+      "name": "Moveworx Removals & Storage",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://moveworx.com.au/",
+      "contact_url": "https://moveworx.com.au/",
+      "phone": "1300 731 730",
+      "coverage": "Sydney；北岸、Hills、Inner West及大西区等",
+      "source_url": "https://moveworx.com.au/",
+      "checked_on": "2026-10-28",
+      "notes": "本地与跨州家具搬运、打包和仓储；按家具量、路线和服务要求询价，确认包装、存放期限以及装卸条件是否计入报价。"
+    },
+    {
+      "id": "optimove",
+      "name": "Optimove",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://www.optimove.com.au/",
+      "contact_url": "https://www.optimove.com.au/",
+      "phone": "1300 400 874",
+      "coverage": "Sydney及部分跨州路线；实际起讫地址另核",
+      "source_url": "https://www.optimove.com.au/",
+      "checked_on": "2026-10-28",
+      "notes": "住宅家具搬运及全程打包、组装等服务；询价时列明物品清单、楼层和大件。路线、服务包含项目及保险责任以书面报价为准。"
+    },
+    {
+      "id": "man-and-his-van",
+      "name": "Man And His Van",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://manandhisvan.com.au/",
+      "contact_url": "https://manandhisvan.com.au/contact/",
+      "phone": "02 9907 3300",
+      "coverage": "Sydney；Brookvale / Northern Beaches设点，路线另询",
+      "source_url": "https://manandhisvan.com.au/contact/",
+      "checked_on": "2026-10-28",
+      "notes": "家具、住宅和办公室搬运、搬家箱及仓储咨询；可先电话说明物品数量、出发与目的区域，再核对车辆、人员及行程费用。"
+    },
+    {
+      "id": "nuss",
+      "name": "NUSS Removals",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://www.nuss.com.au/",
+      "contact_url": "https://www.nuss.com.au/",
+      "phone": "02 9425 4600",
+      "coverage": "Sydney；包括Inner West、CBD、北岸及周边",
+      "source_url": "https://www.nuss.com.au/",
+      "checked_on": "2026-10-28",
+      "notes": "本地、跨州及国际搬运，打包和仓储；官网询价支持少量物品和不同卧室数量，并可安排上门或视频评估。进出楼层、电梯及车辆靠近距离会影响报价。"
+    },
+    {
+      "id": "chess-moving",
+      "name": "Chess Moving Sydney",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://www.chessmoving.com.au/",
+      "contact_url": "https://www.chessmoving.com.au/about/office-locations/sydney",
+      "phone": "02 9671 8400",
+      "coverage": "Sydney / NSW；Blacktown分部，路线另核",
+      "source_url": "https://www.chessmoving.com.au/about/office-locations/sydney",
+      "checked_on": "2026-10-28",
+      "notes": "本地住宅、NSW区域、跨州和国际搬运及仓储；悉尼分部提供物品清单或现场评估询价，运输、打包、仓储和特殊处理按所选项目核对。"
+    },
+    {
+      "id": "citymove",
+      "name": "CityMove Removals",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://www.citymove.com.au/",
+      "contact_url": "https://www.citymove.com.au/",
+      "phone": "1300 729 994",
+      "coverage": "Sydney起家；本地、跨州路线须按地址确认",
+      "source_url": "https://www.citymove.com.au/contact",
+      "checked_on": "2026-10-28",
+      "notes": "住宅、公寓及办公室搬运；按物品体积、路线与作业时长询价。官网提示进出条件、交通时间和出车费用会影响最终金额，需核对书面报价。"
+    },
+    {
+      "id": "maid2match",
+      "name": "Maid2Match",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://www.maid2match.com.au/",
+      "contact_url": "https://www.maid2match.com.au/cleaners-sydney/",
+      "phone": "1800 207 686",
+      "coverage": "Sydney；可服务区域及档期按邮编确认",
+      "source_url": "https://www.maid2match.com.au/cleaners-sydney/",
+      "checked_on": "2026-10-28",
+      "notes": "住宅定期或一次性清洁；官网区分按卧卫数的全屋固定报价和按小时的局部清洁。具体任务、清洁用品及加项需核对，不把日常清洁自动当成退租全套。"
+    },
+    {
+      "id": "absolute-domestics",
+      "name": "Absolute Domestics",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://www.absolutedomestics.com.au/",
+      "contact_url": "https://www.absolutedomestics.com.au/contact-us/",
+      "phone": "1300 364 646",
+      "coverage": "Sydney；Inner West、北岸、东区及Parramatta等区域",
+      "source_url": "https://www.absolutedomestics.com.au/services/end-of-lease-cleaning/sydney/",
+      "checked_on": "2026-10-28",
+      "notes": "住宅日常、一次性和退租清洁，通过机构匹配当地清洁人员；首次服务前确认时长和优先任务，地毯等专业项目及返工条件单独核对。"
+    },
+    {
+      "id": "this-is-neat",
+      "name": "This Is Neat Cleaning",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://thisisneat.com.au/",
+      "contact_url": "https://thisisneat.com.au/end-of-lease-cleaning/sydney",
+      "phone": null,
+      "coverage": "Sydney都会区；具体邮编与日期须确认",
+      "source_url": "https://thisisneat.com.au/end-of-lease-cleaning/sydney",
+      "checked_on": "2026-10-28",
+      "notes": "专注退租和搬入搬出清洁，官网明确不提供普通日常家政或办公室清洁。按studio、公寓或房屋取得定制报价，地毯蒸汽等附加项目和返工条款另核。"
+    },
+    {
+      "id": "maid-for-you",
+      "name": "MaidForYou",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://www.maidforyou.com.au/",
+      "contact_url": "https://www.maidforyou.com.au/contact-us/",
+      "phone": "1300 138 892",
+      "coverage": "Sydney；具体区域与预约档期按地址确认",
+      "source_url": "https://www.maidforyou.com.au/contact-us/",
+      "checked_on": "2026-10-28",
+      "notes": "住宅日常、一次性及退租清洁；按卧卫、房屋状况和项目询价，地毯、烤箱、窗户等是否包含须逐项确认，不代表押金必定退还。"
+    },
+    {
+      "id": "maid2go",
+      "name": "Maid2Go Cleaning",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://maid2gocleaning.com.au/",
+      "contact_url": "https://maid2gocleaning.com.au/",
+      "phone": "02 7256 7367",
+      "coverage": "Sydney；包括Inner West、Burwood、Camperdown和周边",
+      "source_url": "https://maid2gocleaning.com.au/",
+      "checked_on": "2026-10-28",
+      "notes": "提供日常、深度及退租清洁；按房型与项目询价，官网有覆盖区域和线上报价入口。用品、地毯和其他加项以报价包含清单为准。"
+    },
+    {
+      "id": "1800-cleaner",
+      "name": "1800 CLEANER",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://1800cleaner.com.au/",
+      "contact_url": "https://1800cleaner.com.au/contact-1800-cleaner/",
+      "phone": "1800 253 263",
+      "coverage": "Sydney Inner West及Eastern Suburbs；外区需另询",
+      "source_url": "https://1800cleaner.com.au/contact-1800-cleaner/",
+      "checked_on": "2026-10-28",
+      "notes": "住宅清洁、深度清洁、窗户及地毯清洁；官网列出Newtown、Glebe、Camperdown、Burwood和Strathfield等区域。外区可能增加交通费，按卧卫和服务类型询价。"
+    },
+    {
+      "id": "jims-cleaning",
+      "name": "Jim’s Cleaning Group",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://jimscleaning.com.au/",
+      "contact_url": "https://jimscleaning.com.au/local/carpet-cleaning/nsw/sydney/",
+      "phone": "131 546",
+      "coverage": "Sydney及周边；由当地服务分部确认覆盖",
+      "source_url": "https://jimscleaning.com.au/local/carpet-cleaning/nsw/sydney/",
+      "checked_on": "2026-10-28",
+      "notes": "悉尼地毯蒸汽、污渍处理及布艺等专业清洁；住宅和退租整屋清洁需向对应分部另询。明确地毯面积、材质、污渍以及是否需要服务收据后再报价。"
+    },
+    {
+      "id": "call-the-cleaners",
+      "name": "Call The Cleaners",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://callthecleaners.com.au/",
+      "contact_url": "https://callthecleaners.com.au/sydney/",
+      "phone": "0451 550 849",
+      "coverage": "Sydney；Rhodes设点，覆盖Inner West、南区及其他区域",
+      "source_url": "https://callthecleaners.com.au/sydney/",
+      "checked_on": "2026-10-28",
+      "notes": "住宅日常、深度、公寓和退租清洁；官网区域说明含Newtown、Burwood、Redfern等。报价按房屋大小、服务类别和加项确认，空档须另核。"
+    },
+    {
+      "id": "clean-australia",
+      "name": "Clean Australia Service",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://www.cleanaustraliaservice.com.au/",
+      "contact_url": "https://www.cleanaustraliaservice.com.au/",
+      "phone": "1300 034 788",
+      "coverage": "Sydney；Lidcombe、CBD及多处区域，具体地址另核",
+      "source_url": "https://www.cleanaustraliaservice.com.au/",
+      "checked_on": "2026-10-28",
+      "notes": "住宅、公寓、退租、地毯蒸汽和窗户清洁；按房屋状况与项目范围询价。商业与住宅套餐不同，地毯、家具和特殊污渍的项目及费用需单独确认。"
+    }
   ]
 }

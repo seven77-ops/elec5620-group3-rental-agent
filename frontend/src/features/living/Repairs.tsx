@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { Alert, App, Button, Form, Input, Select, Space, Tag } from "antd";
+import { App, Button, Select, Space, Tag } from "antd";
 import type {
   LivingRecord,
   LivingWrite,
   RepairStatus,
   RepairEntry,
-  RepairValues,
 } from "../../api/living";
 import RepairFollowup from "./RepairFollowup";
+import RepairComposer from "./RepairComposer";
 const statusLabels: Record<RepairStatus, string> = {
   prepared: "草稿已准备",
   contacted: "已自行联系",
@@ -34,46 +34,10 @@ export default function Repairs({
     card?.focus({ preventScroll: true });
     card?.scrollIntoView({ behavior: "smooth", block: "center" });
   }, [focusedId, focusVersion]);
-  const [form] = Form.useForm<RepairValues>();
-  const priority = Form.useWatch("priority", form);
   const { modal, message } = App.useApp();
   const [copying, setCopying] = useState<string | null>(null);
   const recipient = (repair: RepairEntry) =>
     repair.email.to || record.profile.agent_email;
-  const prepare = async () => {
-    try {
-      const values = await form.validateFields();
-      modal.confirm({
-        title: "准备这封报修邮件？",
-        content: (
-          <>
-            <p>
-              <strong>{values.title}</strong> ·{" "}
-              {values.location || "未注明位置"}
-            </p>
-            <p className="living-prewrap">{values.description}</p>
-            <p>
-              收件人：
-              {record.profile.agent_email ||
-                "尚未填写，可复制草稿后自行填写收件人"}
-            </p>
-            <p>只保存邮件草稿，之后由你核对并在自己的邮箱中发送。</p>
-          </>
-        ),
-        okText: "确认保存报修草稿",
-        cancelText: "继续编辑",
-        onOk: () =>
-          save(
-            "/repairs",
-            { ...values, location: values.location || "" },
-            record.version,
-            () => form.resetFields(),
-          ).then(() => undefined),
-      });
-    } catch {
-      /* Inline validation. */
-    }
-  };
   return (
     <section className="living-section">
       <div className="living-section-heading">
@@ -81,94 +45,12 @@ export default function Repairs({
           <h2>日常报修</h2>
         </div>
       </div>
-      {!record.profile.agent_email && (
-        <Alert
-          type="info"
-          title="未填写邮箱，可先保存报修草稿或拨打已记录电话；补充邮箱后可在邮件客户端打开。"
-        />
-      )}
-      <Form
-        name="living-repair"
-        form={form}
-        layout="vertical"
-        initialValues={{ priority: "normal" }}
-        disabled={busy}
-        onFinish={() => void prepare()}
-      >
-        <div className="living-form-grid">
-          <Form.Item
-            name="title"
-            label="报修标题"
-            rules={[
-              { required: true, whitespace: true, message: "请填写问题标题" },
-            ]}
-          >
-            <Input aria-label="报修标题" maxLength={200} />
-          </Form.Item>
-          <Form.Item name="location" label="位置">
-            <Input maxLength={200} />
-          </Form.Item>
-        </div>
-        <Form.Item
-          name="description"
-          label="问题描述"
-          rules={[
-            {
-              required: true,
-              whitespace: true,
-              message: "请描述目前观察到的问题",
-            },
-          ]}
-        >
-          <Input.TextArea
-            aria-label="问题描述"
-            rows={3}
-            maxLength={3000}
-            placeholder="发生了什么、何时发现、目前有什么影响"
-          />
-        </Form.Item>
-        <Form.Item name="priority" label="紧急程度">
-          <Select
-            options={[
-              { value: "normal", label: "普通" },
-              { value: "urgent", label: "紧急" },
-            ]}
-          />
-        </Form.Item>
-        {priority === "urgent" && (
-          <Alert
-            type="warning"
-            title="紧急问题请先联系紧急维修负责人；如有人身危险，请立即联系当地紧急救援。"
-            description={
-              <>
-                {record.profile.emergency_phone ? (
-                  <a href={`tel:${record.profile.emergency_phone}`}>
-                    紧急维修电话：{record.profile.emergency_phone}
-                  </a>
-                ) : (
-                  "可以在住处与联系人中保存紧急维修电话。"
-                )}
-                <br />
-                <a
-                  href="https://www.nsw.gov.au/housing-and-construction/rules/urgent-repairs-residential-rental-properties"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  NSW 紧急维修官方指引
-                </a>
-              </>
-            }
-          />
-        )}
-        <Button
-          aria-label="准备报修邮件"
-          type="primary"
-          htmlType="submit"
-          loading={busy}
-        >
-          准备报修邮件
-        </Button>
-      </Form>
+      <RepairComposer
+        key={record.case_id}
+        record={record}
+        busy={busy}
+        save={save}
+      />
       <h3 className="living-list-title">报修记录</h3>
       {!record.repairs.length && <p className="muted">还没有报修记录。</p>}
       <div className="living-record-list">

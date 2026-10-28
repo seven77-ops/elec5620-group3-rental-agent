@@ -20,5 +20,10 @@ def register_assistant_routes(app,services):
     app.post(base+'/proposals/{proposal_id}/apply')(assistant.apply)
     app.post(base+'/conversations/{conversation_id}/lease-proposals/{proposal_id}/apply')(LeaseChatBridge(services).apply)
     workspace=AssistantWorkspace(services)
+    from .recommendation_workspace import RecommendationWorkspace
+    recommendations=RecommendationWorkspace(services)
+    app.post(base+'/recommendation-preview')(recommendations.preview)
+    app.get(base+'/conversations/{conversation_id}/recommendation-context')(recommendations.read)
+    app.post(base+'/conversations/{conversation_id}/recommendation-adjustments')(recommendations.adjust)
     app.post(base+'/conversations/{conversation_id}/proposals')(workspace.prepare)
     app.post(base+'/conversations/{conversation_id}/selections')(workspace.select)

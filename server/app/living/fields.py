@@ -105,7 +105,13 @@ def merge_profile(current, partial):
 
 
 def repair_values(values):
-    shape(values, ('title', 'description', 'location', 'priority'), ('email_tone',))
+    shape(values, ('title', 'description', 'location', 'priority'), ('email_tone','recipient_name','email_draft'))
+    if 'recipient_name' in values:
+        text(values['recipient_name'],200,single_line=True)
+    if 'email_draft' in values:
+        shape(values['email_draft'],('subject','body'))
+        text(values['email_draft']['subject'],200,required=True,single_line=True)
+        text(values['email_draft']['body'],8000,required=True)
     if 'email_tone' in values:
         require(values['email_tone'] in ('standard','polite','concise'), 422, 'invalid_input', '请选择有效的邮件语气。')
     text(values['title'], 200, required=True, single_line=True)

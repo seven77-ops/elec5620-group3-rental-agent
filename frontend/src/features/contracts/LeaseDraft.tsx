@@ -40,6 +40,8 @@ import {
   leaseText,
   missingLeaseFields,
   leaseExtraDefaults,
+  applicableLeaseFields,
+  applicableLeaseValues,
 } from "./leaseFields";
 import LeaseAddressFields, { addressGroups } from "./LeaseAddressFields";
 import { applyLeaseChange, leaseDurations } from "./leaseTerm";
@@ -71,6 +73,7 @@ const sections: { title: string; fields: (keyof LeaseFields)[] }[] = [
       "rent_amount",
       "rent_period",
       "bond",
+      "bond_recipient",
     ],
   },
   {
@@ -83,6 +86,32 @@ const sections: { title: string; fields: (keyof LeaseFields)[] }[] = [
     ],
   },
 ];
+sections.push(
+  {
+    title: "费用与房屋设施",
+    fields: [
+      "water_usage",
+      "electricity_embedded",
+      "gas_embedded",
+      "smoke_alarm_type",
+      "smoke_battery_replaceable",
+      "smoke_battery_type",
+      "smoke_backup_replaceable",
+      "smoke_backup_type",
+      "strata_bylaws",
+      "smoke_strata_responsible",
+    ],
+  },
+  {
+    title: "电子通知送达",
+    fields: [
+      "landlord_email_consent",
+      "landlord_notice_email",
+      "tenant_email_consent",
+      "tenant_notice_email",
+    ],
+  },
+);
 const extra: (keyof LeaseFields)[] = [
   "agent_name",
   "agent_contact",
@@ -95,15 +124,17 @@ const monetary = new Set<keyof LeaseFields>([
 ]);
 function clean(fields: LeaseFields, defaults: LeaseFields): LeaseFields {
   defaults = { ...leaseExtraDefaults, ...defaults };
-  return Object.fromEntries(
-    Object.keys(defaults).map((key) => [
-      key,
-      (key.endsWith("_date") && fields[key as keyof LeaseFields] === ""
-        ? null
-        : fields[key as keyof LeaseFields]) ??
-        (typeof defaults[key as keyof LeaseFields] === "string" ? "" : null),
-    ]),
-  ) as unknown as LeaseFields;
+  return applicableLeaseValues(
+    Object.fromEntries(
+      Object.keys(defaults).map((key) => [
+        key,
+        (key.endsWith("_date") && fields[key as keyof LeaseFields] === ""
+          ? null
+          : fields[key as keyof LeaseFields]) ??
+          (typeof defaults[key as keyof LeaseFields] === "string" ? "" : null),
+      ]),
+    ) as unknown as LeaseFields,
+  );
 }
 export default function LeaseDraft() {
   const { current, go } = useCase();
@@ -220,6 +251,7 @@ export default function LeaseDraft() {
       )
     : saved?.fields;
   const missing = fields ? missingLeaseFields(fields) : [];
+  const required = fields ? applicableLeaseFields(fields) : [];
   const choose = (reference: string) => {
     const [id, v] = reference.split(":");
     const token = generation.current;
@@ -291,12 +323,42 @@ export default function LeaseDraft() {
               ? housingCopy(context.prefill_sources[key]!)
               : undefined
           }
+          requiredFields={required}
           onEdited={() => {
             setDirty(true);
             action.clear();
           }}
         />
       );
+    if (
+      (key === "smoke_battery_replaceable" || key === "smoke_battery_type") &&
+      !["battery", "both"].includes(fields?.smoke_alarm_type ?? "")
+    )
+      return null;
+    if (
+      key === "smoke_battery_type" &&
+      fields?.smoke_battery_replaceable !== "yes"
+    )
+      return null;
+    if (
+      (key === "smoke_backup_replaceable" || key === "smoke_backup_type") &&
+      !["hardwired", "both"].includes(fields?.smoke_alarm_type ?? "")
+    )
+      return null;
+    if (
+      key === "smoke_backup_type" &&
+      fields?.smoke_backup_replaceable !== "yes"
+    )
+      return null;
+    if (key === "smoke_strata_responsible" && fields?.strata_bylaws !== "yes")
+      return null;
+    if (
+      key === "landlord_notice_email" &&
+      fields?.landlord_email_consent !== "yes"
+    )
+      return null;
+    if (key === "tenant_notice_email" && fields?.tenant_email_consent !== "yes")
+      return null;
     if (key === "lease_term_months" && fields?.lease_type !== "fixed")
       return null;
     let input;
@@ -344,6 +406,7 @@ export default function LeaseDraft() {
         key={key}
         name={key}
         label={leaseLabels[key]}
+        required={required.includes(key)}
         getValueProps={
           key === "lease_term_months"
             ? (value) => ({ value: value == null ? "custom" : String(value) })
@@ -528,7 +591,7 @@ export default function LeaseDraft() {
                     : context?.defaults
                 }
                 layout="vertical"
-                requiredMark={false}
+                requiredMark
                 disabled={action.busy || readAction.busy || readOnly}
                 onValuesChange={(changes, values) => {
                   form.setFieldsValue(
@@ -549,7 +612,9 @@ export default function LeaseDraft() {
                   </span>
                 </div>
                 <p className="muted small">
-                  房屋地址取自所选房源。双方接收通知的地址请分别填写，区域、State和邮编可搜索选择，也可手动填写。
+                  带 *
+                  的信息是完整草稿需补齐的项目；暂未确认可以先保存未完成草稿。双方通知地址分别填写，区域、State
+                  和邮编可搜索或手动填写。
                 </p>
                 {context && (
                   <div className="lease-source-note">
@@ -579,10 +644,48 @@ export default function LeaseDraft() {
                   items={[
                     {
                       key: "details",
-                      label: "代理信息（如适用）",
+                      label: "出租方中介（如适用）",
+                      children: (
+                        <>
+                          <p className="muted small">
+                            替出租方出租或管理房屋的中介，填入 PDF 的 Landlord’s
+                            agent。租客自己聘请的代理请填下一栏。
+                          </p>
+                          <div className="lease-fields-grid">
+                            {extra.map(renderField)}
+                          </div>
+                        </>
+                      ),
+                    },
+                    {
+                      key: "tenant-agent",
+                      label: "租客代理（如适用）",
+                      children: (
+                        <>
+                          <p className="muted small">
+                            只有代表租客办理租约的代理才填写，填入 PDF 的
+                            Tenant’s agent；与出租方中介分别记录。
+                          </p>
+                          <div className="lease-fields-grid">
+                            {(
+                              [
+                                "tenant_agent_name",
+                                "tenant_agent_contact",
+                                "tenant_agent_notice_address",
+                              ] as const
+                            ).map(renderField)}
+                          </div>
+                        </>
+                      ),
+                    },
+                    {
+                      key: "corporation",
+                      label: "出租方为公司（如适用）",
                       children: (
                         <div className="lease-fields-grid">
-                          {extra.map(renderField)}
+                          {(
+                            ["corporation_name", "corporation_address"] as const
+                          ).map(renderField)}
                         </div>
                       ),
                     },
@@ -614,7 +717,7 @@ export default function LeaseDraft() {
                     },
                     {
                       key: "repairs",
-                      label: "紧急维修联系人（可选）",
+                      label: "紧急维修联系人（待双方确认）",
                       children: (
                         <div className="lease-fields-grid">
                           {(
@@ -634,7 +737,7 @@ export default function LeaseDraft() {
                 />
                 {missing.length > 0 && (
                   <div className="lease-missing" data-testid="lease-missing">
-                    <strong>还有 {missing.length} 项核心信息待补充</strong>
+                    <strong>完整草稿还有 {missing.length} 项待补充</strong>
                     <p>{missing.map((k) => leaseLabels[k]).join("、")}</p>
                     <span className="muted small">
                       可以先保存未完成草稿；导出的文件会列出这些待确认项。
@@ -676,7 +779,7 @@ export default function LeaseDraft() {
                   </p>
                 )}
                 <p className="muted small">
-                  标准条款保留在官方表单中。紧急维修、账单、送达通知及相关附件仍须由双方完善；生成草稿不会代替对方确认或签字。
+                  标准条款保留在官方表单中。填写内容和相关附件请双方核对；生成草稿不会代替对方确认或签字。
                 </p>
               </Form>
             </>
@@ -718,7 +821,7 @@ export default function LeaseDraft() {
           <Alert
             type="info"
             showIcon
-            title={`还有 ${missingLeaseFields(reviewFields).length} 项核心信息未填写，将标为待确认。`}
+            title={`还有 ${missingLeaseFields(reviewFields).length} 项完整草稿信息未填写，将标为待确认。`}
           />
         )}
         <Checkbox

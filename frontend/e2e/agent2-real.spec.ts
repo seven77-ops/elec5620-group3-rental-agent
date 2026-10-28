@@ -105,17 +105,15 @@ test("confirmed Agent1 profile produces real report and durable provisional sele
   ).toBeVisible();
   await expect(page.getByText("当前偏好 v1 · 候选报告已保存")).toBeVisible();
   await page
-    .getByRole("button", { name: "保存候选", exact: true })
+    .getByRole("button", { name: "选定并跟进", exact: true })
     .first()
     .click();
-  await page.getByRole("button", { name: "确认保存候选", exact: true }).click();
-  await expect(
-    page.getByText("已保存真实房源候选", { exact: true }),
-  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "确认并开始跟进", exact: true })
+    .click();
+  await expect(page.getByText("已选定跟进房源", { exact: true })).toBeVisible();
   await page.reload();
-  await expect(
-    page.getByText("已保存真实房源候选", { exact: true }),
-  ).toBeVisible();
+  await expect(page.getByText("已选定跟进房源", { exact: true })).toBeVisible();
   await expect(page.getByText("当前偏好 v1 · 候选报告已保存")).toBeVisible();
   const saved = await (await request.get(`/api/v1/cases/${c.case_id}`)).json();
   expect(saved.selection.data_mode).toBe("real_listings");

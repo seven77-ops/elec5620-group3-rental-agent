@@ -8,6 +8,7 @@ from . import commute
 from .dialogue import BRIEF_SCHEMA
 from .intents import validate_intent
 from . import preferences_progress
+from .commute_edits import explicit_edit
 
 SCHOOL_REPLY=re.compile(r'(?:usyd|unsw|uts|wsu|悉大|悉尼大学|悉尼科技大学|新南威尔士大学|新南|麦考瑞大学|西悉尼大学|University of Sydney|University of Technology(?: Sydney)?|University of New South Wales|Macquarie University)(?:\s+(?:Camperdown|Darlington|Kensington|Parramatta)(?:\s+campus|校区)?)?',re.I)
 
@@ -32,6 +33,8 @@ def region_continuation(conversation,text):
 
 
 def explicit_transition(conversation,text):
+    edited=explicit_edit(conversation,text)
+    if edited:return edited
     if conversation.get('dialogue_mode')=='recommend_areas' and text.strip()=='保持全部已确认的预算、房型和通勤条件，换一批推荐，优先展示之前没看过的房源。':
         return {'intent':'recommend_areas','refresh_recommendations':True}
     pending=pending_question(conversation)

@@ -23,6 +23,37 @@ def commute_evidence(rows,filters):
                     'estimate':(row.get('usyd_commute') or {}).get('estimates',{}).get(mode)} for row in rows])
 
 
+def require_matching_listing(catalog, listing_id, filters, rows):
+    if any(row['listing_id']==listing_id for row in rows):return
+    row=catalog.get(listing_id)
+    from ..commute.matching import FILTER_KEYS
+    base={k:v for k,v in filters.items() if k not in FILTER_KEYS}
+    require(any(item['listing_id']==listing_id for item in catalog.matching(base)),
+            409,'listing_outside_requirements','这套房源不符合当前预算、区域或户型要求。可先收藏，或调整租房需求后再选定。')
+    if 'usyd_max_minutes' in filters:
+        from ..commute.snapshot import observation
+        from ..commute.estimates import estimate_for
+        from ..commute.usyd import MODE_LABELS
+        mode=filters.get('usyd_mode','public_transport');maximum=filters['usyd_max_minutes']
+        route=observation(row,mode);estimate=estimate_for(row,mode) if not route else None
+        label=MODE_LABELS.get(mode,'通勤')
+        if route and route['duration_minutes']>maximum:
+            raise ApiError(409,'listing_outside_requirements',
+                f"这套房源{label}到悉大参考约 {route['duration_minutes']:g} 分钟，超过你设置的 {maximum} 分钟。可先收藏，或调整通勤上限后再选定。",
+                {'constraint':'commute','minutes':route['duration_minutes'],'maximum_minutes':maximum})
+        if estimate and estimate['upper_minutes']>maximum:
+            raise ApiError(409,'listing_outside_requirements',
+                f"这套房源{label}到悉大参考约 {estimate['lower_minutes']:g}–{estimate['upper_minutes']:g} 分钟，区间上限超过你设置的 {maximum} 分钟。可先收藏，或调整通勤上限后再选定。",
+                {'constraint':'commute','lower_minutes':estimate['lower_minutes'],'upper_minutes':estimate['upper_minutes'],'maximum_minutes':maximum})
+        transfers=filters.get('usyd_max_transfers')
+        if route and transfers is not None and type(route.get('transfers')) is int and route['transfers']>transfers:
+            raise ApiError(409,'listing_outside_requirements',
+                f"这套房源{label}参考路线需换乘 {route['transfers']} 次，超过你设置的 {transfers} 次。可先收藏，或调整换乘要求后再选定。")
+        raise ApiError(409,'listing_outside_requirements',
+            f"这套房源暂缺符合{label} {maximum} 分钟要求的通勤参考。可先收藏，或选择通勤资料符合要求的房源。")
+    raise ApiError(409,'listing_outside_requirements','这套房源不在当前筛选结果中，请核对租房需求后再选定。')
+
+
 class RealProfilesAdapter(ProfilesAdapter):
     validate_profile = staticmethod(validate_real_profile)
 
@@ -135,9 +166,9 @@ class RealProfilesAdapter(ProfilesAdapter):
             if 'usyd_max_minutes' in filters:
                 from ..commute.matching import matching_for_case
                 current_rows=matching_for_case(self.ctx,case_id,filters,db=db)
-                require(commute_evidence(current_rows,filters)==run['response']['report'].get('commute_evidence_fingerprint') and
-                    any(row['listing_id']==body['listing_id'] for row in current_rows),
+                require(commute_evidence(current_rows,filters)==run['response']['report'].get('commute_evidence_fingerprint'),
                     409,'stale_evaluation','到校路线已更新或过期，请按当前通勤要求重新生成候选。')
+                require_matching_listing(self.ctx.settings.catalog,body['listing_id'],filters,current_rows)
             listing = next((r for r in run['dataset']['listings'] if r['listing_id']==body['listing_id']),None)
             require(listing is not None,409,'listing_not_in_run','只能选择本次真实筛选结果内的房源。')
             selection = {'schema_version':'real-1.0','data_mode':'real_listings','listing_id':body['listing_id'],

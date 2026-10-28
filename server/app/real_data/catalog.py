@@ -95,7 +95,7 @@ class RealCatalog:
 
     def filters(self, values):
         require(isinstance(values, dict) and not set(values) - set(FILTER_FIELDS), 422, 'invalid_filters', '房源筛选字段无效。')
-        result = {k:v for k,v in values.items() if v is not None}
+        result = {k:v for k,v in values.items() if v is not None and k not in ('usyd_arrival_time','usyd_travel_day','usyd_travel_date')}
         if 'suburb' in result:
             require(isinstance(result['suburb'], str) and result['suburb'] in self.suburbs, 422, 'invalid_filters', '请选择房源库中的区域。')
         for key in ('min_bedrooms', 'min_bathrooms', 'min_car_spaces'):

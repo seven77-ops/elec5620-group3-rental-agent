@@ -130,7 +130,7 @@ export default function CandidateFollowup({
       >
         <div className="candidate-next-copy">
           <span className="muted small">
-            {compact ? "当前候选" : "已保存真实房源候选"}
+            {compact ? "当前跟进房源" : "已选定跟进房源"}
           </span>
           <strong>
             {String(selection.listing_snapshot.address ?? selection.listing_id)}
@@ -160,6 +160,15 @@ export default function CandidateFollowup({
             生成租约草稿
           </Button>
           <Button
+            aria-label="记录中介回复"
+            onClick={() => {
+              action.clear();
+              setOpen(true);
+            }}
+          >
+            记录中介回复
+          </Button>
+          <Button
             disabled={!isCurrent}
             onClick={() => go("contract?mode=review")}
             aria-label="已有合同，开始复核"
@@ -172,7 +181,7 @@ export default function CandidateFollowup({
           <Alert
             type="warning"
             showIcon
-            title="历史候选 · 需求已变化，请重新选择后继续。"
+            title="历史跟进房源 · 需求已变化，请重新选定后继续。"
           />
         )}
       </section>
@@ -248,7 +257,11 @@ export default function CandidateFollowup({
           </Button>
         )}
         {!isCurrent && (
-          <Alert type="warning" showIcon title="这是历史候选，当前只能查看。" />
+          <Alert
+            type="warning"
+            showIcon
+            title="这是历史跟进房源，当前只能查看。"
+          />
         )}
         <Form
           form={form}

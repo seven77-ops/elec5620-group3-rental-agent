@@ -128,6 +128,20 @@ export interface AssistantAction {
   summary?: string[];
 }
 export interface AssistantMessage {
+  recommendation_criteria?: RentalBrief;
+  recommendation_filters?: import("./catalog").HousingFilters;
+  recommendation_catalog_fingerprint?: string;
+  recommendation_alternatives?: RecommendationAlternative[];
+  recommendation_change?: {
+    before_count: number;
+    after_count: number;
+    changes: {
+      field: string;
+      label: string;
+      before: unknown;
+      after: unknown;
+    }[];
+  };
   transit_information?: {
     topic: "nearby" | "alerts";
     listing_id: string;
@@ -207,6 +221,64 @@ export interface AssistantTurn {
 }
 const root = (caseId: string) =>
   `/cases/${encodeURIComponent(caseId)}/assistant`;
+export type RecommendationPatch = Partial<
+  Pick<
+    RentalBrief,
+    | "budget_amount"
+    | "suburb"
+    | "min_bedrooms"
+    | "min_bathrooms"
+    | "min_car_spaces"
+    | "commute_mode"
+    | "commute_max_minutes"
+    | "max_transfers"
+  >
+>;
+export interface RecommendationAlternative {
+  id: string;
+  label: string;
+  count: number;
+  additional_count: number;
+  patch: RecommendationPatch;
+}
+export interface RecommendationContext {
+  criteria: RentalBrief;
+  filters: import("./catalog").HousingFilters;
+  total: number;
+  alternatives: RecommendationAlternative[];
+  catalog_fingerprint: string;
+  revision: number;
+  suburbs: string[];
+}
+export const getRecommendationContext = (
+  caseId: string,
+  conversationId: string,
+) =>
+  api<RecommendationContext | null>(
+    `${root(caseId)}/conversations/${encodeURIComponent(conversationId)}/recommendation-context`,
+    undefined,
+    { allowNull: true },
+  );
+export const adjustRecommendation = (
+  caseId: string,
+  conversationId: string,
+  body: {
+    request_id: string;
+    expected_revision: number;
+    expected_profile_fingerprint: string;
+    catalog_fingerprint: string;
+    confirmed: true;
+    patch: RecommendationPatch;
+  },
+) =>
+  api<Conversation>(
+    `${root(caseId)}/conversations/${encodeURIComponent(conversationId)}/recommendation-adjustments`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    },
+  );
 const conversations = (caseId: string) => `${root(caseId)}/conversations`;
 function assistantPost<T>(path: string, body: unknown) {
   return api<T>(
@@ -285,10 +357,23 @@ export const prepareAssistantNeeds = (
     summary: string[];
     conversation: Conversation;
   }>(`${conversations(caseId)}/${encodeURIComponent(id)}/proposals`, body);
+export const saveAssistantNeeds = (
+  caseId: string,
+  id: string,
+  body: WorkspaceRequest & { brief: RentalBrief; confirmed: true },
+) =>
+  assistantPost<{ case: CaseState; conversation: Conversation }>(
+    `${conversations(caseId)}/${encodeURIComponent(id)}/requirements`,
+    body,
+  );
 export const selectAssistantListing = (
   caseId: string,
   id: string,
-  body: WorkspaceRequest & { listing_id: string; confirmed: true },
+  body: WorkspaceRequest & {
+    listing_id: string;
+    confirmed: true;
+    allow_external_data?: boolean;
+  },
 ) =>
   assistantPost<{ case: CaseState; conversation: Conversation }>(
     `${conversations(caseId)}/${encodeURIComponent(id)}/selections`,
