@@ -21,7 +21,7 @@ class CliTests(unittest.TestCase):
             result = self.command("review", "--agreement", AGREEMENT, "--consent", "--selection", PACKET,
                                   "--as-of", "2026-10-15", "--output", first)
             self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertEqual(json.loads(Path(str(first) + ".json").read_text())["status"], "Awaiting Human Review")
+            self.assertEqual(json.loads(Path(str(first) + ".json").read_text(encoding='utf-8'))["status"], "Awaiting Human Review")
             blocked = self.command("questions", "--review", str(first) + ".json", "--output", second)
             self.assertEqual(blocked.returncode, 2)
             approved = self.command("decide", "--review", str(first) + ".json", "--decision", "approve",
@@ -29,8 +29,8 @@ class CliTests(unittest.TestCase):
             self.assertEqual(approved.returncode, 0, approved.stderr)
             questions = self.command("questions", "--review", str(second) + ".json", "--output", third)
             self.assertEqual(questions.returncode, 0, questions.stderr)
-            self.assertEqual(json.loads(Path(str(third) + ".json").read_text())["status"], "Questions Ready")
-            packet = json.loads(Path(str(third) + ".questions.json").read_text())
+            self.assertEqual(json.loads(Path(str(third) + ".json").read_text(encoding='utf-8'))["status"], "Questions Ready")
+            packet = json.loads(Path(str(third) + ".questions.json").read_text(encoding='utf-8'))
             self.assertEqual(packet["recipient"], "Tenant")
             self.assertEqual(packet["handoff_status"], "prepared_not_sent")
 
@@ -56,7 +56,7 @@ class CliTests(unittest.TestCase):
                       "--as-of", "2026-10-15", "--store", directory / "receipts.sqlite3")
             first = self.command(*common, "--output", prefix)
             self.assertEqual(first.returncode, 0, first.stderr)
-            original = json.loads(Path(str(prefix) + ".json").read_text())
+            original = json.loads(Path(str(prefix) + ".json").read_text(encoding='utf-8'))
             self.assertEqual(original["intake"]["listing_id"], "DEMO-006")
             self.assertEqual(original["intake"]["document_sha256"], original["document"]["sha256"])
             replay = self.command(*common, "--output", prefix)
@@ -64,7 +64,7 @@ class CliTests(unittest.TestCase):
             self.assertIn("duplicate request", replay.stdout)
             another_export = self.command(*common, "--output", second)
             self.assertEqual(another_export.returncode, 0, another_export.stderr)
-            self.assertEqual(json.loads(Path(str(second) + ".json").read_text()), original)
+            self.assertEqual(json.loads(Path(str(second) + ".json").read_text(encoding='utf-8')), original)
             changed = list(common)
             changed[2] = AGREEMENT
             conflict = self.command(*changed, "--output", directory / "conflict")

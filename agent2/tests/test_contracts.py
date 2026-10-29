@@ -21,20 +21,20 @@ class ContractTests(unittest.TestCase):
 
     def test_schemas_are_valid_and_self_contained(self):
         for name in ['rental-profile', 'recommendation-report', 'selected-listing-evidence']:
-            schema = json.loads((ROOT / f'schemas/{name}.schema.json').read_text())
+            schema = json.loads((ROOT / f'schemas/{name}.schema.json').read_text(encoding='utf-8'))
             Draft202012Validator.check_schema(schema)
             self.assertNotIn('https://example', json.dumps(schema))
 
     def test_saved_contract_examples_validate(self):
         for name in ['commute', 'budget', 'housing']:
-            self.validate('RentalProfile', json.loads((ROOT / f'data/demo/profiles/{name}.json').read_text()))
+            self.validate('RentalProfile', json.loads((ROOT / f'data/demo/profiles/{name}.json').read_text(encoding='utf-8')))
         for name in ['commute', 'budget', 'housing', 'comparison', 'selection']:
-            self.validate('RecommendationReport', json.loads((ROOT / f'reports/{name}.json').read_text()))
-        packet = json.loads((ROOT / 'reports/selection.selection.json').read_text())
+            self.validate('RecommendationReport', json.loads((ROOT / f'reports/{name}.json').read_text(encoding='utf-8')))
+        packet = json.loads((ROOT / 'reports/selection.selection.json').read_text(encoding='utf-8'))
         self.validate('SelectedListingEvidence', packet)
         from rental_agent.handoff import build_selected_listing_evidence
-        report = json.loads((ROOT / 'reports/selection.json').read_text())
-        data = json.loads((ROOT / 'data/demo/listings.json').read_text())
+        report = json.loads((ROOT / 'reports/selection.json').read_text(encoding='utf-8'))
+        data = json.loads((ROOT / 'data/demo/listings.json').read_text(encoding='utf-8'))
         self.assertEqual(packet, build_selected_listing_evidence(report, data, packet['listing_id'],
                          selected_at=packet['selected_at'], user_confirmed=True))
 
@@ -157,7 +157,7 @@ class HandoffTests(unittest.TestCase):
             self.assertFalse(Path(prefix + '.json').exists())
             done = subprocess.run(args + ['--selected-at', '2026-09-17T10:00:00+10:00'], cwd=ROOT, capture_output=True, text=True)
             self.assertEqual(done.returncode, 0, done.stderr)
-            result = json.loads(Path(prefix + '.selection.json').read_text())
+            result = json.loads(Path(prefix + '.selection.json').read_text(encoding='utf-8'))
             self.validate('SelectedListingEvidence', result)
 
 

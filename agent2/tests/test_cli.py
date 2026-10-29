@@ -46,9 +46,9 @@ class ReportTests(unittest.TestCase):
         self.assertEqual(html.unescape(safe(original)), original)
 
     def test_compare_changes_and_input_not_mutated(self):
-        data = json.loads((ROOT / 'data/demo/listings.json').read_text())
-        p = json.loads((ROOT / 'data/demo/profiles/commute.json').read_text())
-        q = json.loads((ROOT / 'data/demo/profiles/budget.json').read_text())
+        data = json.loads((ROOT / 'data/demo/listings.json').read_text(encoding='utf-8'))
+        p = json.loads((ROOT / 'data/demo/profiles/commute.json').read_text(encoding='utf-8'))
+        q = json.loads((ROOT / 'data/demo/profiles/budget.json').read_text(encoding='utf-8'))
         before, after = evaluate(p, data), evaluate(q, data)
         original = copy.deepcopy(before)
         comparison = self.compare(before, after)
@@ -97,17 +97,17 @@ class ReportTests(unittest.TestCase):
         self.assertEqual(comparison['rows'][0]['after_status'], 'pending')
 
     def test_saved_examples_match_current_code(self):
-        data = json.loads((ROOT / 'data/demo/listings.json').read_text())
+        data = json.loads((ROOT / 'data/demo/listings.json').read_text(encoding='utf-8'))
         expected = {}
         for name in ['commute', 'budget', 'housing']:
-            p = json.loads((ROOT / f'data/demo/profiles/{name}.json').read_text())
+            p = json.loads((ROOT / f'data/demo/profiles/{name}.json').read_text(encoding='utf-8'))
             expected[name] = evaluate(p, data)
         expected['comparison'] = copy.deepcopy(expected['budget'])
         expected['comparison']['comparison'] = self.compare(expected['commute'], expected['budget'])
         for name, report in expected.items():
             with self.subTest(name=name):
-                self.assertEqual(json.loads((ROOT / f'reports/{name}.json').read_text()), report)
-                self.assertEqual((ROOT / f'reports/{name}.md').read_text(), self.render(report))
+                self.assertEqual(json.loads((ROOT / f'reports/{name}.json').read_text(encoding='utf-8')), report)
+                self.assertEqual((ROOT / f'reports/{name}.md').read_text(encoding='utf-8'), self.render(report))
 
 
 class CLITests(unittest.TestCase):
@@ -125,7 +125,7 @@ class CLITests(unittest.TestCase):
             first = self.command(*args)
             self.assertEqual(first.returncode, 0, first.stderr)
             saved = Path(prefix + '.md').read_bytes()
-            report = json.loads(Path(prefix + '.json').read_text())
+            report = json.loads(Path(prefix + '.json').read_text(encoding='utf-8'))
             self.assertEqual(len(report['recommendations']), 5)
             self.assertEqual(sum(report['counts'][k] for k in ['eligible', 'pending', 'excluded', 'duplicates']), 30)
             second = self.command(*args)
@@ -138,7 +138,7 @@ class CLITests(unittest.TestCase):
             result = self.command('--profile', 'data/demo/profiles/commute.json', '--listings', 'data/demo/listings.json',
                                   '--compare-profile', 'data/demo/profiles/budget.json', '--output', prefix)
             self.assertEqual(result.returncode, 0, result.stderr)
-            report = json.loads(Path(prefix + '.json').read_text())
+            report = json.loads(Path(prefix + '.json').read_text(encoding='utf-8'))
             self.assertIn('comparison', report)
             self.assertNotEqual(report['comparison']['before_weights'], report['comparison']['after_weights'])
 
@@ -155,7 +155,7 @@ class CLITests(unittest.TestCase):
     def test_duplicate_json_keys_rejected(self):
         with tempfile.TemporaryDirectory() as temp:
             invalid = Path(temp) / 'invalid.json'
-            invalid.write_text('{"schema_version":"1.0", "schema_version":"2.0"}')
+            invalid.write_text('{"schema_version":"1.0", "schema_version":"2.0"}', encoding='utf-8')
             result = self.command('--profile', str(invalid), '--listings', 'data/demo/listings.json', '--output', str(Path(temp) / 'result'))
             self.assertNotEqual(result.returncode, 0)
             self.assertIn('重复', result.stderr)

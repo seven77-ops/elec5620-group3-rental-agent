@@ -276,11 +276,11 @@ class EngineTests(unittest.TestCase):
     def test_demo_fixtures_and_profile_ranking_change(self):
         path = ROOT / 'data/demo/listings.json'
         self.assertTrue(path.exists(), '模拟数据尚未提供')
-        data = json.loads(path.read_text())
+        data = json.loads(path.read_text(encoding='utf-8'))
         self.assertEqual(len(data['listings']), 30)
         reports = []
         for name in ['commute', 'budget', 'housing']:
-            p = json.loads((ROOT / f'data/demo/profiles/{name}.json').read_text())
+            p = json.loads((ROOT / f'data/demo/profiles/{name}.json').read_text(encoding='utf-8'))
             reports.append(self.evaluate(p, data))
         self.assertEqual(len(reports[0]['recommendations']), 5)
         self.assertNotEqual([r['listing_id'] for r in reports[0]['recommendations']],
