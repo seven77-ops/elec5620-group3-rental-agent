@@ -13,7 +13,7 @@ def numeric(value, minimum, maximum):
 
 class MarketData:
     def __init__(self, path=None):
-        self.data = json.loads(Path(path or ROOT / 'agent2/data/market/nsw-usyd-2026.json').read_text())
+        self.data = json.loads(Path(path or ROOT / 'agent2/data/market/nsw-usyd-2026.json').read_text(encoding='utf-8'))
 
     def coverage(self):
         return {key: deepcopy(self.data[key]) for key in ('postcodes', 'bedrooms', 'dwelling_type', 'rent_scope')}

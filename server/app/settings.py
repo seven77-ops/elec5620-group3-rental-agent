@@ -26,7 +26,7 @@ class Settings:
         self.template = load('integration/agent1-to-agent2/confirmed-profile.json')
         self.templates, self.fixture_clocks = {}, {}
         for path in sorted((ROOT / 'agent4/data/demo/requests').glob('*.json')):
-            command = json.loads(path.read_text())
+            command = json.loads(path.read_text(encoding='utf-8'))
             self.templates.setdefault(command['operation'], command['payload'])
             self.fixture_clocks.setdefault(command['operation'], command['as_of'])
         for operation in ('create', 'revise_tenancy'):

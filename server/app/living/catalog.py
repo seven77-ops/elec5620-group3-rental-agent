@@ -9,7 +9,7 @@ CATEGORIES = {'electricity', 'gas', 'internet', 'water', 'cleaner', 'removalist'
 
 class ProviderCatalog:
     def __init__(self, value=None):
-        value = json.loads(Path(__file__).with_name('providers.json').read_text()) if value is None else value
+        value = json.loads(Path(__file__).with_name('providers.json').read_text(encoding='utf-8')) if value is None else value
         if not isinstance(value, dict) or not isinstance(value.get('providers'), list) or not isinstance(value.get('checked_on'), str):
             raise ValueError('Invalid living-provider directory')
         seen = set()

@@ -1,0 +1,9 @@
+# Keep hashed data byte-identical on Windows checkouts (core.autocrlf).
+* text=auto
+*.json text eol=lf
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.sqlite3 binary

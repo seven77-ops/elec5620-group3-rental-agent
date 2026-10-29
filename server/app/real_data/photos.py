@@ -8,7 +8,7 @@ def load_photos(path, listings):
     if not path.exists():
         return {}
     try:
-        document = json.loads(path.read_text())
+        document = json.loads(path.read_text(encoding='utf-8'))
         if document['schema_version'] != 1 or not isinstance(document['listings'], list):
             raise ValueError('Invalid photo sidecar')
         result = {}

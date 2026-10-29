@@ -47,7 +47,7 @@ YES_NO_MAP={'water_usage':'Check Box 4.8','electricity_embedded':'Check Box 4.9'
 
 
 def template_metadata():
-    meta=json.loads(MANIFEST.read_text())
+    meta=json.loads(MANIFEST.read_text(encoding='utf-8'))
     require(sha256(TEMPLATE.read_bytes()).hexdigest()==meta['sha256'],503,'template_changed','官方租约模板完整性检查失败。')
     return meta
 

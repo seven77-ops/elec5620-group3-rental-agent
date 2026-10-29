@@ -6,7 +6,8 @@ from urllib.request import urlopen
 ROOT=Path(__file__).resolve().parents[1]
 def start(environment):
     if environment.get('RENTAL_TFNSW_MCP_ENABLED','1').lower() not in ('1','true'):return None
-    python=ROOT/'.runtime/tfnsw-mcp/.venv/bin/python'
+    venv=ROOT/'.runtime/tfnsw-mcp/.venv'
+    python=venv/('Scripts/python.exe' if os.name=='nt' else 'bin/python')
     if not python.is_file() or not environment.get('TFNSW_API_KEY'):return None
     port=int(environment.get('RENTAL_TFNSW_MCP_PORT','6401'))
     if not 1<=port<=65535:raise ValueError('Invalid transit MCP port')
@@ -21,7 +22,7 @@ def start(environment):
     child_env={k:v for k,v in os.environ.items() if k in ('PATH','LANG','LC_ALL','SYSTEMROOT')}
     child_env.update(HOST='127.0.0.1',PORT=str(port),PYTHONUNBUFFERED='1')
     directory=ROOT/'.runtime/tfnsw-mcp';directory.mkdir(parents=True,exist_ok=True)
-    with (directory/'server.log').open('a') as log:
+    with (directory/'server.log').open('a',encoding='utf-8') as log:
         child=subprocess.Popen([str(python),'-m','tfnsw_trip_planner_mcp'],cwd=ROOT/'integrations/tfnsw_mcp/upstream',env=child_env,stdout=log,stderr=log)
     deadline=time.monotonic()+8
     while time.monotonic()<deadline and child.poll() is None:

@@ -38,7 +38,7 @@ def location_points(catalog):
     path=catalog.path.with_name('locations.json')
     if not path.is_file():return {}
     try:
-        data=json.loads(path.read_text())
+        data=json.loads(path.read_text(encoding='utf-8'))
         age=(datetime.now(timezone.utc)-datetime.fromisoformat(data['queried_at'].replace('Z','+00:00'))).total_seconds()
         if data.get('catalog_fingerprint')!=catalog.fingerprint or not 0<=age<=90*86400:return {}
         return data['points'] if isinstance(data.get('points'),dict) else {}

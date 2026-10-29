@@ -18,7 +18,7 @@ FILTER_FIELDS = ('usyd_arrival_time','usyd_travel_day','usyd_travel_date','usyd_
 class RealCatalog:
     def __init__(self, path=None, photos_path=None):
         self.path = Path(path) if path is not None else ROOT / 'agent2/data/real/listings.json'
-        rows = json.loads(self.path.read_text())
+        rows = json.loads(self.path.read_text(encoding='utf-8'))
         if not isinstance(rows, list) or not rows:
             raise ValueError('Real listing catalogue must be a nonempty array')
         identifiers, urls, addresses = set(), set(), set()

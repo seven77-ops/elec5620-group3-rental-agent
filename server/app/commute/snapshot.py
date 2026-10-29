@@ -17,7 +17,7 @@ def load_snapshot(catalog,path=None):
     path=Path(path) if path else catalog.path.with_name('usyd-commutes.json')
     if not path.is_file():return None
     try:
-        data=json.loads(path.read_text())
+        data=json.loads(path.read_text(encoding='utf-8'))
         if data.get('schema_version')!='1.0' or data.get('catalog_fingerprint')!=catalog.fingerprint or data.get('campus_fingerprint')!=CAMPUS_FINGERPRINT or data.get('destination')!=DESTINATION:return None
         age=(datetime.now(timezone.utc)-datetime.fromisoformat(data['generated_at'].replace('Z','+00:00'))).total_seconds()
         if not 0<=age<=30*86400:return None

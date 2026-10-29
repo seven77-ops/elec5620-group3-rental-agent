@@ -1,6 +1,7 @@
 """Start the local-only API and Vite together. Ctrl+C stops both children."""
 from pathlib import Path
 import os
+import shutil
 import argparse
 import secrets
 import signal
@@ -25,13 +26,15 @@ def main():
     runtime.mkdir(exist_ok=True)
     environment = load_ai_env(ROOT / '.env', os.environ)
     environment['RENTAL_DEV_API_PORT'] = str(ports.api_port)
+    # Windows defaults to a locale code page (e.g. GBK); data files are UTF-8.
+    environment.setdefault('PYTHONUTF8', '1')
     if not environment.get('RENTAL_OPERATOR_KEY'):
         key_path = runtime / 'operator-key.txt'
         if not key_path.exists():
             descriptor = os.open(key_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
             with os.fdopen(descriptor, 'w') as stream:
                 stream.write(secrets.token_urlsafe(32))
-        environment['RENTAL_OPERATOR_KEY'] = key_path.read_text().strip()
+        environment['RENTAL_OPERATOR_KEY'] = key_path.read_text(encoding='utf-8').strip()
         print(f'Local operator key file: {key_path}', flush=True)
     children = []
     def stop(*_):
@@ -45,7 +48,9 @@ def main():
         required=[]
         children.append(subprocess.Popen([sys.executable, '-m', 'uvicorn', 'server.app.main:app', '--host', '127.0.0.1', '--port', str(ports.api_port)], cwd=ROOT, env=environment))
         required.append(children[-1])
-        children.append(subprocess.Popen(['npm', 'run', 'dev', '--', '--port', str(ports.web_port)], cwd=ROOT / 'frontend', env=environment))
+        # On Windows npm is npm.cmd, which CreateProcess cannot find by bare name.
+        npm = shutil.which('npm', path=environment.get('PATH')) or 'npm'
+        children.append(subprocess.Popen([npm, 'run', 'dev', '--', '--port', str(ports.web_port)], cwd=ROOT / 'frontend', env=environment))
         required.append(children[-1])
         print(f'Open http://127.0.0.1:{ports.web_port} · API http://127.0.0.1:{ports.api_port}/docs', flush=True)
         while all(child.poll() is None for child in required):

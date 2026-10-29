@@ -62,7 +62,7 @@ def valid_seed(seed):
 class UtilityPlanCatalog:
     def __init__(self,database,seed_path=None):
         self.database=Path(database).resolve();self.database.parent.mkdir(parents=True,exist_ok=True)
-        seed=valid_seed(json.loads(Path(seed_path or SEED).read_text()))
+        seed=valid_seed(json.loads(Path(seed_path or SEED).read_text(encoding='utf-8')))
         body=json.dumps(seed,sort_keys=True,ensure_ascii=False,allow_nan=False)
         self.fingerprint=hashlib.sha256(body.encode()).hexdigest();self.checked_on=seed['checked_on'];self.freshness_days=seed.get('freshness_days',30)
         with closing(sqlite3.connect(self.database,timeout=30)) as db, db:

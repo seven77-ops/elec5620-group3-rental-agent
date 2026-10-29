@@ -24,7 +24,7 @@ def uid(prefix):
 
 
 def load(relative):
-    return json.loads((ROOT / relative).read_text())
+    return json.loads((ROOT / relative).read_text(encoding='utf-8'))
 
 
 def shape(body, required, optional=()):
