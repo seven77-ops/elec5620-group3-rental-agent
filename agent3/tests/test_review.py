@@ -87,6 +87,13 @@ class ReviewTests(unittest.TestCase):
         self.assertEqual(result["status"], "Awaiting Human Review")
         self.assertIn("address_difference", {f["code"] for f in result["findings"]})
 
+    def test_recheck_extends_rule_pack_window_from_latest_check(self):
+        from contract_agent.rules import rule_pack_current
+        self.assertTrue(rule_pack_current("2026-11-20"))
+        self.assertTrue(rule_pack_current("2026-11-28"))
+        self.assertFalse(rule_pack_current("2026-11-29"))
+        self.assertFalse(rule_pack_current("2026-10-14"))
+
     def test_stale_rule_pack_suspends_conclusions(self):
         result = review_agreement(load_document(AGREEMENTS / "risk-demo.txt", consent=True), consent=True,
                                   as_of="2027-01-01", selection=PACKET)

@@ -9,6 +9,9 @@ import unicodedata
 RULE_PACK = {
     "version": "NSW-reference-2026-10-15",
     "verified_on": "2026-10-15",
+    # Re-checked against source_url on 2026-10-29: the page (last updated 19 May 2025) still
+    # states a bond of "no more than 4 weeks rent"; the rules are unchanged, so the version is kept.
+    "rechecked_on": "2026-10-29",
     "max_age_days": 30,
     "source_url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/starting-a-residential-tenancy/signing-a-lease-and-moving",
 }
@@ -16,8 +19,9 @@ RULE_PACK = {
 
 def rule_pack_current(as_of: str, rule_pack: dict = RULE_PACK) -> bool:
     checked = date.fromisoformat(rule_pack["verified_on"])
+    latest = date.fromisoformat(rule_pack.get("rechecked_on") or rule_pack["verified_on"])
     today = date.fromisoformat(as_of)
-    return checked <= today <= checked + timedelta(days=rule_pack["max_age_days"])
+    return checked <= today <= latest + timedelta(days=rule_pack["max_age_days"])
 
 
 def _normalized(value):
