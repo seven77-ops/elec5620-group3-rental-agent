@@ -151,8 +151,12 @@ def generate_questions(previous: dict, edits: list[dict] | None = None) -> dict:
     if previous.get("status") not in {"Reviewed", "Questions Ready"}:
         raise ContractError("Questions require a Reviewed contract version")
     review = deepcopy(previous)
-    questions = [{"finding_id": f["id"], "review_version": review["version"],
-                  "text": f"Could you clarify: {f['title']}? {f['reason']}",
+    def text(finding):
+        if finding["code"] == "additional_term_review" and finding["evidence"]:
+            return ("Could you explain what this additional term requires of the tenant, and whether it can be changed: "
+                    f"\"{finding['evidence'][0]['quote']}\"?")
+        return f"Could you clarify: {finding['title']}? {finding['reason']}"
+    questions = [{"finding_id": f["id"], "review_version": review["version"], "text": text(f),
                   "evidence": deepcopy(f["evidence"])} for f in review["findings"]]
     if edits is not None:
         if not isinstance(edits, list) or {e.get("finding_id") for e in edits if isinstance(e, dict)} != {q["finding_id"] for q in questions} or len(edits) != len(questions):

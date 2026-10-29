@@ -244,8 +244,16 @@ class BoundaryTests(unittest.TestCase):
 
 
     def test_empty_question_packet_is_prepared_not_sent(self):
-        result,_,_=self.review()
-        review=result['review']; rid=review['review_id']
+        # Without its special condition the normal agreement has no findings, so no questions.
+        self.selected()
+        consent=self.post(f'cases/{self.cid}/contract-consents',{'confirmed':True}).json()
+        data=b'\n'.join(line for line in self.client.get('/api/v1/demo-agreements/normal').content.splitlines()
+                        if not line.startswith(b'Special condition'))
+        response=self.client.post(f'/api/v1/cases/{self.cid}/contract-reviews',content=data,headers={
+            'X-Consent-Id':consent['consent_id'],'X-Request-Id':'upload-1','X-Filename':'agreement.txt',
+            'Content-Type':'application/octet-stream'})
+        self.assertEqual(response.status_code,200,response.text)
+        review=response.json()['review']; rid=review['review_id']
         generated=self.post(f'contract-reviews/{rid}/questions',{'expected_version':1})
         self.assertEqual(generated.status_code,200,generated.text)
         self.assertEqual(generated.json()['questions'],[])
