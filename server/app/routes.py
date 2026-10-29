@@ -74,6 +74,10 @@ def register_routes(app, services):
     app.post('/api/v1/aftercare/commands')(aftercare.aftercare_command)
     app.get('/api/v1/aftercare/cases/{aftercare_id}')(aftercare.read_aftercare)
     app.get('/api/v1/aftercare/cases/{aftercare_id}/export')(aftercare.export_aftercare)
+    from .adapters.aftercare_assist import AftercareAssist
+    assist = AftercareAssist(services)
+    app.get('/api/v1/cases/{case_id}/aftercare/tenancy-prefill')(assist.tenancy_prefill)
+    app.post('/api/v1/cases/{case_id}/aftercare/deduction-extract')(assist.extract_deductions)
 
     from .living.service import LivingService
     living = LivingService(services)

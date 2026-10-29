@@ -74,7 +74,7 @@ def install_error_handlers(app, services):
     @app.exception_handler(AftercareError)
     async def aftercare_failure(request, exc):
         code = exc.code
-        status = 403 if code == 'access_denied' else 404 if code == 'not_found' else 503 if code == 'storage_error' else 422 if code == 'invalid_input' else 409
+        status = 403 if code == 'access_denied' else 404 if code == 'not_found' else 503 if code in ('storage_error', 'model_unavailable')             else 502 if code == 'model_invalid' else 422 if code in ('invalid_input', 'consent_required') else 409
         return failure(request, status, code, str(exc))
 
     @app.exception_handler(ContractError)

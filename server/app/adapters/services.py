@@ -25,7 +25,10 @@ class Services:
         from ..living.utility_catalog import UtilityPlanCatalog
         self.utility_plans = UtilityPlanCatalog(self.repo.directory / 'utility_catalog.sqlite3')
         self.preferences = Agent1Bridge(self.repo, real=settings.catalog is not None)
-        self.aftercare = AftercareAgent(self.repo.directory / 'aftercare.sqlite3', operator_ids={OPERATOR}, gateway=None)
+        from .aftercare_assist import AftercareAssist
+        # Agent 4's constrained draft mode uses the shared provider; it may only select catalogue statements.
+        self.aftercare = AftercareAgent(self.repo.directory / 'aftercare.sqlite3', operator_ids={OPERATOR},
+                                        gateway=AftercareAssist(self).gateway)
 
     def safe_message(self, message):
         repo = self.repo
