@@ -320,6 +320,8 @@ class AssistantService:
                 if receipt and receipt.get('token')==token:
                     receipt['status']='failed'; self.ctx.repo.put(db,'assistant_turn_receipt',key,receipt)
             if isinstance(exc,ProviderError):
+                if exc.code in ('ai_disabled','ai_not_configured'):
+                    raise ApiError(503,exc.code,'AI 对话未启用：可以直接使用“我的租房需求”表单和各页面功能；配置 AI 后再使用对话。') from None
                 raise ApiError(503,exc.code,'AI 服务暂时不可用，请重试；已保存的对话保留。') from None
             raise
 

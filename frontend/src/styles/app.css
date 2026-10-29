@@ -2085,3 +2085,19 @@ li {
 .aftercare-evidence-card small {
   color: #718096;
 }
+
+/* Aftercare: prefill and AI helper blocks, readable lists, multi-claim rows. */
+.aftercare-prefill,
+.aftercare-ai {
+  margin-block: 12px;
+}
+.plain-list {
+  margin: 4px 0 8px;
+  padding-inline-start: 20px;
+}
+.plain-list li {
+  margin-block: 2px;
+}
+.claim-row {
+  align-items: flex-end;
+}

@@ -5,12 +5,13 @@ import { api, newRequestId, post } from "../api/client";
 import type { AftercareCase, Dict, Review } from "../api/types";
 import {
   Failure,
-  JsonDetails,
+  money,
   PageTitle,
   Status,
   text,
 } from "../components/Common";
 import { useAction } from "../components/useAction";
+import { sydneyTime } from "./aftercare/presentation";
 export default function Operator() {
   const { current, refresh } = useCase();
   const [key, setKey] = useState("");
@@ -171,7 +172,13 @@ export default function Operator() {
                 <div key={i}>
                   <h3>{text(f.title)}</h3>
                   <p>{text(f.reason)}</p>
-                  <JsonDetails value={f.evidence} />
+                  <ul className="plain-list">
+                    {((f.evidence as Dict[] | undefined) ?? []).map((e, j) => (
+                      <li key={j} className="small">
+                        第{text(e.page)}页第{text(e.line)}行：「{text(e.quote)}」
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               ))}
               <Space wrap>
@@ -203,7 +210,60 @@ export default function Operator() {
           m4reviews.map((r, i) => (
             <article className="detail-row" key={i}>
               <strong>{text(r.reason)}</strong>
-              <JsonDetails value={r} />
+              <p className="small muted">
+                提交于 {sydneyTime(r.created_at)} · 引用：
+                {((r.source_refs as string[]) ?? []).join("、") || "无"}
+              </p>
+              {(() => {
+                const bond = (record?.bond ?? null) as Dict | null;
+                const refs = new Set((r.source_refs as string[]) ?? []);
+                const claims = ((bond?.claims ?? []) as Dict[]).filter((c) =>
+                  refs.has(`claim:${c.claim_id}`),
+                );
+                const history = ((bond?.history ?? []) as Dict[]).slice(-3);
+                const evidence = (record?.evidence ?? []) as Dict[];
+                return (
+                  <>
+                    {claims.map((c) => (
+                      <p key={String(c.claim_id)}>
+                        对方主张：{money(Number(c.amount_cents) / 100)} ·{" "}
+                        {text(c.reason)} · {c.disputed ? "租客有争议" : "未标记争议"}
+                      </p>
+                    ))}
+                    {history.length > 0 && (
+                      <>
+                        <h4>最近的事实记录</h4>
+                        <ul className="plain-list">
+                          {history.map((h) => (
+                            <li key={String(h.entry_id)} className="small">
+                              {sydneyTime(h.occurred_at, false)}：{text(h.text)}
+                            </li>
+                          ))}
+                        </ul>
+                      </>
+                    )}
+                    <p className="small">
+                      已登记证据：
+                      {evidence.length
+                        ? evidence
+                            .map((e) => String(e.summary ?? e.evidence_id))
+                            .join("；")
+                        : "无（可请租客补充照片、收据或检查报告）"}
+                    </p>
+                    {((r.decisions as Dict[]) ?? []).map((d, j) => (
+                      <p className="small" key={j}>
+                        已记录：{text(d.decision)} · {text(d.note)}（
+                        {sydneyTime(d.at)}）
+                      </p>
+                    ))}
+                  </>
+                );
+              })()}
+              <p className="muted small">
+                可在核对记录中说明后续途径，例如与对方协商、通过 Rental Bonds
+                Online 处理退款申请，或向 NSW Fair Trading / NCAT
+                了解争议处理；这些仅为一般信息，不构成法律意见，由租客自行决定。
+              </p>
               <Button
                 disabled={!key}
                 loading={action.busy}

@@ -13,11 +13,11 @@ import {
 } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { useCase } from "../app/context";
-import { api } from "../api/client";
-import type { Dict, Review } from "../api/types";
-import { Failure, JsonDetails } from "../components/Common";
+import type { Dict } from "../api/types";
+import { Failure, JsonDetails, money } from "../components/Common";
 import { useAction } from "../components/useAction";
 import { CommandRecovery, type CommandRecoveryProps } from "./AftercarePlan";
+import { useTenancyPrefill } from "./aftercare/prefill";
 export default function TenancyForm({
   create,
   busy,
@@ -69,18 +69,19 @@ export default function TenancyForm({
   const rooms = Form.useWatch("rooms", form) as
     { id: string; name: string }[] | undefined;
   const capabilities = config.capabilities as Dict;
-  const prefill = () => {
-    const id = current.reviews.at(-1)?.review_id;
-    if (!id) return;
-    void action.run(async () => {
-      const r = await api<Review>(`/contract-reviews/${id}`);
-      form.setFieldsValue({
-        address: r.fields.address?.value,
-        source_ref: `review:${r.review_id}@${r.version}#fields.address`,
-        source_version: r.version,
-      });
-      setConfirmed(false);
+  const prefill = useTenancyPrefill(current.case_id, current.reviews.length);
+  const prefilled = prefill?.values ?? {};
+  const applyPrefill = () => {
+    if (!prefill) return;
+    const furnished = prefilled.furnished?.value;
+    form.setFieldsValue({
+      ...(prefilled.address ? { address: prefilled.address.value } : {}),
+      ...(prefill.source_ref ? { source_ref: prefill.source_ref } : {}),
+      ...(real && typeof furnished === "boolean"
+        ? { furnished: furnished ? "yes" : "no" }
+        : {}),
     });
+    setConfirmed(false);
   };
   const submit = async () => {
     try {
@@ -141,14 +142,61 @@ export default function TenancyForm({
       />
       <Failure error={action.error} retry={action.retry} />
       {recovery && <CommandRecovery {...recovery} />}
-      {!tenancy && current.reviews.length > 0 && (
-        <Button
-          onClick={prefill}
-          loading={action.busy}
-          aria-label="从最近合同复核预填地址与来源"
-        >
-          从最近合同复核预填地址与来源
-        </Button>
+      {!tenancy && prefilled.address && (
+        <Alert
+          className="aftercare-prefill"
+          type="success"
+          showIcon
+          title="可以从已有资料带入（仍需你核对确认）"
+          description={
+            <>
+              <ul className="plain-list">
+                {(
+                  [
+                    ["address", "地址"],
+                    ["start_date", "起租日期"],
+                    ["move_out_date", "租约结束日期（可作为退租日期）"],
+                    ["bond_amount", "押金"],
+                    ["furnished", "带家具"],
+                  ] as const
+                ).map(([key, label]) => {
+                  const item = prefilled[key];
+                  if (!item) return null;
+                  const shown =
+                    key === "bond_amount"
+                      ? money(Number(item.value))
+                      : typeof item.value === "boolean"
+                        ? item.value
+                          ? "是"
+                          : "否"
+                        : String(item.value);
+                  return (
+                    <li key={key}>
+                      {label}：<strong>{shown}</strong>
+                      <span className="muted small">
+                        {" "}
+                        · {item.label}
+                        {item.quote ? `「${item.quote}」` : ""}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+              {prefill?.warnings.map((w) => (
+                <p className="muted small" key={w}>
+                  {w}
+                </p>
+              ))}
+              <Button
+                onClick={applyPrefill}
+                disabled={busy || disabled}
+                aria-label="带入已有资料"
+              >
+                带入地址与来源
+              </Button>
+            </>
+          }
+        />
       )}
       <Form
         form={form}

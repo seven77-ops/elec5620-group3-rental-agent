@@ -14,6 +14,8 @@ from ..common import require, shape
 SYDNEY = ZoneInfo('Australia/Sydney')
 MAX_MESSAGE = 8000
 MAX_CLAIMS = 10
+REVIEW_STATUS = {'Awaiting Human Review': '等待人工复核', 'Awaiting Resubmission': '需要重新提交',
+                 'Degraded Summary Only': '仅有限摘要', 'Questions Ready': '问题清单已准备'}
 EXTRACT_SCHEMA = {'type': 'object', 'additionalProperties': False, 'required': ['claims', 'event_date', 'event_date_quote'],
     'properties': {'claims': {'type': 'array', 'maxItems': MAX_CLAIMS, 'items': {'type': 'object', 'additionalProperties': False,
         'required': ['amount', 'reason', 'quote'], 'properties': {'amount': {'type': 'number'}, 'reason': {'type': 'string'},
@@ -99,7 +101,8 @@ class AftercareAssist:
                 if found:
                     values[name] = found
             if review['status'] != 'Reviewed':
-                warnings.append(f"合同复核状态为“{review['status']}”，带入内容仅供核对，不代表合同已确认或已签署。")
+                status = REVIEW_STATUS.get(review['status'], review['status'])
+                warnings.append(f"合同复核状态为“{status}”，带入内容仅供核对，不代表合同已确认或已签署。")
         if listing.get('address'):
             listed = {'value': listing['address'], 'source': 'selected_listing', 'label': '已选房源广告快照'}
             if 'address' not in values:

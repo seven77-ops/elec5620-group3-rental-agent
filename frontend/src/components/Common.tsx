@@ -125,6 +125,15 @@ const statusNames: Record<string, string> = {
   open: "待处理",
   cancelled: "已取消",
   todo: "待完成",
+  Active: "进行中",
+  Cancelled: "已取消",
+  scheduled: "待提醒",
+  delivered: "已提醒",
+  suppressed: "已停止",
+  released: "已放行",
+  closed_by_tenant: "租客已结案",
+  current: "当前草稿",
+  superseded: "已过期",
 };
 export function Status({ value }: { value: string }) {
   const color = /Reviewed|Questions Ready|Resolved|eligible|pass|done/.test(

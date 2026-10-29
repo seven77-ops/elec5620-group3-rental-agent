@@ -34,7 +34,20 @@ import {
   missingTenancyDetails,
   tenancySource,
   evidenceKind,
+  sydneyIso,
+  sydneyTime,
+  sydneyToday,
+  taskTitle,
 } from "./aftercare/presentation";
+import { useTenancyPrefill } from "./aftercare/prefill";
+
+const decisionNames: Record<string, string> = {
+  annotate: "备注",
+  return: "退回补充",
+  hold: "暂缓",
+  refer: "转介",
+  release: "放行",
+};
 export default function Aftercare({
   embedded = false,
   initialTab = "plan",
@@ -55,6 +68,9 @@ export default function Aftercare({
   const [refreshing, setRefreshing] = useState(false);
   const [pendingOperation, setPendingOperation] = useState("");
   const [evidenceForm] = Form.useForm();
+  const prefill = useTenancyPrefill(current.case_id, current.reviews.length);
+  const [followDate, setFollowDate] = useState("");
+  const [followTime, setFollowTime] = useState("10:00");
   const activeRef = useRef(false);
   activeRef.current = action.busy || refreshing || Boolean(action.error);
   const load = useCallback(async () => {
@@ -112,6 +128,8 @@ export default function Aftercare({
   pollRef.current = send;
   useEffect(() => {
     if (!record?.reminders_enabled) return;
+    // Show anything that fell due while the page was closed, then keep checking.
+    if (!activeRef.current) void pollRef.current("poll_reminders", {});
     const timer = window.setInterval(() => {
       if (document.visibilityState === "visible" && !activeRef.current)
         pollRef.current("poll_reminders", {});
@@ -148,6 +166,14 @@ export default function Aftercare({
   const evidence = (record?.evidence ?? []) as Dict[];
   const reviews = (record?.reviews ?? []) as Dict[];
   const reminders = (record?.reminders ?? []) as Dict[];
+  const bondState = String((record?.bond as Dict | null)?.state ?? "");
+  const bondActive = ["AwaitingOutcome", "UnderReview"].includes(bondState);
+  const savedFollowUp = bondActive
+    ? ((record?.bond as Dict).follow_up_at as string | null)
+    : null;
+  // A follow-up time already in the past cannot be re-saved; keep only future ones.
+  const keptFollowUp =
+    savedFollowUp && new Date(savedFollowUp) > new Date() ? savedFollowUp : null;
   const tenancyEditable = Boolean(
     record &&
     (!record.plan || record.plan.state === "Draft") &&
@@ -294,9 +320,17 @@ export default function Aftercare({
                 label: "退租计划与任务",
                 children: (
                   <AftercarePlan
+                    key={
+                      record.plan
+                        ? "plan"
+                        : String(prefill?.values.move_out_date?.value ?? "")
+                    }
                     initialDate={
                       config.mode === "real_listings"
                         ? initialMoveOutDate ||
+                          (prefill?.values.move_out_date?.value as
+                            | string
+                            | undefined) ||
                           config.clocks.aftercare.slice(0, 10)
                         : undefined
                     }
@@ -338,6 +372,7 @@ export default function Aftercare({
                         : null,
                     }}
                     clock={String(record.updated_at ?? config.clocks.aftercare)}
+                    bondAmount={prefill?.values.bond_amount}
                   />
                 ),
               },
@@ -360,7 +395,7 @@ export default function Aftercare({
                         onChange={(enabled) =>
                           send("reminder_preferences", {
                             enabled,
-                            follow_up_at: null,
+                            follow_up_at: enabled ? keptFollowUp : null,
                           })
                         }
                       />
@@ -376,6 +411,49 @@ export default function Aftercare({
                         查询到期提醒
                       </Button>
                     </Space>
+                    <h3>押金跟进提醒</h3>
+                    {bondActive ? (
+                      <>
+                        <p className="muted small">
+                          当前提醒时间：
+                          {savedFollowUp
+                            ? sydneyTime(savedFollowUp)
+                            : "尚未设置"}
+                          。由你选择日期，系统不会自行推算法定期限。
+                        </p>
+                        <Space wrap>
+                          <Input
+                            type="date"
+                            aria-label="押金跟进提醒日期"
+                            min={sydneyToday()}
+                            value={followDate}
+                            onChange={(e) => setFollowDate(e.target.value)}
+                          />
+                          <Input
+                            type="time"
+                            aria-label="押金跟进提醒时间"
+                            value={followTime}
+                            onChange={(e) => setFollowTime(e.target.value)}
+                          />
+                          <Button
+                            disabled={!followDate || !followTime}
+                            loading={action.busy}
+                            onClick={() =>
+                              send("reminder_preferences", {
+                                enabled: true,
+                                follow_up_at: sydneyIso(followDate, followTime),
+                              })
+                            }
+                          >
+                            保存提醒时间（悉尼时间）
+                          </Button>
+                        </Space>
+                      </>
+                    ) : (
+                      <p className="muted small">
+                        押金跟进激活后，可以选择一个查看押金状态的提醒时间。
+                      </p>
+                    )}
                     <h3>本地收件箱</h3>
                     {reminders.filter((r) => r.state === "delivered").length ===
                     0 ? (
@@ -385,9 +463,9 @@ export default function Aftercare({
                         .filter((r) => r.state === "delivered")
                         .map((r, i) => (
                           <div className="detail-row" key={i}>
-                            <strong>{text(r.title)}</strong>
-                            <p>{text(r.due_at)}</p>
-                            <small>{text(r.delivered_at)}</small>
+                            <strong>{taskTitle(r.title)}</strong>
+                            <p>到期：{sydneyTime(r.due_at)}</p>
+                            <small>提醒于 {sydneyTime(r.delivered_at)}</small>
                           </div>
                         ))
                     )}
@@ -399,10 +477,10 @@ export default function Aftercare({
                           label: "查看计划中及已抑制的提醒",
                           children: reminders.map((r, i) => (
                             <div className="detail-row" key={i}>
-                              <strong>{text(r.title)}</strong>
+                              <strong>{taskTitle(r.title)}</strong>
                               <p>
-                                到期：{text(r.due_at)} · 原始状态：
-                                {text(r.state)}
+                                到期：{sydneyTime(r.due_at)} ·{" "}
+                                <Status value={String(r.state)} />
                               </p>
                             </div>
                           )),
@@ -428,8 +506,16 @@ export default function Aftercare({
                         <div className="detail-row" key={i}>
                           <Status value={String(r.status)} />
                           <strong>{text(r.reason)}</strong>
-                          <p>引用：{text(r.source_refs)}</p>
-                          <JsonDetails value={r.decisions} />
+                          <p className="small">
+                            提交于 {sydneyTime(r.created_at)}
+                          </p>
+                          {((r.decisions as Dict[]) ?? []).map((d, j) => (
+                            <p className="small" key={j}>
+                              {decisionNames[String(d.decision)] ??
+                                text(d.decision)}
+                              ：{text(d.note)}（{sydneyTime(d.at)}）
+                            </p>
+                          ))}
                         </div>
                       ))
                     )}

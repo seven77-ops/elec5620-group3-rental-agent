@@ -78,10 +78,13 @@ const commuteModeLabels: Record<string, string> = {
   bike: "骑行",
   walk: "步行",
 };
+// AI switched off is not transient: retrying can never succeed, so it must not lock the forms.
 const isInputError = (error: unknown) =>
   error instanceof ApiError &&
   (error.status === 422 ||
     error.code === "http_422" ||
+    error.code === "ai_disabled" ||
+    error.code === "ai_not_configured" ||
     (error.code.startsWith("invalid_") && error.code !== "invalid_response"));
 
 const suggestions = [

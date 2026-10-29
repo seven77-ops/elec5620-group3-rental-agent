@@ -4,6 +4,7 @@ import {
   App,
   Button,
   Checkbox,
+  Collapse,
   Form,
   Input,
   InputNumber,
@@ -12,66 +13,138 @@ import {
   Space,
   Timeline,
 } from "antd";
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { useCase } from "../app/context";
+import { post } from "../api/client";
 import type { Dict } from "../api/types";
 import {
   CommandRecovery,
   type CommandRecoveryProps,
   type SendCommand,
 } from "./AftercarePlan";
-import { JsonDetails, money, Status, text } from "../components/Common";
+import { Failure, money, Status, text } from "../components/Common";
+import { useAction } from "../components/useAction";
 import AftercareBondDetails from "./AftercareBondDetails";
+import type { PrefillValue } from "./aftercare/prefill";
+import { sydneyIso, sydneyTime, sydneyToday } from "./aftercare/presentation";
+
+interface ExtractedClaim {
+  amount: number;
+  amount_cents: number;
+  reason: string;
+  quote: string;
+}
+interface Extraction {
+  claims: ExtractedClaim[];
+  rejected: number;
+  event_date: string | null;
+  event_date_quote: string | null;
+  notice: string;
+}
+
+const draftModes: Record<string, string> = {
+  template: "事实模板",
+  constrained_model: "AI 选择要点 · 程序逐句校验",
+};
+
 export default function AftercareBond({
   bond,
   evidence,
   send,
   busy,
-  clock,
   recovery,
+  bondAmount,
 }: {
   bond: Dict | null;
   evidence: Dict[];
   send: SendCommand;
   busy: boolean;
-  clock: string;
+  clock?: string;
   recovery: CommandRecoveryProps;
+  bondAmount?: PrefillValue;
 }) {
-  const { config } = useCase();
+  const { config, current } = useCase();
   const real = config.mode === "real_listings";
+  const aiEnabled = Boolean((config.capabilities as Dict).external_ai);
   const [bondRef, setBondRef] = useState(real ? "" : "SYNTHETIC-RBO-001");
   const [update, setUpdate] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [form] = Form.useForm();
   const [outcome, setOutcome] = useState("");
-  const { modal } = App.useApp();
+  const [agentMessage, setAgentMessage] = useState("");
+  const [aiConsent, setAiConsent] = useState(false);
+  const [extraction, setExtraction] = useState<Extraction | null>(null);
+  const extract = useAction();
+  const { modal, message } = App.useApp();
   const state = String(bond?.state ?? "");
   const history = (bond?.history ?? []) as Dict[];
   const claims = (bond?.claims ?? []) as Dict[];
   const drafts = (bond?.drafts ?? []) as Dict[];
+  const today = sydneyToday();
+  const openUpdate = () => {
+    form.resetFields();
+    form.setFieldsValue({
+      occurred_on: today,
+      claims: [],
+      conflicting_evidence: false,
+    });
+    setExtraction(null);
+    setAgentMessage("");
+    setAiConsent(false);
+    extract.clear();
+    setUpdate(true);
+  };
+  const readDeductions = () =>
+    extract.run(async () => {
+      const result = await post<Extraction>(
+        `/cases/${encodeURIComponent(current.case_id)}/aftercare/deduction-extract`,
+        { allow_external_ai: true, message: agentMessage },
+      );
+      setExtraction(result);
+      const existing = (form.getFieldValue("claims") ?? []) as Dict[];
+      form.setFieldsValue({
+        claims: [
+          ...existing,
+          ...result.claims.map((c) => ({
+            amount: c.amount,
+            reason: c.reason,
+            disputed: false,
+            quote: c.quote,
+          })),
+        ],
+        ...(result.event_date ? { occurred_on: result.event_date } : {}),
+        ...(!form.getFieldValue("text")
+          ? {
+              text: `收到中介/房东关于押金扣款的通知（${result.claims.length} 项）。`,
+            }
+          : {}),
+      });
+    });
   const submitUpdate = async () => {
     try {
       const v = await form.validateFields();
-      const claim = v.has_claim
-        ? [
-            {
-              claim_id: `claim-${crypto.randomUUID()}`,
-              amount_cents: v.amount_cents,
-              reason: v.reason,
-              evidence_refs: v.evidence_refs ?? [],
-              disputed: Boolean(v.disputed),
-            },
-          ]
-        : [];
+      const entryClaims = ((v.claims ?? []) as Dict[]).map((c) => ({
+        claim_id: `claim-${crypto.randomUUID()}`,
+        amount_cents: Math.round(Number(c.amount) * 100),
+        reason: String(c.reason).trim(),
+        evidence_refs: v.evidence_refs ?? [],
+        disputed: Boolean(c.disputed),
+      }));
+      // Today keeps the current time (a minute back for clock drift); earlier days use midday Sydney.
+      const occurred =
+        v.occurred_on && v.occurred_on < today
+          ? sydneyIso(v.occurred_on, "12:00")
+          : new Date(Date.now() - 60_000).toISOString();
       const saved = await send(
         state === "Draft" ? "activate_bond" : "bond_update",
         {
           entry: {
             text: v.text,
-            occurred_at: clock,
+            occurred_at: occurred,
             evidence_refs: v.evidence_refs ?? [],
             tenant_confirmed: true,
-            claims: claim,
-            conflicting_evidence: false,
+            claims: entryClaims,
+            conflicting_evidence: Boolean(v.conflicting_evidence),
           },
         },
       );
@@ -80,6 +153,7 @@ export default function AftercareBond({
       /* Inline errors. */
     }
   };
+  const currentDraft = drafts.filter((d) => d.status === "current").at(-1);
   return (
     <section className="panel">
       <div className="section-heading">
@@ -89,6 +163,15 @@ export default function AftercareBond({
       <p className="muted">
         记录租客报告的事实和扣款主张。记录扣款不表示你已接受，跟进草稿也不会自动发送。
       </p>
+      {bondAmount && (
+        <Alert
+          className="aftercare-prefill"
+          type="info"
+          showIcon
+          title={`合同中记录的押金：${money(Number(bondAmount.value))}`}
+          description={`来源：${bondAmount.label}${bondAmount.quote ? `「${bondAmount.quote}」` : ""}。押金编号与实际金额请以 Rental Bonds Online 记录为准。`}
+        />
+      )}
       {!bond ? (
         <div className="date-actions">
           <label htmlFor="bond-reference">
@@ -142,7 +225,7 @@ export default function AftercareBond({
               type="warning"
               showIcon
               title="存在争议或审核门禁"
-              description="需要授权操作员处理。租客仍可记录事实或明确确认结果；普通页面不能放行。"
+              description="已转交人工审核。放行前不会生成跟进草稿；你仍可记录新事实，或明确确认结果。"
             />
           )}
           <Space wrap className="section-actions">
@@ -150,10 +233,7 @@ export default function AftercareBond({
               type="primary"
               disabled={["Resolved", "Withdrawn"].includes(state)}
               loading={busy}
-              onClick={() => {
-                form.resetFields();
-                setUpdate(true);
-              }}
+              onClick={openUpdate}
               aria-label={
                 state === "Draft"
                   ? "确认事实并激活跟进"
@@ -175,8 +255,31 @@ export default function AftercareBond({
               }
               aria-label="准备跟进草稿"
             >
-              准备跟进草稿
+              准备事实草稿
             </Button>
+            {aiEnabled && (
+              <Button
+                disabled={state !== "AwaitingOutcome"}
+                loading={busy}
+                onClick={() =>
+                  modal.confirm({
+                    title: "使用 AI 选择草稿要点？",
+                    content:
+                      "将把已登记的事实句目录发送至配置的 AI。AI 只能从目录中挑选句子编号，程序会核对必选事实和引用；不会生成新的事实，也不会发送邮件。",
+                    okText: "同意并生成",
+                    cancelText: "取消",
+                    onOk: () =>
+                      send("request_draft", {
+                        use_model: true,
+                        allow_external_ai: true,
+                      }),
+                  })
+                }
+                aria-label="AI 辅助准备草稿"
+              >
+                AI 辅助准备草稿
+              </Button>
+            )}
           </Space>
           <h3>事实时间线</h3>
           {history.length ? (
@@ -184,7 +287,7 @@ export default function AftercareBond({
               items={history.map((h) => ({
                 content: (
                   <>
-                    <strong>{text(h.occurred_at)}</strong>
+                    <strong>{sydneyTime(h.occurred_at, false)}</strong>
                     <p>{text(h.text)}</p>
                     <small>
                       证据引用：
@@ -192,6 +295,9 @@ export default function AftercareBond({
                         ((h.evidence_refs as string[]) ?? []).join("、") ||
                           "无",
                       )}
+                      {h.conflicting_evidence ? " · 已标记证据冲突" : ""}
+                      {" · 登记于 "}
+                      {sydneyTime(h.recorded_at)}
                     </small>
                   </>
                 ),
@@ -202,7 +308,7 @@ export default function AftercareBond({
           )}
           {claims.length > 0 && (
             <>
-              <h3>报告的扣款主张 · reported_claim</h3>
+              <h3>报告的扣款主张（仅为对方主张，不代表扣款成立）</h3>
               {claims.map((c, i) => (
                 <div key={i} className="detail-row">
                   <strong>{money(Number(c.amount_cents) / 100)}</strong>
@@ -220,19 +326,51 @@ export default function AftercareBond({
               ))}
             </>
           )}
-          {drafts.length > 0 && (
+          {currentDraft && (
             <>
               <h3>跟进草稿 · 尚未发送</h3>
-              {drafts.map((d, i) => (
-                <article className="draft-block" key={i}>
-                  <Status value={String(d.status)} />
-                  <p className="source-quote">{text(d.text)}</p>
-                  <small>
-                    依据版本 {text(d.based_on_version)} · 需租客复核
-                  </small>
-                </article>
-              ))}
+              <article className="draft-block">
+                <Space wrap>
+                  <Status value={String(currentDraft.status)} />
+                  <span className="muted small">
+                    {draftModes[String(currentDraft.mode)] ??
+                      text(currentDraft.mode)}{" "}
+                    · 依据案件版本 {text(currentDraft.based_on_version)} ·
+                    需租客复核
+                  </span>
+                </Space>
+                <p className="source-quote">{text(currentDraft.text)}</p>
+                <Button
+                  size="small"
+                  onClick={() =>
+                    void navigator.clipboard
+                      .writeText(String(currentDraft.text))
+                      .then(() => message.success("已复制，可粘贴到你自己的邮箱。"))
+                  }
+                >
+                  复制草稿
+                </Button>
+              </article>
             </>
+          )}
+          {drafts.length > (currentDraft ? 1 : 0) && (
+            <Collapse
+              ghost
+              items={[
+                {
+                  key: "old",
+                  label: `查看较早或已过期的草稿（${drafts.length - (currentDraft ? 1 : 0)}）`,
+                  children: drafts
+                    .filter((d) => d !== currentDraft)
+                    .map((d, i) => (
+                      <article className="draft-block" key={i}>
+                        <Status value={String(d.status)} />
+                        <p className="source-quote">{text(d.text)}</p>
+                      </article>
+                    )),
+                },
+              ]}
+            />
           )}
           {!["Resolved", "Withdrawn"].includes(state) && (
             <div className="closure-box">
@@ -291,7 +429,16 @@ export default function AftercareBond({
               </Space>
             </div>
           )}
-          {bond.outcome && <JsonDetails value={bond.outcome} />}
+          {Boolean(bond.outcome) && (
+            <Alert
+              type={state === "Resolved" ? "success" : "info"}
+              showIcon
+              title={state === "Resolved" ? "你已确认押金结果" : "你已撤回跟进"}
+              description={`${text(
+                (bond.outcome as Dict).outcome ?? (bond.outcome as Dict).reason,
+              )} · 登记于 ${sydneyTime((bond.outcome as Dict).recorded_at)}`}
+            />
+          )}
         </>
       )}
       {detailsOpen && bond && (
@@ -309,6 +456,7 @@ export default function AftercareBond({
           state === "Draft" ? "确认事实并激活跟进" : "记录新事实或扣款主张"
         }
         open={update}
+        width={720}
         onCancel={() => {
           if (busy || recovery.refreshing) return;
           if (recovery.error) recovery.abandon();
@@ -317,7 +465,7 @@ export default function AftercareBond({
         confirmLoading={busy}
         okButtonProps={{
           "aria-label": "确认并记录",
-          disabled: recovery.refreshing,
+          disabled: recovery.refreshing || extract.busy,
         }}
         cancelButtonProps={{ disabled: busy || recovery.refreshing }}
         closable={!busy && !recovery.refreshing}
@@ -338,18 +486,84 @@ export default function AftercareBond({
           当前已保存跟进状态：
           <Status value={state} />
         </p>
-        <details>
-          <summary>查看当前已保存事实与扣款主张</summary>
-          <JsonDetails value={{ history, claims }} />
-        </details>
+        {aiEnabled ? (
+          <Collapse
+            className="aftercare-ai"
+            items={[
+              {
+                key: "ai",
+                label: "可选：用 AI 从中介/房东原文读取扣款主张",
+                children: (
+                  <>
+                    <Input.TextArea
+                      aria-label="中介或房东原文"
+                      rows={4}
+                      maxLength={8000}
+                      value={agentMessage}
+                      placeholder="粘贴中介或房东的邮件/短信原文"
+                      onChange={(e) => setAgentMessage(e.target.value)}
+                    />
+                    <Checkbox
+                      checked={aiConsent}
+                      onChange={(e) => setAiConsent(e.target.checked)}
+                    >
+                      我同意只把这段原文发送至配置的 AI；原文不会保存到案件。
+                    </Checkbox>
+                    <div>
+                      <Button
+                        disabled={!aiConsent || !agentMessage.trim()}
+                        loading={extract.busy}
+                        onClick={() => void readDeductions()}
+                      >
+                        读取扣款主张
+                      </Button>
+                    </div>
+                    <Failure error={extract.error} retry={extract.retry} />
+                    {extraction && (
+                      <Alert
+                        type={extraction.claims.length ? "success" : "warning"}
+                        showIcon
+                        title={
+                          extraction.claims.length
+                            ? `已带入 ${extraction.claims.length} 项候选主张，请逐项核对金额和原因`
+                            : "没有读到可核对的扣款金额，请手动填写"
+                        }
+                        description={
+                          <>
+                            <p className="small">{extraction.notice}</p>
+                            {extraction.rejected > 0 && (
+                              <p className="small">
+                                另有 {extraction.rejected}{" "}
+                                项因金额或引文与原文不符被程序丢弃。
+                              </p>
+                            )}
+                            {extraction.event_date && (
+                              <p className="small">
+                                事实日期取自原文「{extraction.event_date_quote}」
+                              </p>
+                            )}
+                          </>
+                        }
+                      />
+                    )}
+                  </>
+                ),
+              },
+            ]}
+          />
+        ) : (
+          <p className="muted small">
+            配置 AI 后，可以粘贴中介原文自动读取扣款主张；现在请手动填写。
+          </p>
+        )}
         <Form
           disabled={busy || recovery.refreshing}
           form={form}
           layout="vertical"
           initialValues={{
-            has_claim: false,
-            disputed: true,
-            amount_cents: 18000,
+            occurred_on: today,
+            claims: [],
+            conflicting_evidence: false,
           }}
         >
           <Form.Item
@@ -359,49 +573,78 @@ export default function AftercareBond({
           >
             <Input.TextArea rows={3} />
           </Form.Item>
+          <Form.Item
+            name="occurred_on"
+            label="事实发生日期（悉尼时间）"
+            rules={[
+              { required: true, message: "选择日期" },
+              {
+                validator: (_, value) =>
+                  !value || value <= today
+                    ? Promise.resolve()
+                    : Promise.reject(new Error("不能选择未来日期")),
+              },
+            ]}
+          >
+            <Input type="date" max={today} />
+          </Form.Item>
           <Form.Item name="evidence_refs" label="关联证据">
             <Select
               mode="multiple"
               options={evidence.map((e) => ({
                 value: String(e.evidence_id),
-                label: String(e.evidence_id),
+                label: `${e.summary ?? e.evidence_id}`,
               }))}
             />
           </Form.Item>
-          <Form.Item name="has_claim" valuePropName="checked">
-            <Checkbox>包含一项报告的扣款主张</Checkbox>
-          </Form.Item>
-          <Form.Item
-            noStyle
-            shouldUpdate={(a, b) => a.has_claim !== b.has_claim}
-          >
-            {({ getFieldValue }) =>
-              getFieldValue("has_claim") ? (
-                <>
-                  <Form.Item
-                    name="amount_cents"
-                    label="主张金额（AUD 整数分，18000 = AUD 180）"
-                    rules={[{ required: true }]}
-                  >
-                    <InputNumber min={0} precision={0} />
-                  </Form.Item>
-                  <Form.Item
-                    name="reason"
-                    label="报告的扣款原因"
-                    rules={[{ required: true }]}
-                  >
-                    <Input />
-                  </Form.Item>
-                  <Form.Item name="disputed" valuePropName="checked">
-                    <Checkbox>租客对该主张有争议</Checkbox>
-                  </Form.Item>
-                </>
-              ) : null
-            }
+          <h4>对方报告的扣款主张</h4>
+          <Form.List name="claims">
+            {(fields, { add, remove }) => (
+              <>
+                {fields.map((f) => (
+                  <div className="list-form-row claim-row" key={f.key}>
+                    <Form.Item
+                      name={[f.name, "amount"]}
+                      label="金额（AUD）"
+                      rules={[{ required: true, message: "填写金额" }]}
+                    >
+                      <InputNumber min={0.01} max={100000} precision={2} />
+                    </Form.Item>
+                    <Form.Item
+                      name={[f.name, "reason"]}
+                      label="对方说明的原因"
+                      rules={[{ required: true, message: "填写原因" }]}
+                    >
+                      <Input maxLength={300} />
+                    </Form.Item>
+                    <Form.Item
+                      name={[f.name, "disputed"]}
+                      valuePropName="checked"
+                      label="是否有争议"
+                    >
+                      <Checkbox>我对此有争议</Checkbox>
+                    </Form.Item>
+                    <Button
+                      aria-label="移除此扣款主张"
+                      icon={<MinusCircleOutlined />}
+                      onClick={() => remove(f.name)}
+                    />
+                  </div>
+                ))}
+                <Button
+                  icon={<PlusOutlined aria-hidden="true" />}
+                  onClick={() => add({ amount: null, reason: "", disputed: false })}
+                >
+                  添加扣款主张
+                </Button>
+              </>
+            )}
+          </Form.List>
+          <Form.Item name="conflicting_evidence" valuePropName="checked">
+            <Checkbox>现有证据互相矛盾（例如入住报告与照片不一致），需要人工核对</Checkbox>
           </Form.Item>
           <p className="muted small">
-            记录时间由服务器演示时钟处理，事实时间：{clock}
-            。点击确认表示你确认这条报告，不表示接受扣款。
+            有争议的扣款或证据冲突会转交人工审核。点击确认表示你确认这条报告，不表示接受扣款。
           </p>
         </Form>
       </Modal>

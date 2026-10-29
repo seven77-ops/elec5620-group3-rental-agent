@@ -10,6 +10,7 @@ import {
 import type { ReactNode } from "react";
 import { Button, Drawer, Layout, Menu, Space } from "antd";
 import {
+  AuditOutlined,
   CheckSquareOutlined,
   FileTextOutlined,
   FormOutlined,
@@ -78,6 +79,12 @@ const nav = [
     key: "aftercare",
     label: "租后服务",
     icon: <CheckSquareOutlined aria-hidden="true" />,
+  },
+  {
+    // The founder/operator's SR02 review queue; still requires the local operator key.
+    key: "operator",
+    label: "人工审核（运营者）",
+    icon: <AuditOutlined aria-hidden="true" />,
   },
 ];
 export default function App() {

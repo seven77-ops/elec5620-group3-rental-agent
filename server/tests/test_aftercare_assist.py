@@ -100,7 +100,7 @@ class AftercareAssistTests(unittest.TestCase):
         self.assertNotIn('rent_amount', result['values'])
         joined = ' '.join(result['warnings'])
         self.assertIn('不一致', joined)
-        self.assertIn('Awaiting Human Review', joined)
+        self.assertIn('等待人工复核', joined)
 
     def test_extraction_keeps_only_quoted_claims_and_does_not_store_text(self):
         self.create()
