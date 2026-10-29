@@ -78,6 +78,8 @@ def register_routes(app, services):
     assist = AftercareAssist(services)
     app.get('/api/v1/cases/{case_id}/aftercare/tenancy-prefill')(assist.tenancy_prefill)
     app.post('/api/v1/cases/{case_id}/aftercare/deduction-extract')(assist.extract_deductions)
+    from .adapters.progress import ProgressAdapter
+    app.get('/api/v1/cases/{case_id}/progress')(ProgressAdapter(services).progress)
 
     from .living.service import LivingService
     living = LivingService(services)

@@ -12,6 +12,7 @@ import { Button, Drawer, Layout, Menu, Space } from "antd";
 import {
   AuditOutlined,
   CheckSquareOutlined,
+  NodeIndexOutlined,
   FileTextOutlined,
   FormOutlined,
   HomeOutlined,
@@ -33,6 +34,7 @@ const Contract = lazy(() => import("../features/contracts/ContractAssistant"));
 const Aftercare = lazy(() => import("../features/Aftercare"));
 const LivingHub = lazy(() => import("../features/living/LivingHub"));
 const Operator = lazy(() => import("../features/Operator"));
+const CaseProgress = lazy(() => import("../features/CaseProgress"));
 
 class ErrorBoundary extends Component<
   { children: ReactNode },
@@ -59,6 +61,11 @@ const nav = [
     key: "assistant",
     label: "AI租房助手",
     icon: <CommentOutlined aria-hidden="true" />,
+  },
+  {
+    key: "progress",
+    label: "案例进度",
+    icon: <NodeIndexOutlined aria-hidden="true" />,
   },
   {
     key: "preferences",
@@ -221,6 +228,7 @@ export default function App() {
     contract: <Contract />,
     aftercare: config?.mode === "real_listings" ? <LivingHub /> : <Aftercare />,
     operator: <Operator />,
+    progress: <CaseProgress />,
   };
   return (
     <ErrorBoundary>

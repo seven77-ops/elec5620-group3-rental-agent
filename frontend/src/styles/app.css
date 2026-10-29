@@ -2101,3 +2101,41 @@ li {
 .claim-row {
   align-items: flex-end;
 }
+
+/* Case progress: numbered pipeline of agents, operator and tenant decisions. */
+.progress-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.progress-step {
+  display: flex;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line, #e5e7eb);
+}
+.progress-step:last-child {
+  border-bottom: 0;
+}
+.progress-index {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  background: #eef2f7;
+}
+.progress-step.done .progress-index {
+  background: #d9f2f0;
+}
+.progress-step.waiting .progress-index {
+  background: #fdf0c8;
+}
+.progress-body {
+  min-width: 0;
+}
+.progress-body p {
+  margin: 6px 0;
+}
