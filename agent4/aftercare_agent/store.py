@@ -1,5 +1,6 @@
 """SQLite aggregate + immutable command receipts under a single serial write transaction."""
 from contextlib import closing
+from copy import deepcopy
 from hashlib import sha256
 from pathlib import Path
 import json
@@ -7,6 +8,11 @@ import sqlite3
 from .contracts import canonical, validate
 from .errors import AftercareError, require
 from .services import apply, new_case
+
+
+def material(case):
+    """Case content apart from bookkeeping that every committed command changes."""
+    return canonical({k: v for k, v in case.items() if k not in ('version', 'updated_at', 'audit')})
 
 
 class AftercareAgent:
@@ -43,6 +49,16 @@ class AftercareAgent:
         self.authorize(case, actor_id, role)
         return case
 
+    @staticmethod
+    def response(command, case, result):
+        return {'schema_version': '1.0', 'request_id': command['request_id'],
+                'case_id': case['case_id'], 'version': case['version'],
+                'result': result, 'case': case,
+                'task': {'task_id': command['request_id'], 'responsible_role': 'AftercareAgent',
+                         'case_id': case['case_id'], 'input_version': command['expected_version'],
+                         'output_version': case['version'], 'status': 'completed',
+                         'output_refs': [f"case:{case['case_id']}@{case['version']}"]}}
+
     def submit(self, command):
         validate('command', command)
         digest = sha256(canonical(command).encode()).hexdigest()
@@ -65,15 +81,15 @@ class AftercareAgent:
                     return json.loads(old[1])
                 require(not row or command['operation'] != 'create', 'already_exists', 'Case already exists')
                 require(case['version'] == command['expected_version'], 'version_conflict', 'Reload the case and use its current version')
+                before = deepcopy(case)
                 result = apply(case, command, gateway=self.gateway)
+                if command['operation'] == 'poll_reminders' and not result['delivered'] and material(case) == material(before):
+                    # A periodic poll that delivers nothing is a read. Committing it would bump the
+                    # version every interval and make concurrent tenant edits fail as stale.
+                    conn.rollback()
+                    return self.response(command, before, result)
                 validate('aftercare-case', case)
-                response = {'schema_version': '1.0', 'request_id': command['request_id'],
-                            'case_id': case['case_id'], 'version': case['version'],
-                            'result': result, 'case': case,
-                            'task': {'task_id': command['request_id'], 'responsible_role': 'AftercareAgent',
-                                     'case_id': case['case_id'], 'input_version': command['expected_version'],
-                                     'output_version': case['version'], 'status': 'completed',
-                                     'output_refs': [f"case:{case['case_id']}@{case['version']}"]}}
+                response = self.response(command, case, result)
                 conn.execute('INSERT INTO cases(case_id,document) VALUES(?,?) ON CONFLICT(case_id) DO UPDATE SET document=excluded.document',
                              (case['case_id'], canonical(case)))
                 conn.execute('INSERT INTO receipts VALUES(?,?,?,?)',

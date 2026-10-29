@@ -387,6 +387,32 @@ class Workflows(unittest.TestCase):
         self.assertEqual(other.get('aftercare-demo-1', 'demo-tenant'), self.case())
         validate('aftercare-case', self.case())
 
+    def test_empty_poll_is_a_read_and_keeps_concurrent_edits_current(self):
+        self.plan()
+        self.run_op('reminder_preferences', {'enabled': True, 'follow_up_at': None})
+        loaded = self.case()
+        empty = self.run_op('poll_reminders', {})
+        self.assertEqual(empty['result']['delivered'], [])
+        self.assertEqual(empty['version'], loaded['version'])
+        self.assertEqual(self.case(), loaded, 'An empty poll must not commit')
+        # A tenant edit prepared before the poll is still current.
+        self.agent.submit({**self.command('edit_task', {'task_id': 'keys', 'status': 'done', 'evidence_refs': []}),
+                           'expected_version': loaded['version']})
+        due = self.run_op('poll_reminders', {}, as_of='2026-11-03T09:00:00+11:00')
+        self.assertTrue(due['result']['delivered'])
+        self.assertEqual(due['version'], loaded['version'] + 2, 'A delivering poll still commits once')
+
+    def test_plan_includes_utility_and_bond_refund_steps(self):
+        self.plan()
+        tasks = {t['task_id']: t for t in self.case()['plan']['tasks']}
+        self.assertEqual(tasks['utilities']['due_at'], '2026-10-26T09:00:00+11:00')
+        self.assertEqual(tasks['bond-refund']['due_at'], '2026-11-01T09:00:00+11:00')
+
+    def test_draft_uses_readable_sydney_dates(self):
+        self.active_bond()
+        draft = self.run_op('request_draft', {'use_model': False, 'allow_external_ai': False})['result']['draft']
+        self.assertIn('Tenant-reported update (15 Oct 2026)', draft['text'])
+
 
 if __name__ == '__main__':
     unittest.main()
