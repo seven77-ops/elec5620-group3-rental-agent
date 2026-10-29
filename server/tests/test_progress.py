@@ -48,7 +48,7 @@ class ProgressTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200, response.text)
         steps = self.steps()
         self.assertEqual(steps['aftercare']['status'], 'in_progress')
-        self.assertIn('UnderReview', steps['aftercare']['summary'])
+        self.assertIn('待人工审核', steps['aftercare']['summary'])
         self.assertEqual(steps['operator']['status'], 'waiting')
 
     def test_unknown_case_is_not_found(self):

@@ -90,7 +90,7 @@ const nav = [
   {
     // The founder/operator's SR02 review queue; still requires the local operator key.
     key: "operator",
-    label: "人工审核（运营者）",
+    label: "人工审核",
     icon: <AuditOutlined aria-hidden="true" />,
   },
 ];

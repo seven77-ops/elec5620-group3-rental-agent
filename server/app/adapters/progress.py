@@ -7,6 +7,14 @@ from ..settings import TENANT
 
 DONE, ACTIVE, WAITING, TODO = 'done', 'in_progress', 'waiting', 'not_started'
 LISTING_PAGE = 'recommendations'
+STATE_NAMES = {'Reviewed': '复核完成', 'Questions Ready': '问题清单已准备', 'Awaiting Human Review': '等待人工复核',
+               'Awaiting Resubmission': '需要重新提交', 'Degraded Summary Only': '仅有限摘要',
+               'Draft': '草稿', 'Active': '进行中', 'Cancelled': '已取消', 'AwaitingOutcome': '等待结果',
+               'UnderReview': '待人工审核', 'Resolved': '已确认结果', 'Withdrawn': '已撤回'}
+
+
+def _name(state):
+    return STATE_NAMES.get(state, state)
 
 
 def _step(key, agent, title, status, summary, refs=(), page=None):
@@ -58,7 +66,7 @@ class ProgressAdapter:
         if review:
             high = [f for f in review.get('findings', []) if f.get('severity') == 'high']
             status = {'Reviewed': DONE, 'Questions Ready': DONE, 'Awaiting Human Review': WAITING}.get(review['status'], ACTIVE)
-            summary = (f"合同复核 v{review['version']}：{review['status']}，发现 {len(review.get('findings', []))} 项"
+            summary = (f"合同复核 v{review['version']}：{_name(review['status'])}，发现 {len(review.get('findings', []))} 项"
                        f"（高风险 {len(high)} 项），规则包 {review.get('rule_pack', {}).get('version')}。")
             refs = [f"{review['review_id']}@v{review['version']}"]
         elif drafts:
@@ -85,9 +93,9 @@ class ProgressAdapter:
             parts = [f"租约资料 v{record['tenancy']['source_version']}（来源：{record['tenancy']['source_ref']}）"]
             if plan:
                 done = sum(t['status'] == 'done' for t in plan['tasks'])
-                parts.append(f"退租计划 {plan['state']}，{done}/{len(plan['tasks'])} 项完成")
+                parts.append(f"退租计划{_name(plan['state'])}，{done}/{len(plan['tasks'])} 项完成")
             if bond:
-                parts.append(f"押金跟进 {bond['state']}")
+                parts.append(f"押金跟进{_name(bond['state'])}")
             closed = bool(bond and bond['state'] in ('Resolved', 'Withdrawn'))
             steps.append(_step('aftercare', 'Agent 4 · 租后与退租', '退租计划与押金跟进',
                                DONE if closed else ACTIVE, '；'.join(parts) + '。',
