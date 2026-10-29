@@ -82,14 +82,21 @@ class AiService:
                 completed=None
                 require(not old or old['lease_until']<time.time(),409,'operation_in_progress','本次 AI 请求仍在处理，请稍后读取或重试原请求。')
                 token=uid('lease')
+                # Start order comes from a per-subject counter: coarse clocks (Windows) can give two
+                # requests the same created_at, and a timestamp tie must not let an older run win.
+                sequence=old.get('sequence') if old else None
+                if sequence is None:
+                    sequence=(repo.get(db,'ai_sequence',kind+':'+ref) or {'next':1})['next']
+                    repo.put(db,'ai_sequence',kind+':'+ref,{'next':sequence+1})
                 reservation={'input':body,'binding':binding,'analysis_id':old['analysis_id'] if old else uid('ai'),
-                             'token':token,'lease_until':time.time()+90,'created_at':old['created_at'] if old else now()}
+                             'token':token,'lease_until':time.time()+90,'created_at':old['created_at'] if old else now(),
+                             'sequence':sequence}
                 repo.put(db,'ai_receipt',key,reservation)
         if completed is not None:
             return self.decorate(completed)
         recorder=CallRecorder(self.ctx.ai_provider)
         result={'analysis_id':reservation['analysis_id'],'kind':kind,'status':'success',
-                'created_at':reservation['created_at'],'binding':binding,'result':None,'calls':[]}
+                'created_at':reservation['created_at'],'sequence':reservation['sequence'],'binding':binding,'result':None,'calls':[]}
         def gateway(context):
             self.check(kind,ref,body,binding)
             return recorder(context)
@@ -131,7 +138,7 @@ class AiService:
             repo.put(db,'ai_analysis',result['analysis_id'],result)
             pointer=repo.get(db,'ai_latest',kind+':'+ref)
             previous=repo.get(db,'ai_analysis',pointer['analysis_id']) if pointer else None
-            if previous is None or previous['created_at'] <= result['created_at']:
+            if previous is None or (previous.get('sequence',0),previous['created_at']) <= (result['sequence'],result['created_at']):
                 repo.put(db,'ai_latest',kind+':'+ref,{'analysis_id':result['analysis_id']})
         require(not stale,409,'ai_context_changed','分析期间同意或上下文已变化，请读取最新状态；原复核结果保留。')
         return self.decorate(result)

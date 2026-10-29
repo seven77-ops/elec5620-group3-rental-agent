@@ -122,8 +122,9 @@ test("candidate facts sync between search/chat and the real contract compares fr
   await expect(page.getByTestId("comparison-recorded_rent")).toContainText(
     "620",
   );
+  // Contract 620/week vs the 300/week advert with no stated charging basis: shown as a possible gap.
   await expect(page.getByTestId("comparison-advertised_rent")).toContainText(
-    "计价口径待确认",
+    "金额不同，口径待确认",
   );
   await page.reload();
   await expect(comparison).toContainText(row.address);
