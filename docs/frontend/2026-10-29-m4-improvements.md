@@ -1,0 +1,83 @@
+# 2026-10-29 M4 租后与押金改进 + Windows 部署修复
+
+基于 `codex/group-trial-20261022`（a8cb54f）的本地分支 `m4-improvements-20261029`，由 M4（Zhengzhe Wang）整理。原模块归属不变；本次改动集中在 Agent4、租后页面及其 server 适配层，另修复 Windows 无法按指南启动的问题。
+
+## 1. Windows 部署修复（按指南在 Windows 上实测失败的三处）
+
+| 问题 | 修复 |
+|---|---|
+| `scripts/dev.py` 直接执行 `npm`，Windows 上实际是 `npm.cmd`，启动报 `FileNotFoundError` | 改用 `shutil.which('npm')` 找到实际路径 |
+| Agent4 使用 `zoneinfo`，Windows 没有系统时区库；`server/requirements-lock.txt` 缺少 `tzdata` | lock 与 requirements 加入 `tzdata` |
+| 中文 Windows 默认 GBK 编码，读取 UTF-8 的 1000 套房源 JSON 失败 | 全部 `read_text()` 显式使用 UTF-8；`dev.py` 为子进程设置 `PYTHONUTF8=1` |
+
+其他兼容性修复：
+- TfNSW MCP 侧进程在 Windows 上使用 `Scripts/python.exe`。
+- Agent4 测试关闭 SQLite 连接，避免 Windows 上无法删除临时目录。
+- 新增 `.gitattributes`，使带哈希校验的 JSON 在 Windows 检出时保持 LF。
+- agent2、agent3 和 server 测试读取夹具时显式使用 UTF-8。
+
+## 2. Agent4 核心（`agent4/aftercare_agent`）
+
+- **提醒轮询不再写入**：页面开启提醒后每 30 秒执行一次 `poll_reminders`。原实现每次都提交并让版本 +1，导致用户编辑超过 30 秒就会 409。现在没有投递、也没有状态变化的轮询会回滚并返回当前案件，相当于一次只读查询；真正投递提醒时仍正常提交。
+- **计划补充 NSW 退租常见步骤**：
+  - 最终抄表，关闭或转移水电气网账户（退租前 5 天）；
+  - 交钥匙后在 Rental Bonds Online 核对退款申请并记录编号（退租后 1 天）。
+  - 这两项都是提醒，不替用户提交。
+- **草稿日期可读**：事实句改为 `Tenant-reported update (29 Oct 2026)`，不再显示带微秒的 ISO 时间。
+- 新增 3 个测试，共 60 个，全部通过。
+
+## 3. Server（`server/app/adapters/aftercare_assist.py`）
+
+| 接口 | 作用 | 安全边界 |
+|---|---|---|
+| `GET /cases/{id}/aftercare/tenancy-prefill` | 从最新合同复核（地址、起止日期、押金，带行号和原文引用）或已选房源（地址、是否带家具）生成**待核对**的预填资料。合同与房源地址不一致、复核未完成时给出提示 | 只读，不创建、不修改案件。用户仍需在表单中核对并明确确认 |
+| `POST /cases/{id}/aftercare/deduction-extract` | 用户粘贴中介或房东原文，AI 读取扣款主张（金额、原因、原文引用、日期） | 需要单次同意；原文不保存。只有“引用是原文子串且包含该金额”的项才保留；未来日期和无引用日期会被丢弃；结果只作为表单候选，不改变案件 |
+| `request_draft` 支持 `use_model: true` | Agent4 原有的受控 ModelGateway 接入共享 AI 配置：模型只能从事实句目录中选择句子编号，程序校验必选事实和引用 | 需要 `allow_external_ai: true` 并已配置 AI；失败返回 503，不保存任何内容；草稿始终 `prepared_not_sent` |
+
+另外：
+- AI 未启用时，聊天提示改为“AI 对话未启用，可直接使用表单”，不再提示“暂时不可用，请重试”。
+- 新增 8 个 server 测试（`server/tests/test_aftercare_assist.py`），用测试替身覆盖幻觉引文、金额不符、未来日期、未同意、AI 不可用和失败不保存。
+
+## 4. 前端
+
+- **租约表单**：显示“可以从已有资料带入”卡片（来源、原文、警告），由用户点击带入后再确认。计划日期默认使用租约结束日期；押金面板显示合同记录的押金。
+- **退租计划**：
+  - 任务标题显示中文（存储的原标题不变，用户改过的标题按原样显示）；
+  - 时间显示为悉尼时间加 AEST/AEDT，按到期日排序；
+  - 资料缺口和改期提案以文字列表展示，不再显示 JSON；
+  - 编辑任务时可勾选“需要人工核对”（UC07 7b），提交后进入人工审核。
+- **押金跟进**：
+  - 金额按 AUD 元填写，可记录多项主张；
+  - 可填写事实发生日期，可标记“证据互相矛盾”；
+  - 去掉了真实模式中的演示默认值；
+  - 可选“用 AI 从原文读取扣款”和“AI 辅助准备草稿”，均需单独同意；
+  - 草稿可一键复制；时间线和结果改为可读文字。
+- **提醒**：
+  - 用户可以自选押金跟进提醒时间（AD-M4-03），以悉尼时间显示；
+  - 打开页面时先检查一次到期提醒（对应报告中的“下次登录时显示”）；
+  - 收件箱和状态显示中文。
+- **人工审核**：
+  - 侧栏新增“人工审核（运营者）”入口；
+  - 审核页显示关联的扣款主张、最近事实、已登记证据和历史决定；
+  - 提示 RBO / NSW Fair Trading / NCAT 等一般途径（不构成法律意见）。
+- **聊天**：AI 未启用时，聊天失败不再锁住需求表单。
+- 新增 `frontend/tests/aftercareDisplay.test.ts`（4 个测试）；同步更新两个 e2e 用例的选择器。
+
+## 5. 本次验证（Windows 11 中文区域设置、Python 3.12、Node 22.23.4、未设置 PYTHONUTF8）
+
+| 检查 | 结果 |
+|---|---|
+| agent1 / agent2 / agent3 / agent4 / integration | 52 / 89 / 40 / 60 / 6 全部通过 |
+| server 全量 | 471/471（原 463 + 新增 8） |
+| 前端单元测试（除 api） | 30/30 |
+| `npm run test:api` | 9/9 |
+| `npm run build` | 通过 |
+| Playwright（本机 Chrome）：m4-readable、m4-recovery、living-services、living-continuity、assistant、user-flow-polish | 25 项通过，1 项跳过（完整旅程用例默认跳过），2 项失败，均与本次改动无关：一项是表头断言早于“我的收藏”按钮（10-28 新增）；另一项需要已配置的 AI |
+| 浏览器手动走查 | 新建案例 → 表单需求 → 选定房源 → 上传测试合同 → 租后预填 → 生成计划 → 任务提交人工核对 → 押金激活（AUD 180 主张）→ 运营者放行 → 事实草稿 → 设置提醒时间 → 编辑对话框打开约 40 秒后保存成功（轮询未改变版本） |
+
+AI 相关路径由测试替身验证。实际演示时需要在 `.env` 中配置自己的 `RENTAL_AI_*`，然后再跑一次“读取扣款”和“AI 辅助草稿”。
+
+## 6. 尚未处理（说明用）
+
+- M4 的完整 M3→M4 交接协议（`codex/m4-m3-receive-20261017`，含 `handoff.py` 与 130 项测试）仍未合入。本次以“只读预填 + 用户确认”的方式实现资料接续，避免在截止前大幅改动 store/services。
+- Agent3 规则包 `NSW-reference-2026-10-15` 的有效期为 30 天，2026-11-14 过期，需由 M3 重新核对来源后更新。

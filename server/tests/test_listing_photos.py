@@ -12,7 +12,7 @@ class ListingPhotosTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.path = Path(self.temp.name) / 'listings.json'
-        rows = json.loads(Path('agent2/data/real/listings.json').read_text())[:2]
+        rows = json.loads(Path('agent2/data/real/listings.json').read_text(encoding='utf-8'))[:2]
         self.path.write_text(json.dumps(rows))
         self.rows = rows
         self.photo_path = self.path.with_name('photos.json')
@@ -41,7 +41,7 @@ class ListingPhotosTests(unittest.TestCase):
         self.assertEqual(after.metadata()['photo_count'], 1)
         item['photos'][0]['url'] = 'changed'
         self.assertEqual(after.get(self.entry['listing_id'])['photos'][0]['url'], self.entry['image_urls'][0])
-        self.assertEqual(json.loads(self.path.read_text()), self.rows)
+        self.assertEqual(json.loads(self.path.read_text(encoding='utf-8')), self.rows)
 
     def test_invalid_media_cannot_be_loaded(self):
         for change in (

@@ -572,7 +572,7 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
     expect((await state()).aftercare_case_id).toBeNull();
     await page
       .getByRole("button", {
-        name: "从最近合同复核预填地址与来源",
+        name: "带入已有资料",
         exact: true,
       })
       .click();

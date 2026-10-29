@@ -6,6 +6,8 @@
 
 **2026-10-29 最新小组试用版：** `codex/group-trial-20261022` / PR #7，暂不合并 main。本次包含收藏/一次确认选房、推荐条件与理由、合同表单、报修AI、水电气网与服务商页面。请先看 [最新安装与验证](docs/frontend/2026-10-29-trial-update.md)。
 
+**M4 改进与 Windows 修复：** 本地分支 `m4-improvements-20261029` 修复了 Windows 按指南无法启动的问题（npm.cmd、tzdata、GBK 编码），并改进退租与押金页面（合同/房源预填、AI 读取扣款、受控 AI 草稿、可读计划与提醒、人工审核入口）。Windows 上若 `py -3` 不可用，可直接用 `python -m venv .venv`。说明见 [M4 改进](docs/frontend/2026-10-29-m4-improvements.md)。
+
 | 模块 | 内容 | 运行说明 |
 |---|---|---|
 | [agent2/](agent2/) | Member 2：房源资格评估、评分推荐、偏好版本比较与本地选房证据包 | [Agent 2 README](agent2/README.md) |

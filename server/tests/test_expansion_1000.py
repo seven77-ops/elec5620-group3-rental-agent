@@ -13,8 +13,8 @@ class Expansion1000Tests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.catalog = RealCatalog()
-        cls.raw = json.loads(cls.catalog.path.read_text())
-        cls.manifest = json.loads(cls.catalog.path.with_name('expansion-1000-20261028.json').read_text())
+        cls.raw = json.loads(cls.catalog.path.read_text(encoding='utf-8'))
+        cls.manifest = json.loads(cls.catalog.path.with_name('expansion-1000-20261028.json').read_text(encoding='utf-8'))
 
     def test_exactly_300_new_unique_houses_preserve_previous_700(self):
         m = self.manifest

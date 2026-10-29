@@ -15,7 +15,7 @@ class RealAgent2Tests(unittest.TestCase):
         self.case = self.client.post('/api/v1/cases', json={}).json()
         self.cid = self.case['case_id']
         # These regression scenarios explicitly supply their original test requirements.
-        profile = json.loads(Path('integration/agent1-to-agent2/confirmed-profile.json').read_text())
+        profile = json.loads(Path('integration/agent1-to-agent2/confirmed-profile.json').read_text(encoding='utf-8'))
         response = self.client.post(f'/api/v1/cases/{self.cid}/profile-drafts',json={
             'expected_revision':self.case['draft']['revision'],'profile':profile})
         self.assertEqual(response.status_code,200,response.text)
@@ -60,7 +60,7 @@ class RealAgent2Tests(unittest.TestCase):
             self.assertEqual(self.client.get('/api/v1/listings?'+query).status_code, 422, query)
 
     def test_zero_bedroom_studios_count_as_one_open_plan_space(self):
-        source = json.loads(Path('agent2/data/real/listings.json').read_text())
+        source = json.loads(Path('agent2/data/real/listings.json').read_text(encoding='utf-8'))
         studios = [r for r in source if r['bedrooms'] == 0]
         self.assertEqual(len(studios), self.client.get('/api/v1/listings?page_size=1').json()['catalog']['open_plan_as_one_count'])
         one_plus = self.client.get('/api/v1/listings?min_bedrooms=1&page_size=100').json()
@@ -79,7 +79,7 @@ class RealAgent2Tests(unittest.TestCase):
         self.assertEqual(item['bedrooms'],1)
         self.assertEqual(item['evidence_refs']['bedrooms']['source_value'],0)
         self.assertIn('开放式', self.client.get(f'/api/v1/evaluations/{run["run_id"]}/export?format=markdown').text)
-        self.assertEqual(json.loads(Path('agent2/data/real/listings.json').read_text()), source)
+        self.assertEqual(json.loads(Path('agent2/data/real/listings.json').read_text(encoding='utf-8')), source)
 
     def test_evaluation_selection_retry_and_real_contract_boundary(self):
         self.assertEqual(self.evaluate().status_code, 409)
@@ -129,7 +129,7 @@ class RealAgent2Tests(unittest.TestCase):
             RealCatalog(Path(self.temp.name) / 'missing.json')
         bad = Path(self.temp.name) / 'bad.json'; bad.write_text('[{"listing_id":"DEMO-006"}]')
         with self.assertRaises(ValueError): RealCatalog(bad)
-        source = json.loads(Path('agent2/data/real/listings.json').read_text())
+        source = json.loads(Path('agent2/data/real/listings.json').read_text(encoding='utf-8'))
         source[0]['address'] = 'Car Space/162 Ross Street, Forest Lodge'
         bad.write_text(json.dumps(source))
         with self.assertRaises(ValueError): RealCatalog(bad)

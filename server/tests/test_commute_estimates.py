@@ -16,8 +16,8 @@ class EstimateTests(unittest.TestCase):
         from pathlib import Path
         from server.app.real_data.catalog import RealCatalog
         catalog=RealCatalog();root=catalog.path.parent
-        manifest=json.loads((root/'expansion-20261027.json').read_text())
-        raw=json.loads(catalog.path.read_text())
+        manifest=json.loads((root/'expansion-20261027.json').read_text(encoding='utf-8'))
+        raw=json.loads(catalog.path.read_text(encoding='utf-8'))
         self.assertEqual((len(raw[:700]),manifest['added_count']),(700,200))
         ids={r['record_id'] for r in manifest['records']}
         self.assertEqual(len(ids),200)

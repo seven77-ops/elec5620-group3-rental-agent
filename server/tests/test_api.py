@@ -191,7 +191,7 @@ class BoundaryTests(unittest.TestCase):
         fixtures=Path('agent4/data/demo/requests')
         case=None
         for path in sorted(fixtures.glob('*.json')):
-            original=__import__('json').loads(path.read_text())
+            original=__import__('json').loads(path.read_text(encoding='utf-8'))
             payload=copy.deepcopy(original['payload'])
             if original['operation']=='create':
                 payload['tenancy'].pop('tenant_id'); payload['tenancy'].pop('tenancy_id')

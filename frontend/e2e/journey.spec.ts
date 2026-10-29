@@ -278,12 +278,14 @@ test("independent aftercare requires confirmation and supports tasks, dispute ga
   await page
     .getByRole("textbox", { name: "租客报告的事实" })
     .fill("Synthetic tenant disputes a reported deduction.");
+  await page.getByRole("button", { name: "添加扣款主张", exact: true }).click();
+  await page.getByLabel("金额（AUD）", { exact: true }).fill("180");
   await page
-    .getByRole("checkbox", { name: "包含一项报告的扣款主张", exact: true })
-    .check();
-  await page
-    .getByRole("textbox", { name: "报告的扣款原因" })
+    .getByRole("textbox", { name: "对方说明的原因" })
     .fill("Synthetic wall mark");
+  await page
+    .getByRole("checkbox", { name: "我对此有争议", exact: true })
+    .check();
   await page.getByRole("button", { name: "确认并记录", exact: true }).click();
   await expect(
     page.getByText("存在争议或审核门禁", { exact: true }),
