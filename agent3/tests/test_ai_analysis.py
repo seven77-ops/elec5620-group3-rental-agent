@@ -235,6 +235,10 @@ class AiAnalysisTests(unittest.TestCase):
                 self.assertEqual(len(gateway.calls), 1)
 
     def test_no_findings_skips_explanation_request(self):
+        # Without its special condition the sample agreement has no findings at all.
+        self.document["text"] = "\n".join(line for line in self.document["text"].splitlines()
+                                          if not line.startswith("Special condition"))
+        self.review = review_agreement(self.document, consent=True, as_of="2026-10-15")
         result, gateway = self.run_fields([])
         self.assertEqual(result["preview_findings"], [])
         self.assertEqual(result["explanations"], [])

@@ -408,6 +408,14 @@ class Workflows(unittest.TestCase):
         self.assertEqual(tasks['utilities']['due_at'], '2026-10-26T09:00:00+11:00')
         self.assertEqual(tasks['bond-refund']['due_at'], '2026-11-01T09:00:00+11:00')
 
+    def test_past_move_out_dates_and_zero_claims_are_rejected(self):
+        self.error('invalid_input', self.run_op, 'create_plan', {'move_out_date': '2026-10-14', 'schedule_confirmed': True})
+        self.plan()
+        self.error('invalid_input', self.run_op, 'propose_date', {'move_out_date': '2026-10-01'})
+        self.active_bond()
+        self.error('invalid_input', self.run_op, 'bond_update', {'entry': self.entry(claims=[
+            {'claim_id': 'zero', 'amount_cents': 0, 'reason': 'Nothing', 'evidence_refs': [], 'disputed': False}])})
+
     def test_draft_uses_readable_sydney_dates(self):
         self.active_bond()
         draft = self.run_op('request_draft', {'use_model': False, 'allow_external_ai': False})['result']['draft']

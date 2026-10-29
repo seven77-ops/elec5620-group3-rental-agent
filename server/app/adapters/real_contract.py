@@ -17,13 +17,21 @@ def real_context(saved, review):
     def value(key): return fields.get(key,{}).get('value')
     def norm(v): return re.sub(r'[^\w]','',unicodedata.normalize('NFKC',str(v)).casefold())
     address=value('address')
+    # Leases usually append state and postcode to the advertised street address.
+    same=bool(address) and (norm(ad['address']) in norm(address) or norm(address) in norm(ad['address']))
     add('address','房屋地址','广告快照',address,ad['address'],
-        'missing' if not address else ('match' if norm(address)==norm(ad['address']) else 'different'))
+        'missing' if not address else ('match' if same else 'different'))
     rent=value('rent_amount'); period=value('rent_period'); scope=value('rent_scope'); currency=value('currency')
     # Unknown advertised scope is never filled from user notes or contract extraction.
     compatible=period=='week' and currency=='AUD' and scope==ad.get('rent_scope') and scope is not None
+    # Without a confirmed charging basis the amounts are not judged equal or unequal, but a
+    # weekly AUD gap is still surfaced so the tenant asks which amount applies.
+    uncertain='basis_unknown'
+    if (not compatible and period=='week' and currency=='AUD' and isinstance(rent,(int,float))
+            and isinstance(ad.get('weekly_rent'),(int,float)) and abs(rent-ad['weekly_rent'])>0.005):
+        uncertain='possible_difference'
     add('advertised_rent','广告周租（AUD）','广告快照',rent,ad['weekly_rent'],
-        None if compatible else 'basis_unknown')
+        None if compatible else uncertain)
     if followup['version']:
         comparable=(period==facts['rent_period'] and period!='unknown' and scope==facts['rent_scope']
                     and scope not in (None,'unknown') and currency=='AUD')

@@ -28,7 +28,8 @@ def _normalized(value):
     return re.sub(r"[^\w]", "", unicodedata.normalize("NFKC", str(value)).casefold())
 
 
-def evaluate_findings(fields: dict, selection: dict | None, rule_pack: dict = RULE_PACK) -> list[dict]:
+def evaluate_findings(fields: dict, selection: dict | None, rule_pack: dict = RULE_PACK,
+                      clauses: list | None = None) -> list[dict]:
     findings = []
 
     def add(code, severity, title, reason, evidence, *, rule=False):
@@ -94,4 +95,9 @@ def evaluate_findings(fields: dict, selection: dict | None, rule_pack: dict = RU
                     "Rent period, charging scope or currency is missing or differs; the amounts were not compared.",
                     [ev("rent_amount"), {**source, "field": "listing_snapshot.rent_amount",
                                          "value": listed_rent}])
+    # Extra terms can change obligations; they are flagged for reading, never judged lawful or unlawful.
+    for clause in clauses or []:
+        add("additional_term_review", "needs_review", "Additional term needs reading",
+            "This term is outside the standard NSW form fields. Read it carefully (for example cleaning, fees or "
+            "end-of-tenancy duties) and ask the landlord or agent before signing.", [clause["evidence"]])
     return findings

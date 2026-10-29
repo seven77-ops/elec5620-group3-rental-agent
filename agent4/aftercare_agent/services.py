@@ -7,6 +7,12 @@ from .planner import SYDNEY, build_plan, confirm_schedule, due_on, propose_sched
 from .reminders import TERMINAL, deliver_due, sync_reminders
 
 
+def not_past(move_out, now):
+    # A plan for a date already gone would only produce overdue tasks and a burst of reminders.
+    require(day(move_out) >= instant(now).astimezone(SYDNEY).date(), 'invalid_input',
+            'Move-out date cannot be earlier than today in Sydney')
+
+
 def check_refs(case, refs):
     known = {e['evidence_id'] for e in case['evidence']}
     require(set(refs) <= known, 'missing_evidence', 'An evidence reference is not registered in this case')
@@ -133,6 +139,7 @@ def apply(case, command, *, gateway=None):
             case['plan'] = updated
     elif op == 'create_plan':
         require(case['plan'] is None, 'invalid_state', 'A plan already exists; edit it instead')
+        not_past(p['move_out_date'], now)
         case['plan'] = build_plan(case['tenancy'], p['move_out_date'], p['schedule_confirmed'], now)
     elif op in {'confirm_plan', 'edit_task', 'propose_date', 'confirm_date', 'cancel_plan'}:
         plan = case['plan']
@@ -155,6 +162,7 @@ def apply(case, command, *, gateway=None):
             if p.get('review_reason'):
                 ensure_review(case, 'plan:' + task['task_id'], p['review_reason'], task['evidence_refs'], now)
         elif op == 'propose_date':
+            not_past(p['move_out_date'], now)
             propose_schedule(plan, p['move_out_date'])
         elif op == 'confirm_date':
             confirm_schedule(plan, p['accepted'], now)

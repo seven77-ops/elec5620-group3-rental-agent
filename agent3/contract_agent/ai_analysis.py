@@ -202,7 +202,7 @@ def analyze_contract(document: dict, review: dict, gateway: Callable[[dict], dic
     if (changes and preview["extraction_confidence"] >= 0.5
             and rule_pack_current(preview["as_of"], preview["rule_pack"])):
         preview["findings"] = evaluate_findings(preview["fields"], preview["selection_evidence"],
-                                                preview["rule_pack"])
+                                                preview["rule_pack"], clauses=preview.get("additional_clauses"))
     findings = deepcopy(preview["findings"])
     result = {"candidates": candidates, "preview_findings": findings,
               "explanations": [], "explanation_status": "skipped"}

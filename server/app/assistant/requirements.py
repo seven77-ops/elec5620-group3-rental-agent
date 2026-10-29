@@ -5,7 +5,7 @@ from ..common import ApiError, require, shape, request_id
 from ..real_data.profile import supplied_profile
 from ..adapters.real_agent2 import RealProfilesAdapter
 from .dialogue import BRIEF_SCHEMA
-from .recommendation_options import filters_for, metadata
+from .recommendation_options import filters_for, metadata, scope_notes
 from .service import AssistantService, BorrowedRepository, message, signature
 
 
@@ -107,7 +107,8 @@ class RequirementsService:
                 answer = reference_answer(self.ctx.settings.catalog, body['brief'], DESTINATION) if after.get('usyd_max_minutes') else search_answer(self.ctx.settings.catalog, after)
                 answer.pop('_search_filters', None)
                 count = len(self.ctx.settings.catalog.matching(before))
-                answer['content'] = f'找房条件已更新，符合条件的房源从 {count} 套变为 {len(answer["listings"])} 套。'
+                answer['content'] = ' '.join([f'找房条件已更新，符合条件的房源从 {count} 套变为 {len(answer["listings"])} 套。',
+                                              *scope_notes(body['brief'])])
                 from .recommendation_workspace import LABELS
                 answer['recommendation_change'] = {'before_count': count, 'after_count': len(answer['listings']),
                     'changes': [{'field': k, 'label': LABELS.get(k, '找房条件'), 'before': c.get('rental_brief', {}).get(k), 'after': v}

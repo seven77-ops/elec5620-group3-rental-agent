@@ -11,7 +11,8 @@ from .service import AssistantService, signature, message
 PATCH_SCHEMA={'type':'object','minProperties':1,'additionalProperties':False,
               'properties':{k:BRIEF_SCHEMA['properties'][k] for k in FIELD_MAP}}
 LABELS={'budget_amount':'周租上限','suburb':'区域','min_bedrooms':'卧室要求','min_bathrooms':'浴室要求',
-        'min_car_spaces':'车位要求','commute_mode':'交通方式','commute_max_minutes':'通勤上限','max_transfers':'换乘上限'}
+        'min_car_spaces':'车位要求','commute_mode':'交通方式','commute_max_minutes':'通勤上限','max_transfers':'换乘上限',
+        'budget_period':'预算周期','budget_scope':'计价对象','rental_mode':'租住方式','occupants':'居住人数'}
 
 
 class RecommendationWorkspace:

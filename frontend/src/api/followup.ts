@@ -35,7 +35,12 @@ export interface RealContractContext {
     source: string;
     reference_value: string | number | null;
     contract_value: string | number | null;
-    status: "match" | "different" | "missing" | "basis_unknown";
+    status:
+      | "match"
+      | "different"
+      | "missing"
+      | "basis_unknown"
+      | "possible_difference";
   }[];
 }
 const root = (id: string) =>

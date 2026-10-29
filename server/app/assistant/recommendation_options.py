@@ -16,6 +16,16 @@ def filters_for(brief):
     return result
 
 
+def scope_notes(brief):
+    """Say plainly which stated needs could not be used as filters on whole-property adverts."""
+    notes=[]
+    if brief.get('budget_amount') is not None and not (brief.get('budget_period')=='week' and brief.get('budget_scope')=='whole_property'):
+        notes.append('预算按“每间/每人”或非每周填写，无法直接与整套广告租金比较，本次未按预算筛选；可在详情中自行换算，或改为整套周租预算。')
+    if brief.get('rental_mode') not in (None,'whole_property'):
+        notes.append('房源快照主要是整套出租广告，暂不能按单间/合租/学生公寓筛选；看房时请向中介确认可否单间出租。')
+    return notes
+
+
 def criteria_for(filters,brief=None):
     result=deepcopy(brief or {})
     for key in ('arrival_time','travel_date','travel_day'):result.pop(key,None)

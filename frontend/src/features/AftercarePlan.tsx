@@ -14,7 +14,12 @@ import {
 import type { Dict } from "../api/types";
 import { Status, text } from "../components/Common";
 import AftercareFailure from "./aftercare/AftercareFailure";
-import { planNotes, sydneyTime, taskTitle } from "./aftercare/presentation";
+import {
+  planNotes,
+  sydneyTime,
+  sydneyToday,
+  taskTitle,
+} from "./aftercare/presentation";
 export type SendCommand = (
   operation: string,
   payload: Dict,
@@ -142,6 +147,7 @@ export default function AftercarePlan({
         <Input
           id="move-out-date"
           type="date"
+          min={sydneyToday()}
           value={date}
           onChange={(e) => setDate(e.target.value)}
         />

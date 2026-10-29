@@ -67,7 +67,17 @@ const recommendationChangeValue = (field: string, value: unknown) => {
   if (field === "commute_mode")
     return commuteModeLabels[String(value)] || String(value);
   if (field === "commute_max_minutes") return `${value} 分钟`;
-  return String(value);
+  return briefValueLabels[String(value)] ?? String(value);
+};
+const briefValueLabels: Record<string, string> = {
+  week: "每周",
+  month: "每月",
+  whole_property: "整套",
+  per_room: "每个房间",
+  per_person: "每人",
+  private_room: "独立单间",
+  shared_room: "共享房间",
+  student_accommodation: "学生公寓",
 };
 const commuteModeLabels: Record<string, string> = {
   public_transport: "公共交通",

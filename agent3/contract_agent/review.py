@@ -27,7 +27,8 @@ def _assess(review: dict, *, gateway=None, allow_external_ai=False) -> None:
         review.update(status="Degraded Summary Only", findings=[], explanations=[], mode="none",
                       human_review=None, status_reason="NSW reference pack is missing or stale; rule conclusions suspended")
         return
-    findings = evaluate_findings(review["fields"], review["selection_evidence"], review["rule_pack"])
+    findings = evaluate_findings(review["fields"], review["selection_evidence"], review["rule_pack"],
+                                 clauses=review.get("additional_clauses"))
     explanations, mode = explanation(findings, gateway, allow_external_ai=allow_external_ai)
     high = [f["id"] for f in findings if f["severity"] == "high"]
     review.update(findings=findings, explanations=explanations, mode=mode,

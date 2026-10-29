@@ -5,6 +5,7 @@ const statuses = {
   different: { label: "需要核对差异", color: "orange" },
   missing: { label: "合同字段待补充", color: "default" },
   basis_unknown: { label: "计价口径待确认", color: "default" },
+  possible_difference: { label: "金额不同，口径待确认", color: "orange" },
 };
 export default function ContractComparison({
   context,

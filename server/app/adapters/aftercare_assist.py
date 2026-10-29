@@ -98,7 +98,8 @@ class AftercareAssist:
             for name, key in (('address', 'address'), ('move_out_date', 'end_date'), ('start_date', 'start_date'),
                               ('bond_amount', 'bond'), ('rent_amount', 'rent_amount'), ('rent_period', 'rent_period')):
                 found = reviewed(key)
-                if found:
+                # A lease end already in the past is not offered as the planned move-out date.
+                if found and not (name == 'move_out_date' and str(found['value']) < datetime.now(SYDNEY).date().isoformat()):
                     values[name] = found
             if review['status'] != 'Reviewed':
                 status = REVIEW_STATUS.get(review['status'], review['status'])
