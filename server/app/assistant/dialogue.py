@@ -33,32 +33,32 @@ def brief_summary(brief):
     parts=[]
     from ..areas.evidence import TOPICS
     if brief.get('lifestyle_priorities'):
-        parts.append('生活偏好：'+'、'.join(TOPICS[t] for t in brief['lifestyle_priorities']))
-    if 'suburb' in brief: parts.append(brief['suburb'] or '区域不限')
-    if 'occupants' in brief: parts.append(f"{brief['occupants']}人")
-    for field,label in (('min_bedrooms','卧'),('min_bathrooms','卫'),('min_car_spaces','车位')):
-        if field in brief: parts.append(f"至少{brief[field]}{label}" if brief[field] else label+'不限')
+        parts.append('Lifestyle priorities: '+', '.join(TOPICS[t] for t in brief['lifestyle_priorities']))
+    if 'suburb' in brief: parts.append(brief['suburb'] or 'Any suburb')
+    if 'occupants' in brief: parts.append(f"{brief['occupants']} occupants")
+    for field,label in (('min_bedrooms','bedrooms'),('min_bathrooms','bathrooms'),('min_car_spaces','parking spaces')):
+        if field in brief: parts.append(f"At least {brief[field]} {label}" if brief[field] else label+' unrestricted')
     if 'budget_amount' in brief:
-        period={'week':'/周','month':'/月'}.get(brief.get('budget_period'),'（周期待确认）')
-        scope={'per_person':'每人','per_room':'每间','whole_property':'整套'}.get(brief.get('budget_scope'),'计价对象待确认')
-        parts.append(f"预算上限 {brief['budget_amount']:g} 澳元{period}，{scope}")
-    return '、'.join(parts)
+        period={'week':'/week','month':'/month'}.get(brief.get('budget_period'),' (period unconfirmed)')
+        scope={'per_person':'per person','per_room':'per room','whole_property':'whole property'}.get(brief.get('budget_scope'),'rent scope unconfirmed')
+        parts.append(f"Budget limit {brief['budget_amount']:g} AUD{period}, {scope}")
+    return ', '.join(parts)
 
 
 def next_question(brief):
     """Ask the next small group only; template profile defaults are never answers."""
     if 'budget_amount' not in brief and 'suburb' not in brief:
-        return '可以，我们一步一步来。你想住哪个区域？每周最高预算大概多少？'
-    if 'budget_amount' not in brief: return '每周最高预算大概多少？这个金额是整套还是每人承担的预算？'
+        return 'Let us take it step by step. Which suburb would you like to live in, and what is your maximum weekly budget?'
+    if 'budget_amount' not in brief: return 'What is your maximum weekly budget? Is that for the whole property or per person?'
     period=brief.get('budget_period','unknown'); scope=brief.get('budget_scope','unknown')
-    if period=='month': return '你给的是月预算。目前房源按周报价，你希望每周最高控制在多少澳元？'
-    if period=='unknown' and scope=='unknown': return f"这 {brief['budget_amount']:g} 澳元是整套每周，还是每人每周？如果是月预算，也请告诉我。"
-    if period=='unknown': return f"这 {brief['budget_amount']:g} 澳元是每周还是每月的上限？"
-    if scope=='unknown': return '这个每周预算是整套、每个房间，还是每人承担的金额？'
-    if 'suburb' not in brief: return '想住哪个区域？也可以说“不限区域”。'
-    missing=[label for key,label in (('min_bedrooms','卧室'),('min_bathrooms','浴室'),('min_car_spaces','车位')) if key not in brief]
-    if missing: return '对'+'、'.join(missing)+'数量有什么要求？没有要求的可以说“不限”。'
-    if 'occupants' not in brief: return '一共几个人入住？'
+    if period=='month': return 'You gave a monthly budget. Listings use weekly rent. What is your maximum weekly budget in AUD?'
+    if period=='unknown' and scope=='unknown': return f"Is AUD {brief['budget_amount']:g} per week for the whole property or per person? Please say if it is a monthly budget."
+    if period=='unknown': return f"Is AUD {brief['budget_amount']:g} your weekly or monthly limit?"
+    if scope=='unknown': return 'Is this weekly budget for the whole property, per room or per person?'
+    if 'suburb' not in brief: return 'Which suburb would you prefer? You can also say any suburb.'
+    missing=[label for key,label in (('min_bedrooms','bedrooms'),('min_bathrooms','bathrooms'),('min_car_spaces','parking spaces')) if key not in brief]
+    if missing: return 'What are your requirements for '+', '.join(missing)+'? Say unrestricted for any that do not matter.'
+    if 'occupants' not in brief: return 'How many people will live there?'
     return None
 
 

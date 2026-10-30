@@ -36,7 +36,7 @@ export function Failure({
           <div>{readable.message}</div>
           {retry && (
             <div>
-              <Button onClick={retry}>重试原操作</Button>
+              <Button onClick={retry}>Retry original action</Button>
             </div>
           )}
           <Collapse
@@ -45,7 +45,7 @@ export function Failure({
             items={[
               {
                 key: "details",
-                label: "查看详情",
+                label: "View details",
                 children: (
                   <JsonDetails
                     value={{
@@ -92,7 +92,7 @@ export function Loading() {
   return (
     <div className="loading" role="status">
       <Spin />
-      <span>正在读取已保存的案例…</span>
+      <span>Loading saved case…</span>
     </div>
   );
 }
@@ -104,27 +104,36 @@ export function Blank({ text, action }: { text: string; action?: ReactNode }) {
   );
 }
 const statusNames: Record<string, string> = {
-  Reviewed: "复核完成",
-  "Awaiting Human Review": "等待人工复核",
-  "Awaiting Resubmission": "需要重新提交",
-  "Degraded Summary Only": "仅有限摘要",
-  "Questions Ready": "问题清单已准备",
-  Draft: "草稿",
-  AwaitingOutcome: "等待结果",
-  UnderReview: "待人工审核",
-  Resolved: "已确认结果",
-  Withdrawn: "已撤回",
-  eligible: "合格",
-  pending: "待确认",
-  excluded: "已排除",
-  pass: "通过",
-  fail: "未通过",
-  unknown: "待核对",
-  done: "已完成",
-  pending_confirmation: "待确认",
-  open: "待处理",
-  cancelled: "已取消",
-  todo: "待完成",
+  Reviewed: "Review complete",
+  "Awaiting Human Review": "Awaiting human review",
+  "Awaiting Resubmission": "Resubmission required",
+  "Degraded Summary Only": "Limited summary only",
+  "Questions Ready": "Questions ready",
+  Draft: "Draft",
+  AwaitingOutcome: "Awaiting outcome",
+  UnderReview: "Awaiting human review",
+  Resolved: "Outcome confirmed",
+  Withdrawn: "Withdrawn",
+  eligible: "Eligible",
+  pending: "To be confirmed",
+  excluded: "Excluded",
+  pass: "Pass",
+  fail: "Fail",
+  unknown: "To be checked",
+  done: "Completed",
+  pending_confirmation: "To be confirmed",
+  open: "Open",
+  cancelled: "Cancelled",
+  todo: "To do",
+  Active: "Active",
+  Cancelled: "Cancelled",
+  scheduled: "Scheduled",
+  delivered: "Delivered",
+  suppressed: "Stopped",
+  released: "Checked",
+  closed_by_tenant: "Closed by tenant",
+  current: "Current draft",
+  superseded: "Superseded",
 };
 export function Status({ value }: { value: string }) {
   const color = /Reviewed|Questions Ready|Resolved|eligible|pass|done/.test(
@@ -139,51 +148,51 @@ export function Status({ value }: { value: string }) {
   return <Tag color={color}>{statusNames[value] ?? value}</Tag>;
 }
 export const labels: Record<string, string> = {
-  commute: "通勤",
-  cost: "费用",
-  housing: "居住",
-  amenities: "设施",
-  private_bedroom: "独立卧室",
-  private_bathroom: "独立卫浴",
-  furnished: "家具",
-  laundry: "洗衣设施",
-  kitchen_access: "厨房",
-  address: "合同地址",
-  landlord: "出租方",
-  tenant: "租客",
-  rent_amount: "合同租金",
-  rent_period: "租金周期",
-  rent_scope: "计价对象",
-  currency: "币种",
-  bond: "押金",
-  start_date: "租期开始",
-  end_date: "租期结束",
-  signed_date: "签署日期",
-  per_person: "每人",
-  per_room: "每房间",
-  whole_property: "整套",
-  private_room: "独立房间",
-  shared_room: "共享房间",
-  student_accommodation: "学生公寓",
-  public_transport: "公共交通",
-  walk: "步行",
-  drive: "驾车",
-  bike: "骑行",
-  week: "每周",
-  month: "每月",
-  fortnight: "每两周",
+  commute: "Commute",
+  cost: "Cost",
+  housing: "Housing",
+  amenities: "Amenities",
+  private_bedroom: "Private bedroom",
+  private_bathroom: "Private bathroom",
+  furnished: "Furniture",
+  laundry: "Laundry",
+  kitchen_access: "Kitchen",
+  address: "Contract address",
+  landlord: "Landlord",
+  tenant: "Tenant",
+  rent_amount: "Contract rent",
+  rent_period: "Rent period",
+  rent_scope: "Pricing basis",
+  currency: "Currency",
+  bond: "Bond",
+  start_date: "Lease start",
+  end_date: "Lease end",
+  signed_date: "Signing date",
+  per_person: "Per person",
+  per_room: "Per room",
+  whole_property: "Whole property",
+  private_room: "Private room",
+  shared_room: "Shared room",
+  student_accommodation: "Student accommodation",
+  public_transport: "Public transport",
+  walk: "Walk",
+  drive: "Drive",
+  bike: "Cycle",
+  week: "Weekly",
+  month: "Monthly",
+  fortnight: "Fortnightly",
 };
 export const label = (key: string) => labels[key] ?? key;
 export function text(value: unknown): string {
-  if (value == null) return "未提供";
+  if (value == null) return "Not provided";
   if (typeof value === "string") return label(value);
-  if (typeof value === "boolean") return value ? "是" : "否";
+  if (typeof value === "boolean") return value ? "Yes" : "No";
   if (typeof value === "object") return JSON.stringify(value, null, 2);
   return String(value);
 }
 export const money = (value?: number | null) =>
   value == null
-    ? "未提供"
+    ? "Not provided"
     : `AUD ${value.toLocaleString("en-AU", { maximumFractionDigits: 2 })}`;
 export function JsonDetails({ value }: { value: unknown }) {
   return <pre className="json-detail">{JSON.stringify(value, null, 2)}</pre>;

@@ -49,7 +49,7 @@ export default function TaskResults({
   return (
     <div className="assistant-task-results">
       {message.task_steps?.length ? (
-        <ol className="task-steps" aria-label="本次任务">
+        <ol className="task-steps" aria-label="This task">
           {message.task_steps.map((step, index) => (
             <li key={index}>
               {step.status === "completed" ? (
@@ -66,8 +66,11 @@ export default function TaskResults({
         </ol>
       ) : null}
       {comparison && (
-        <section className="task-result-card" aria-label="个性化房源比较">
-          <h3>按你的需求比较</h3>
+        <section
+          className="task-result-card"
+          aria-label="Personalised housing comparison"
+        >
+          <h3>Compared against your needs</h3>
           <p className="muted small">{housingCopy(comparison.basis)}</p>
           <p>{recommendationCopy(comparison.summary)}</p>
           <div className="task-comparison-grid">
@@ -78,23 +81,23 @@ export default function TaskResults({
               return (
                 <article key={item.listing_id} className="task-comparison-item">
                   {comparison.recommended_listing_id === item.listing_id && (
-                    <Tag color="blue">优先考虑</Tag>
+                    <Tag color="blue">Consider first</Tag>
                   )}
                   <h4>{listing?.address ?? item.listing_id}</h4>
                   {listing && (
                     <p className="task-comparison-facts">
-                      <strong>AUD {listing.weekly_rent}/周</strong>
+                      <strong>AUD {listing.weekly_rent}/week</strong>
                       <br />
-                      {listing.bedroom_label} 卧 · {listing.bathrooms} 卫 ·{" "}
-                      {listing.car_spaces} 车位
+                      {listing.bedroom_label} bed · {listing.bathrooms} bath ·{" "}
+                      {listing.car_spaces} car spaces
                     </p>
                   )}
-                  <Points label="符合的要求" items={item.matches} />
-                  <Points label="需要取舍" items={item.tradeoffs} />
+                  <Points label="Matches your needs" items={item.matches} />
+                  <Points label="Trade-offs" items={item.tradeoffs} />
                   {listing && (
                     <div className="task-result-actions">
                       <Button size="small" onClick={() => onView?.(listing)}>
-                        房源详情
+                        Listing details
                       </Button>
                       <ListingActions
                         listing={listing}
@@ -110,36 +113,39 @@ export default function TaskResults({
         </section>
       )}
       {enquiry && (
-        <section className="task-result-card" aria-label="看房询问草稿">
+        <section
+          className="task-result-card"
+          aria-label="Inspection enquiry draft"
+        >
           <div className="task-result-heading">
-            <h3>看房询问草稿</h3>
-            <Tag>尚未发送</Tag>
+            <h3>Inspection enquiry draft</h3>
+            <Tag>Not sent</Tag>
           </div>
           <p>{enquiry.address}</p>
           <strong className="task-enquiry-subject">{enquiry.subject}</strong>
           <Input.TextArea
-            aria-label="看房询问内容"
+            aria-label="Inspection enquiry"
             value={enquiry.body}
             readOnly
             autoSize={{ minRows: 4, maxRows: 12 }}
           />
-          <Points label="建议核实" items={enquiry.questions} />
+          <Points label="Suggested checks" items={enquiry.questions} />
           <div className="task-result-actions">
             <Button
-              aria-label="复制看房询问"
+              aria-label="Copy inspection enquiry"
               icon={<CopyOutlined />}
               onClick={async () => {
                 try {
                   await navigator.clipboard.writeText(
                     `${enquiry.subject}\n\n${enquiry.body}`,
                   );
-                  toast.success("已复制看房询问。");
+                  toast.success("Inspection enquiry copied.");
                 } catch {
-                  toast.info("请在上方文本框中选中并复制内容。");
+                  toast.info("Select and copy the text in the box above.");
                 }
               }}
             >
-              复制看房询问
+              Copy inspection enquiry
             </Button>
             {message.listings.find(
               (listing) => listing.listing_id === enquiry.listing_id,
@@ -154,7 +160,7 @@ export default function TaskResults({
                   )
                 }
               >
-                房源详情
+                Listing details
               </Button>
             )}
           </div>
@@ -165,7 +171,7 @@ export default function TaskResults({
       ((!comparison && !message.task_steps?.length) || Boolean(enquiry)) ? (
         <section
           className="task-result-card task-verification"
-          aria-label="待核实清单"
+          aria-label="Verification checklist"
         >
           <h3>{checks.title}</h3>
           <ul>

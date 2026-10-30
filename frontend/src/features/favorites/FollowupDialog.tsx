@@ -76,7 +76,11 @@ export default function FollowupDialog({
       })
       .catch((e) => {
         if (valid)
-          setError(e instanceof Error ? e.message : "读取选房条件失败。");
+          setError(
+            e instanceof Error
+              ? e.message
+              : "Could not load selection criteria.",
+          );
       })
       .finally(() => {
         if (valid) setLoading(false);
@@ -111,7 +115,11 @@ export default function FollowupDialog({
     } catch (e) {
       if (e && typeof e === "object" && "errorFields" in e) return;
       if (alive.current)
-        setError(e instanceof Error ? e.message : "选定未完成，请重试。");
+        setError(
+          e instanceof Error
+            ? e.message
+            : "Could not complete selection. Please try again.",
+        );
     } finally {
       if (alive.current) setSaving(false);
     }
@@ -124,7 +132,7 @@ export default function FollowupDialog({
       preview.listing.weekly_rent !== listing.weekly_rent);
   return (
     <Modal
-      title="选定这套房并开始跟进？"
+      title="Select this property and start follow-up?"
       open
       onCancel={() => !saving && onClose()}
       width={560}
@@ -132,9 +140,11 @@ export default function FollowupDialog({
         body: { maxHeight: "calc(100dvh - 230px)", overflowY: "auto" },
       }}
       okText={
-        error && pending.current ? "重试确认并开始跟进" : "确认并开始跟进"
+        error && pending.current
+          ? "Retry confirmation and follow-up"
+          : "Confirm and start follow-up"
       }
-      cancelText="继续比较"
+      cancelText="Keep comparing"
       confirmLoading={saving}
       onOk={() => void save()}
       okButtonProps={{ disabled: loading || !preview }}
@@ -144,13 +154,13 @@ export default function FollowupDialog({
     >
       <Typography.Title level={5}>{currentListing.address}</Typography.Title>
       <p>
-        <strong>AUD {currentListing.weekly_rent}/周</strong>
+        <strong>AUD {currentListing.weekly_rent}/week</strong>
       </p>
       {listingChanged && (
         <Alert
           type="warning"
           showIcon
-          title="房源资料已更新，请核对当前地址和周租后再确认。"
+          title="Listing details changed. Check the current address and weekly rent before confirming."
         />
       )}
       {loading ? (
@@ -158,7 +168,10 @@ export default function FollowupDialog({
       ) : (
         preview && (
           <>
-            <p>按当前找房条件开始跟进，已有推荐结果会保留。</p>
+            <p>
+              Start follow-up with your current rental needs. Existing
+              recommendations are retained.
+            </p>
             <ul className="assistant-proposal-summary">
               {preview.summary.map((line) => (
                 <li key={line}>{line}</li>
@@ -167,12 +180,15 @@ export default function FollowupDialog({
             {replacing && (
               <Alert
                 type="info"
-                title={`将替换当前跟进房源：${replacing}。收藏会保留。`}
+                title={`This will replace your current follow-up property: ${replacing}.Favorites are retained.`}
               />
             )}
             {!!missing.length && (
               <>
-                <p>只需补充下面的信息，已有条件已保留：</p>
+                <p>
+                  Complete only the details below. Your existing criteria are
+                  retained:
+                </p>
                 <Form
                   form={form}
                   layout="vertical"
@@ -181,23 +197,23 @@ export default function FollowupDialog({
                   {missing.includes("budget_period") && (
                     <Form.Item
                       name="budget_period"
-                      label="预算周期"
+                      label="Budget period"
                       rules={[{ required: true }]}
                     >
-                      <Select options={[{ value: "week", label: "每周" }]} />
+                      <Select options={[{ value: "week", label: "Weekly" }]} />
                     </Form.Item>
                   )}
                   {missing.includes("budget_scope") && (
                     <Form.Item
                       name="budget_scope"
-                      label="预算计价对象"
+                      label="Budget pricing basis"
                       rules={[{ required: true }]}
                     >
                       <Select
                         options={[
-                          { value: "whole_property", label: "整套" },
-                          { value: "per_person", label: "每人" },
-                          { value: "per_room", label: "每间" },
+                          { value: "whole_property", label: "Whole property" },
+                          { value: "per_person", label: "Per person" },
+                          { value: "per_room", label: "Per room" },
                         ]}
                       />
                     </Form.Item>
@@ -205,7 +221,7 @@ export default function FollowupDialog({
                   {missing.includes("commute_mode") && (
                     <Form.Item
                       name="commute_mode"
-                      label="通勤方式"
+                      label="Commute mode"
                       rules={[{ required: true }]}
                     >
                       <Select options={commuteModes} />
@@ -214,7 +230,7 @@ export default function FollowupDialog({
                   {missing.includes("commute_max_minutes") && (
                     <Form.Item
                       name="commute_max_minutes"
-                      label="单程最多（分钟）"
+                      label="Maximum one-way commute (minutes)"
                       rules={[{ required: true }]}
                     >
                       <InputNumber min={1} max={240} precision={0} />
@@ -239,7 +255,7 @@ export default function FollowupDialog({
                 setReload((v) => v + 1);
               }}
             >
-              读取最新条件
+              Load latest criteria
             </Button>
           }
         />

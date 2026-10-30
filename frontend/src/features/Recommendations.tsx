@@ -69,14 +69,14 @@ export default function Recommendations() {
     return (
       <>
         <PageTitle
-          title="房源推荐"
-          description="推荐依据你明确确认的偏好生成。"
+          title="Housing recommendations"
+          description="Recommendations use the preferences you explicitly confirm."
         />
         <Blank
-          text="还没有推荐报告，请先确认当前偏好。"
+          text="No recommendation report yet. Confirm your current preferences first."
           action={
             <Button type="primary" onClick={() => go("preferences")}>
-              前往确认偏好
+              Confirm preferences
             </Button>
           }
         />
@@ -108,25 +108,27 @@ export default function Recommendations() {
       confirmed: true,
     };
     modal.confirm({
-      title: `确认选择 ${item.listing_id}`,
+      title: `Confirm selection of ${item.listing_id}`,
       content: (
         <>
           <p>
-            {money(item.weekly_cost)} / {label(p.budget?.scope ?? "")} /
-            周，模拟通勤 {item.commute_minutes} 分钟。
+            {money(item.weekly_cost)} / {label(p.budget?.scope ?? "")} / week;
+            simulated commute {item.commute_minutes} minutes.
           </p>
           <p>
-            将按披露的模拟选择时间重新检查资格与证据时效。此操作不表示已经签约。
+            Eligibility and evidence freshness are checked again at the
+            disclosed simulated selection time. This does not mean a lease is
+            signed.
           </p>
         </>
       ),
-      okText: "确认选择此房源",
-      cancelText: "继续比较",
+      okText: "Confirm this listing",
+      cancelText: "Keep comparing",
       onOk: () =>
         action.run(async () => {
           await post(`/cases/${current.case_id}/selections`, body);
           await refresh();
-          message.success("房源已明确选择，证据包已保存。");
+          message.success("Listing selected and evidence pack saved.");
         }),
     });
   };
@@ -141,12 +143,12 @@ export default function Recommendations() {
   return (
     <>
       <PageTitle
-        title="房源推荐"
-        description="根据已确认偏好，找到适合你的下一站。"
+        title="Housing recommendations"
+        description="Find your next home using your confirmed preferences."
         extra={
           <Space wrap>
             <Select
-              aria-label="选择推荐版本"
+              aria-label="Choose recommendation version"
               value={run}
               onChange={(value) => {
                 setRun(value);
@@ -155,10 +157,10 @@ export default function Recommendations() {
               }}
               options={current.evaluations.map((e, i) => ({
                 value: e.run_id,
-                label: `偏好 v${e.profile_version} · 报告 ${i + 1}`,
+                label: `Preferences v${e.profile_version} · Report ${i + 1}`,
               }))}
             />
-            <Button onClick={() => go("preferences")}>修改偏好</Button>
+            <Button onClick={() => go("preferences")}>Edit preferences</Button>
           </Space>
         }
       />
@@ -170,16 +172,20 @@ export default function Recommendations() {
         <Alert
           type="info"
           showIcon
-          title={loading ? "正在读取所选报告" : "所选报告尚未成功读取"}
-          description={`下方保留上次有效报告：偏好 v${report.profile_version}。重新读取成功前暂停选房与证据操作。`}
+          title={
+            loading
+              ? "Loading selected report"
+              : "Could not load selected report"
+          }
+          description={`The last valid report remains below: preferences v${report.profile_version}.Selection and evidence actions are paused until the report reloads successfully.`}
         />
       )}
       {!isCurrent && (
         <Alert
           showIcon
           type="warning"
-          title="当前查看的是历史报告"
-          description="当前草稿或确认版本已改变。历史结果保留，但选房需要使用当前确认版本重新评估。"
+          title="You are viewing a historical report"
+          description="The draft or confirmed version has changed. Historical results remain available, but selection needs a new assessment using current confirmed preferences."
         />
       )}
       {current.selection && (
@@ -188,29 +194,29 @@ export default function Recommendations() {
           showIcon
           title={
             selectionCurrent
-              ? `已选择 ${current.selection.listing_id}`
-              : `历史选择 ${current.selection.listing_id} · 需重新选择`
+              ? `Selected ${current.selection.listing_id}`
+              : `Previous selection ${current.selection.listing_id} · Select again`
           }
           description={
             <Space wrap>
               <span>
                 {selectionCurrent
-                  ? "选房证据包已保存，尚未对外发送。"
-                  : "偏好版本已变化。历史证据包保留，继续合同复核前需按当前偏好重新选择。"}
+                  ? "Selection evidence pack saved. It has not been sent externally."
+                  : "Preferences have changed. The historical evidence pack is retained. Select again using current preferences before contract review."}
               </span>
               <a
                 href={downloadUrl(
                   `/cases/${current.case_id}/exports/selection`,
                 )}
               >
-                下载选房证据包
+                Download selection evidence pack
               </a>
               <Button
                 size="small"
                 disabled={!selectionCurrent}
                 onClick={() => go("contract")}
               >
-                继续合同复核
+                Continue to contract review
               </Button>
             </Space>
           }
@@ -225,29 +231,32 @@ export default function Recommendations() {
         <div className="recommendation-main">
           <section className="preference-band">
             <div>
-              <span>偏好版本</span>
+              <span>Preference version</span>
               <strong>v{report.profile_version}</strong>
             </div>
             <div>
-              <span>最高周预算</span>
+              <span>Maximum weekly budget</span>
               <strong>
                 {money(p.budget?.maximum)} / {label(p.budget?.scope ?? "")}
               </strong>
             </div>
             <div>
-              <span>最长通勤</span>
-              <strong>{p.commute?.maximum_minutes} 分钟</strong>
+              <span>Maximum commute</span>
+              <strong>{p.commute?.maximum_minutes} minutes</strong>
             </div>
             <div>
-              <span>必须满足</span>
+              <span>Must-haves</span>
               <strong>
-                {p.hard_requirements?.map(label).join("、") || "无额外设施要求"}
+                {p.hard_requirements?.map(label).join(", ") ||
+                  "No additional facility requirements"}
               </strong>
             </div>
           </section>
           <p className="snapshot-note">
-            合成快照 {report.as_of} · 固定场景回放 ·{" "}
-            {report.report_status === "partial" ? "部分报告" : "评估完成"}
+            Synthetic snapshot {report.as_of} · fixed scenario replay ·{" "}
+            {report.report_status === "partial"
+              ? "Partial report"
+              : "Assessment complete"}
           </p>
           <div className="report-actions">
             <Space wrap>
@@ -256,28 +265,28 @@ export default function Recommendations() {
                 disabled={!result.comparison || !reportBound}
                 onClick={() => setCompare(true)}
               >
-                查看偏好版本比较
+                Compare preference versions
               </Button>
               <a
                 href={downloadUrl(
                   `/evaluations/${result.run_id}/export?format=json`,
                 )}
               >
-                下载 JSON
+                Download JSON
               </a>
               <a
                 href={downloadUrl(
                   `/evaluations/${result.run_id}/export?format=markdown`,
                 )}
               >
-                下载报告
+                Download report
               </a>
             </Space>
           </div>
           {result.comparison_error && (
             <Alert
               type="info"
-              title="本次结果未生成纯偏好比较"
+              title="No preference-only comparison was generated"
               description={text(result.comparison_error)}
             />
           )}
@@ -287,28 +296,31 @@ export default function Recommendations() {
             items={[
               {
                 key: "recommendations",
-                label: `推荐房源 ${report.recommendations.length}`,
+                label: `Recommended listings ${report.recommendations.length}`,
               },
-              { key: "eligible", label: `全部合格 ${report.counts.eligible}` },
+              {
+                key: "eligible",
+                label: `All eligible ${report.counts.eligible}`,
+              },
               {
                 key: "pending_confirmation",
-                label: `待确认 ${report.counts.pending}`,
+                label: `To confirm ${report.counts.pending}`,
               },
-              { key: "excluded", label: `已排除 ${report.counts.excluded}` },
+              { key: "excluded", label: `Excluded ${report.counts.excluded}` },
               {
                 key: "duplicates",
-                label: `重复记录 ${report.counts.duplicates}`,
+                label: `Duplicate records ${report.counts.duplicates}`,
               },
             ]}
           />
           {category === "duplicates" ? (
             <section className="panel">
-              <h2>同源重复记录</h2>
+              <h2>Duplicates from the same source</h2>
               {report.duplicates.map((d, i) => (
                 <div key={i} className="detail-row">
                   {Object.entries(d).map(([k, v]) => (
                     <p key={k}>
-                      <strong>{label(k)}：</strong>
+                      <strong>{label(k)}: </strong>
                       {text(v)}
                     </p>
                   ))}
@@ -316,7 +328,7 @@ export default function Recommendations() {
               ))}
             </section>
           ) : rows.length === 0 ? (
-            <Blank text="当前分类没有房源。可查看其他分类或返回偏好调整条件。" />
+            <Blank text="No listings in this category. Try another category or adjust your preferences." />
           ) : (
             <div className="listing-list">
               {rows.map((item) => (
@@ -330,12 +342,12 @@ export default function Recommendations() {
                       </span>
                       <div>
                         <h2>{item.listing_id}</h2>
-                        <p>合成房源 · {label(p.rental_mode ?? "")}</p>
+                        <p>Synthetic listing · {label(p.rental_mode ?? "")}</p>
                       </div>
                     </div>
                     <div className="score">
                       {item.score == null ? (
-                        <span className="unscored">未评分</span>
+                        <span className="unscored">Unscored</span>
                       ) : (
                         <strong>{item.score.toFixed(2)}</strong>
                       )}
@@ -343,32 +355,32 @@ export default function Recommendations() {
                         {item.score == null ? (
                           <Status value={item.status ?? category} />
                         ) : (
-                          "偏好匹配分"
+                          "Preference match score"
                         )}
                       </span>
                     </div>
                   </div>
                   <div className="listing-facts">
                     <div>
-                      <span>可比周费用</span>
+                      <span>Comparable weekly cost</span>
                       <strong>
                         {money(item.weekly_cost)} /{" "}
                         {label(p.budget?.scope ?? "")}
                       </strong>
                     </div>
                     <div>
-                      <span>模拟通勤</span>
+                      <span>Simulated commute</span>
                       <strong>
-                        {item.commute_minutes ?? "未提供"}
-                        {item.commute_minutes != null ? " 分钟" : ""}
+                        {item.commute_minutes ?? "Not provided"}
+                        {item.commute_minutes != null ? " minutes" : ""}
                       </strong>
                     </div>
                     <div>
-                      <span>账单范围</span>
+                      <span>Bills coverage</span>
                       <strong>
                         {p.budget?.includes_bills
-                          ? "按含账单条件评估"
-                          : "按不含账单条件评估"}
+                          ? "Assessed with bills included"
+                          : "Assessed with bills excluded"}
                       </strong>
                     </div>
                   </div>
@@ -392,7 +404,7 @@ export default function Recommendations() {
                       disabled={!reportBound}
                       onClick={() => setEvidence(item)}
                     >
-                      查看推荐依据
+                      View recommendation evidence
                     </Button>
                     {item.status === "eligible" && (
                       <Button
@@ -400,9 +412,9 @@ export default function Recommendations() {
                         onClick={() => select(item)}
                         disabled={!isCurrent || action.busy}
                         loading={action.busy}
-                        aria-label="选择此房源"
+                        aria-label="Select this listing"
                       >
-                        选择此房源
+                        Select this listing
                       </Button>
                     )}
                   </div>
@@ -415,7 +427,7 @@ export default function Recommendations() {
             items={[
               {
                 key: "limits",
-                label: "数据范围与澄清事项",
+                label: "Data scope and clarifications",
                 children: (
                   <>
                     <ul>
@@ -431,60 +443,64 @@ export default function Recommendations() {
           />
         </div>
         <aside className="workflow-rail">
-          <h2>当前流程</h2>
+          <h2>Current workflow</h2>
           <Steps
             orientation="vertical"
             current={selectionCurrent ? 2 : 1}
             items={[
               {
-                title: "确认偏好",
-                content: `已确认 v${report.profile_version}`,
+                title: "Confirm preferences",
+                content: `Confirmed v${report.profile_version}`,
               },
               {
-                title: "选择房源",
+                title: "Select a listing",
                 content: selectionCurrent
-                  ? "已选择"
+                  ? "Selected"
                   : current.selection
-                    ? "历史选择待重新确认"
-                    : "进行中",
+                    ? "Historical selection needs confirmation again"
+                    : "In progress",
               },
               {
-                title: "合同复核",
-                content: current.reviews.length ? "查看结果" : "待开始",
+                title: "Contract review",
+                content: current.reviews.length
+                  ? "View results"
+                  : "Not started",
               },
             ]}
           />
-          <p>由你确认后再进入下一步。</p>
+          <p>Each next step requires your confirmation.</p>
           <small>
-            模拟选择时间
+            Simulated selection time
             <br />
             {config.clocks.selection}
           </small>
         </aside>
       </div>
       <EvidenceDrawer
-        title={`${evidence?.listing_id ?? ""} · 推荐依据`}
+        title={`${evidence?.listing_id ?? ""} · Recommendation evidence`}
         open={Boolean(evidence)}
         onClose={() => setEvidence(null)}
       >
         {evidence && (
           <>
-            <h3>四维匹配分与有效权重</h3>
+            <h3>Four-dimension scores and effective weights</h3>
             <div className="score-grid">
               {Object.entries(evidence.score_breakdown ?? {}).map(
                 ([key, value]) => (
                   <div key={key}>
                     <span>{label(key)}</span>
-                    <strong>{value == null ? "未知" : value.toFixed(2)}</strong>
+                    <strong>
+                      {value == null ? "Unknown" : value.toFixed(2)}
+                    </strong>
                     <small>
-                      有效权重{" "}
+                      Effective weight{" "}
                       {Math.round((report.effective_weights[key] ?? 0) * 100)}%
                     </small>
                   </div>
                 ),
               )}
             </div>
-            <h3>硬条件检查</h3>
+            <h3>Hard requirement checks</h3>
             {Object.entries(evidence.hard_checks ?? {}).map(([key, check]) => (
               <div className="detail-row" key={key}>
                 <Status value={check.status} />
@@ -492,19 +508,19 @@ export default function Recommendations() {
                 <p>{check.reason}</p>
               </div>
             ))}
-            <h3>来源与观察时间</h3>
+            <h3>Sources and observation times</h3>
             {Object.entries(evidence.evidence_refs ?? {}).map(([key, ref]) => (
               <div className="detail-row" key={key}>
                 <strong>{label(key)}</strong>
                 <p className="break-word">{ref.source_ref}</p>
-                <small>{ref.observed_at} · 合成证据</small>
+                <small>{ref.observed_at} · Synthetic evidence</small>
               </div>
             ))}
             <Collapse
               items={[
                 {
                   key: "raw",
-                  label: "输入与报告引用",
+                  label: "Input and report references",
                   children: (
                     <JsonDetails
                       value={{
@@ -522,15 +538,16 @@ export default function Recommendations() {
         )}
       </EvidenceDrawer>
       <EvidenceDrawer
-        title="偏好版本比较"
+        title="Preference version comparison"
         open={compare}
         onClose={() => setCompare(false)}
       >
         <p>
-          比较由 Agent1 核对已保存版本，并复用 Agent2
-          的同搜索、同快照与规则版本比较。名次同时受其他合格候选变化影响。
+          Agent1 checks saved versions and reuses Agent2 comparisons with the
+          same search, snapshot and rule version. Rankings also depend on
+          changes to other eligible candidates.
         </p>
-        <h3>偏好变化</h3>
+        <h3>Preference changes</h3>
         <JsonDetails value={result.comparison?.changed_fields} />
         <Table
           rowKey="listing_id"
@@ -539,14 +556,14 @@ export default function Recommendations() {
           pagination={{ pageSize: 8 }}
           dataSource={comparisonRows}
           columns={[
-            { title: "房源", dataIndex: "listing_id" },
+            { title: "Listings", dataIndex: "listing_id" },
             {
-              title: "名次变化",
+              title: "Rank change",
               render: (_, r) =>
                 `${text(r.before_rank)} → ${text(r.after_rank)}`,
             },
             {
-              title: "分数变化",
+              title: "Score change",
               render: (_, r) =>
                 `${text(r.before_score)} → ${text(r.after_score)}`,
             },

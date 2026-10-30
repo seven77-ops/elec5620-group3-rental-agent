@@ -35,7 +35,7 @@ def register_real_data_routes(app, services):
                 return old['result']
             listing = validate_listing(body['listing'])
             records = services.repo.get(db, 'real_listing_collection', case_id) or {'items': []}
-            require(len(records['items']) < 30, 409, 'listing_limit', '当前案例最多保存30条真实房源观察记录。')
+            require(len(records['items']) < 30, 409, 'listing_limit', 'This case can contain at most 30 live listing observations.')
             listing.update(record_id=uid('real'), saved_at=now())
             records['items'].append(listing)
             services.repo.put(db, 'real_listing_collection', case_id, records)

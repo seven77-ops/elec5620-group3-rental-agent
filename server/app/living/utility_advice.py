@@ -3,7 +3,7 @@ from copy import deepcopy
 import re
 from .utility_catalog import amount, public_plan
 
-LABELS={'internet':'网络','electricity':'电力','gas':'燃气','water':'供水'}
+LABELS={'internet':'Internet','electricity':'Electricity','gas':'Gas','water':'Water'}
 PROVIDERS={'agl':('agl',),'origin':('origin',),'energyaustralia':('energyaustralia','energy australia'),
     'telstra':('telstra',),'optus':('optus',),'tpg':('tpg',),'aussie-broadband':('aussie broadband','aussie'),
     'superloop':('superloop',),'sydney-water':('sydney water',)}
@@ -51,19 +51,19 @@ def advise(catalog,message,category=None,profile=None,on=None):
             if p['provider_id'] not in seen:picked.append(p);seen.add(p['provider_id'])
         chosen=picked[:3]
         if chosen:
-            content='以下是收录套餐中可比较的网络方案，按首12个月基础月租排序；不是全市场最低价，也未核实具体地址可用性。'
-            if budget is not None:content+=f' 月预算 AUD {amount(budget)} 按恢复原价后的月租筛选。'
-            if speed is not None:content+=f' 下载参考至少 {amount(speed)} Mbps，需核对你家的接入技术。'
-            for p in chosen:content+='\n'+p['name']+'：'+p['price_summary']+f"；首年基础月租 AUD {amount(p['first_year_base_cost_aud'])}。"
-            content+='\n首年金额不含路由器、运费、特殊安装或提前离网费用；促销资格、优惠码和设备留网条件请看套餐详情。你可以补充人数、速度和预算，我再缩小范围。'
-        else:content='当前有效记录里没有同时满足这些预算和速度条件的网络套餐。预算按恢复原价后的月租核对；不能把前几个月优惠价当作长期价格。可以调整预算或速度，或到官网查询其他方案。'
+            content='These included internet plans are ranked by their first 12 months of base fees. They are not a market-wide cheapest-price comparison and address availability is unverified.'
+            if budget is not None:content+=f' The AUD {amount(budget)} monthly budget is checked against the ongoing monthly fee after promotions.'
+            if speed is not None:content+=f' Download reference at least {amount(speed)} Mbps; check your home access technology.'
+            for p in chosen:content+='\n'+p['name']+': '+p['price_summary']+f"; first-year base fees AUD {amount(p['first_year_base_cost_aud'])}."
+            content+='\nFirst-year totals exclude router, delivery, special installation and early exit costs. Check promotional eligibility, codes and hardware retention terms in plan details. Add household size, speed and budget to narrow the choices.'
+        else:content='No current included internet plan meets both budget and speed requirements. Budget uses ongoing monthly fees, not introductory prices. Adjust budget or speed, or check official sites for other plans.'
     elif category=='water':
         chosen=rows[:1]
-        content='Sydney Water服务由房屋地址决定，不能自由更换成另一家零售商。'
+        content='Sydney Water service is determined by the property address; another retailer cannot be freely selected.'
         for p in chosen:content+='\n'+'\n'.join(p['pricing_lines'])
-        content+='\n私人租赁中，固定供水和污水等产权费用通常由房东承担；用水费转付给租客须满足独立水表、节水要求、提供用量账单证据等条件。租客通常不用另开Sydney Water账户。'
-        if chosen:content+=' 费用责任规则见下方NSW官方说明。'
-        if not chosen:content+=' 当前没有有效水价快照，金额请到Sydney Water官网核对。'
+        content+='\nIn private rentals, fixed water and wastewater ownership charges are usually the landlord responsibility. Passing usage charges to a tenant requires conditions including separate metering, water efficiency and billing evidence. Tenants usually do not open a separate Sydney Water account.'
+        if chosen:content+=' See the NSW official guidance below for payment responsibilities.'
+        if not chosen:content+=' No current water-price snapshot is available. Check amounts on the Sydney Water website.'
     else:
         # Energy comparisons need the actual meter tariff and usage profile; do not invent a monthly bill.
         ordered=sorted(rows,key=lambda p:('CONT_LOAD' in p['pricing'].get('model',''),'TIME_OF_USE' in p['pricing'].get('model',''),p['name'],p['id']))
@@ -72,18 +72,18 @@ def advise(catalog,message,category=None,profile=None,on=None):
             key=(p['provider_id'],p['category'],p['name'])
             if key not in seen:chosen.append(p);seen.add(key)
             if len(chosen)>=6:break
-        content='电力、燃气通常由每日固定费加实际用量费组成；分时电价还取决于用电时段，燃气可能按阶梯计费。没有账单用量和电表费率，不能据单价认定哪家最便宜。'
+        content='Electricity and gas usually combine daily supply and usage charges. Time-of-use electricity depends on usage times and gas may use blocks. Without billed usage and meter tariffs, unit prices alone cannot establish the cheapest provider.'
         if not category and not named:
             # Overview shows one representative offer per category/provider, including broadband and water.
             chosen=[];seen=set()
             for p in rows:
                 key=(p['provider_id'],p['category'])
                 if key not in seen:chosen.append(p);seen.add(key)
-            content='已收录网络、电力、燃气及Sydney Water的官方套餐和计费参考。可以问“每月80以内的网络套餐”“AGL电费怎么收”或“水费谁付”。'
+            content='Official internet, electricity, gas and Sydney Water plans and pricing references are included. Try asking for internet plans under AUD 80 per month, AGL electricity rates, or who pays water charges.'
         elif chosen:
-            for p in chosen:content+='\n'+p['name']+'（'+p['network_label']+'）：'+'；'.join(p['pricing_lines'][:3])
-            content+='\n电气显示的是含GST的优惠前基准费率；折扣、返现、受控负荷和连接费用另按条件核对。提供邮编、账单用量及单一/分时电表信息后再比较，不能把配网范围当成楼栋已可开户。'
-        else:content+=' 当前没有匹配的有效快照；过期费率不会作为推荐。'
+            for p in chosen:content+='\n'+p['name']+' ('+p['network_label']+'): '+';'.join(p['pricing_lines'][:3])
+            content+='\nEnergy prices shown are baseline rates including GST before discounts. Check discounts, cashback, controlled load and connection costs separately. Compare using postcode, billed usage and meter tariff; distribution-network coverage does not establish building eligibility.'
+        else:content+=' No matching current snapshot is available. Expired rates are excluded from recommendations.'
     return {'content':content,'plans':[public_plan(p) for p in chosen],'availability':'address_unconfirmed',
             'criteria':{'category':category,'postcode':postcode,'max_monthly_aud':budget,'minimum_download_mbps':speed},
-            'scope':'本地官方快照；非全市场、非实时报价，需按地址核验。'}
+            'scope':'Local official snapshots; not market-wide or live quotes. Verify against your address.'}

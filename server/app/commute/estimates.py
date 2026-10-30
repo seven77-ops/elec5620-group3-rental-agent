@@ -11,7 +11,7 @@ from zoneinfo import ZoneInfo
 from .locations import listing_address,normalized
 from .usyd import MODES
 
-LABELS={'street':'街道估算','suburb':'区域估算','postcode':'邮区估算'}
+LABELS={'street':'Street estimate','suburb':'Suburb estimate','postcode':'Postcode estimate'}
 
 
 def street_key(row):
@@ -80,7 +80,7 @@ def derive_estimates(rows,records):
                     'queried_at':min(stamps),'reference_arrival_at':anchors[0]['route'].get('reference_arrival_at'),
                     'evidence_fingerprint':sha256(json.dumps(source,sort_keys=True,ensure_ascii=False).encode()).hexdigest(),
                     'method':'located_neighbour_route_range_with_location_margin',
-                    'limitations':'按同街道、区域或邮区已有房源路线加位置余量粗估；未定位到本房屋，不代表实际门到校时长。'}
+                    'limitations':'Estimated from existing routes on the same street, suburb or postcode with a location margin. This property has not been located precisely; this is not actual door-to-campus travel time.'}
                 break
         if modes:result[identifier]=modes
     return result

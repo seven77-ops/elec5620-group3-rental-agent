@@ -27,28 +27,33 @@ test("AI-collected needs prefill the panel and sync without retyping other condi
     conversation = await response.json();
   }
   await page.goto(`/cases/${c.case_id}/assistant`);
-  await page.getByRole("button", { name: "我的租房需求", exact: true }).click();
+  await page
+    .getByRole("button", { name: "My rental needs", exact: true })
+    .click();
   const drawer = page.getByRole("dialog", {
-    name: "我的租房需求",
+    name: "My rental needs",
     exact: true,
   });
   await expect(
-    drawer.getByRole("spinbutton", { name: "最高预算（AUD）", exact: true }),
+    drawer.getByRole("spinbutton", {
+      name: "Maximum budget (AUD)",
+      exact: true,
+    }),
   ).toHaveValue("800");
   await expect(
-    drawer.getByRole("spinbutton", { name: "至少卧室", exact: true }),
+    drawer.getByRole("spinbutton", { name: "Minimum bedrooms", exact: true }),
   ).toHaveValue("2");
   await expect(
-    drawer.getByRole("spinbutton", { name: "至少浴室", exact: true }),
+    drawer.getByRole("spinbutton", { name: "Minimum bathrooms", exact: true }),
   ).toHaveValue("2");
   await expect(
-    drawer.getByRole("spinbutton", { name: "至少车位", exact: true }),
+    drawer.getByRole("spinbutton", { name: "Minimum car spaces", exact: true }),
   ).toHaveValue("0");
   await drawer
-    .getByRole("spinbutton", { name: "最高预算（AUD）", exact: true })
+    .getByRole("spinbutton", { name: "Maximum budget (AUD)", exact: true })
     .fill("900");
   await drawer
-    .getByRole("button", { name: "保存找房条件", exact: true })
+    .getByRole("button", { name: "Save rental needs", exact: true })
     .click();
   await expect(page.getByTestId("assistant-needs-status")).toHaveCount(0);
   await expect(drawer).not.toBeVisible();
@@ -63,9 +68,14 @@ test("AI-collected needs prefill the panel and sync without retyping other condi
     min_bathrooms: 2,
     min_car_spaces: 0,
   });
-  await page.getByRole("menuitem", { name: "房源推荐", exact: true }).click();
+  await page
+    .getByRole("menuitem", { name: "Housing recommendations", exact: true })
+    .click();
   await expect(
-    page.getByRole("spinbutton", { name: "最高周租（AUD）", exact: true }),
+    page.getByRole("spinbutton", {
+      name: "Maximum weekly rent (AUD)",
+      exact: true,
+    }),
   ).toHaveValue("900");
 });
 
@@ -76,59 +86,76 @@ test("chat needs require confirmation, sync real recommendations and persist a s
   const c = await (await request.post("/api/v1/cases", { data: {} })).json();
   await page.goto(`/cases/${c.case_id}/assistant`);
   await expect(
-    page.getByRole("menuitem", { name: "租房偏好", exact: true }),
+    page.getByRole("menuitem", { name: "Rental preferences", exact: true }),
   ).toHaveCount(0);
-  await page.getByRole("button", { name: "我的租房需求", exact: true }).click();
+  await page
+    .getByRole("button", { name: "My rental needs", exact: true })
+    .click();
   const drawer = page.getByRole("dialog", {
-    name: "我的租房需求",
+    name: "My rental needs",
     exact: true,
   });
-  await drawer.getByLabel("偏好区域", { exact: true }).click();
-  await drawer.getByLabel("偏好区域", { exact: true }).fill("Rhodes");
+  await drawer.getByLabel("Preferred area", { exact: true }).click();
+  await drawer.getByLabel("Preferred area", { exact: true }).fill("Rhodes");
   await page.getByRole("option", { name: "Rhodes", exact: true }).click();
   await drawer
-    .getByRole("spinbutton", { name: "最高预算（AUD）", exact: true })
+    .getByRole("spinbutton", { name: "Maximum budget (AUD)", exact: true })
     .fill("1500");
-  await drawer.getByLabel("预算周期", { exact: true }).click();
-  await page.getByRole("option", { name: "每周", exact: true }).click();
-  await drawer.getByLabel("计价对象", { exact: true }).click();
-  await page.getByRole("option", { name: "整套", exact: true }).click();
-  await drawer.getByLabel("租赁方式", { exact: true }).click();
-  await page.getByRole("option", { name: "整租", exact: true }).click();
+  await drawer.getByLabel("Budget period", { exact: true }).click();
+  await page.getByRole("option", { name: "Weekly", exact: true }).click();
+  await drawer.getByLabel("Pricing basis", { exact: true }).click();
+  await page
+    .locator("#chat-rental-needs_budget_scope_list")
+    .getByRole("option", { name: "Whole property", exact: true })
+    .click();
+  await drawer.getByLabel("Rental type", { exact: true }).click();
+  await page
+    .locator("#chat-rental-needs_rental_mode_list")
+    .getByRole("option", { name: "Whole property", exact: true })
+    .click();
   await drawer
-    .getByRole("spinbutton", { name: "居住人数", exact: true })
+    .getByRole("spinbutton", { name: "Number of occupants", exact: true })
     .fill("1");
   await drawer
-    .getByRole("spinbutton", { name: "至少卧室", exact: true })
+    .getByRole("spinbutton", { name: "Minimum bedrooms", exact: true })
     .fill("2");
   await drawer
-    .getByRole("spinbutton", { name: "至少浴室", exact: true })
+    .getByRole("spinbutton", { name: "Minimum bathrooms", exact: true })
     .fill("2");
   await drawer
-    .getByRole("spinbutton", { name: "至少车位", exact: true })
+    .getByRole("spinbutton", { name: "Minimum car spaces", exact: true })
     .fill("1");
   await drawer
-    .getByRole("button", { name: "保存找房条件", exact: true })
+    .getByRole("button", { name: "Save rental needs", exact: true })
     .click();
   await expect(drawer).not.toBeVisible();
   await expect(page.getByTestId("assistant-needs-status")).toHaveCount(0);
   const card = page.locator(".assistant-listing").first();
   await expect(card).toBeVisible();
   const address = await card.locator("h3").innerText();
-  await card.getByRole("button", { name: "选定并跟进", exact: true }).click();
-  await page
-    .getByRole("dialog", { name: "选定这套房并开始跟进？", exact: true })
-    .getByRole("button", { name: "确认并开始跟进", exact: true })
+  await card
+    .getByRole("button", { name: "Select and follow up", exact: true })
     .click();
-  await expect(card.getByText("当前跟进房源", { exact: true })).toBeVisible();
+  await page
+    .getByRole("dialog", {
+      name: "Select this property and start follow-up?",
+      exact: true,
+    })
+    .getByRole("button", { name: "Confirm and start follow-up", exact: true })
+    .click();
+  await expect(
+    card.getByText("Current follow-up property", { exact: true }),
+  ).toBeVisible();
   await page.reload();
   await expect(
     page
       .locator(".assistant-listing")
       .first()
-      .getByText("当前跟进房源", { exact: true }),
+      .getByText("Current follow-up property", { exact: true }),
   ).toBeVisible();
-  await page.getByRole("menuitem", { name: "房源推荐", exact: true }).click();
+  await page
+    .getByRole("menuitem", { name: "Housing recommendations", exact: true })
+    .click();
   await expect(page.getByText(address, { exact: true }).first()).toBeVisible();
   const saved = await (await request.get(`/api/v1/cases/${c.case_id}`)).json();
   expect(saved.confirmations.at(-1).version).toBe(1);
@@ -149,7 +176,7 @@ test("mobile chat keeps needs management inside the conversation page", async ({
   await page.setViewportSize({ width: 360, height: 800 });
   await page.goto(`/cases/${c.case_id}/assistant?needs=1`);
   const drawer = page.getByRole("dialog", {
-    name: "我的租房需求",
+    name: "My rental needs",
     exact: true,
   });
   await expect(drawer).toBeVisible();
@@ -158,9 +185,9 @@ test("mobile chat keeps needs management inside the conversation page", async ({
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
-  await drawer.getByRole("button", { name: "关闭", exact: true }).click();
+  await drawer.getByRole("button", { name: "Close", exact: true }).click();
   await expect(
-    page.getByRole("textbox", { name: "给租房助手的消息" }),
+    page.getByRole("textbox", { name: "Message to Rental Assistant" }),
   ).toBeVisible();
 });
 
@@ -175,46 +202,60 @@ test("new needs remain blank and optional dates do not block saving a real budge
     profile_version: 1,
   });
   await page.goto(`/cases/${c.case_id}/assistant`);
-  await page.getByRole("button", { name: "我的租房需求", exact: true }).click();
+  await page
+    .getByRole("button", { name: "My rental needs", exact: true })
+    .click();
   const drawer = page.getByRole("dialog", {
-    name: "我的租房需求",
+    name: "My rental needs",
     exact: true,
   });
   await expect(
-    drawer.getByRole("spinbutton", { name: "最高预算（AUD）", exact: true }),
+    drawer.getByRole("spinbutton", {
+      name: "Maximum budget (AUD)",
+      exact: true,
+    }),
   ).toHaveValue("");
   await expect(
-    drawer.getByRole("spinbutton", { name: "居住人数", exact: true }),
+    drawer.getByRole("spinbutton", {
+      name: "Number of occupants",
+      exact: true,
+    }),
   ).toHaveValue("");
   await expect(
-    drawer.getByRole("spinbutton", { name: "至少卧室", exact: true }),
+    drawer.getByRole("spinbutton", { name: "Minimum bedrooms", exact: true }),
   ).toHaveValue("");
   await page.goto(`/cases/${c.case_id}/preferences`);
   await expect(page).toHaveURL(
     new RegExp(`/cases/${c.case_id}/assistant\\?needs=1$`),
   );
   await expect(
-    page.getByRole("heading", { name: "房屋条件", exact: true }),
+    page.getByRole("heading", { name: "Housing criteria", exact: true }),
   ).toHaveCount(0);
   const panel = await fillRentalNeeds(page, { budget: 1000 });
   for (const copy of [
     "AI 整理的条件",
     "数量填 0",
     "上课前到达时间",
-    "出行日",
+    "Travel day",
     "记录你看重什么",
   ])
     await expect(panel).not.toContainText(copy);
   await expect(
-    panel.getByRole("button", { name: "其他偏好与完整设置", exact: true }),
+    panel.getByRole("button", {
+      name: "Other preferences and full settings",
+      exact: true,
+    }),
   ).toHaveCount(0);
   await expect(
-    panel.getByRole("button", { name: "查看房源推荐", exact: true }),
+    panel.getByRole("button", {
+      name: "View housing recommendations",
+      exact: true,
+    }),
   ).toHaveCount(0);
   await page.screenshot({ path: "/tmp/rental-needs-cleanup-desktop.png" });
   await page.setViewportSize({ width: 390, height: 844 });
   await panel
-    .getByRole("button", { name: "保存找房条件", exact: true })
+    .getByRole("button", { name: "Save rental needs", exact: true })
     .scrollIntoViewIfNeeded();
   await expect
     .poll(async () => {

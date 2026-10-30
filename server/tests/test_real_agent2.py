@@ -70,7 +70,7 @@ class RealAgent2Tests(unittest.TestCase):
             self.assertEqual(item['bedrooms'], 1)
             self.assertEqual(item['advertised_bedrooms'], 0)
             self.assertEqual(item['bedroom_count_basis'], 'open_plan_as_one')
-            self.assertEqual(item['bedroom_label'], '1（开放式）')
+            self.assertEqual(item['bedroom_label'], '1 (open-plan)')
         two_plus = self.client.get('/api/v1/listings?min_bedrooms=2&page_size=100').json()
         self.assertFalse({r['listing_id'] for r in two_plus['items']} & {r['record_id'] for r in studios})
         self.confirm()
@@ -78,7 +78,7 @@ class RealAgent2Tests(unittest.TestCase):
         item = next(r for r in run['report']['pending_confirmation'] if r['listing_id']==studios[0]['record_id'])
         self.assertEqual(item['bedrooms'],1)
         self.assertEqual(item['evidence_refs']['bedrooms']['source_value'],0)
-        self.assertIn('开放式', self.client.get(f'/api/v1/evaluations/{run["run_id"]}/export?format=markdown').text)
+        self.assertIn('Open-plan', self.client.get(f'/api/v1/evaluations/{run["run_id"]}/export?format=markdown').text)
         self.assertEqual(json.loads(Path('agent2/data/real/listings.json').read_text()), source)
 
     def test_evaluation_selection_retry_and_real_contract_boundary(self):
@@ -166,7 +166,7 @@ class RealAgent2Tests(unittest.TestCase):
         self.assertGreater(run['counts']['input'], 0)
         self.assertLess(run['counts']['input'], 500)
         self.assertTrue(all(r['weekly_rent'] <= 550 for r in run['pending_confirmation']))
-        self.assertTrue(any('计价' in note for note in run['unverified_preferences']))
+        self.assertTrue(any('rent scope' in note for note in run['unverified_preferences']))
 
     def test_housing_preferences_survive_agent1_confirmation_and_filter_results(self):
         budget = {**self.case['draft']['profile']['budget'], 'maximum':1500}

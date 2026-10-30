@@ -40,11 +40,11 @@ export default function AftercareBondDetails({
   };
   return (
     <Modal
-      title="补录押金资料"
+      title="Add bond details"
       open
       onOk={save}
-      okText="保存押金资料"
-      cancelText={recovery.error ? "取消本次编辑" : "取消"}
+      okText="Save bond details"
+      cancelText={recovery.error ? "Cancel this edit" : "Cancel"}
       confirmLoading={busy}
       okButtonProps={{
         disabled:
@@ -64,10 +64,14 @@ export default function AftercareBondDetails({
       }}
     >
       <p>
-        填写押金编号，或选择已登记的押金凭证。保存后仍是草稿，核对事实后再激活跟进。
+        Enter a bond reference or select registered bond evidence. This remains
+        a draft after saving. Check the facts before activating follow-up.
       </p>
       {!editable && (
-        <Alert type="warning" title="跟进已激活，草稿资料不可修改。" />
+        <Alert
+          type="warning"
+          title="Follow-up is active. Draft details cannot be edited."
+        />
       )}
       <CommandRecovery
         {...recovery}
@@ -81,20 +85,20 @@ export default function AftercareBondDetails({
         layout="vertical"
         disabled={busy || recovery.refreshing || !editable}
       >
-        <Form.Item label="押金记录编号" htmlFor="bond-details-reference">
+        <Form.Item label="Bond reference" htmlFor="bond-details-reference">
           <Input
             id="bond-details-reference"
             value={reference}
             onChange={(e) => setReference(e.target.value)}
           />
         </Form.Item>
-        <Form.Item label="押金凭证" htmlFor="bond-details-deposit">
+        <Form.Item label="Bond evidence" htmlFor="bond-details-deposit">
           <Select
             id="bond-details-deposit"
             allowClear
             value={deposit}
             onChange={setDeposit}
-            placeholder="选择已登记的押金凭证"
+            placeholder="Select registered bond evidence"
             options={deposits.map((e) => ({
               value: String(e.evidence_id),
               label: `${e.evidence_id} · ${e.summary}`,
@@ -103,7 +107,8 @@ export default function AftercareBondDetails({
         </Form.Item>
         {!deposits.length && (
           <p className="muted small">
-            暂无押金凭证。可在“查看资料与证据”中登记“押金凭证”，再回来选择。
+            No bond evidence yet. Register “Bond evidence” in “View details and
+            evidence”, then return to select it.
           </p>
         )}
       </Form>

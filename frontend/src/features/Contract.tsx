@@ -1,3 +1,4 @@
+import ContractKnowledgePanel from "./knowledge/ContractKnowledgePanel";
 import { useEffect, useRef, useState } from "react";
 import {
   Alert,
@@ -16,7 +17,6 @@ import { useCase, currentConfirmation } from "../app/context";
 import { api, downloadUrl, post } from "../api/client";
 import type { Dict, Evidence, Review } from "../api/types";
 import {
-  Blank,
   EvidenceDrawer,
   Failure,
   JsonDetails,
@@ -116,7 +116,9 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
         setReview(r);
         setCorrect(false);
         await refresh();
-        message.success("新复核版本已保存，旧问题已失效。");
+        message.success(
+          "New review version saved. Earlier questions are no longer current.",
+        );
       });
     } catch {
       /* Inline form validation. */
@@ -128,17 +130,17 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
     <>
       {!embedded && (
         <PageTitle
-          title="合同复核"
-          description="将合同事实与所选房源交叉核对，查看每项结果的原文依据。"
+          title="Contract review"
+          description="Upload a contract to review key clauses, items to check, and source evidence. Cross-check against a selected property when available."
           extra={
             current.reviews.length > 0 ? (
               <Select
-                aria-label="选择合同复核记录"
+                aria-label="Select contract review record"
                 value={ref}
                 onChange={setSelectedReview}
                 options={current.reviews.map((r, i) => ({
                   value: r.review_id,
-                  label: `合同 ${i + 1} · v${r.version}`,
+                  label: `Contract ${i + 1} · v${r.version}`,
                 }))}
               />
             ) : undefined
@@ -147,12 +149,12 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
       )}
       {embedded && current.reviews.length > 0 && (
         <Select
-          aria-label="选择合同复核记录"
+          aria-label="Select contract review record"
           value={ref}
           onChange={setSelectedReview}
           options={current.reviews.map((r, i) => ({
             value: r.review_id,
-            label: `合同 ${i + 1} · v${r.version}`,
+            label: `Contract ${i + 1} · v${r.version}`,
           }))}
         />
       )}
@@ -163,7 +165,7 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
       {current.selection ? (
         <section className="selection-strip">
           <div>
-            <span>已选房源</span>
+            <span>Selected property</span>
             <strong>
               {current.selection.data_mode === "real_listings"
                 ? text(current.selection.listing_snapshot.address)
@@ -171,49 +173,55 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
             </strong>
             <p>
               {current.selection.data_mode === "real_listings"
-                ? `房源 AUD ${text(current.selection.listing_snapshot.weekly_rent)}/周 · 计价对象待确认`
+                ? `Listing AUD ${text(current.selection.listing_snapshot.weekly_rent)}/week · Pricing basis to be confirmed`
                 : text(current.selection.listing_snapshot.address)}
             </p>
           </div>
-          <Button onClick={() => go("recommendations")}>查看选房依据</Button>
+          <Button onClick={() => go("recommendations")}>
+            View selection evidence
+          </Button>
         </section>
       ) : (
-        <Blank
-          text="请先保存一套房源候选，再上传合同核对。"
-          action={
-            <Button onClick={() => go("recommendations")}>前往房源推荐</Button>
-          }
+        <Alert
+          type="info"
+          showIcon
+          title="Upload an existing contract directly"
+          description="No rental needs or property selection is required. Give separate consent to review the contract, then continue asking about its clauses here."
         />
       )}
       {current.selection && !currentSelection && (
         <Alert
           type="warning"
           showIcon
-          title="当前选房来自旧偏好版本"
-          description="请先按当前确认偏好重新评估并选择房源。历史合同结果仍然保留。"
+          title="The selected property uses an earlier preference version"
+          description="Reassess and select a property using your current confirmed preferences. Historical contract results are preserved."
         />
       )}
       {current.selection?.data_mode === "real_listings" && (
         <Alert
           type="info"
           showIcon
-          title="可以直接复核已有合同"
-          description="房源房源仍是待核实快照。合同先在本地提取，与房源及补充记录分别比对。"
+          title="Review an existing contract directly"
+          description="The property remains an unverified snapshot. Contract fields are extracted locally and compared separately with the property and supplementary records."
         />
       )}
-      {current.selection && (
-        <ContractUpload
-          revision={consentRevision}
-          onConsentChange={consentChanged}
-          onReview={(r) => {
-            setReview(r);
-            setSelectedReview(r.review_id);
-            consentChanged();
-          }}
-        />
-      )}
+      <ContractUpload
+        revision={consentRevision}
+        onConsentChange={consentChanged}
+        onReview={(r) => {
+          setReview(r);
+          setSelectedReview(r.review_id);
+          consentChanged();
+        }}
+      />
       {review && (
         <>
+          <ContractKnowledgePanel
+            caseId={current.case_id}
+            reviewId={review.review_id}
+            reviewVersion={review.version}
+            active={Boolean(reviewConsent?.consent_active)}
+          />
           <ContractAi
             key={`${review.review_id}:${review.version}:${Boolean(reviewConsent?.consent_active)}`}
             review={review}
@@ -236,17 +244,17 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
           <section className="review-status">
             <div>
               <Status value={review.status} />
-              <strong>复核版本 v{review.version}</strong>
+              <strong>Review version v{review.version}</strong>
               <p>
                 {review.status_reason ??
-                  "请结合提取字段、来源及发现项核对合同。复核完成不表示签约批准。"}
+                  "Check the contract against extracted fields, sources, and findings. Review completion does not approve signing."}
               </p>
             </div>
             <Space wrap>
               <Button onClick={() => setHistoryOpen(true)}>
-                查看历史复核版本
+                View review history
               </Button>
-              <Button onClick={consentChanged}>读取最新复核状态</Button>
+              <Button onClick={consentChanged}>Load latest review state</Button>
               <Button
                 disabled={!reviewConsent?.consent_active}
                 onClick={() => {
@@ -268,14 +276,14 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
                   setCorrect(true);
                 }}
               >
-                修正提取字段
+                Correct extracted fields
               </Button>
               <a
                 href={downloadUrl(
                   `/contract-reviews/${review.review_id}/export`,
                 )}
               >
-                下载复核 JSON
+                Download review JSON
               </a>
             </Space>
           </section>
@@ -283,8 +291,8 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
             <Alert
               type="warning"
               showIcon
-              title="本次复核处理同意未生效或上下文已变化"
-              description="历史结果可读，后续分析与修改暂停。需要继续处理时，请核对选房并重新同意、提交合同。"
+              title="Review processing consent is inactive or the context has changed"
+              description="Historical results remain readable. Further analysis and edits are paused. To continue, check the processing scope, give consent again, and submit the contract."
             />
           )}
           {reviewConsent?.consent_active && (
@@ -302,7 +310,7 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
                   });
                 }}
               >
-                撤销本次复核处理同意
+                Revoke processing consent for this review
               </Button>
             </div>
           )}
@@ -311,7 +319,7 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
           )}
           <div className="contract-result">
             <section className="panel">
-              <h2>合同提取字段</h2>
+              <h2>Extracted contract fields</h2>
               <Descriptions
                 column={1}
                 size="small"
@@ -327,7 +335,7 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
                           size="small"
                           onClick={() => setSource(field.evidence!)}
                         >
-                          查看原文
+                          View source text
                         </Button>
                       )}
                     </div>
@@ -336,9 +344,12 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
               />
             </section>
             <section className="panel">
-              <h2>发现与待办</h2>
+              <h2>Findings and tasks</h2>
               {findings.length === 0 ? (
-                <p className="muted">当前复核没有发现项，不生成额外问题。</p>
+                <p className="muted">
+                  This review has no findings. No additional questions will be
+                  generated.
+                </p>
               ) : (
                 findings.map((finding, i) => (
                   <article className="finding" key={i}>
@@ -362,7 +373,7 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
                             key={j}
                             onClick={() => setSource(e as Evidence)}
                           >
-                            依据 {j + 1}
+                            Evidence {j + 1}
                           </Button>
                         ))}
                       </Space>
@@ -375,7 +386,7 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
                             target="_blank"
                             rel="noreferrer"
                           >
-                            查看引用规则
+                            View cited rule
                           </a>{" "}
                           · {text(finding.rule_version)}
                         </p>
@@ -387,8 +398,8 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
                 <Alert
                   type="warning"
                   showIcon
-                  title="等待本地演示操作员处理"
-                  description="租客不能放行高风险发现，人工决定前问题生成功能保持不可用。"
+                  title="Awaiting local demo operator"
+                  description="Tenants cannot release high-risk findings. Question generation remains unavailable until a human decision."
                 />
               )}
               <div className="consent-actions">
@@ -400,26 +411,26 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
                   }
                   onClick={questions}
                   loading={action.busy}
-                  aria-label="准备问题清单"
+                  aria-label="Prepare question list"
                 >
-                  准备问题清单
+                  Prepare question list
                 </Button>
               </div>
               {questionList.length > 0 && (
                 <>
-                  <h3>问题清单 · 尚未发送</h3>
+                  <h3>Questions · Not sent</h3>
                   <a
                     href={downloadUrl(
                       `/contract-reviews/${review.review_id}/questions/export`,
                     )}
                   >
-                    下载问题清单
+                    Download questions
                   </a>
                   {questionList.map((q, i) => (
                     <div className="detail-row" key={i}>
                       <p>{text(q.text)}</p>
                       <small>
-                        发现 {text(q.finding_id)} · 复核版本{" "}
+                        Finding {text(q.finding_id)} · Review version{" "}
                         {text(q.review_version)}
                       </small>
                     </div>
@@ -432,7 +443,7 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
             items={[
               {
                 key: "trace",
-                label: "复核引用与版本历史",
+                label: "Review references and version history",
                 children: (
                   <JsonDetails
                     value={{
@@ -450,10 +461,15 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
           />
           <div className="next-action compact">
             <div>
-              <h2>继续租后服务</h2>
-              <p>先补齐并确认租约资料。合同复核结果只作为候选事实来源。</p>
+              <h2>Continue to aftercare services</h2>
+              <p>
+                Complete and confirm lease details first. Contract review
+                results serve only as candidate facts.
+              </p>
             </div>
-            <Button onClick={() => go("aftercare")}>确认租约资料</Button>
+            <Button onClick={() => go("aftercare")}>
+              Confirm lease details
+            </Button>
           </div>
         </>
       )}
@@ -465,18 +481,19 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
         />
       )}
       <EvidenceDrawer
-        title="合同原文依据"
+        title="Contract source evidence"
         open={Boolean(source)}
         onClose={() => setSource(null)}
       >
         {source && (
           <>
             <p className="muted">
-              {source.source_name ?? source.source_ref} · 第{" "}
-              {source.page ?? "—"} 页 · 第 {source.line ?? "—"} 行
+              {source.source_name ?? source.source_ref} · Page{" "}
+              {source.page ?? "—"} · Line {source.line ?? "—"}
             </p>
             <blockquote className="source-quote">
-              {source.quote ?? "该引用未提供可定位引文，请核对完整来源。"}
+              {source.quote ??
+                "This reference has no locatable quotation. Check the full source."}
             </blockquote>
             <JsonDetails value={source} />
           </>
@@ -484,33 +501,36 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
       </EvidenceDrawer>
       <Modal
         open={correct}
-        title="修正提取字段"
-        okText="保存为新复核版本"
-        cancelText="取消"
+        title="Correct extracted fields"
+        okText="Save as a new review version"
+        cancelText="Cancel"
         onCancel={() => setCorrect(false)}
         onOk={saveCorrection}
         confirmLoading={action.busy}
       >
-        <p>仅修正实际提取有误的字段。修改将重新复核并使旧问题失效。</p>
+        <p>
+          Only correct fields extracted incorrectly. Changes trigger a new
+          review and invalidate earlier questions.
+        </p>
         <Form form={correctionForm} layout="vertical">
           <Form.Item
             name="address"
-            label="合同地址"
+            label="Contract address"
             rules={[{ required: true }]}
           >
             <Input />
           </Form.Item>
           <div className="form-grid">
-            <Form.Item name="rent_amount" label="合同租金（AUD）">
+            <Form.Item name="rent_amount" label="Contract rent (AUD)">
               <InputNumber min={0} />
             </Form.Item>
-            <Form.Item name="bond" label="押金（AUD）">
+            <Form.Item name="bond" label="Bond (AUD)">
               <InputNumber min={0} />
             </Form.Item>
-            <Form.Item name="start_date" label="租期开始">
+            <Form.Item name="start_date" label="Lease start">
               <Input type="date" />
             </Form.Item>
-            <Form.Item name="end_date" label="租期结束">
+            <Form.Item name="end_date" label="Lease end">
               <Input type="date" />
             </Form.Item>
           </div>

@@ -27,10 +27,10 @@ export default function MarketPanel() {
   };
   return (
     <section className="panel real-panel">
-      <h2>同邮区、同户型的历史租金</h2>
+      <h2>Historical rent for the same postcode and layout</h2>
       <p>
-        已接入 NSW 政府真实数据。选择一卧或两卧公寓，查看样本量、中位数和中间
-        50% 的租金范围。
+        Uses real NSW Government data. Choose a one- or two-bedroom apartment to
+        see the sample size, median and middle 50% rent range.
       </p>
       <Form
         layout="vertical"
@@ -45,34 +45,34 @@ export default function MarketPanel() {
         <div className="real-form-grid">
           <Form.Item
             name="postcode"
-            label="参考邮区"
+            label="Reference postcode"
             rules={[{ required: true }]}
           >
             <Select options={postcodeOptions} />
           </Form.Item>
           <Form.Item
             name="bedrooms"
-            label="公寓卧室数"
+            label="Apartment bedrooms"
             rules={[{ required: true }]}
           >
             <Select
               options={[
-                { value: 1, label: "一卧公寓" },
-                { value: 2, label: "两卧公寓" },
+                { value: 1, label: "One-bedroom apartment" },
+                { value: 2, label: "Two-bedroom apartment" },
               ]}
             />
           </Form.Item>
           <Form.Item
             name="rent_scope"
-            label="租金计价对象"
+            label="Rent pricing basis"
             rules={[{ required: true }]}
           >
             <Select options={scopeOptions} />
           </Form.Item>
           <Form.Item
             name="weekly_rent"
-            label="房源基础周租（AUD，可留空）"
-            extra="填写房源租金，不填写个人预算或加上账单后的总费用。"
+            label="Base weekly rent (AUD, optional)"
+            extra="Enter the listing rent, without personal budgets or additional bills."
           >
             <InputNumber min={0} max={100000} style={{ width: "100%" }} />
           </Form.Item>
@@ -80,10 +80,10 @@ export default function MarketPanel() {
         <Button
           type="primary"
           htmlType="submit"
-          aria-label="查询租金参考"
+          aria-label="Look up rent reference"
           loading={query.busy}
         >
-          查询租金参考
+          Look up rent reference
         </Button>
       </Form>
       <Failure error={query.error} />
@@ -91,12 +91,12 @@ export default function MarketPanel() {
         <Alert
           type="info"
           showIcon
-          title="单间和按人报价暂不提供市场比较"
-          description="当前数据按一卧/两卧公寓统计，不能代表合租单间。需要同类单间样本后才能比较。"
+          title="Market comparisons are unavailable for rooms and per-person prices"
+          description="The data covers one- and two-bedroom apartments and does not represent shared rooms. Comparable room samples are needed."
         />
       )}
       {query.result?.status === "unavailable" && (
-        <Alert type="info" title="当前区域或户型尚无接入数据" />
+        <Alert type="info" title="No connected data for this area or layout" />
       )}
       {query.result?.benchmarks.map((b) => (
         <article
@@ -107,47 +107,50 @@ export default function MarketPanel() {
           <div className="real-result-title">
             <h3>
               {b.period === "2026-09"
-                ? "2026 年 9 月 · 登记样本"
-                : "2026 年第二季度 · 官方统计"}
+                ? "September 2026 · registered samples"
+                : "2026 Q2 · official statistics"}
             </h3>
             <span className="muted">
               {b.official_statistic
-                ? "政府公布的统计值"
-                : "根据政府原始数据计算"}
+                ? "Government-published statistics"
+                : "Calculated from government source data"}
             </span>
           </div>
           <div className="real-stat-grid">
             <div>
-              <span>周租中位数</span>
+              <span>Median weekly rent</span>
               <strong>A${b.median.toLocaleString()}</strong>
             </div>
             <div>
-              <span>中间 50% 租金范围</span>
+              <span>Middle 50% rent range</span>
               <strong>
                 A${b.q25.toLocaleString()}–{b.q75.toLocaleString()}
               </strong>
             </div>
             <div>
-              <span>新增押金登记样本</span>
-              <strong>{b.sample_size} 条</strong>
+              <span>New bond registrations</span>
+              <strong>{b.sample_size} records</strong>
             </div>
           </div>
           {b.difference_aud != null && (
             <p>
               {b.difference_aud === 0
-                ? "所填周租与该样本中位数相同。"
-                : `所填周租比该样本中位数${b.difference_aud > 0 ? "高" : "低"} A$${Math.abs(b.difference_aud)}（${Math.abs(b.difference_percent ?? 0).toFixed(1)}%）。`}{" "}
-              这一差值不代表房源是否合理或安全。
+                ? "The entered rent matches the sample median."
+                : `The entered rent is A$${Math.abs(b.difference_aud)} (${Math.abs(b.difference_percent ?? 0).toFixed(1)}%) ${b.difference_aud > 0 ? "higher" : "lower"} than the sample median.`}{" "}
+              This difference does not establish whether a listing is fairly
+              priced or safe.
             </p>
           )}
           <a href={b.source_url} target="_blank" rel="noreferrer">
-            查看政府数据来源
+            View government data source
           </a>
         </article>
       ))}
       <p className="muted">
-        统计期间不是今天。邮区可能包含多个
-        suburb；未控制面积、家具、楼层和账单。这里的参考值独立于个人偏好匹配分，不用于保证未来租金。
+        The statistics cover an earlier period. A postcode may include multiple
+        suburbs; floor area, furnishings, floor level and bills are not
+        controlled. These references are separate from personal preference
+        scores and do not guarantee future rent.
       </p>
     </section>
   );

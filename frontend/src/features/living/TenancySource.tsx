@@ -10,19 +10,19 @@ import { newRequestId } from "../../api/client";
 import { Failure } from "../../components/Common";
 import { useAction } from "../../components/useAction";
 const labels: Partial<Record<keyof LivingProfile, string>> = {
-  address: "居住地址",
-  agent_name: "中介或房东姓名",
-  agent_email: "联系邮箱",
-  agent_phone: "联系电话",
-  lease_start_date: "租约开始日期",
-  lease_end_date: "租约结束日期",
-  carpeted: "有地毯",
+  address: "Home address",
+  agent_name: "Agent or landlord name",
+  agent_email: "Contact email",
+  agent_phone: "Contact phone",
+  lease_start_date: "Lease start date",
+  lease_end_date: "Lease end date",
+  carpeted: "Has carpet",
 };
 const sourceLabel = (
   label: string | undefined,
   version: number | undefined,
 ) => {
-  const title = label || "租约资料";
+  const title = label || "Lease details";
   return version && !/\bv\d+\b/i.test(title) ? `${title} · v${version}` : title;
 };
 const nonempty = (value: unknown) =>
@@ -31,12 +31,12 @@ const nonempty = (value: unknown) =>
   (typeof value !== "string" || value.trim() !== "");
 const display = (value: unknown) =>
   value === true
-    ? "是"
+    ? "Yes"
     : value === false
-      ? "否"
+      ? "No"
       : nonempty(value)
         ? String(value)
-        : "尚未填写";
+        : "Not entered";
 export default function TenancySource({
   record,
   busy,
@@ -97,24 +97,25 @@ export default function TenancySource({
       requestId = newRequestId(),
       token = generation.current;
     modal.confirm({
-      title: "确认接入这些实际租约资料？",
+      title: "Import these actual lease details?",
       content: (
         <>
           <p>
-            只更新你勾选的非空字段，现有供应商、报修、服务记录与附件保持不变。
+            Only selected non-empty fields are updated. Existing providers,
+            repairs, service records, and attachments are preserved.
           </p>
           <ul>
             {fields.map((key) => (
               <li key={key}>
-                {labels[key as keyof LivingProfile] || key}：
+                {labels[key as keyof LivingProfile] || key}:
                 {display(source.values[key as keyof LivingProfile])}
               </li>
             ))}
           </ul>
         </>
       ),
-      okText: "确认接入租约资料",
-      cancelText: "继续核对",
+      okText: "Confirm lease import",
+      cancelText: "Continue checking",
       onOk: () =>
         action
           .run(async () => {
@@ -144,28 +145,28 @@ export default function TenancySource({
   return (
     <section className="living-source-bar">
       <div>
-        <strong>租约与生活资料</strong>
+        <strong>Lease and living details</strong>
         {record.tenancy_source && (
-          <p>{`已接入：${sourceLabel(record.tenancy_source.label, record.tenancy_source.version)}`}</p>
+          <p>{`Imported: ${sourceLabel(record.tenancy_source.label, record.tenancy_source.version)}`}</p>
         )}
       </div>
       <Button disabled={busy || action.busy} onClick={() => void read()}>
-        查看租约来源
+        View lease source
       </Button>
       <Modal
-        title="核对租约来源"
+        title="Check lease source"
         open={open}
         onCancel={() => !action.busy && setOpen(false)}
         onOk={confirm}
-        okText="接入所选资料"
-        cancelText="取消"
+        okText="Import selected details"
+        cancelText="Cancel"
         confirmLoading={action.busy}
         okButtonProps={{
           disabled:
             loading || !actual || !preview?.source?.current || !selected.length,
-          "aria-label": "接入所选资料",
+          "aria-label": "Import selected details",
         }}
-        cancelButtonProps={{ disabled: action.busy, "aria-label": "取消" }}
+        cancelButtonProps={{ disabled: action.busy, "aria-label": "Cancel" }}
         closable={!action.busy}
         mask={{ closable: !action.busy }}
         width={680}
@@ -173,7 +174,7 @@ export default function TenancySource({
         {loading ? (
           <div className="living-loading">
             <Spin />
-            <span>正在读取租约来源…</span>
+            <span>Loading lease source…</span>
           </div>
         ) : (
           <>
@@ -186,18 +187,19 @@ export default function TenancySource({
                       loading={action.busy}
                       onClick={() => void action.retry()}
                     >
-                      重试原接入
+                      Retry original import
                     </Button>
                   )}
                   <Button disabled={action.busy} onClick={() => void read()}>
-                    重新预览
+                    Preview again
                   </Button>
                 </Space>
               </>
             )}
             {!preview?.source ? (
               <p className="muted">
-                还没有可接入的租约资料。租约草稿或合同复核都不能自动证明实际入住。
+                No lease details are available to import. A lease draft or
+                contract review does not prove actual occupancy.
               </p>
             ) : (
               <>
@@ -211,21 +213,24 @@ export default function TenancySource({
                   />
                 )}
                 {!preview.source.current && (
-                  <p role="alert">来源已过期，请先核对当前租约或房源资料。</p>
+                  <p role="alert">
+                    The source is outdated. Check the current lease or property
+                    details first.
+                  </p>
                 )}
                 {preview.previous.address &&
                   preview.values.address &&
                   preview.previous.address !== preview.values.address && (
                     <Alert
                       type="warning"
-                      title="这次来源的地址与已保存住处不同。接入后，原有供应商、报修、服务与附件仍保持原记录，请另外核对是否适用于新住处。"
+                      title="This source address differs from your saved home. Importing preserves existing provider, repair, service, and attachment records. Check separately whether they apply to the new home."
                     />
                   )}
                 <div className="living-source-fields">
                   {fields.map((key) => (
                     <div className="living-source-field" key={key}>
                       <Checkbox
-                        aria-label={`接入 ${labels[key as keyof LivingProfile] || key}`}
+                        aria-label={`Import ${labels[key as keyof LivingProfile] || key}`}
                         checked={selected.includes(key)}
                         disabled={action.busy || !preview.source?.current}
                         onChange={(event) => {
@@ -240,7 +245,7 @@ export default function TenancySource({
                         {labels[key as keyof LivingProfile] || key}
                       </Checkbox>
                       <div>
-                        <span>已保存</span>
+                        <span>Saved</span>
                         <p>
                           {display(
                             preview.previous[key as keyof LivingProfile],
@@ -248,7 +253,7 @@ export default function TenancySource({
                         </p>
                       </div>
                       <div>
-                        <span>来源资料</span>
+                        <span>Source information</span>
                         <p>
                           {display(preview.values[key as keyof LivingProfile])}
                         </p>
@@ -257,17 +262,21 @@ export default function TenancySource({
                   ))}
                 </div>
                 {!fields.length && (
-                  <p className="muted">来源没有可接入的非空字段。</p>
+                  <p className="muted">
+                    The source has no non-empty fields available to import.
+                  </p>
                 )}
                 <Checkbox
                   checked={actual}
                   disabled={action.busy || !preview.source.current}
                   onChange={(event) => setActual(event.target.checked)}
                 >
-                  我确认这些资料对应我的实际租约。
+                  I confirm these details correspond to my actual lease.
                 </Checkbox>
                 <p className="living-note">
-                  草稿或复核结果不代表租约已签订。只接入勾选的资料，缺失值不会清空现有资料。
+                  A draft or review does not establish that a lease is signed.
+                  Only selected fields are imported; missing values do not clear
+                  existing information.
                 </p>
               </>
             )}

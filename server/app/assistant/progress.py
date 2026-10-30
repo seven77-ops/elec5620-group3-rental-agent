@@ -28,14 +28,16 @@ def region_continuation(conversation,text):
     # area in an unrelated message or a negated request cannot trigger this.
     for suburb in shown:
         pattern=r'(?:保持我的预算和房型要求[，,]\s*)?按\s*'+re.escape(suburb)+r'\s*区域继续推荐房源[，,]\s*并核对到(?:学校或公司|悉大主校区)的通勤[。.!！]?'
-        if re.fullmatch(pattern,text.strip(),flags=re.I):return suburb
+        english=(r'Keep my budget and housing needs, recommend listings in '+re.escape(suburb)+
+                 r' and check the commute to the University of Sydney main campus[.!]?')
+        if re.fullmatch(pattern,text.strip(),flags=re.I) or re.fullmatch(english,text.strip(),flags=re.I):return suburb
     return None
 
 
 def explicit_transition(conversation,text):
     edited=explicit_edit(conversation,text)
     if edited:return edited
-    if conversation.get('dialogue_mode')=='recommend_areas' and text.strip()=='保持全部已确认的预算、房型和通勤条件，换一批推荐，优先展示之前没看过的房源。':
+    if conversation.get('dialogue_mode')=='recommend_areas' and text.strip() in ('保持全部已确认的预算、房型和通勤条件，换一批推荐，优先展示之前没看过的房源。', 'Keep all confirmed budget, property and commute requirements and refresh the recommendations, prioritising listings not previously shown.', 'Keep all confirmed budget, housing and commute criteria. Show another set of recommendations, prioritising listings I have not seen before.'):
         return {'intent':'recommend_areas','refresh_recommendations':True}
     pending=pending_question(conversation)
     preference=preferences_progress.explicit(conversation,text,pending)

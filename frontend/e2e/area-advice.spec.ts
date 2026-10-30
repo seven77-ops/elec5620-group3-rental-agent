@@ -6,33 +6,38 @@ test("choosing Rhodes and answering commute minutes advances without repeating a
 }) => {
   const c = await (await request.post("/api/v1/cases", { data: {} })).json();
   await page.goto(`/cases/${c.case_id}/assistant`);
-  const composer = page.getByPlaceholder("描述你的租房需求，或问一个问题…");
-  const submit = page.getByRole("button", { name: "发送消息", exact: true });
+  const composer = page.getByPlaceholder(
+    "Describe your rental needs or ask a question…",
+  );
+  const submit = page.getByRole("button", {
+    name: "Send message",
+    exact: true,
+  });
   await composer.fill("比较 Burwood 和 Rhodes，我看重公园和餐饮");
   await submit.click();
   await expect(
-    page.getByRole("region", { name: "区域生活建议", exact: true }),
+    page.getByRole("region", { name: "Area lifestyle advice", exact: true }),
   ).toHaveCount(1);
   await page
-    .getByRole("button", { name: "在 Rhodes 找房", exact: true })
+    .getByRole("button", { name: "In Rhodes find a home", exact: true })
     .click();
   await expect(composer).toHaveValue(
-    "保持我的预算和房型要求，按 Rhodes 区域继续推荐房源，并核对到悉大主校区的通勤。",
+    "Keep my budget and housing needs, recommend listings in Rhodes and check the commute to the University of Sydney main campus.",
   );
   await submit.click();
   await expect(
     page.locator(".assistant-message-assistant").last(),
-  ).toContainText("单程最多接受多少分钟");
+  ).toContainText("maximum one-way commute in minutes");
   await expect(
-    page.getByRole("region", { name: "区域生活建议", exact: true }),
+    page.getByRole("region", { name: "Area lifestyle advice", exact: true }),
   ).toHaveCount(1);
   await composer.fill("20分钟");
   await submit.click();
   const last = page.locator(".assistant-message-assistant").last();
-  await expect(last).toContainText("通勤选");
-  await expect(last).not.toContainText("单程最多接受多少分钟");
+  await expect(last).toContainText("Which commute mode");
+  await expect(last).not.toContainText("maximum one-way commute in minutes");
   await expect(
-    page.getByRole("region", { name: "区域生活建议", exact: true }),
+    page.getByRole("region", { name: "Area lifestyle advice", exact: true }),
   ).toHaveCount(1);
 });
 
@@ -45,40 +50,45 @@ test("area evidence stays in chat while recommendations show filters and results
   const c = await (await request.post("/api/v1/cases", { data: {} })).json();
   await page.goto(`/cases/${c.case_id}/assistant`);
   await page
-    .getByPlaceholder("描述你的租房需求，或问一个问题…")
+    .getByPlaceholder("Describe your rental needs or ask a question…")
     .fill("比较 Burwood 和 Rhodes，我看重公园和餐饮");
-  await page.getByRole("button", { name: "发送消息", exact: true }).click();
+  await page.getByRole("button", { name: "Send message", exact: true }).click();
   const advice = page.getByRole("region", {
-    name: "区域生活建议",
+    name: "Area lifestyle advice",
     exact: true,
   });
   await expect(advice).toBeVisible();
-  await expect(advice).toContainText("12 / 72 个区域");
+  await expect(advice).toContainText("12 / 72 areas");
   await expect(advice).toContainText("Burwood");
   await expect(advice).toContainText("Rhodes");
-  await advice.getByText("查看来源与适用范围", { exact: true }).first().click();
+  await advice
+    .getByText("View sources and scope", { exact: true })
+    .first()
+    .click();
   await expect(
     advice.getByRole("link", { name: /Burwood Chinatown/ }),
   ).toBeVisible();
-  await expect(advice).toContainText("核对：2026-10-24");
-  await page.getByRole("menuitem", { name: "房源推荐" }).click();
+  await expect(advice).toContainText("Checked:2026-10-24");
+  await page.getByRole("menuitem", { name: "Housing recommendations" }).click();
   await expect(
-    page.getByRole("region", { name: "聊天中的区域参考", exact: true }),
+    page.getByRole("region", { name: "Area reference in chat", exact: true }),
   ).toHaveCount(0);
   await expect(page.locator(".real-catalog-filters")).toBeVisible();
   await expect(page.getByTestId("real-catalog")).toBeVisible();
-  await page.getByRole("menuitem", { name: "AI租房助手", exact: true }).click();
+  await page
+    .getByRole("menuitem", { name: "AI rental assistant", exact: true })
+    .click();
   await expect(page).toHaveURL(/assistant/);
   await page
-    .getByPlaceholder("描述你的租房需求，或问一个问题…")
+    .getByPlaceholder("Describe your rental needs or ask a question…")
     .fill("生活配套没有特别要求，比较 Carlton 的安静和安全");
-  await page.getByRole("button", { name: "发送消息", exact: true }).click();
+  await page.getByRole("button", { name: "Send message", exact: true }).click();
   const gap = page
-    .getByRole("region", { name: "区域生活建议", exact: true })
+    .getByRole("region", { name: "Area lifestyle advice", exact: true })
     .last();
   await expect(gap).toContainText("Carlton");
-  await expect(gap).toContainText("资料尚未整理");
-  await expect(gap).toContainText("安静、安全");
+  await expect(gap).toContainText("Area information is not yet compiled");
+  await expect(gap).toContainText("Quietness, Safety");
   await page.setViewportSize({ width: 360, height: 800 });
   await expect(gap).toBeVisible();
   await gap.scrollIntoViewIfNeeded();
@@ -123,7 +133,8 @@ test("recommendations omit duplicate chat panels and do not fetch commute report
     status: "unavailable",
     destination: {
       id: "usyd:camperdown-darlington:fisher-library",
-      label: "悉尼大学 Camperdown / Darlington 主校区 · Fisher Library",
+      label:
+        "University of Sydney Camperdown / Darlington main campus · Fisher Library",
       latitude: -33.88,
       longitude: 151.18,
       precision: "address_point",
@@ -171,7 +182,7 @@ test("recommendations omit duplicate chat panels and do not fetch commute report
   });
   await page.goto(`/cases/${c.case_id}/recommendations`);
   const commute = page.getByRole("region", {
-    name: "聊天中的通勤推荐",
+    name: "Commute recommendations in chat",
     exact: true,
   });
   await expect(commute).toHaveCount(0);
@@ -190,28 +201,36 @@ test("a natural Ashfield choice and changed budget advance with distinct answers
 }) => {
   const c = await (await request.post("/api/v1/cases", { data: {} })).json();
   await page.goto(`/cases/${c.case_id}/assistant`);
-  const composer = page.getByPlaceholder("描述你的租房需求，或问一个问题…");
+  const composer = page.getByPlaceholder(
+    "Describe your rental needs or ask a question…",
+  );
   const send = async (text: string) => {
     await composer.fill(text);
-    await page.getByRole("button", { name: "发送消息", exact: true }).click();
+    await page
+      .getByRole("button", { name: "Send message", exact: true })
+      .click();
     await expect(composer).toHaveValue("");
   };
   await send("比较 Burwood 和 Ashfield，整套850一卧，想吃饭方便");
   const replies = page.locator(".assistant-message-assistant");
   await expect(replies.last()).toContainText("850");
-  await expect(replies.last()).toContainText("餐饮");
+  await expect(replies.last()).toContainText("Food and dining");
   const first = await replies.last().innerText();
   await send("预算降到700，按价格比较这两个区");
   await expect(replies.last()).toContainText("700");
-  await expect(replies.last()).toContainText("低标价");
+  await expect(replies.last()).toContainText("lowest advertised rent");
   expect(await replies.last().innerText()).not.toBe(first);
   await send("那先看Ashfield吧，帮我找房，也看看上学方不方便。");
-  await expect(replies.last()).toContainText("单程最多接受多少分钟");
+  await expect(replies.last()).toContainText(
+    "maximum one-way commute in minutes",
+  );
   await expect(
-    replies.last().getByRole("region", { name: "区域生活建议", exact: true }),
+    replies
+      .last()
+      .getByRole("region", { name: "Area lifestyle advice", exact: true }),
   ).toHaveCount(0);
   await send("20分钟");
-  await expect(replies.last()).toContainText("通勤选");
+  await expect(replies.last()).toContainText("Which commute mode");
   const list = await (
     await request.get(`/api/v1/cases/${c.case_id}/assistant/conversations`)
   ).json();

@@ -28,93 +28,98 @@ async function seed(request: APIRequestContext) {
   return { c, root, row };
 }
 
-test("candidate facts sync between search/chat and the real contract compares frozen sources", async ({
+test("viewing checklist has no reply form; existing saved facts remain available to contract review", async ({
   page,
   request,
 }) => {
   const { c, root, row } = await seed(request);
+  // Existing saved records remain usable by contracts after the input UI is retired.
+  const previous = await (
+    await request.get(root + "/candidate-followup")
+  ).json();
+  const restored = await request.post(root + "/candidate-followup", {
+    data: {
+      request_id: "historical-record",
+      expected_version: 0,
+      selection_signature: previous.selection_signature,
+      confirmed: true,
+      facts: {
+        ...previous.facts,
+        rent_amount: 600,
+        rent_period: "week",
+        rent_scope: "whole_property",
+        source_note: "10月22日中介邮件",
+      },
+    },
+  });
+  expect(restored.ok()).toBe(true);
   await page.goto(`/cases/${c.case_id}/recommendations`);
   const next = page.getByTestId("candidate-next");
   await expect(next).toContainText(row.address);
+  await expect(
+    next.getByRole("button", { name: "Record agent reply", exact: true }),
+  ).toHaveCount(0);
   await next
-    .getByRole("button", { name: "准备看房与询问", exact: true })
+    .getByRole("button", {
+      name: "Prepare inspection and enquiry",
+      exact: true,
+    })
     .click();
-  const drawer = page.getByRole("dialog", { name: "房源跟进", exact: true });
+  const drawer = page.getByRole("dialog", {
+    name: "Inspection enquiry checklist",
+    exact: true,
+  });
   await expect(
-    drawer.getByText("目前是否仍可租？何时可以看房？", { exact: true }),
+    drawer.getByText(
+      "Is the property still available, and when can I inspect it?",
+      { exact: true },
+    ),
   ).toBeVisible();
+  await expect(drawer.locator("input, textarea")).toHaveCount(0);
+  await expect(drawer.getByRole("combobox")).toHaveCount(0);
   await drawer
-    .getByRole("spinbutton", { name: "回复中的租金（AUD）", exact: true })
-    .fill("600");
-  await drawer.getByLabel("租金周期", { exact: true }).click();
-  await page.getByRole("option", { name: "每周", exact: true }).click();
-  await drawer.getByLabel("租金计价对象", { exact: true }).click();
-  await page.getByRole("option", { name: "整套", exact: true }).click();
-  await drawer.getByLabel("信息来源", { exact: true }).fill("10月22日中介邮件");
-  await drawer
-    .getByLabel("看房安排", { exact: true })
-    .fill("周六 11:30，尚未预约");
-  await drawer
-    .getByRole("button", { name: "确认保存跟进信息", exact: true })
+    .getByRole("button", { name: "Review an existing contract", exact: true })
     .click();
   await expect(
-    drawer.getByText("已保存 v1 · 用户记录", { exact: true }),
+    page.getByText("Review an existing contract directly", { exact: true }),
   ).toBeVisible();
-  const state = await (await request.get(root)).json();
-  expect(state.selection.contract_ready).toBe(false);
-  expect(state.selection.listing_snapshot.rent_scope).toBeNull();
-  await drawer.getByRole("button", { name: "关闭", exact: true }).click();
-  await page.getByRole("menuitem", { name: "AI租房助手", exact: true }).click();
-  await page
-    .getByTestId("candidate-next")
-    .getByRole("button", { name: "准备看房与询问", exact: true })
-    .click();
   await expect(
-    drawer.getByRole("spinbutton", {
-      name: "回复中的租金（AUD）",
+    page.getByRole("button", {
+      name: "Agree to process this contract",
       exact: true,
     }),
-  ).toHaveValue("600");
-  await expect(drawer.getByLabel("信息来源", { exact: true })).toHaveValue(
-    "10月22日中介邮件",
-  );
-  await drawer
-    .getByRole("button", { name: "已有合同，开始复核", exact: true })
-    .click();
-  await expect(
-    page.getByText("可以直接复核已有合同", { exact: true }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: "同意处理此合同", exact: true }),
   ).toBeDisabled();
   await page
     .getByRole("checkbox", {
-      name: "我同意为本次复核处理此合同，理解此同意独立于选房确认。",
+      name: "I agree to process this contract for this review and understand this consent is separate from property selection.",
       exact: true,
     })
     .check();
   await page
-    .getByRole("button", { name: "同意处理此合同", exact: true })
+    .getByRole("button", {
+      name: "Agree to process this contract",
+      exact: true,
+    })
     .click();
   const contract = `Address: ${row.address}\nLandlord: Example Owner\nTenant: Example Tenant\nRent: AUD 620 per week whole property\nBond: AUD 2480\nStart date: 2026-11-01\nEnd date: 2027-11-01\n`;
-  await page
-    .locator("input[type=file]")
-    .setInputFiles({
-      name: "actual-lease.txt",
-      mimeType: "text/plain",
-      buffer: Buffer.from(contract),
-    });
+  await page.locator("input[type=file]").setInputFiles({
+    name: "actual-lease.txt",
+    mimeType: "text/plain",
+    buffer: Buffer.from(contract),
+  });
   await page
     .getByRole("checkbox", {
-      name: "我确认有权提交此合同用于本次复核。",
+      name: "I confirm I am authorised to submit this contract for review.",
       exact: true,
     })
     .check();
-  await page.getByRole("button", { name: "上传并复核", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Upload and review", exact: true })
+    .click();
   const comparison = page.getByTestId("real-contract-comparison");
   await expect(comparison).toContainText("10月22日中介邮件");
   await expect(page.getByTestId("comparison-recorded_rent")).toContainText(
-    "需要核对差异",
+    "Review differences",
   );
   await expect(page.getByTestId("comparison-recorded_rent")).toContainText(
     "600",
@@ -123,7 +128,7 @@ test("candidate facts sync between search/chat and the real contract compares fr
     "620",
   );
   await expect(page.getByTestId("comparison-advertised_rent")).toContainText(
-    "计价口径待确认",
+    "Confirm pricing basis",
   );
   await page.reload();
   await expect(comparison).toContainText(row.address);
@@ -150,37 +155,52 @@ test("chat follow-up intent routes to the saved candidate without inventing veri
   );
   expect(r.status()).toBe(200);
   await page.goto(`/cases/${c.case_id}/assistant`);
-  await expect(page.getByText(new RegExp("围绕你已保存的"))).toContainText(
-    row.address,
-  );
+  await expect(
+    page.getByText(new RegExp("For your saved listing")),
+  ).toContainText(row.address);
   await page
-    .getByRole("button", { name: "记录回复与看房安排", exact: true })
+    .getByRole("button", {
+      name: "View inspection enquiry checklist",
+      exact: true,
+    })
     .click();
   await expect(
-    page.getByRole("dialog", { name: "房源跟进", exact: true }),
+    page.getByRole("dialog", {
+      name: "Inspection enquiry checklist",
+      exact: true,
+    }),
   ).toBeVisible();
   expect(
     (await (await request.get(root)).json()).selection.requires_verification,
   ).toBe(true);
 });
 
-test("mobile follow-up fits the viewport and only saves after an explicit action", async ({
+test("mobile viewing checklist fits the viewport and never creates follow-up records", async ({
   page,
   request,
-}) => {
+}, info) => {
   const { c, root } = await seed(request);
   await page.setViewportSize({ width: 360, height: 800 });
   await page.goto(`/cases/${c.case_id}/assistant`);
   await page
     .getByTestId("candidate-next")
-    .getByRole("button", { name: "准备看房与询问", exact: true })
+    .getByRole("button", {
+      name: "Prepare inspection and enquiry",
+      exact: true,
+    })
     .click();
-  const drawer = page.getByRole("dialog", { name: "房源跟进", exact: true });
+  const drawer = page.getByRole("dialog", {
+    name: "Inspection enquiry checklist",
+    exact: true,
+  });
   await expect(drawer).toBeVisible();
-  await expect(drawer.getByLabel("信息来源", { exact: true })).toBeEnabled();
-  await drawer
-    .getByLabel("信息来源", { exact: true })
-    .fill("手机上未保存的记录");
+  await expect(drawer.locator("input, textarea")).toHaveCount(0);
+  await expect(
+    drawer.getByRole("link", {
+      name: "Download enquiry checklist",
+      exact: true,
+    }),
+  ).toHaveAttribute("href", /candidate-followup\/questions$/);
   await expect(async () => {
     const rect = await drawer.boundingBox();
     expect(rect!.width).toBeLessThanOrEqual(360);
@@ -191,7 +211,16 @@ test("mobile follow-up fits the viewport and only saves after an explicit action
       () => document.documentElement.scrollWidth <= window.innerWidth,
     ),
   ).toBe(true);
-  await drawer.getByRole("button", { name: "关闭", exact: true }).click();
+  await drawer
+    .getByRole("button", { name: "Enter lease details", exact: true })
+    .hover();
+  const image = info.outputPath("viewing-checklist-mobile.png");
+  await page.screenshot({ path: image, animations: "disabled" });
+  await info.attach("仅保留看房询问清单", {
+    path: image,
+    contentType: "image/png",
+  });
+  await drawer.getByRole("button", { name: "Close", exact: true }).click();
   expect(
     (await (await request.get(root + "/candidate-followup")).json()).version,
   ).toBe(0);

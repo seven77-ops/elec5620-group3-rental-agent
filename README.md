@@ -1,88 +1,62 @@
 # ELEC5620 Group 3 · Rental Agent
 
-小组租房多 Agent 项目。各成员的实现放在独立目录中，再通过约定的数据契约联调。
+An English rental assistant integrating the group's four agents through a React/TypeScript frontend and a local FastAPI service. The current team trial is **`codex/group-trial-20261022` / draft PR #7**. Do not merge into `main` yet.
 
-接手本地开发请先阅读[最新跨窗口交接说明](docs/frontend/2026-10-27-agent2-chat-ui-handoff.md)，其中记录了MCP接入、当前界面要求、实际工作目录、启动方式与验证结果。
+Read the [30 October trial handoff](docs/frontend/2026-10-30-trial-update.md) for installation, optional model configuration, current verification and known limits. The [English manual test prompts](docs/frontend/english-manual-test-questions.md) provide a reproducible checklist; they describe expected behaviour, not completed team acceptance.
 
-**2026-10-29 最新小组试用版：** `codex/group-trial-20261022` / PR #7，暂不合并 main。本次包含收藏/一次确认选房、推荐条件与理由、合同表单、报修AI、水电气网与服务商页面。请先看 [最新安装与验证](docs/frontend/2026-10-29-trial-update.md)。
+## Run locally
 
-| 模块 | 内容 | 运行说明 |
-|---|---|---|
-| [agent2/](agent2/) | Member 2：房源资格评估、评分推荐、偏好版本比较与本地选房证据包 | [Agent 2 README](agent2/README.md) |
-| [agent3/](agent3/) | Member 3：NSW 官方模板租约草稿、合同读取、选房交叉核对与人工复核 | [Agent 3 README](agent3/README.md) |
-
-## 悉大学生到校通勤
-
-找房按通勤方式、参考分钟上限及可选换乘限制筛选，不按上课时刻或具体班次筛房。卡片与详情按所选方式显示时间或估算区间，不再使用跨方式平均。专用 TfNSW MCP 可查询路线、附近站点及当前提醒；不表示整条未来行程无异常。
-
-首次运行 `.venv/bin/python scripts/setup_tfnsw_mcp.py`（需要 `uv`），再按下方启动网站。上游源码、MIT许可证和锁文件位于 `integrations/tfnsw_mcp/`，使用独立Python环境；后端仍使用本地 `.env` 的 `TFNSW_API_KEY`，无需另配密钥。`scripts/dev.py` 自动启动仅监听本机的6401端口。未安装、端口占用或查询失败时，路线查询保留原有TfNSW直连回退；附近车站/提醒失败会明确提示。设置 `RENTAL_TFNSW_MCP_ENABLED=0` 可关闭MCP。详见[接入验证](docs/frontend/2026-10-27-tfnsw-mcp.md)。
-
-找房现在面向悉尼大学 Camperdown/Darlington 主校区学生，以 Fisher Library 官方设施点为统一到校参考。每套房源提供公共交通（含火车、地铁、公交方案）及开车、骑行、步行标注；超过用户分钟上限或数据未知的房源不会进入符合条件的推荐。
-
-现有1000套房源均有图片和通勤标注；852套取得来源可核对的楼栋位置，849套有公共交通计划方案；原有148套缺楼栋定位的房源提供明确标记的街道或区域通勤区间。新增300套中，215套位于悉大周边，85套覆盖Burwood、Strathfield、Rhodes等通勤区域；每套新增房源配一张匹配照片。找房忽略历史到校时刻/日期，保留通勤方式、分钟和换乘要求；来源路线仍按各自时效核对。详见[数据来源、覆盖与更新方法](agent2/data/real/README-usyd.md)。
-
-## 运行统一前端演示
-
-使用 React/TypeScript/Ant Design 页面与 FastAPI 本地接口。偏好表单通过 Agent 1 保存和确认版本，Agent2 默认读取1000条真实住宅房源，提供房源字段筛选、分页、待核实候选报告和候选快照保存。缺失或损坏的数据文件会使启动失败，不会回退到模拟房源。AI 对话可整理需求、查询与比较候选；保存候选后可记录看房及中介回复，并在独立同意后上传真实合同，由 Agent3 提取和比对。Agent4 需另行确认租约资料。不会向房东或中介发送消息。
+Use a new directory to protect your own uncommitted work:
 
 ```sh
+git clone --branch codex/group-trial-20261022 https://github.com/seven77-ops/elec5620-group3-rental-agent.git
+cd elec5620-group3-rental-agent
 python3 -m venv .venv
 .venv/bin/python -m pip install -r server/requirements-lock.txt
 (cd frontend && npm ci)
 .venv/bin/python scripts/dev.py
 ```
 
-打开 <http://127.0.0.1:5173>。需要 Python 3.11+，前端本次使用 Node 22.23.1 验证。启动脚本生成的本地操作员密钥位于忽略目录 `.runtime/operator-key.txt`。完整启动、演示时钟和权限边界见 [前端运行说明](docs/frontend/implementation.md)，实际结果见 [验证记录](docs/frontend/verification.md)。
+Open <http://127.0.0.1:5173>. Python 3.11+ is required; this publication was checked on macOS with Python 3.13 and Node 22. Windows commands are in the handoff. If ports are occupied, use `--web-port 5197 --api-port 8017`. Stop with Ctrl+C.
 
-## Agent2 网页与真实数据接口
+Business cases, uploads, operator keys and local indexes live in ignored `.runtime/`; dependencies and credentials are not distributed in Git. The app does not provide production multi-user authentication.
 
-访问网页“房源推荐”；租房需求面板收进“AI租房助手”。接口与状态约定见 [真实 Agent2 接入说明](docs/frontend/2026-10-21-agent2-real-catalog.md)。真实广告未核实在租、计价对象和租期，不提供模拟通勤、综合分数或已认证合同交接。
+## Optional AI and transport
 
-## 运行历史 Agent2 合成场景回归
+Copy `.env.example` to your own `.env`; keep keys on the backend. New installations default to AI disabled and Jev routing off. The developer's local credentials and active settings are not shared. Manual forms and the bundled catalogue remain available without external models.
 
-需要 Python 3.10+。从仓库根目录执行：
+- Configure the complete chat-completions URL, model and your own authorized key for business extraction and drafting.
+- Jev uses a separate OpenRouter key and `off`, `shadow` or `active` mode. Continuation and validation rules remain authoritative; uncertain or unavailable classification falls back.
+- Public/private retrieval supports local keywords and optional embeddings, fusion and reranking. Configure full endpoints matching your own provider workspace. Build public vectors explicitly with `.venv/bin/python scripts/rag_index.py --embed`; ordinary startup does not call an embedding provider.
+- Optional TfNSW MCP setup: `.venv/bin/python scripts/setup_tfnsw_mcp.py`. It requires `uv` and Python 3.12+ in its independent environment. The launcher uses POSIX paths; Windows automatic MCP startup has not been verified. The existing direct transport fallback remains available. See the [MCP implementation record](docs/frontend/2026-10-27-tfnsw-mcp.md).
 
-```sh
-cd agent2
-python3 -m pip install -r requirements.txt
-python3 -m unittest discover -s tests -v
-python3 -m rental_agent --profile data/demo/profiles/commute.json --listings data/demo/listings.json --output reports/my-first-run
-```
+## Current journey
 
-以上 CLI 命令仅运行历史模拟场景；它不是网站运行时的数据源。完整参数、比较功能和接口边界见 [Agent 2 说明](agent2/README.md)及[数据契约](agent2/docs/data-contracts.md)。
+1. **Requirements and housing:** Agent1 confirmation/versioning, 1,000 real advertisement snapshots across 72 areas, complete hard-filtered results, mode-specific reference commute times, explicit working-condition edits and evidence-backed lifestyle ordering. Unknown facts remain unknown; advertisements are not proof of current availability.
+2. **Parallel choices:** save/compare favorites or select directly. A single explicit confirmation saves current needs and the selected home atomically. Inspection questions are read-only; contract facts are entered/reviewed on the contract page. The former separate agent-reply form is removed, with historical records retained.
+3. **Contract assistance:** prepare an unsigned NSW template draft or upload a TXT/DOCX/PDF for basic review, including standalone document consent without a selected listing. Review summaries and source questions are available in chat. Private search and external processing require separate consent; changes and revocation invalidate old access.
+4. **Aftercare:** source-based tenancy prefill, repair-email preview/rewrite/copy and explicit save, provider information and personal service records, move-out planning and bond-fact follow-up. Drafts are not sent, bookings are not submitted and funds are not handled.
+5. **Human review and progress:** an operator-key protected inbox shows pending reviews and durable history across local cases. Release decisions unlock system draft preparation only; they do not approve deductions or determine refunds.
+6. **Knowledge:** 14 public documents / 153 chunks, comprising NSW guidance/template material, a University of Sydney guide and product help. Answers expose source quotations and conservative fallbacks. Local private-contract indexes stay separate. Retrieval recall and model source checks are not legal or semantic certification.
 
-## 小组协作
+Newly authored UI, replies and drafts are English. Original messages, names, documents, quotations and saved facts retain their supplied text; multilingual input remains supported. See [AGENTS.md](AGENTS.md) and the [English release record](docs/frontend/2026-10-30-english-product.md).
 
-在自己的模块目录中开发，通过分支与 Pull Request 集成；提交信息和 PR 标题注明 Jira 编号。
+## Modules and contribution boundaries
 
-- [SCRUM-2：偏好确认与房源评估联调](https://breezebee64.atlassian.net/browse/SCRUM-2)
-- [SCRUM-7：偏好比较与排名变化解释](https://breezebee64.atlassian.net/browse/SCRUM-7)
-- [SCRUM-19：Member 1 接口适配与最新推荐版本绑定](https://breezebee64.atlassian.net/browse/SCRUM-19)
+| Module | Responsibility | Reference |
+| --- | --- | --- |
+| Agent1 | Confirmed rental preferences and versions | [Agent1](agent1/) |
+| Agent2 | Listing filtering, evidence, comparison and handoff | [Agent2](agent2/README.md) |
+| Agent3 | Contract reading, template drafts and review | [Agent3](agent3/README.md) |
+| Agent4 | Move-out tasks, bond facts and human-review gates | [Agent4](agent4/) |
+| Shared app | Data adaptation, frontend, AI interaction and integration | [Trial handoff](docs/frontend/2026-10-30-trial-update.md) |
 
-## 跨 Agent 对接
+Anda's work covers data, adapters, frontend, AI interaction and integration. Members' original Agent1/3/4 modules and the third-party MCP implementation retain their authorship.
 
-[输入约定与本地联调](integration/README.md)：包含 Agent 1 已确认偏好及外层确认/版本/任务样例，以及 Agent 2 → Agent 3 的可复现场景。Agent 1 已通过 PR #6 合入 main；统一前端的实际服务接入及验证见 [最新验证记录](docs/frontend/verification.md#2026-10-20agent1-实际服务接入)。
+## Team trial
 
-## AI 接入与模块核对
+[PR #7](https://github.com/seven77-ops/elec5620-group3-rental-agent/pull/7) · [SCRUM-34](https://breezebee64.atlassian.net/browse/SCRUM-34) · [SCRUM-35](https://breezebee64.atlassian.net/browse/SCRUM-35)
 
-Agent 2 推荐解读、Agent 3 候选提取/风险解释与前端接线见 [本地运行与 API 配置](docs/frontend/2026-10-20-ai-local-run.md)；同学核对见 [Agent 3 核对单](docs/frontend/agent3-ai-handoff.md)。默认不开启外部模型，真实服务成功仍需填写自己的后端配置后实测。
+Try the complete flow on your own device. Report reproduction steps, expected/actual behaviour and screenshots to Anda in the group; let Anda coordinate changes to the shared integration. Keep individual module work on separate branches. Data refresh, current availability, cross-device checks, formal M3→M4 coordination and team acceptance remain outstanding.
 
-## 真实数据与历史补充接口
-
-旧版市场租金、观察与补充工具面板已退役；底层接口保留用于开发回归。历史接口可查询悉大周边政府历史租金基准、保存并导出真实房源观察记录，以及在配置凭据后查询 Domain 广告和 TfNSW 通勤。当前不将这些记录自动视为已通过资格评估的推荐。覆盖范围、来源、启动与配置见[真实数据运行说明](docs/frontend/2026-10-21-real-data.md)。
-
-## 候选之后的跟进与真实合同
-
-候选卡片提供“准备看房与询问”“生成租约草稿”和“已有合同，开始复核”。用户记录与广告原始快照分开保存，合同上传后冻结各自版本用于事实比对。未核实广告不转换为历史 `SelectedListingEvidence`；详细接口、范围和验证见 [候选跟进说明](docs/frontend/2026-10-22-candidate-followup.md)。
-
-“合同助手”支持 NSW 普通整租住宅的未签署草稿：填写或用 AI 整理双方及租约要点，经用户确认后保存版本并下载官方模板 PDF。广告租金不会自动成为约定租金；未知内容保留待补，签字栏保持空白。模板来源、版本保存和测试记录见 [租约草稿说明](docs/frontend/2026-10-22-lease-draft.md)。
-
-## 入住后的服务与退租
-
-水电气网已收录165条官方套餐/费率快照并存入SQLite：网络可比较优惠期、恢复价、晚高峰速度和设备条件；电气保留配网、分时/阶梯、固定费与GST；水费区分房东固定费用和有条件的租客用量费。聊天与租后服务页面共用数据，过期记录不参与推荐。[来源、数据库与更新方法](docs/frontend/2026-10-28-utility-plans.md)。
-
-“租后服务”现支持日常报修邮件草稿、实际中介联系人、水电气网供应商保存、真实搬运及清洁公司入口、报价与服务记录、照片收据，以及原 Agent4 的退租计划和押金流程。AI 聊天可读取同一份资料并在用户确认后同步更新；不自动发送邮件或提交预约。目录来源、接口及测试见 [租后服务说明](docs/frontend/2026-10-22-living-services.md)。
-
-搬运与清洁目录现各有12家悉尼服务商，支持按搬运/清洁分组浏览、查看公司简介与官网，保留原有报价/预约记录。详见[公司来源目录](docs/frontend/2026-10-22-living-services.md)。
-
-租后服务还支持[租约资料接续、报修连续对话与待办直达](docs/frontend/2026-10-22-living-continuity.md)：核对来源后选择性带入资料，聊天与页面可跟进同一条报修，顶部待办直接定位到具体事项。
+Historical implementation reports are retained under `docs/frontend/`; their earlier language controls, intermediate commute policies and stage-specific counts are not parallel current features or new acceptance results.

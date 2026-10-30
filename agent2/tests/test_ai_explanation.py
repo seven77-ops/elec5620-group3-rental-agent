@@ -19,7 +19,7 @@ def saved_report():
 
 def valid_response(report):
     return {'items': [
-        {'listing_id': row['listing_id'], 'text': '通勤与费用符合已保存条件，仍须核对原始证据。',
+        {'listing_id': row['listing_id'], 'text': 'The commute and cost meet the saved requirements; original evidence still needs checking.',
          'evidence_refs': [row['evidence_refs']['rent_amount']['source_ref']]}
         for row in report['recommendations']
     ]}
@@ -101,10 +101,10 @@ class AiExplanationTests(unittest.TestCase):
 
     def test_text_at_limit_and_trimming(self):
         self.response['items'][0]['text'] = 'x' * 1000
-        self.response['items'][1]['text'] = '  仅解释已保存评分。  '
+        self.response['items'][1]['text'] = '  Explain only the saved scores.  '
         result = self.explain(self.report, lambda _: self.response)
         self.assertEqual(result['items'][0]['text'], 'x' * 1000)
-        self.assertEqual(result['items'][1]['text'], '仅解释已保存评分。')
+        self.assertEqual(result['items'][1]['text'], 'Explain only the saved scores.')
 
     def test_malformed_response_shape_rejected(self):
         for response in (None, [], {}, {'items': None}, {'items': {}}, {'items': 'bad'},

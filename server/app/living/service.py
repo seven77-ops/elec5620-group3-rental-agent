@@ -22,7 +22,7 @@ class LivingService:
             for provider in directory['providers']:
                 provider['plans'] = [p for p in plans if p['provider_id'] == provider['id']]
                 if provider['plans']:
-                    provider['notes'] = '已收录官方套餐与计价参考；可用性、促销资格和最终费用须按地址及条款核对。'
+                    provider['notes'] = 'Official plans and pricing references are included. Check availability, promotional eligibility and final costs for your address and the terms.'
         return directory
 
     def _record(self, db, case_id):
@@ -40,11 +40,11 @@ class LivingService:
     def _envelope(self, body, values=True):
         shape(body, ('request_id', 'expected_version', 'confirmed', *(['values'] if values else [])))
         request_id(body['request_id'])
-        require(integer(body['expected_version']), 422, 'invalid_input', '请提供有效资料版本。')
-        require(body['confirmed'] is True, 422, 'confirmation_required', '请明确确认此次保存。')
+        require(integer(body['expected_version']), 422, 'invalid_input', 'Provide a valid record version.')
+        require(body['confirmed'] is True, 422, 'confirmation_required', 'Explicitly confirm this save.')
 
     def _version(self, record, version):
-        require(record['version'] == version, 409, 'version_conflict', '资料已变化，请重新读取后确认。')
+        require(record['version'] == version, 409, 'version_conflict', 'The details changed. Reload and confirm again.')
 
     def _finish(self, db, record, key, identity):
         record['version'] += 1
@@ -93,40 +93,40 @@ class LivingService:
             if booking_id is not None:
                 opaque_ref(booking_id)
                 entry = next((b for b in record['bookings'] if b['booking_id'] == booking_id), None)
-                require(entry is not None, 404, 'not_found', '未找到此案例的服务记录。')
+                require(entry is not None, 404, 'not_found', 'Service record not found for this case.')
                 entry.update(values, updated_at=now())
             else:
                 record['bookings'].append({**values, 'booking_id': uid('booking'), 'created_at': now()})
         return self._mutate(case_id, body, 'booking', save)
 
     def prepare_proposal(self, case_id, kind, values, source_message):
-        require(kind in ('profile', 'repair', 'repair_update'), 422, 'invalid_input', '不支持此建议类型。')
+        require(kind in ('profile', 'repair', 'repair_update'), 422, 'invalid_input', 'This proposal type is unsupported.')
         text(source_message, 12000)
         with self.ctx.repo.transaction() as db:
             record = self._record(db, case_id)
             if kind == 'profile':
                 values = profile_values(values, self.catalog, partial=True)
-                require(bool(values), 422, 'invalid_input', '资料建议不能为空。')
-                summary = [*profile_summary(values, self.catalog), '仅在你确认后保存；未填写的信息保持原值。']
+                require(bool(values), 422, 'invalid_input', 'The proposed details cannot be empty.')
+                summary = [*profile_summary(values, self.catalog), 'Saved only after confirmation; unspecified fields retain their previous values.']
             elif kind == 'repair_update':
-                shape(values, ('repair_id',), ('status', 'note', 'email_tone'))
+                shape(values, ('repair_id',), ('status', 'note', 'email_tone', 'email_language', 'email_draft'))
                 opaque_ref(values['repair_id'])
                 entry = next((r for r in record['repairs'] if r['repair_id'] == values['repair_id']), None)
-                require(entry is not None, 404, 'not_found', '未找到此案例的维修记录。')
+                require(entry is not None, 404, 'not_found', 'Repair record not found for this case.')
                 patch = status_values({k:v for k,v in values.items() if k != 'repair_id'})
-                summary = ['更新报修：' + entry['title']]
-                if 'status' in patch: summary.append('状态：' + STATUS_LABELS[patch['status']])
-                if 'note' in patch: summary.append('用户记录：' + patch['note'])
-                if 'email_tone' in patch: summary.append('邮件语气：' + TONE_LABELS[patch['email_tone']] + '；保留原来的事实和收件人。')
-                summary.append('确认后更新同一条报修；不会发送邮件。')
+                summary = ['Update repair: ' + entry['title']]
+                if 'status' in patch: summary.append('Status: ' + STATUS_LABELS[patch['status']])
+                if 'note' in patch: summary.append('User note: ' + patch['note'])
+                if 'email_tone' in patch: summary.append('Email tone: ' + TONE_LABELS[patch['email_tone']] + '; the original facts and recipient are retained.')
+                summary.append('Confirm to update the same repair record. The email will not be sent.')
             else:
                 values = repair_values(values)
-                summary = ['准备维修邮件：' + values['title'], '位置：' + (values['location'] or '待补充'),
-                           '情况描述：' + values['description'],
-                           '优先级：' + ('紧急' if values['priority'] == 'urgent' else '普通'),
-                           '收件人：' + (record['profile']['agent_email'] or '待补充'),
-                           '邮件语气：' + TONE_LABELS[values.get('email_tone','standard')],
-                           '仅生成本地草稿，不会发送邮件。']
+                summary = ['Prepare repair email: ' + values['title'], 'Location: ' + (values['location'] or 'Not supplied'),
+                           'Description: ' + values['description'],
+                           'Priority: ' + ('Urgent' if values['priority'] == 'urgent' else 'Normal'),
+                           'Recipient: ' + (record['profile']['agent_email'] or 'Not supplied'),
+                           'Email tone: ' + TONE_LABELS[values.get('email_tone','standard')],
+                           'Only a local draft is prepared. The email will not be sent.']
             proposal = {'proposal_id': uid('living-proposal'), 'case_id': case_id, 'kind': kind,
                         'values': values, 'summary': summary, 'expected_version': record['version'],
                         'source_message': source_message, 'status': 'pending', 'created_at': now()}
@@ -141,13 +141,13 @@ class LivingService:
         with self.ctx.repo.transaction() as db:
             record = self._record(db, case_id)
             proposal = self.ctx.get(db, 'living_proposal', proposal_id)
-            require(proposal['case_id'] == case_id, 404, 'not_found', '未找到此案例的建议。')
+            require(proposal['case_id'] == case_id, 404, 'not_found', 'Proposal not found for this case.')
             old = self.ctx.receipt(db, 'living_receipt', key, identity)
             if old:
                 return old['result']
-            require(proposal['status'] == 'pending', 409, 'proposal_applied', '此建议已经确认保存。')
+            require(proposal['status'] == 'pending', 409, 'proposal_applied', 'This proposal has already been confirmed and saved.')
             self._version(record, body['expected_version'])
-            require(proposal['expected_version'] == body['expected_version'], 409, 'version_conflict', '建议基于旧资料，请重新生成并确认。')
+            require(proposal['expected_version'] == body['expected_version'], 409, 'version_conflict', 'This proposal uses outdated details. Generate and confirm it again.')
             if proposal['kind'] == 'profile':
                 record['profile'] = profile_values(merge_profile(record['profile'], proposal['values']), self.catalog)
             elif proposal['kind'] == 'repair_update':

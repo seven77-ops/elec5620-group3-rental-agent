@@ -25,14 +25,16 @@ class ContractsAdapter:
         get = self.ctx.get
         repo = self.ctx.repo
         selected = self.ctx.contract_selection
-        shape(body, ('confirmed',), ('consent_id',))
+        shape(body, ('confirmed',), ('consent_id', 'scope'))
+        scope = body.get('scope', 'selection')
+        require(scope in ('selection', 'document'), 422, 'invalid_input', 'Choose selection or document processing scope')
         require(type(body['confirmed']) is bool, 422, 'invalid_input', 'Consent confirmation must be true or false')
         with repo.transaction() as db:
             case = get(db, 'case', case_id)
             if body['confirmed']:
-                selection = selected(case)
+                selection = None if scope == 'document' else selected(case)
                 consent_id = uid('consent')
-                repo.put(db, 'consent', consent_id, {'case_id': case_id, 'selection': selection, 'active': True, 'recorded_at': now()})
+                repo.put(db, 'consent', consent_id, {'case_id': case_id, 'selection': selection, 'scope': scope, 'active': True, 'recorded_at': now()})
             else:
                 require(isinstance(body.get('consent_id'), str), 422, 'invalid_input', 'Supply the consent reference to revoke')
                 consent_id = body['consent_id']
@@ -40,11 +42,16 @@ class ContractsAdapter:
                 require(value['case_id'] == case_id, 403, 'invalid_consent', 'Consent is not bound to this case')
                 value.update(active=False, revoked_at=now())
                 repo.put(db, 'consent', consent_id, value)
-            return {'consent_id': consent_id, 'active': body['confirmed']}
+        if not body['confirmed'] and hasattr(self.ctx,'contract_knowledge'):
+            self.ctx.contract_knowledge.revoke_original(case_id,consent_id)
+        return {'consent_id': consent_id, 'active': body['confirmed']}
 
     def selection_is_current(self, case, consent):
         if consent is None or consent['case_id'] != case['case_id']:
             return False
+        if consent.get('scope') == 'document':
+            # Only an explicit standalone grant is independent of selection changes.
+            return consent.get('selection') is None
         try:
             return self.ctx.contract_selection(case) == consent['selection']
         except ApiError:
@@ -63,6 +70,8 @@ class ContractsAdapter:
                 item = {'consent_id': consent_id, 'active': consent['active'],
                         'recorded_at': consent['recorded_at'],
                         'selection_current': self.selection_is_current(case, consent)}
+                if consent.get('scope') == 'document':
+                    item['scope'] = 'document'
                 if 'revoked_at' in consent:
                     item['revoked_at'] = consent['revoked_at']
                 consents.append(item)
@@ -84,13 +93,12 @@ class ContractsAdapter:
     def upload_authorized(self, db, case_id, consent_id):
         get = self.ctx.get
         repo = self.ctx.repo
-        selected = self.ctx.contract_selection
         # Called before the route touches Request.stream()/body(), and again before disk writes.
         value = repo.get(db, 'consent', consent_id)
         require(value is not None and value['active'] and value['case_id'] == case_id,
                 403, 'consent_required', 'Active independent contract-processing consent is required')
         case = get(db, 'case', case_id)
-        require(selected(case) == value['selection'], 409, 'stale_selection', 'Consent must bind the current saved selection')
+        require(self.selection_is_current(case, value), 409, 'stale_selection', 'Consent must bind the current saved selection')
         return case, value
 
     async def upload(self, case_id: str, request: Request):
@@ -101,9 +109,11 @@ class ContractsAdapter:
         upload_authorized = self.upload_authorized
         consent_id = request.headers.get('X-Consent-Id', '')
         with repo.transaction() as db:
-            initial_case, _ = upload_authorized(db, case_id, consent_id)
-        real = initial_case['selection'].get('data_mode') == 'real_listings'
-        as_of = datetime.now(ZoneInfo('Australia/Sydney')).date().isoformat() if real else expected['contractReferenceDate']
+            initial_case, initial_consent = upload_authorized(db, case_id, consent_id)
+        standalone = initial_consent.get('scope') == 'document'
+        real = not standalone and (initial_case.get('selection') or {}).get('data_mode') == 'real_listings'
+        independent = standalone or real
+        as_of = datetime.now(ZoneInfo('Australia/Sydney')).date().isoformat() if independent else expected['contractReferenceDate']
         logical_id = request_id(request.headers.get('X-Request-Id', ''))
         name = unquote(request.headers.get('X-Filename', ''))
         suffix = Path(name).suffix.lower()
@@ -126,7 +136,7 @@ class ContractsAdapter:
             identity['selection'] = consent['selection']
             # Retry the same logical upload against its original reference date.
             prior = repo.get(db, 'contract_receipt', key)
-            if real and prior:
+            if independent and prior:
                 identity['as_of'] = prior['input']['as_of']
             old = receipt(db, 'contract_receipt', key, identity)
             if old:
@@ -137,14 +147,17 @@ class ContractsAdapter:
             path = directory / file_ref
             try:
                 path.write_bytes(content)
-                document = load_document(path, consent=True, max_pdf_pages=30 if real else 10)
+                document = load_document(path, consent=True, max_pdf_pages=10 if standalone else 30 if real else 10)
                 # Uploaded filenames are presentation data, never filesystem paths.
                 document['source_name'] = Path(name.replace('\\', '/')).name[:200]
-                if real:
+                if independent:
                     # A public ad is contextual material, never a SelectedListingEvidence certificate.
                     review = review_agreement(document, consent=True, selection=None, as_of=as_of,
                                               gateway=None, allow_external_ai=False)
-                    review['data_limitations'].append('房源广告及用户补充记录未经独立核实；事实比对单独保存，不代表在租、申请或签约确认。')
+                    if real:
+                        review['data_limitations'].append('Listing advertisements and supplementary user records are not independently verified. Fact comparisons are stored separately and do not establish availability, an application or a signed tenancy.')
+                    else:
+                        review['data_limitations'].append('This review covers only the uploaded agreement, without a linked listing. No listing or supplementary user record comparison was performed.')
                     created = True
                 else:
                     review, created = receive_review(document, consent=True, selection=consent['selection'],

@@ -15,6 +15,13 @@ CORE_FIELDS = ('bedrooms', 'bathrooms', 'car_spaces', 'weekly_rent')
 FILTER_FIELDS = ('usyd_arrival_time','usyd_travel_day','usyd_travel_date','usyd_max_transfers','usyd_max_minutes','usyd_mode','suburb', 'min_bedrooms', 'min_bathrooms', 'min_car_spaces', 'max_weekly_rent', 'sort')
 
 
+def catalog_fingerprint(rows):
+    """Bind facts using the established display-token encoding across UI locales."""
+    canonical_rows = [dict(row, bedroom_label='1\uff08\u5f00\u653e\u5f0f\uff09')
+                      if row['bedroom_count_basis']=='open_plan_as_one' else row for row in rows]
+    return hashlib.sha256(json.dumps(canonical_rows,sort_keys=True,ensure_ascii=False).encode()).hexdigest()
+
+
 class RealCatalog:
     def __init__(self, path=None, photos_path=None):
         self.path = Path(path) if path is not None else ROOT / 'agent2/data/real/listings.json'
@@ -60,12 +67,14 @@ class RealCatalog:
             row['bedroom_count_basis'] = 'open_plan_as_one' if row['bedrooms'] == 0 else 'advertised'
             if row['bedrooms'] == 0:
                 row['bedrooms'] = 1
-                row['bedroom_label'] = '1（开放式）'
+                row['bedroom_label'] = '1 (open-plan)'
             else:
                 row['bedroom_label'] = f"{row['bedrooms']:g}"
         self.suburbs = sorted({r['suburb'] for r in rows})
         self.as_of = max(row['captured_at'] for row in rows)
-        self.fingerprint = hashlib.sha256(json.dumps(list(self._rows.values()), sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+        # Keep the established catalogue binding stable across display-language changes.
+        # Only the legacy display token is canonicalised; listing facts still enter the hash.
+        self.fingerprint = catalog_fingerprint(self._rows.values())
         from ..commute.snapshot import load_snapshot
         self.commutes=load_snapshot(self)
         if self.commutes:
@@ -87,37 +96,37 @@ class RealCatalog:
                 'photo_count': sum(len(photos) for photos in self._photos.values())}
 
     def get(self, identifier):
-        require(identifier in self._rows, 404, 'listing_not_found', '未找到这条真实房源广告。')
+        require(identifier in self._rows, 404, 'listing_not_found', 'Live listing advertisement not found.')
         from ..commute.snapshot import public_record
         return {**deepcopy(self._rows[identifier]), 'listing_id': identifier, 'commute_minutes': None,
                 'usyd_commute':public_record(self.commutes,identifier),
                 'photos': deepcopy(self._photos.get(identifier, []))}
 
     def filters(self, values):
-        require(isinstance(values, dict) and not set(values) - set(FILTER_FIELDS), 422, 'invalid_filters', '房源筛选字段无效。')
+        require(isinstance(values, dict) and not set(values) - set(FILTER_FIELDS), 422, 'invalid_filters', 'Invalid listing filter fields.')
         result = {k:v for k,v in values.items() if v is not None and k not in ('usyd_arrival_time','usyd_travel_day','usyd_travel_date')}
         if 'suburb' in result:
-            require(isinstance(result['suburb'], str) and result['suburb'] in self.suburbs, 422, 'invalid_filters', '请选择房源库中的区域。')
+            require(isinstance(result['suburb'], str) and result['suburb'] in self.suburbs, 422, 'invalid_filters', 'Choose a suburb in the listing catalogue.')
         for key in ('min_bedrooms', 'min_bathrooms', 'min_car_spaces'):
             if key in result:
-                require(type(result[key]) is int and 0 <= result[key] <= 100, 422, 'invalid_filters', '房间和车位数量须为0至100的整数。')
+                require(type(result[key]) is int and 0 <= result[key] <= 100, 422, 'invalid_filters', 'Room and parking counts must be integers from 0 to 100.')
         if 'max_weekly_rent' in result:
             amount = result['max_weekly_rent']
             require(type(amount) in (int, float) and math.isfinite(amount) and 0 <= amount <= 1000000000000,
-                    422, 'invalid_filters', '最高广告周租须为0至1000000000000的有效数字。')
+                    422, 'invalid_filters', 'Maximum advertised weekly rent must be a valid number from 0 to 1000000000000.')
         if 'usyd_mode' in result:
             from ..commute.usyd import MODES
-            require(result['usyd_mode'] in MODES,422,'invalid_filters','请选择支持的到校通勤方式。')
+            require(result['usyd_mode'] in MODES,422,'invalid_filters','Choose a supported campus commute mode.')
         if 'usyd_max_minutes' in result:
-            require(type(result['usyd_max_minutes']) is int and 1<=result['usyd_max_minutes']<=240,422,'invalid_filters','到校通勤上限须为1至240分钟。')
-        if 'usyd_arrival_time' in result:require(isinstance(result['usyd_arrival_time'],str) and bool(re.fullmatch(r'(?:[01]\d|2[0-3]):[0-5]\d',result['usyd_arrival_time'])),422,'invalid_filters','到校时间须为HH:mm。')
-        if 'usyd_travel_day' in result:require(result['usyd_travel_day'] in ('weekday','weekend'),422,'invalid_filters','请选择工作日或周末。')
+            require(type(result['usyd_max_minutes']) is int and 1<=result['usyd_max_minutes']<=240,422,'invalid_filters','The campus commute limit must be 1 to 240 minutes.')
+        if 'usyd_arrival_time' in result:require(isinstance(result['usyd_arrival_time'],str) and bool(re.fullmatch(r'(?:[01]\d|2[0-3]):[0-5]\d',result['usyd_arrival_time'])),422,'invalid_filters','Arrival time must use HH:mm.')
+        if 'usyd_travel_day' in result:require(result['usyd_travel_day'] in ('weekday','weekend'),422,'invalid_filters','Choose weekdays or weekends.')
         if 'usyd_travel_date' in result:
             try:datetime.strptime(result['usyd_travel_date'],'%Y-%m-%d')
-            except (ValueError,TypeError):require(False,422,'invalid_filters','出行日期格式无效。')
-        if 'usyd_max_transfers' in result:require(type(result['usyd_max_transfers']) is int and 0<=result['usyd_max_transfers']<=5,422,'invalid_filters','换乘上限须为0至5次。')
+            except (ValueError,TypeError):require(False,422,'invalid_filters','Invalid travel date format.')
+        if 'usyd_max_transfers' in result:require(type(result['usyd_max_transfers']) is int and 0<=result['usyd_max_transfers']<=5,422,'invalid_filters','The transfer limit must be 0 to 5.')
         result.setdefault('sort', 'rent_asc')
-        require(result['sort'] in ('rent_asc', 'rent_desc', 'bedrooms_desc'), 422, 'invalid_filters', '请选择支持的排序方式。')
+        require(result['sort'] in ('rent_asc', 'rent_desc', 'bedrooms_desc'), 422, 'invalid_filters', 'Choose a supported sort order.')
         return result
 
     def matching(self, filters):
@@ -137,7 +146,7 @@ class RealCatalog:
 
     def search(self, filters=None, page=1, page_size=20):
         require(type(page) is int and page >= 1 and type(page_size) is int and 1 <= page_size <= 100,
-                422, 'invalid_pagination', '页码须为正整数，每页最多100条。')
+                422, 'invalid_pagination', 'Page numbers must be positive integers, with at most 100 items per page.')
         f = self.filters(filters or {})
         rows = self.matching(f)
         return {'items': rows[(page-1)*page_size:page*page_size], 'total': len(rows), 'page': page,
@@ -150,19 +159,19 @@ def register_catalog_routes(app, services):
                usyd_max_minutes: int | None = None, usyd_mode: str | None = None,
                usyd_arrival_time: str | None = None,usyd_travel_day: str | None = None,usyd_travel_date: str | None = None,usyd_max_transfers: int | None = None,case_id: str | None = None,
                sort: str = 'rent_asc', page: int = 1, page_size: int = 20):
-        require(services.settings.catalog is not None, 503, 'real_catalog_unavailable', '真实房源库未加载。')
+        require(services.settings.catalog is not None, 503, 'real_catalog_unavailable', 'The live listing catalogue is unavailable.')
         catalog=services.settings.catalog
         values={'suburb':suburb, 'min_bedrooms':min_bedrooms,
             'min_bathrooms':min_bathrooms, 'min_car_spaces':min_car_spaces,
             'max_weekly_rent':max_weekly_rent,'usyd_max_minutes':usyd_max_minutes,'usyd_mode':usyd_mode,'usyd_arrival_time':usyd_arrival_time,'usyd_travel_day':usyd_travel_day,'usyd_travel_date':usyd_travel_date,'usyd_max_transfers':usyd_max_transfers, 'sort':sort}
         if case_id and usyd_max_minutes is not None:
             from ..commute.matching import matching_for_case
-            require(type(page) is int and page>=1 and 1<=page_size<=100,422,'invalid_pagination','分页参数无效。')
+            require(type(page) is int and page>=1 and 1<=page_size<=100,422,'invalid_pagination','Invalid pagination parameters.')
             f=catalog.filters(values);rows=matching_for_case(services,case_id,f)
             return {'items':rows[(page-1)*page_size:page*page_size],'total':len(rows),'page':page,'page_size':page_size,'filters':f,'catalog':catalog.metadata()}
         return catalog.search(values,page,page_size)
     def detail(listing_id: str):
-        require(services.settings.catalog is not None, 503, 'real_catalog_unavailable', '真实房源库未加载。')
+        require(services.settings.catalog is not None, 503, 'real_catalog_unavailable', 'The live listing catalogue is unavailable.')
         return services.settings.catalog.get(listing_id)
     app.get('/api/v1/listings')(search)
     app.get('/api/v1/listings/{listing_id}')(detail)

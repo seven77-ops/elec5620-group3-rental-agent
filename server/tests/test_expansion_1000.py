@@ -4,7 +4,7 @@ import json
 import unittest
 from pathlib import Path
 
-from server.app.real_data.catalog import RealCatalog, CORE_FIELDS
+from server.app.real_data.catalog import RealCatalog,catalog_fingerprint, CORE_FIELDS
 from server.app.commute.locations import validated_origin
 from server.app.commute.snapshot import observation
 
@@ -24,7 +24,7 @@ class Expansion1000Tests(unittest.TestCase):
         self.assertEqual(len(added), 300)
         self.assertEqual(len({r['source_url'] for r in self.raw}), 1000)
         previous = [self.catalog._rows[r['record_id']] for r in self.raw[:700]]
-        fingerprint = hashlib.sha256(json.dumps(previous, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+        fingerprint = catalog_fingerprint(previous)
         self.assertEqual(fingerprint, m['previous_catalog_fingerprint'])
         self.assertEqual(self.catalog.fingerprint, m['new_catalog_fingerprint'])
 

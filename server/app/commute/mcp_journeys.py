@@ -62,7 +62,7 @@ def normalize_journeys(payload):
                 'transit_modes':list(dict.fromkeys(transit)),'services':services,'legs':legs})
         return result
     except (KeyError,ValueError,TypeError,AttributeError,OverflowError):
-        raise ApiError(502,'mcp_invalid_route','交通工具返回的路线未通过时刻或方式校验。') from None
+        raise ApiError(502,'mcp_invalid_route','The transit service route failed timetable or transport-mode checks.') from None
 
 def stop_id(value):
     return value if isinstance(value,str) and value.isascii() and value.isdigit() and 3<=len(value)<=12 else None

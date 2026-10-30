@@ -1,0 +1,48 @@
+{
+  "synthetic_public_only": true,
+  "checks": [
+    {
+      "case": "nsw-024",
+      "original_claim": "If your landlord or agent fails to sign the paper 'Claim for Bond Refund' form, you can still submit it to NSW Fair Trading.",
+      "resolved_quote_length": 1186,
+      "accepted_after_fix": true,
+      "source_preserved": true
+    },
+    {
+      "case": "nsw-024",
+      "original_claim": "After submitting an unsigned paper form, Fair Trading will give the landlord or agent written notice and they have 14 days to dispute your claim.",
+      "resolved_quote_length": 1186,
+      "accepted_after_fix": true,
+      "source_preserved": true
+    },
+    {
+      "case": "nsw-024",
+      "original_claim": "If the landlord or agent does not dispute the claim within 14 days, Fair Trading will pay the bond refund.",
+      "resolved_quote_length": 1186,
+      "accepted_after_fix": true,
+      "source_preserved": true
+    },
+    {
+      "case": "nsw-031",
+      "original_claim": "A landlord or agent must give a termination information statement to the tenant together with any termination notice.",
+      "resolved_quote_length": 1104,
+      "accepted_after_fix": true,
+      "source_preserved": true
+    },
+    {
+      "case": "nsw-031",
+      "original_claim": "The termination information statement sets out the landlord’s responsibilities and informs the tenant of their rights when a termination notice has been issued, including how tenancies can end under the Residential Tenancies Act 2010, required details in the notice, supporting documents for certain grounds, offences for false information, tenant rights to apply to the Tribunal, and how to contact NSW Fair Trading.",
+      "resolved_quote_length": 1104,
+      "accepted_after_fix": true,
+      "source_preserved": true
+    },
+    {
+      "case": "nsw-031",
+      "original_claim": "Termination notices given by a landlord or agent also need to include a termination information statement, and may need supporting documents.",
+      "resolved_quote_length": 832,
+      "accepted_after_fix": true,
+      "source_preserved": true
+    }
+  ],
+  "note": "Replay proves guard acceptance for correctly resolved current passages; it does not replace a fresh full model run or human entailment review."
+}

@@ -13,11 +13,11 @@ import {
 } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { useCase } from "../app/context";
-import { api } from "../api/client";
-import type { Dict, Review } from "../api/types";
-import { Failure, JsonDetails } from "../components/Common";
+import type { Dict } from "../api/types";
+import { Failure, JsonDetails, money } from "../components/Common";
 import { useAction } from "../components/useAction";
 import { CommandRecovery, type CommandRecoveryProps } from "./AftercarePlan";
+import { useTenancyPrefill } from "./aftercare/prefill";
 export default function TenancyForm({
   create,
   busy,
@@ -69,18 +69,19 @@ export default function TenancyForm({
   const rooms = Form.useWatch("rooms", form) as
     { id: string; name: string }[] | undefined;
   const capabilities = config.capabilities as Dict;
-  const prefill = () => {
-    const id = current.reviews.at(-1)?.review_id;
-    if (!id) return;
-    void action.run(async () => {
-      const r = await api<Review>(`/contract-reviews/${id}`);
-      form.setFieldsValue({
-        address: r.fields.address?.value,
-        source_ref: `review:${r.review_id}@${r.version}#fields.address`,
-        source_version: r.version,
-      });
-      setConfirmed(false);
+  const prefill = useTenancyPrefill(current.case_id, current.reviews.length);
+  const prefilled = prefill?.values ?? {};
+  const applyPrefill = () => {
+    if (!prefill) return;
+    const furnished = prefilled.furnished?.value;
+    form.setFieldsValue({
+      ...(prefilled.address ? { address: prefilled.address.value } : {}),
+      ...(prefill.source_ref ? { source_ref: prefill.source_ref } : {}),
+      ...(real && typeof furnished === "boolean"
+        ? { furnished: furnished ? "yes" : "no" }
+        : {}),
     });
+    setConfirmed(false);
   };
   const submit = async () => {
     try {
@@ -120,35 +121,85 @@ export default function TenancyForm({
   };
   return (
     <section className="panel tenancy-form">
-      {!tenancy && <h2>确认租约资料</h2>}
+      {!tenancy && <h2>Confirm lease details</h2>}
       <Alert
         type="info"
         showIcon
         title={
           tenancy
-            ? "核对并补齐当前租约资料"
+            ? "Check and complete current lease details"
             : real
-              ? "请填写并核对实际租约资料"
-              : "以下为合成租约样例，请逐项核对"
+              ? "Enter and check the actual lease details"
+              : "Check each detail in this synthetic lease sample"
         }
         description={
           tenancy
-            ? "保存后更新同一案件的租约资料，已有证据保留。房间、地毯、室外区域与家具情况补齐后，可继续确认退租计划。"
+            ? "Saving updates lease details in the same case and preserves existing evidence. Complete room, carpet, outdoor area, and furniture details to confirm the move-out plan."
             : real
-              ? "合同草稿或复核结果不代表租约已签订。只有你明确确认实际租约资料后，才创建退租与押金案件。未知的房间与家具可暂不填写。"
-              : "合同复核不代表租约已签订。只有你明确确认这些资料后，才创建租后服务案件。示例房间、家具和证据均可核对或编辑。"
+              ? "A contract draft or review does not establish that a lease is signed. A move-out and bond case is created only after you confirm actual lease details. Unknown room and furniture details can be left blank for now."
+              : "Contract review does not establish that a lease is signed. An aftercare case is created only after you confirm these details. Sample rooms, furniture, and evidence can be checked or edited."
         }
       />
       <Failure error={action.error} retry={action.retry} />
       {recovery && <CommandRecovery {...recovery} />}
-      {!tenancy && current.reviews.length > 0 && (
-        <Button
-          onClick={prefill}
-          loading={action.busy}
-          aria-label="从最近合同复核预填地址与来源"
-        >
-          从最近合同复核预填地址与来源
-        </Button>
+      {!tenancy && prefilled.address && (
+        <Alert
+          className="aftercare-prefill"
+          type="success"
+          showIcon
+          title="Import existing information (you still need to check and confirm it)"
+          description={
+            <>
+              <ul className="plain-list">
+                {(
+                  [
+                    ["address", "Address"],
+                    ["start_date", "Lease start date"],
+                    [
+                      "move_out_date",
+                      "Lease end date (can be used as the move-out date)",
+                    ],
+                    ["bond_amount", "Bond"],
+                    ["furnished", "Furnished"],
+                  ] as const
+                ).map(([key, label]) => {
+                  const item = prefilled[key];
+                  if (!item) return null;
+                  const shown =
+                    key === "bond_amount"
+                      ? money(Number(item.value))
+                      : typeof item.value === "boolean"
+                        ? item.value
+                          ? "Yes"
+                          : "No"
+                        : String(item.value);
+                  return (
+                    <li key={key}>
+                      {label}: <strong>{shown}</strong>
+                      <span className="muted small">
+                        {" "}
+                        · {item.label}
+                        {item.quote ? `“${item.quote}”` : ""}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+              {prefill?.warnings.map((w) => (
+                <p className="muted small" key={w}>
+                  {w}
+                </p>
+              ))}
+              <Button
+                onClick={applyPrefill}
+                disabled={busy || disabled}
+                aria-label="Import existing details"
+              >
+                Import address and source
+              </Button>
+            </>
+          }
+        />
       )}
       <Form
         form={form}
@@ -159,26 +210,31 @@ export default function TenancyForm({
       >
         <Form.Item
           name="address"
-          label="租约地址"
-          rules={[{ required: true, message: "填写确认的租约地址" }]}
+          label="Lease address"
+          rules={[
+            { required: true, message: "Enter the confirmed lease address" },
+          ]}
         >
-          <Input aria-label="租约地址" />
+          <Input aria-label="Lease address" />
         </Form.Item>
         <div className="form-grid">
-          <Form.Item name="jurisdiction" label="管辖地区">
+          <Form.Item name="jurisdiction" label="Jurisdiction">
             <Select options={[{ value: "NSW", label: "NSW" }]} />
           </Form.Item>
-          <Form.Item name="tenancy_type" label="租约类型">
+          <Form.Item name="tenancy_type" label="Lease type">
             <Select
               options={[
-                { value: "standard_residential", label: "标准住宅租约" },
+                {
+                  value: "standard_residential",
+                  label: "Standard residential tenancy",
+                },
               ]}
             />
           </Form.Item>
           <Form.Item
             name="source_ref"
             hidden={real}
-            label="资料来源引用"
+            label="Information source reference"
             rules={[{ required: true }]}
           >
             <Input />
@@ -186,7 +242,7 @@ export default function TenancyForm({
           <Form.Item
             name="source_version"
             hidden={real}
-            label="来源版本"
+            label="Source version"
             rules={[{ required: true }]}
           >
             <InputNumber min={1} precision={0} />
@@ -195,18 +251,18 @@ export default function TenancyForm({
         <div className="switch-group">
           {(
             [
-              ["carpeted", "有地毯"],
-              ["outdoor", "有室外区域"],
-              ["furnished", "带家具"],
+              ["carpeted", "Has carpet"],
+              ["outdoor", "Has outdoor area"],
+              ["furnished", "Furnished"],
             ] as const
           ).map(([key, label]) =>
             real ? (
               <Form.Item key={key} name={key} label={label}>
                 <Select
                   options={[
-                    { value: "unknown", label: "尚未填写" },
-                    { value: "yes", label: "是" },
-                    { value: "no", label: "否" },
+                    { value: "unknown", label: "Not entered" },
+                    { value: "yes", label: "Yes" },
+                    { value: "no", label: "No" },
                   ]}
                 />
               </Form.Item>
@@ -224,12 +280,12 @@ export default function TenancyForm({
           <Form.Item
             name="inventory_confirmed"
             valuePropName="checked"
-            label="家具清单已核对"
+            label="Furniture inventory checked"
           >
             <Switch />
           </Form.Item>
         </div>
-        <h3>房间</h3>
+        <h3>Rooms</h3>
         <Form.List name="rooms">
           {(fields, { add, remove }) => (
             <>
@@ -238,27 +294,27 @@ export default function TenancyForm({
                   <Form.Item
                     name={[f.name, "id"]}
                     hidden={real}
-                    label="房间标识"
+                    label="Room ID"
                     rules={[{ required: true }]}
                   >
                     <Input />
                   </Form.Item>
                   <Form.Item
                     name={[f.name, "name"]}
-                    label="房间名称"
+                    label="Room name"
                     rules={[{ required: true }]}
                   >
                     <Input />
                   </Form.Item>
                   <Button
-                    aria-label="移除此房间"
+                    aria-label="Remove room"
                     icon={<MinusCircleOutlined />}
                     onClick={() => remove(f.name)}
                   />
                 </div>
               ))}
               <Button
-                aria-label="添加房间"
+                aria-label="Add room"
                 icon={<PlusOutlined aria-hidden="true" />}
                 onClick={() =>
                   add({
@@ -267,12 +323,12 @@ export default function TenancyForm({
                   })
                 }
               >
-                添加房间
+                Add room
               </Button>
             </>
           )}
         </Form.List>
-        <h3>家具清单</h3>
+        <h3>Furniture inventory</h3>
         <Form.List name="inventory">
           {(fields, { add, remove }) => (
             <>
@@ -281,29 +337,29 @@ export default function TenancyForm({
                   <Form.Item
                     name={[f.name, "id"]}
                     hidden={real}
-                    label="家具标识"
+                    label="Furniture ID"
                     rules={[{ required: true }]}
                   >
                     <Input />
                   </Form.Item>
                   <Form.Item
                     name={[f.name, "name"]}
-                    label="家具名称"
+                    label="Furniture name"
                     rules={[{ required: true }]}
                   >
                     <Input />
                   </Form.Item>
                   <Form.Item
                     name={[f.name, "room_id"]}
-                    label={real ? "所属房间" : "所属房间标识"}
+                    label={real ? "Room" : "Room ID"}
                     rules={[{ required: true }]}
                   >
                     {real ? (
                       <Select
-                        placeholder="选择房间"
+                        placeholder="Select room"
                         options={(rooms ?? []).map((room) => ({
                           value: room.id,
-                          label: room.name || "尚未命名房间",
+                          label: room.name || "Unnamed room",
                         }))}
                       />
                     ) : (
@@ -311,14 +367,14 @@ export default function TenancyForm({
                     )}
                   </Form.Item>
                   <Button
-                    aria-label="移除此家具"
+                    aria-label="Remove furniture"
                     icon={<MinusCircleOutlined />}
                     onClick={() => remove(f.name)}
                   />
                 </div>
               ))}
               <Button
-                aria-label="添加家具"
+                aria-label="Add furniture"
                 icon={<PlusOutlined aria-hidden="true" />}
                 onClick={() =>
                   add({
@@ -328,7 +384,7 @@ export default function TenancyForm({
                   })
                 }
               >
-                添加家具
+                Add furniture
               </Button>
             </>
           )}
@@ -336,7 +392,7 @@ export default function TenancyForm({
         <Form.Item
           name="baseline_evidence_refs"
           hidden={real}
-          label="入住基线证据引用"
+          label="Move-in baseline evidence references"
         >
           <Select
             mode="multiple"
@@ -355,7 +411,8 @@ export default function TenancyForm({
           items={[
             {
               key: "evidence",
-              label: "查看随合成样例提供的证据元数据",
+              label:
+                "View evidence metadata supplied with the synthetic sample",
               children: (
                 <JsonDetails value={capabilities.aftercare_evidence_template} />
               ),
@@ -369,16 +426,23 @@ export default function TenancyForm({
           disabled={busy || disabled}
           onChange={(e) => setConfirmed(e.target.checked)}
         >
-          我已核对并确认上述租约、房间、家具及资料来源。
+          I have checked and confirmed the lease, rooms, furniture, and sources
+          above.
         </Checkbox>
         <Button
           type="primary"
           disabled={!confirmed || disabled || Boolean(recovery?.error)}
           loading={busy}
           onClick={submit}
-          aria-label={tenancy ? "确认并保存租约资料" : "确认资料并创建租后案件"}
+          aria-label={
+            tenancy
+              ? "Confirm and save lease details"
+              : "Confirm details and create aftercare case"
+          }
         >
-          {tenancy ? "确认并保存租约资料" : "确认资料并创建租后案件"}
+          {tenancy
+            ? "Confirm and save lease details"
+            : "Confirm details and create aftercare case"}
         </Button>
       </Space>
     </section>

@@ -110,7 +110,7 @@ test("completed workflow retains empty search explanations", async ({
       listings: [],
       content: explanation,
       task_steps: [
-        { label: "筛选房源", status: "completed", detail: explanation },
+        { label: "Filter listings", status: "completed", detail: explanation },
       ],
     },
   ]);
@@ -128,7 +128,7 @@ test("workflow retains additional search cards alongside a comparison", async ({
       ...entry,
       listings: [...listings, extraListing],
       task_steps: [
-        { label: "比较房源", status: "completed", detail: "已比较已选房源。" },
+        { label: "Compare listings", status: "completed", detail: "已比较已选房源。" },
       ],
       comparison: {
         basis: "按本次明确要求",
@@ -149,10 +149,10 @@ test("workflow retains additional search cards alongside a comparison", async ({
     extra.getByRole("heading", { name: extraListing.address, exact: true }),
   ).toBeVisible();
   await expect(
-    extra.getByRole("button", { name: "房源详情", exact: true }),
+    extra.getByRole("button", { name: "Listing details", exact: true }),
   ).toBeVisible();
   await expect(
-    extra.getByRole("button", { name: "选定并跟进", exact: true }),
+    extra.getByRole("button", { name: "Select and follow up", exact: true }),
   ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: listings[0].address, exact: true }),
@@ -185,7 +185,7 @@ test("personal comparison shows tradeoffs, verification questions and a copyable
           status: "completed",
           detail: "已按当前需求核对",
         },
-        { label: "准备看房询问", status: "completed", detail: "尚未发送" },
+        { label: "准备看房询问", status: "completed", detail: "Not sent" },
       ],
       enquiry: {
         listing_id: listings[0].listing_id,
@@ -203,19 +203,19 @@ test("personal comparison shows tradeoffs, verification questions and a copyable
   ]);
   await page.goto(`/cases/${c.case_id}/assistant`);
   await expect(
-    page.getByRole("heading", { name: "按你的需求比较", exact: true }),
+    page.getByRole("heading", { name: "Compared against your needs", exact: true }),
   ).toBeVisible();
   await expect(
     page.getByText("你不需要车位，因此优先比较租金与卧卫。", { exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: "看房询问草稿", exact: true }),
+    page.getByRole("heading", { name: "Inspection enquiry draft", exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("textbox", { name: "看房询问内容", exact: true }),
+    page.getByRole("textbox", { name: "Inspection enquiry", exact: true }),
   ).toHaveValue("Hello, could I arrange an inspection?");
   await expect(
-    page.getByRole("button", { name: "复制看房询问", exact: true }),
+    page.getByRole("button", { name: "Copy inspection enquiry", exact: true }),
   ).toBeVisible();
   await expect(
     page.getByText("检查临街情况和窗户隔音。", { exact: true }),
@@ -269,7 +269,7 @@ test("chat lease review requires applicability and confirmation, cancel never ap
           questions: [
             {
               field: "landlord_contact",
-              label: "出租方联系方式",
+              label: "Landlord contact details",
               question: "出租方联系方式是什么？",
             },
           ],
@@ -280,22 +280,22 @@ test("chat lease review requires applicability and confirmation, cancel never ap
     (body) => applied.push(body),
   );
   await page.goto(`/cases/${c.case_id}/assistant`);
-  await page.getByRole("button", { name: "核对合同字段", exact: true }).click();
+  await page.getByRole("button", { name: "Review lease fields", exact: true }).click();
   const modal = page.getByRole("dialog", {
-    name: "核对并同步合同草稿",
+    name: "Review and sync lease draft",
     exact: true,
   });
   await expect(modal).toContainText("Austin");
   await expect(modal).toContainText("Mike");
   await expect(
-    modal.getByRole("button", { name: "确认保存并同步合同", exact: true }),
+    modal.getByRole("button", { name: "Confirm, save and sync draft", exact: true }),
   ).toBeDisabled();
-  await modal.getByRole("button", { name: "继续修改", exact: true }).click();
+  await modal.getByRole("button", { name: "Keep editing", exact: true }).click();
   expect(applied).toHaveLength(0);
-  await page.getByRole("button", { name: "核对合同字段", exact: true }).click();
+  await page.getByRole("button", { name: "Review lease fields", exact: true }).click();
   await modal.getByRole("checkbox").check();
   await modal
-    .getByRole("button", { name: "确认保存并同步合同", exact: true })
+    .getByRole("button", { name: "Confirm, save and sync draft", exact: true })
     .click();
   await expect.poll(() => applied.length).toBe(1);
   expect(applied[0]).toMatchObject({
@@ -304,6 +304,6 @@ test("chat lease review requires applicability and confirmation, cancel never ap
     expected_revision: 2,
   });
   await expect(
-    page.getByText("已同步到合同助手", { exact: true }),
+    page.getByText("Synced to Contract assistant", { exact: true }),
   ).toBeVisible();
 });

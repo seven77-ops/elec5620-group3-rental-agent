@@ -31,20 +31,23 @@ export function DomainPanel({
   const [consent, setConsent] = useState(false);
   return (
     <section className="panel real-panel">
-      <h2>从 Domain 查询整租房源</h2>
+      <h2>Search Domain for whole-property rentals</h2>
       {!config.configured && (
         <Alert
           type="info"
           showIcon
           title={
-            config.key_present ? "Domain 用途授权待配置" : "Domain 凭据未配置"
+            config.key_present
+              ? "Domain Usage approval required"
+              : "Domain Credentials not configured"
           }
-          description="在后端 .env 配置 DOMAIN_API_KEY，并在供应商确认本应用用途后设置 DOMAIN_USE_APPROVED=1，再重启服务。"
+          description="Configure DOMAIN_API_KEY on the backend. Once the provider approves this application use, set DOMAIN_USE_APPROVED=1 and restart the service."
         />
       )}
       <p>
-        查询悉大周边四个邮区的前 20
-        条租赁房源。房源信息还需要核对，不会自动成为正式推荐。
+        Search the first 20 rental listings across four postcodes near USYD.
+        Listing details need verification and do not automatically become formal
+        recommendations.
       </p>
       <Form
         layout="vertical"
@@ -61,14 +64,14 @@ export function DomainPanel({
       >
         <div className="real-form-grid">
           <Form.Item
-            label="Domain 搜索邮区"
+            label="Domain Search postcode"
             name="postcode"
             rules={[{ required: true }]}
           >
             <Select options={postcodeOptions} />
           </Form.Item>
           <Form.Item
-            label="整套最高周租（AUD）"
+            label="Maximum weekly rent for whole property (AUD)"
             name="maximum_weekly_rent"
             rules={[{ required: true }]}
           >
@@ -83,7 +86,7 @@ export function DomainPanel({
             query.clear();
           }}
         >
-          我同意将本次区域和价格条件发送给 Domain。
+          I agree to send these area and price criteria to Domain.
         </Checkbox>
         <div>
           <Button
@@ -92,28 +95,30 @@ export function DomainPanel({
             disabled={!config.configured || !consent}
             loading={query.busy}
           >
-            查询 Domain 房源
+            Search Domain listings
           </Button>
         </div>
       </Form>
       <Failure error={query.error} />
       {query.result && (
         <>
-          <p className="muted">查询时间：{query.result.queried_at}</p>
+          <p className="muted">Queried at: {query.result.queried_at}</p>
           {!query.result.items.length && (
-            <p>本次未返回房源。可调整条件后再查询。</p>
+            <p>No listings returned. Adjust the criteria and try again.</p>
           )}
           {query.result.items.map((item) => (
             <article className="real-record" key={item.listing_id}>
-              <h3>{item.address ?? `房源 ${item.listing_id}`}</h3>
+              <h3>{item.address ?? `Listings ${item.listing_id}`}</h3>
               <p>
-                {item.advertised_price ?? "价格未提供"} · 卧室数：
-                {item.bedrooms ?? "未知"} · 尚未评估
+                {item.advertised_price ?? "Price not provided"} · Bedrooms:
+                {item.bedrooms ?? "Unknown"} · Not assessed
               </p>
               {item.source_url && (
                 <details>
-                  <summary>房源详情</summary>
-                  <a href={item.source_url} target="_blank" rel="noreferrer">查看原始房源</a>
+                  <summary>Listing details</summary>
+                  <a href={item.source_url} target="_blank" rel="noreferrer">
+                    View original listing
+                  </a>
                 </details>
               )}
               {item.latitude != null && item.longitude != null && (
@@ -125,7 +130,7 @@ export function DomainPanel({
                     })
                   }
                 >
-                  用此坐标查通勤
+                  Check commute from these coordinates
                 </Button>
               )}
             </article>
@@ -133,7 +138,7 @@ export function DomainPanel({
         </>
       )}
       <a href={config.documentation} target="_blank" rel="noreferrer">
-        Domain 官方接口与访问说明
+        Domain Official API and access information
       </a>
     </section>
   );
@@ -154,18 +159,19 @@ export function TripPanel({
   }, [origin, form]);
   return (
     <section className="panel real-panel">
-      <h2>查询到校公共交通</h2>
+      <h2>Check public transport to campus</h2>
       {!config.configured && (
         <Alert
           type="info"
           showIcon
-          title="TfNSW 凭据未配置"
-          description="在后端 .env 填写 TFNSW_API_KEY 并重启后，即可发出真实路线查询。当前没有模拟的查询成功结果。"
+          title="TfNSW Credentials not configured"
+          description="On the backend, .env Configure TFNSW_API_KEY and restart to run live route queries. No simulated successful results are shown."
         />
       )}
       <p>
-        起点填写房源坐标；终点填写实际教学楼或入口坐标。请选择未来 30
-        天内的到达时间，供应商实际时刻表范围可能更短。
+        Enter the property coordinates as the origin and the actual teaching
+        building or entrance as the destination. Choose an arrival time within
+        the next 30 days; the provider timetable may cover a shorter period.
       </p>
       <Form
         form={form}
@@ -183,38 +189,38 @@ export function TripPanel({
       >
         <div className="real-form-grid">
           <Form.Item
-            label="房源纬度"
+            label="Property latitude"
             name={["origin", "latitude"]}
             rules={[{ required: true }]}
           >
             <InputNumber min={-90} max={90} style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item
-            label="房源经度"
+            label="Property longitude"
             name={["origin", "longitude"]}
             rules={[{ required: true }]}
           >
             <InputNumber min={-180} max={180} style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item
-            label="教学楼入口纬度"
+            label="Building entrance latitude"
             name={["destination", "latitude"]}
             rules={[{ required: true }]}
           >
             <InputNumber min={-90} max={90} style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item
-            label="教学楼入口经度"
+            label="Building entrance longitude"
             name={["destination", "longitude"]}
             rules={[{ required: true }]}
           >
             <InputNumber min={-180} max={180} style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item
-            label="到达时间（浏览器本地时区）"
+            label="Arrival time (browser local timezone)"
             name="arrival_at"
             rules={[{ required: true }]}
-            extra="服务端按 Australia/Sydney 转换日期和时间。"
+            extra="The server converts the date and time to Australia/Sydney."
           >
             <Input type="datetime-local" />
           </Form.Item>
@@ -227,7 +233,7 @@ export function TripPanel({
             query.clear();
           }}
         >
-          我同意将起终点坐标和到达时间发送给 TfNSW。
+          I agree to send the origin, destination and arrival time to TfNSW.
         </Checkbox>
         <div>
           <Button
@@ -236,7 +242,7 @@ export function TripPanel({
             disabled={!config.configured || !consent}
             loading={query.busy}
           >
-            查询实际通勤
+            Check actual commute
           </Button>
         </div>
       </Form>
@@ -244,7 +250,7 @@ export function TripPanel({
       {query.result && (
         <>
           <p>
-            查询时间：{query.result.queried_at} · 请求到达时间：
+            Queried at: {query.result.queried_at} · Requested arrival:
             {query.result.query.arrival_at}
           </p>
           <a
@@ -252,34 +258,34 @@ export function TripPanel({
             target="_blank"
             rel="noreferrer"
           >
-            在地图查看终点位置
+            View destination on map
           </a>
           {!query.result.journeys.length && (
             <Alert
               type="info"
-              title="本次没有可用路线"
-              description="核对坐标、到达日期和时间后再查询。"
+              title="No routes available"
+              description="Check the coordinates, arrival date and time, then try again."
             />
           )}
           {query.result.journeys.map((trip, i) => (
             <article className="real-record" key={i}>
               <h3>
-                路线 {i + 1} ·{" "}
+                Route {i + 1} ·{" "}
                 {trip.duration_minutes == null
-                  ? "总时长待核对"
-                  : `${trip.duration_minutes} 分钟（含候车）`}
+                  ? "Check total duration"
+                  : `${trip.duration_minutes} minutes (including waiting)`}
               </h3>
               <p>
-                步行{" "}
+                Walking{" "}
                 {trip.walking_minutes == null
-                  ? "时长未知"
-                  : `${trip.walking_minutes} 分钟`}{" "}
-                · 换乘 {trip.transfers ?? "未知"} 次
+                  ? "Duration unknown"
+                  : `${trip.walking_minutes} minutes`}{" "}
+                · Transfers {trip.transfers ?? "Unknown"} transfers
               </p>
               <p>{trip.services.join(" → ")}</p>
               <p>
-                计划出发 {trip.departure_at ?? "未知"} · 到达{" "}
-                {trip.arrival_at ?? "未知"}
+                Planned departure {trip.departure_at ?? "Unknown"} · Arrival{" "}
+                {trip.arrival_at ?? "Unknown"}
               </p>
             </article>
           ))}
@@ -291,7 +297,7 @@ export function TripPanel({
         </>
       )}
       <a href={config.documentation} target="_blank" rel="noreferrer">
-        TfNSW 官方接口与申请入口
+        TfNSW Official API and application portal
       </a>
     </section>
   );

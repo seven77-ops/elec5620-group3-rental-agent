@@ -1,4 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { SoftPreferenceEvidence } from "./SoftPreferenceEvidence";
+import KnowledgePanel from "../knowledge/KnowledgePanel";
+import PublicKnowledgeReply from "../knowledge/PublicKnowledgeReply";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
   Alert,
@@ -39,6 +42,7 @@ import CandidateFollowup from "../candidate/CandidateFollowup";
 import LivingCards from "./LivingCards";
 import TaskResults from "./TaskResults";
 import LeaseProposalCard from "./LeaseProposalCard";
+import RepairDraftCard from "./RepairDraftCard";
 import CommuteResults from "./CommuteResults";
 import TransitInfo from "./TransitInfo";
 import AreaAdvice from "./AreaAdvice";
@@ -59,24 +63,27 @@ import type {
   RecommendationContext,
 } from "../../api/assistant";
 import FavoritesDrawer from "../favorites/FavoritesDrawer";
+const ChatContractReview = lazy(
+  () => import("../contracts/ChatContractReview"),
+);
 
 const MAX_MESSAGE_LENGTH = 3000;
 const MAX_COMPARISON_LISTINGS = 5;
 const recommendationChangeValue = (field: string, value: unknown) => {
-  if (value == null) return field === "suburb" ? "全部区域" : "未设置";
+  if (value == null) return field === "suburb" ? "All areas" : "Not set";
   if (field === "commute_mode")
     return commuteModeLabels[String(value)] || String(value);
-  if (field === "commute_max_minutes") return `${value} 分钟`;
+  if (field === "commute_max_minutes") return `${value} minutes`;
   return String(value);
 };
 const commuteModeLabels: Record<string, string> = {
-  public_transport: "公共交通",
-  train: "火车",
-  metro: "地铁",
-  bus: "公交车",
-  drive: "开车",
-  bike: "骑行",
-  walk: "步行",
+  public_transport: "Public transport",
+  train: "Train",
+  metro: "Metro",
+  bus: "Bus",
+  drive: "Driving",
+  bike: "Cycling",
+  walk: "Walking",
 };
 const isInputError = (error: unknown) =>
   error instanceof ApiError &&
@@ -86,37 +93,37 @@ const isInputError = (error: unknown) =>
 
 const suggestions = [
   {
-    title: "不知道住哪里",
-    text: "我刚来悉尼，不知道哪个区适合我，请根据预算、户型和到悉大主校区的通勤帮我推荐。",
-    note: "按通勤选区域",
+    title: "Where should I live?",
+    text: "I am new to Sydney and do not know which area suits me. Please recommend areas based on my budget, housing needs and commute to the University of Sydney main campus.",
+    note: "Choose an area by commute",
   },
   {
-    title: "帮我找房",
-    text: "我想租房，帮我整理预算、区域和房屋条件。",
-    note: "从需求开始",
+    title: "Help me find a home",
+    text: "I want to rent a home. Help me work through my budget, area and housing needs.",
+    note: "Start with your needs",
   },
   {
-    title: "比较房源",
-    text: "请按我的租房需求比较房源，说明符合哪些要求、需要取舍什么，再为更便宜的一套准备看房询问。",
-    note: "看清差别",
+    title: "Compare listings",
+    text: "Compare listings against my rental needs, explain the matches and trade-offs, then prepare an inspection enquiry for the cheaper option.",
+    note: "Understand the differences",
   },
   {
-    title: "准备合同",
-    text: "帮我整理当前候选房源的租约草稿，先确认需要哪些信息。",
-    note: "核对后填入合同",
+    title: "Prepare a lease",
+    text: "Help me prepare a lease draft for my current candidate property. First, confirm which details are needed.",
+    note: "Review before drafting",
   },
   {
-    title: "租后问题",
-    text: "我遇到了租后问题，下一步怎么做？",
-    note: "进入租后服务",
+    title: "Aftercare questions",
+    text: "I have an aftercare issue. What should I do next?",
+    note: "Open Aftercare services",
   },
 ];
 const agentNames = {
-  agent1: "租房需求",
-  agent2: "房源顾问",
-  agent3: "合同助手",
-  agent4: "租后服务",
-  assistant: "租房助手",
+  agent1: "Rental needs",
+  agent2: "Housing adviser",
+  agent3: "Contract assistant",
+  agent4: "Aftercare services",
+  assistant: "Rental Assistant",
 };
 
 export default function Assistant() {
@@ -194,7 +201,9 @@ export default function Assistant() {
       })
       .catch((e) => {
         if (generation.current === token)
-          setError(e instanceof Error ? e.message : "会话读取失败。");
+          setError(
+            e instanceof Error ? e.message : "Could not load the conversation.",
+          );
       })
       .finally(() => {
         if (generation.current === token) setLoading(false);
@@ -238,7 +247,11 @@ export default function Assistant() {
           setCanRetry(false);
           setPending(null);
         } else {
-          setError(e instanceof Error ? e.message : "请求未完成，请重试。");
+          setError(
+            e instanceof Error
+              ? e.message
+              : "The request did not finish. Please try again.",
+          );
           if (isInputError(e)) {
             retryRef.current = null;
             setCanRetry(false);
@@ -277,7 +290,9 @@ export default function Assistant() {
       }
     } catch (e) {
       if (generation.current === token)
-        setError(e instanceof Error ? e.message : "会话读取失败。");
+        setError(
+          e instanceof Error ? e.message : "Could not load the conversation.",
+        );
     } finally {
       if (generation.current === token) setLoading(false);
     }
@@ -382,10 +397,13 @@ export default function Assistant() {
       action.expected_version !== undefined
     ) {
       modal.confirm({
-        title: "确认同步到租后服务？",
+        title: "Confirm sync to Aftercare services?",
         content: (
           <>
-            <p>核对以下信息，确认后保存到当前案例。邮件只生成草稿。</p>
+            <p>
+              Check the details below, then confirm to save them to this case.
+              Emails are prepared as drafts.
+            </p>
             <ul className="assistant-proposal-summary">
               {action.summary?.map((line) => (
                 <li key={line}>{line}</li>
@@ -393,8 +411,8 @@ export default function Assistant() {
             </ul>
           </>
         ),
-        okText: "确认保存租后资料",
-        cancelText: "继续修改",
+        okText: "Confirm and save aftercare details",
+        cancelText: "Keep editing",
         onOk: async () => {
           if (generation.current !== token) return;
           await run(async () => {
@@ -413,7 +431,7 @@ export default function Assistant() {
             );
             if (generation.current !== token) return;
             update(value);
-            toast.success("已同步到租后服务。");
+            toast.success("Synced to Aftercare services.");
           });
         },
       });
@@ -427,7 +445,7 @@ export default function Assistant() {
         if (generation.current !== token) return;
         update(value.conversation);
         await refresh();
-        toast.success("找房条件已保存。");
+        toast.success("Rental needs saved.");
       });
     } else if (
       action.type === "save_candidate" &&
@@ -435,10 +453,11 @@ export default function Assistant() {
       action.run_id
     ) {
       modal.confirm({
-        title: "选定这套房并开始跟进？",
-        content: "选定后可准备看房、记录中介回复，并进入合同流程。",
-        okText: "确认选定并跟进",
-        cancelText: "取消",
+        title: "Select this property and start follow-up?",
+        content:
+          "Once selected, you can prepare an inspection and continue to the contract process.",
+        okText: "Confirm selection and follow-up",
+        cancelText: "Cancel",
         onOk: async () => {
           if (generation.current !== token) return;
           await run(async () => {
@@ -451,7 +470,7 @@ export default function Assistant() {
             if (generation.current !== token) return;
             await refresh();
             if (generation.current === token)
-              toast.success("已选定房源，可开始跟进。");
+              toast.success("Property selected. You can start follow-up.");
           });
         },
       });
@@ -478,7 +497,7 @@ export default function Assistant() {
       if (generation.current !== token) return;
       update(result.conversation);
       applied = true;
-      toast.success(`合同草稿 v${result.draft.version} 已同步。`);
+      toast.success(`Lease draft v${result.draft.version} synced.`);
     });
     return applied;
   };
@@ -507,10 +526,10 @@ export default function Assistant() {
           setHistoryOpen(false);
         }}
       >
-        新会话
+        New conversation
       </Button>
-      <p className="assistant-history-label">最近会话</p>
-      <nav aria-label="会话历史" className="assistant-history-list">
+      <p className="assistant-history-label">Recent conversations</p>
+      <nav aria-label="Conversation history" className="assistant-history-list">
         {items.map((item) => (
           <Button
             type="text"
@@ -523,18 +542,22 @@ export default function Assistant() {
             }
             onClick={() => void read(item.conversation_id)}
           >
-            {item.title || "租房新计划"}
+            {housingCopy(item.title || "New rental plan")}
           </Button>
         ))}
-        {!items.length && <span className="muted small">会话会保存在这里</span>}
+        {!items.length && (
+          <span className="muted small">
+            Your conversations will appear here
+          </span>
+        )}
       </nav>
     </>
   );
   return (
-    <section className="assistant-shell" aria-label="AI租房助手">
+    <section className="assistant-shell" aria-label="AI rental assistant">
       <aside className="assistant-history">{history}</aside>
       <Drawer
-        title="会话历史"
+        title="Conversation history"
         open={historyOpen}
         onClose={() => setHistoryOpen(false)}
         size={280}
@@ -544,7 +567,7 @@ export default function Assistant() {
       <div className="assistant-workspace">
         <header className="assistant-heading">
           <div>
-            <h1>AI租房助手</h1>
+            <h1>AI rental assistant</h1>
           </div>
           <Space wrap>
             <FavoritesDrawer
@@ -567,19 +590,20 @@ export default function Assistant() {
               onClick={() => go("aftercare?tab=repairs")}
               disabled={busy || loading}
             >
-              润色报修邮件
+              Polish repair email
             </Button>
             <Button
               className="assistant-needs-button"
               onClick={() => setNeedsOpen(true)}
               disabled={busy || loading}
             >
-              我的租房需求
+              My rental needs
             </Button>
+            <KnowledgePanel />
             <Button
               className="assistant-history-toggle"
               icon={<HistoryOutlined />}
-              aria-label="历史会话"
+              aria-label="Past conversations"
               onClick={() => setHistoryOpen(true)}
             />
           </Space>
@@ -615,13 +639,13 @@ export default function Assistant() {
           ref={transcript}
           className="assistant-transcript"
           role="log"
-          aria-label="租房对话"
+          aria-label="Rental conversation"
           aria-busy={busy || loading}
         >
           {loading ? (
             <div className="assistant-loading">
               <Spin />
-              <span>正在读取会话…</span>
+              <span>Loading conversation…</span>
             </div>
           ) : (
             <>
@@ -630,9 +654,14 @@ export default function Assistant() {
                   <div className="assistant-mark">
                     <CommentOutlined />
                   </div>
-                  <span className="assistant-eyebrow">从一句话开始</span>
-                  <h2>今天，想住在哪里？</h2>
-                  <p>告诉我你的想法，我们一步步找到合适的家。</p>
+                  <span className="assistant-eyebrow">
+                    Start with a sentence
+                  </span>
+                  <h2>Where would you like to live?</h2>
+                  <p>
+                    Tell me what you have in mind. We will find a suitable home
+                    step by step.
+                  </p>
                   <div className="assistant-suggestions">
                     {suggestions.map((suggestion) => (
                       <button
@@ -650,38 +679,85 @@ export default function Assistant() {
                   </div>
                 </div>
               )}
-              {conversation?.messages.map((item) => (
+              {conversation?.messages.map((item, messageIndex) => (
                 <article
                   key={item.message_id}
                   className={`assistant-message assistant-message-${item.role}`}
                 >
                   <span className="assistant-message-author">
-                    {item.role === "user" ? "你" : agentNames[item.agent]}
+                    {item.role === "user" ? "You" : agentNames[item.agent]}
                   </span>
-                  <div className="assistant-bubble">
-                    {item.role === "assistant"
-                      ? item.task_steps?.length
-                        ? "本次任务的处理结果如下。"
-                        : item.comparison
-                          ? "已按你当前明确的要求整理房源比较。"
-                          : item.listings.length
-                            ? recommendationCopy(item.content)
-                            : housingCopy(item.content)
-                      : item.content}
-                  </div>
+                  {!item.knowledge && (
+                    <div className="assistant-bubble">
+                      {item.role === "assistant"
+                        ? item.task_steps?.length
+                          ? "Here are the results of this task."
+                          : item.comparison
+                            ? "The housing comparison follows your current stated requirements."
+                            : item.listings.length
+                              ? recommendationCopy(item.content)
+                              : housingCopy(item.content)
+                        : item.content}
+                    </div>
+                  )}
+                  {item.knowledge && (
+                    <PublicKnowledgeReply
+                      key={`${caseId}-${item.message_id}`}
+                      caseId={caseId}
+                      answer={item.knowledge}
+                      question={
+                        conversation.messages
+                          .slice(0, messageIndex)
+                          .reverse()
+                          .find((message) => message.role === "user")
+                          ?.content ?? ""
+                      }
+                    />
+                  )}
+                  {item.repair_email && (
+                    <RepairDraftCard
+                      draft={item.repair_email}
+                      disabled={
+                        busy ||
+                        canRetry ||
+                        item.message_id !==
+                          conversation.messages.at(-1)?.message_id ||
+                        item.actions.some((action) => action.superseded)
+                      }
+                      onSuggest={(suggestion) => {
+                        setText(suggestion);
+                        setSelected([]);
+                      }}
+                    />
+                  )}
+                  {item.intent === "contract" &&
+                    !item.knowledge &&
+                    item.message_id ===
+                      conversation.messages.at(-1)?.message_id && (
+                      <Suspense
+                        fallback={
+                          <p className="muted">Opening contract review…</p>
+                        }
+                      >
+                        <ChatContractReview />
+                      </Suspense>
+                    )}
+                  {item.soft_preferences && (
+                    <SoftPreferenceEvidence report={item.soft_preferences} />
+                  )}
                   {item.recommendation_change && (
                     <p
                       className="recommendation-change-summary"
                       role="status"
-                      aria-label="本次筛选变化"
+                      aria-label="Filter changes"
                     >
                       {item.recommendation_change.changes
                         .map(
                           (change) =>
-                            `${change.label}：${recommendationChangeValue(change.field, change.before)} → ${recommendationChangeValue(change.field, change.after)}`,
+                            `${change.label}: ${recommendationChangeValue(change.field, change.before)} → ${recommendationChangeValue(change.field, change.after)}`,
                         )
-                        .join("；")}
-                      {` · 房源 ${item.recommendation_change.before_count} → ${item.recommendation_change.after_count} 套`}
+                        .join("; ")}
+                      {` · Listings ${item.recommendation_change.before_count} → ${item.recommendation_change.after_count} properties`}
                     </p>
                   )}
                   {item.role === "assistant" && (
@@ -750,9 +826,9 @@ export default function Assistant() {
                             data-listing-id={listing.listing_id}
                           >
                             <div className="assistant-listing-top">
-                              <Tag variant="filled">真实房源</Tag>
+                              <Tag variant="filled">Live listing</Tag>
                               <Checkbox
-                                aria-label={`选择比较 ${listing.address}`}
+                                aria-label={`Compare ${listing.address}`}
                                 checked={selected.includes(listing.listing_id)}
                                 disabled={
                                   busy ||
@@ -773,7 +849,7 @@ export default function Assistant() {
                                   )
                                 }
                               >
-                                比较
+                                Compare
                               </Checkbox>
                             </div>
                             <h3>{listing.address}</h3>
@@ -782,25 +858,31 @@ export default function Assistant() {
                             </p>
                             <strong className="assistant-rent">
                               AUD {listing.weekly_rent.toLocaleString()}
-                              <small>/周 · 房源标价</small>
+                              <small>/week · advertised rent</small>
                             </strong>
                             <p className="assistant-listing-facts">
                               {listing.bedroom_label ||
-                                `${listing.bedrooms} 卧`}{" "}
-                              · {listing.bathrooms} 卫 · {listing.car_spaces}{" "}
-                              车位
+                                `${listing.bedrooms} bed`}{" "}
+                              · {listing.bathrooms} bath · {listing.car_spaces}{" "}
+                              car spaces
                             </p>
                             <ListingReasons
                               listing={listing}
                               criteria={item.recommendation_criteria}
                               filters={item.recommendation_filters}
                             />
+                            {item.soft_preferences && (
+                              <SoftPreferenceEvidence
+                                report={item.soft_preferences}
+                                listingId={listing.listing_id}
+                              />
+                            )}
                             <Space>
                               <Button
                                 size="small"
                                 onClick={() => setDetail(listing)}
                               >
-                                房源详情
+                                Listing details
                               </Button>
                               <ListingActions
                                 listing={listing}
@@ -817,7 +899,8 @@ export default function Assistant() {
                       (action) =>
                         (action.type === "apply_preferences" ||
                           action.type === "apply_living_services") &&
-                        action.summary?.length,
+                        action.summary?.length &&
+                        !item.repair_email,
                     )
                     .map((action, index) => {
                       const summary = (
@@ -836,7 +919,9 @@ export default function Assistant() {
                       );
                       return item.intent === "collect_preferences" ? (
                         <details key={`summary-${index}`}>
-                          <summary>查看完整偏好（含其他已保存条件）</summary>
+                          <summary>
+                            View all preferences, including other saved needs
+                          </summary>
                           {summary}
                         </details>
                       ) : (
@@ -858,11 +943,16 @@ export default function Assistant() {
                         >
                           {action.applied || action.superseded
                             ? action.superseded
-                              ? "已由后续修改替代"
-                              : "已同步保存"
+                              ? "Replaced by a later change"
+                              : "Synced and saved"
                             : action.type === "apply_preferences"
-                              ? "保存找房条件"
-                              : action.label}
+                              ? "Save rental needs"
+                              : [
+                                    "Record replies and inspection arrangements",
+                                    "记录回复与看房安排",
+                                  ].includes(action.label)
+                                ? "View inspection enquiry checklist"
+                                : housingCopy(action.label)}
                         </Button>
                       ))}
                     </Space>
@@ -871,14 +961,14 @@ export default function Assistant() {
               ))}
               {pending && (
                 <article className="assistant-message assistant-message-user">
-                  <span className="assistant-message-author">你</span>
+                  <span className="assistant-message-author">You</span>
                   <div className="assistant-bubble">{pending}</div>
                 </article>
               )}
               {busy && (
                 <div className="assistant-thinking" role="status">
                   <Spin size="small" />
-                  <span>正在处理，请稍候…</span>
+                  <span>Working on it. Please wait…</span>
                 </div>
               )}
             </>
@@ -888,7 +978,7 @@ export default function Assistant() {
           {selectionIssue && (
             <Alert
               type="warning"
-              title="这套房源不符合当前筛选条件"
+              title="This listing does not match your current filters"
               description={selectionIssue}
               action={
                 <Space wrap>
@@ -899,10 +989,10 @@ export default function Assistant() {
                       setNeedsOpen(true);
                     }}
                   >
-                    调整租房需求
+                    Adjust rental needs
                   </Button>
                   <Button size="small" onClick={() => setSelectionIssue(null)}>
-                    继续比较
+                    Keep comparing
                   </Button>
                 </Space>
               }
@@ -911,7 +1001,7 @@ export default function Assistant() {
           {error && (
             <Alert
               type="error"
-              title="暂时未完成"
+              title="Could not finish"
               description={error}
               action={
                 <Space wrap>
@@ -923,7 +1013,7 @@ export default function Assistant() {
                         retryRef.current && void run(retryRef.current)
                       }
                     >
-                      重试原操作
+                      Retry original action
                     </Button>
                   )}
                   <Button
@@ -931,7 +1021,7 @@ export default function Assistant() {
                     disabled={busy}
                     onClick={() => void read()}
                   >
-                    读取最新会话
+                    Load latest conversation
                   </Button>
                 </Space>
               }
@@ -940,16 +1030,18 @@ export default function Assistant() {
           {selected.length > 0 && (
             <div className="assistant-comparison">
               <span>
-                已选 {selected.length}/{MAX_COMPARISON_LISTINGS} 套房源
+                Selected {selected.length}/{MAX_COMPARISON_LISTINGS} listings
               </span>
               <Button
                 size="small"
                 disabled={busy || canRetry}
                 onClick={() =>
-                  setText("请比较所选房源的周租、卧室、浴室和车位。")
+                  setText(
+                    "Compare the weekly rent, bedrooms, bathrooms and car spaces of the selected listings.",
+                  )
                 }
               >
-                比较所选房源
+                Compare selected listings
               </Button>
               <Button
                 size="small"
@@ -957,7 +1049,7 @@ export default function Assistant() {
                 disabled={busy}
                 onClick={() => setSelected([])}
               >
-                清空
+                Clear
               </Button>
             </div>
           )}
@@ -969,8 +1061,8 @@ export default function Assistant() {
             }}
           >
             <Input.TextArea
-              aria-label="给租房助手的消息"
-              placeholder="描述你的租房需求，或问一个问题…"
+              aria-label="Message to Rental Assistant"
+              placeholder="Describe your rental needs or ask a question…"
               value={text}
               disabled={busy || loading || canRetry}
               maxLength={MAX_MESSAGE_LENGTH}
@@ -1000,7 +1092,7 @@ export default function Assistant() {
               htmlType="submit"
               shape="circle"
               icon={<ArrowUpOutlined />}
-              aria-label="发送消息"
+              aria-label="Send message"
               loading={busy}
               disabled={!text.trim() || loading || canRetry}
             />
@@ -1008,7 +1100,7 @@ export default function Assistant() {
         </div>
       </div>
       <Drawer
-        title="房源详情"
+        title="Listing details"
         rootClassName="usyd-listing-drawer"
         open={Boolean(detail)}
         onClose={() => setDetail(null)}

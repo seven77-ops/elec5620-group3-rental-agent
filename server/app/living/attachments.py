@@ -20,15 +20,15 @@ MEDIA_TYPES = ('application/octet-stream', 'image/jpeg', 'image/png', 'applicati
 
 def safe_filename(encoded):
     require(isinstance(encoded, str) and len(encoded) <= 2160 and
-            not re.search(r'%(?![0-9A-Fa-f]{2})', encoded), 422, 'invalid_filename', '请提供有效的附件文件名。')
+            not re.search(r'%(?![0-9A-Fa-f]{2})', encoded), 422, 'invalid_filename', 'Provide a valid attachment filename.')
     try:
         filename = unquote(encoded, encoding='utf-8', errors='strict')
     except UnicodeError:
-        raise ApiError(422, 'invalid_filename', '文件名须为有效的 UTF-8。') from None
+        raise ApiError(422, 'invalid_filename', 'The filename must be valid UTF-8.') from None
     require(0 < len(filename) <= 180 and filename.strip() == filename and filename not in ('.', '..')
             and not any(c in filename for c in ('/', '\\', ':'))
             and not any(ord(c) < 32 or ord(c) == 127 for c in filename),
-            422, 'invalid_filename', '文件名不能包含路径、控制字符或超过180个字符。')
+            422, 'invalid_filename', 'Filenames cannot contain paths or control characters and must not exceed 180 characters.')
     return filename
 
 
@@ -36,17 +36,17 @@ def detected_media(content):
     if content.startswith(b'%PDF-'):
         return 'application/pdf'
     format_ = 'PNG' if content.startswith(b'\x89PNG\r\n\x1a\n') else 'JPEG' if content.startswith(b'\xff\xd8\xff') else None
-    require(format_ is not None, 422, 'invalid_attachment', '附件仅支持 JPEG、PNG 图片或 PDF 文件。')
+    require(format_ is not None, 422, 'invalid_attachment', 'Attachments must be JPEG, PNG or PDF files.')
     try:
         from PIL import Image
     except ImportError:
-        raise ApiError(503, 'image_validation_unavailable', '图片校验组件暂不可用，请检查后端依赖。') from None
+        raise ApiError(503, 'image_validation_unavailable', 'Image validation is unavailable. Check backend dependencies.') from None
     try:
         with warnings.catch_warnings():
             warnings.simplefilter('error', Image.DecompressionBombWarning)
             with Image.open(BytesIO(content)) as image:
                 require(image.format == format_ and image.width * image.height <= MAX_IMAGE_PIXELS,
-                        422, 'invalid_attachment', '图片格式无效或像素数超过3000万。')
+                        422, 'invalid_attachment', 'The image format is invalid or exceeds 30 million pixels.')
                 image.verify()
             # JPEG verify() checks headers; decoding also catches a missing/truncated scan tail.
             with Image.open(BytesIO(content)) as image:
@@ -54,7 +54,7 @@ def detected_media(content):
     except ApiError:
         raise
     except (ValueError, OSError, SyntaxError, Image.DecompressionBombWarning, Image.DecompressionBombError):
-        raise ApiError(422, 'invalid_attachment', '图片已损坏或无法通过格式校验。') from None
+        raise ApiError(422, 'invalid_attachment', 'The image is damaged or failed format validation.') from None
     return 'image/png' if format_ == 'PNG' else 'image/jpeg'
 
 
@@ -69,7 +69,7 @@ class LivingAttachments:
             opaque_ref(repair_id)
             living = self.ctx.repo.get(db, 'living_services', case_id) or {}
             require(any(r['repair_id'] == repair_id for r in living.get('repairs', [])),
-                    404, 'not_found', '未找到此案例的维修记录。')
+                    404, 'not_found', 'Repair record not found for this case.')
 
     def _index(self, db, case_id):
         return self.ctx.repo.get(db, 'living_attachment_index', case_id) or {'ids': []}
@@ -84,18 +84,18 @@ class LivingAttachments:
         # Reject unknown cases/repair references before reading binary content.
         with self.ctx.repo.transaction() as db:
             self._authorize(db, case_id, repair_id)
-        require(purpose in ('repair', 'receipt', 'moveout'), 422, 'invalid_input', '请选择维修、收据或搬出附件用途。')
+        require(purpose in ('repair', 'receipt', 'moveout'), 422, 'invalid_input', 'Choose repair, receipt or move-out as the attachment purpose.')
         logical_id = request_id(request.headers.get('X-Request-Id', ''))
         filename = safe_filename(request.headers.get('X-Filename', ''))
         declared_media = request.headers.get('Content-Type', '').split(';')[0].strip().lower()
-        require(declared_media in MEDIA_TYPES, 415, 'unsupported_media_type', '请直接上传 JPEG、PNG、PDF 或二进制内容。')
+        require(declared_media in MEDIA_TYPES, 415, 'unsupported_media_type', 'Upload JPEG, PNG, PDF or binary content directly.')
         length = request.headers.get('Content-Length')
         if length is not None:
-            require(length.isascii() and length.isdigit(), 422, 'invalid_input', '附件长度无效。')
-            require(int(length) <= MAX_FILE_BYTES, 413, 'attachment_too_large', '每个附件最多10 MiB。')
+            require(length.isascii() and length.isdigit(), 422, 'invalid_input', 'Invalid attachment length.')
+            require(int(length) <= MAX_FILE_BYTES, 413, 'attachment_too_large', 'Each attachment may be at most 10 MiB.')
         content = bytearray()
         async for chunk in request.stream():
-            require(len(content) + len(chunk) <= MAX_FILE_BYTES, 413, 'attachment_too_large', '每个附件最多10 MiB。')
+            require(len(content) + len(chunk) <= MAX_FILE_BYTES, 413, 'attachment_too_large', 'Each attachment may be at most 10 MiB.')
             content.extend(chunk)
         content = bytes(content)
         identity = {'sha256': hashlib.sha256(content).hexdigest(), 'filename': filename,
@@ -110,11 +110,11 @@ class LivingAttachments:
                     return old['result']
                 media = detected_media(content)
                 require(declared_media == 'application/octet-stream' or declared_media == media,
-                        422, 'invalid_attachment', '附件内容与声明的文件格式不一致。')
+                        422, 'invalid_attachment', 'The attachment content does not match the declared format.')
                 index = self._index(db, case_id)
-                require(len(index['ids']) < MAX_CASE_FILES, 409, 'attachment_limit', '每个案例最多保存50个附件。')
+                require(len(index['ids']) < MAX_CASE_FILES, 409, 'attachment_limit', 'Each case can contain at most 50 attachments.')
                 total = sum(self.ctx.get(db, 'living_attachment', identifier)['metadata']['size_bytes'] for identifier in index['ids'])
-                require(total + len(content) <= MAX_CASE_BYTES, 409, 'attachment_limit', '每个案例附件总量最多100 MiB。')
+                require(total + len(content) <= MAX_CASE_BYTES, 409, 'attachment_limit', 'Total attachments per case may be at most 100 MiB.')
                 attachment_id = uid('attachment')
                 file_ref = attachment_id + '.bin'
                 metadata = {'attachment_id': attachment_id, 'case_id': case_id, 'filename': filename,
@@ -149,9 +149,9 @@ class LivingAttachments:
         with self.ctx.repo.transaction() as db:
             self._authorize(db, case_id)
             saved = self.ctx.get(db, 'living_attachment', attachment_id)
-            require(saved['case_id'] == case_id, 404, 'not_found', '未找到此案例的附件。')
+            require(saved['case_id'] == case_id, 404, 'not_found', 'Attachment not found for this case.')
             metadata = saved['metadata']
             path = self.directory / saved['file_ref']
-            require(path.is_file(), 404, 'not_found', '附件内容不存在。')
+            require(path.is_file(), 404, 'not_found', 'Attachment content is missing.')
         return FileResponse(path, media_type=metadata['mime_type'], filename=metadata['filename'],
                             headers={'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff'})

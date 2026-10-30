@@ -70,12 +70,12 @@ def question_fields(brief):
 
 
 def next_question(brief):
-    if 'budget_amount' not in brief:return '不熟悉区域也没关系。每周最高预算大概多少，是整套、每间还是每人的预算？需要几间卧室？'
-    if brief.get('budget_period')!='week':return '这笔预算是每周还是每月？房源按周报价，请确认每周最高金额。'
-    if brief.get('budget_scope') not in ('whole_property','per_room','per_person'):return '这个每周预算是整套、每个房间，还是每人承担的金额？'
-    if 'min_bedrooms' not in brief:return '至少需要几间卧室？浴室和车位有要求的话也可以一起告诉我。'
-    if 'commute_max_minutes' not in brief:return '到悉大主校区，单程最多接受多少分钟？'
-    if not brief.get('commute_mode'):return '通勤选公共交通、火车、地铁、公交车、开车、骑行还是步行？'
+    if 'budget_amount' not in brief:return 'You do not need to know the suburbs yet. What is your maximum weekly budget, is it for the whole property, per room or per person, and how many bedrooms do you need?'
+    if brief.get('budget_period')!='week':return 'Is this budget weekly or monthly? Listings use weekly rent, so confirm your maximum weekly amount.'
+    if brief.get('budget_scope') not in ('whole_property','per_room','per_person'):return 'Is this weekly budget for the whole property, per room or per person?'
+    if 'min_bedrooms' not in brief:return 'How many bedrooms do you need at minimum? Add bathroom and parking requirements if you have any.'
+    if 'commute_max_minutes' not in brief:return 'What is your maximum one-way commute in minutes to the USYD main campus?'
+    if not brief.get('commute_mode'):return 'Which commute mode do you prefer: public transport, train, metro, bus, driving, cycling or walking?'
     return None
 
 
@@ -84,7 +84,7 @@ def prepare(ctx,conversation,brief,patch,text,allow_external,refresh=False):
     query=patch.get('destination_query','')
     if query and (re.search(r'camden|cumberland|westmead|unsw|new south wales|technology|macquarie|公司|上班|新南|科技大学|麦考',query,re.I)):
         brief.update(student_brief(brief))
-        return {'intent':'outside_scope','agent':'assistant','content':'当前找房只面向悉尼大学 Camperdown / Darlington 主校区学生，暂不覆盖其他校区、其他学校或公司通勤。你的预算和房型需求已保留。','listings':[],'actions':[]},[]
+        return {'intent':'outside_scope','agent':'assistant','content':'Rental discovery currently covers University of Sydney Camperdown / Darlington students only. Other campuses, universities and workplace commutes are outside its scope. Your budget and property requirements are retained.','listings':[],'actions':[]},[]
     brief['recommend_areas']=True
     brief.update(student_brief(brief))
     options=[]
@@ -95,7 +95,7 @@ def prepare(ctx,conversation,brief,patch,text,allow_external,refresh=False):
         answer['commute_question']={'fields':question_fields(brief)}
         return answer,options
     if not allow_external:
-        answer['content']='需求已记下。本次没有启用外部交通查询；已保留到悉大主校区的条件，不会猜测实时通勤。'
+        answer['content']='Requirements noted. External transit lookup is not enabled. Your USYD main campus requirements are retained; live travel times have not been inferred.'
         return answer,options
     destination=deepcopy(DESTINATION)
     previous=[m['commute_recommendation'] for m in conversation.get('messages',[]) if m.get('commute_recommendation')]
@@ -124,17 +124,17 @@ def latest(ctx,case_id):
     result=deepcopy(saved)
     reasons=[]
     if saved.get('message',{}).get('commute_recommendation',{}).get('destination',{}).get('id')!=DESTINATION['id']:
-        reasons.append('已改为悉大主校区专用找房，请重新生成到主校区的通勤推荐。')
+        reasons.append('Discovery now targets the USYD main campus. Generate commute recommendations again.')
     if activity and (activity['conversation_id']!=saved['conversation_id'] or activity['brief']!=saved['brief']):
-        reasons.append('已有新的区域或通勤需求，请在最新对话重新生成推荐。')
-    if not conversation or conversation.get('rental_brief')!=saved['brief']:reasons.append('聊天需求已更新，请重新生成推荐。')
-    if signature(case)!=saved['case_signature']:reasons.append('已保存的案例资料已更新，请重新核对推荐。')
-    if saved['catalog_fingerprint']!=ctx.settings.catalog.fingerprint:reasons.append('房源数据已更新，请重新生成推荐。')
+        reasons.append('Suburb or commute requirements changed. Generate recommendations again in the latest conversation.')
+    if not conversation or conversation.get('rental_brief')!=saved['brief']:reasons.append('Conversation requirements changed. Generate recommendations again.')
+    if signature(case)!=saved['case_signature']:reasons.append('Saved case details changed. Review the recommendations again.')
+    if saved['catalog_fingerprint']!=ctx.settings.catalog.fingerprint:reasons.append('Listing data changed. Generate recommendations again.')
     evidence_fingerprint=saved.get('message',{}).get('commute_recommendation',{}).get('area_knowledge_fingerprint')
     if evidence_fingerprint:
         from ..areas.evidence import AreaKnowledge, needs_review
-        if evidence_fingerprint!=AreaKnowledge().fingerprint:reasons.append('区域资料已更新，请重新生成推荐。')
-        if needs_review(saved['message']['commute_recommendation']):reasons.append('区域资料已到重新核对时间，请重新生成推荐。')
+        if evidence_fingerprint!=AreaKnowledge().fingerprint:reasons.append('Area information changed. Generate recommendations again.')
+        if needs_review(saved['message']['commute_recommendation']):reasons.append('Area information is due for review. Generate recommendations again.')
     # Approximate rental discovery has no thirty-minute arrival/session deadline.
     # Source-route freshness is checked by snapshot.observation during matching.
     result.update(stale=bool(reasons),stale_reasons=reasons)

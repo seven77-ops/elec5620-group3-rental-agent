@@ -37,8 +37,8 @@ class CommuteShortUpdateTests(unittest.TestCase):
             if key not in ('commute_mode', 'commute_max_minutes'):
                 self.assertEqual(brief[key], value, key)
         answer = updated['messages'][-1]
-        self.assertIn('公共交通', answer['content'])
-        self.assertIn('20分钟', answer['content'])
+        self.assertIn('public transport', answer['content'])
+        self.assertIn('20 minutes', answer['content'])
         from server.app.real_data.catalog import RealCatalog
         matching = RealCatalog().matching({'max_weekly_rent': 900,
             'min_bedrooms': 2, 'min_bathrooms': 1, 'min_car_spaces': 0,

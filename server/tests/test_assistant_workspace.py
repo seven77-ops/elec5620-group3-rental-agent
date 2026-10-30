@@ -66,8 +66,8 @@ class WorkspaceTests(unittest.TestCase):
         p=self.prepare();self.assertEqual(p.status_code,200,p.text)
         summary=' '.join(p.json()['summary'])
         self.assertNotIn('2027-02-01',summary)
-        self.assertNotIn('家具',summary)
-        self.assertNotIn('含账单',summary)
+        self.assertNotIn('Furniture',summary)
+        self.assertNotIn('Bills included',summary)
         self.assertNotIn('450',summary)
         self.assertIn('unsw-kensington',summary)
         self.assertNotIn('lease_months',self.read_case()['requirements_profile'])
@@ -145,7 +145,7 @@ class WorkspaceTests(unittest.TestCase):
         cards=self.c['messages'][-1]['listings']
         self.assertGreater(report['counts']['input'],5)
         self.assertEqual(len(cards),report['counts']['input'])
-        self.assertNotIn('待核实',self.c['messages'][-1]['content'])
+        self.assertNotIn('unverified',self.c['messages'][-1]['content'])
 
     def test_unknown_and_outside_profile_cards_are_rejected_without_partial_report(self):
         self.provider.result={'intent':'search','filters':{'suburb':'Parramatta','max_weekly_rent':1500}}

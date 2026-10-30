@@ -26,7 +26,7 @@ class LivingContinuityTests(unittest.TestCase):
 
     def report(self):
         return self.send({'intent':'living_services','topic':'repairs','service_action':'report_repair',
-            'repair':{'title':'厨房漏水','description':'厨房水槽下面一直漏水','location':'厨房','priority':'normal'}},
+            'repair':{'title':'厨房漏水','description':'厨房水槽下面一直漏水','location':'Kitchen','priority':'normal'}},
             '厨房漏水，厨房水槽下面一直漏水，帮我准备邮件')
 
     def apply(self,answer,identifier):
@@ -47,7 +47,7 @@ class LivingContinuityTests(unittest.TestCase):
         record=self.apply(answer,'polite-confirm')
         self.assertEqual(len(record['repairs']),1)
         self.assertEqual(record['repairs'][0]['email_tone'],'polite')
-        self.assertIn('厨房水槽下面一直漏水',record['repairs'][0]['email']['body'])
+        self.assertIn('Water is continuously leaking beneath the kitchen sink.',record['repairs'][0]['email']['body'])
         denied=self.client.post(self.living+'/proposals/'+old_id+'/apply',json={
             'request_id':'old-confirm','expected_version':0,'confirmed':True})
         self.assertEqual(denied.status_code,409)
@@ -69,7 +69,7 @@ class LivingContinuityTests(unittest.TestCase):
         self.assertEqual(entry['email']['to'],'agent@example.com')
         self.assertEqual(entry['email']['delivery_status'],'prepared_not_sent')
         self.assertIn('Private Address',entry['email']['body'])
-        context=self.provider.inputs[-1]['living_services']
+        context=next(c for c in reversed(self.provider.inputs) if c['task']=='assistant_intent')['living_services']
         self.assertEqual(context['focused_repair_id'],repair['repair_id'])
         self.assertNotIn('Private Address',str(context));self.assertNotIn('agent@example.com',str(context))
 
@@ -96,7 +96,7 @@ class LivingContinuityTests(unittest.TestCase):
         for rid in (None,'repair-other-case'):
             answer=self.follow({'status':'resolved'},'已经处理好了',rid)
             self.assertFalse(any(a['type']=='apply_living_services' for a in answer['actions']))
-            self.assertIn('哪一条',answer['content'])
+            self.assertIn('which repair',answer['content'])
         self.assertEqual(self.client.get(self.living).json()['version'],2)
 
     def test_stale_repair_proposal_conflicts_and_manual_note_is_user_recorded(self):

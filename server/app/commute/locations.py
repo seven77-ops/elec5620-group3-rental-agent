@@ -106,12 +106,12 @@ class LocationResolver:
                 result.append(point)
             return result
         except (KeyError,TypeError,ValueError,AttributeError):
-            raise ApiError(502,'location_invalid_response','NSW 位置服务响应无法校验；未生成坐标。') from None
+            raise ApiError(502,'location_invalid_response','The NSW location response could not be validated. No coordinates were generated.') from None
 
     def search(self, query, limit=5):
         require(isinstance(query,str) and 2<=len(query.strip())<=180 and
-                not any(ord(c)<32 for c in query),422,'invalid_location_query','请提供2至180字的地址或地点名称。')
-        require(type(limit) is int and 1<=limit<=5,422,'invalid_location_limit','位置候选最多5条。')
+                not any(ord(c)<32 for c in query),422,'invalid_location_query','Provide an address or place name of 2 to 180 characters.')
+        require(type(limit) is int and 1<=limit<=5,422,'invalid_location_limit','At most 5 location candidates are allowed.')
         query = normalized(query.strip())
         # SQL literal escaping plus removal of wildcard syntax; fixed fields and host only.
         literal = query.replace("'", "''").replace('%','').replace('_','')
@@ -186,8 +186,8 @@ class LocationResolver:
         Queries exact building addresses in chunks of twenty with three workers;
         no file writes, inferred points, retries or per-turn automatic invocation.
         """
-        require(isinstance(rows,list) and len(rows)<=1000,422,'location_batch_limit','位置采集最多1000条公开房源。')
-        require(type(batch_size) is int and 1<=batch_size<=20,422,'location_batch_limit','地址批次须为1至20条。')
+        require(isinstance(rows,list) and len(rows)<=1000,422,'location_batch_limit','Location collection supports at most 1000 public listings.')
+        require(type(batch_size) is int and 1<=batch_size<=20,422,'location_batch_limit','Address batches must contain 1 to 20 items.')
         groups={}
         for row in rows:
             address=listing_address(row)
@@ -198,7 +198,7 @@ class LocationResolver:
             literals=','.join("'"+item.replace("'","''")+"'" for item in batch)
             try:
                 candidates=self._query(ADDRESS,'address','address IN ('+literals+')',100)
-                if len(candidates)>=100: return {},'地址响应达到上限，本批坐标未采纳。'
+                if len(candidates)>=100: return {},'The address response reached its limit. Coordinates for this batch were not accepted.'
                 points={}
                 for address in batch:
                     matches=[point for point in candidates if normalized(point['label'])==address]

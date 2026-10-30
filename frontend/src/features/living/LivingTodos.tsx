@@ -28,9 +28,9 @@ export default function LivingTodos({
         title: repair.title,
         note:
           repair.status === "prepared"
-            ? "联系负责人，或记录已联系的情况"
-            : "记录对方回复与处理进展",
-        label: `处理报修：${repair.title}`,
+            ? "Contact the responsible person or record that you have contacted them"
+            : "Record replies and progress",
+        label: `Handle repair: ${repair.title}`,
         tab: "repairs",
         repair: repair.repair_id,
       });
@@ -53,12 +53,12 @@ export default function LivingTodos({
       );
       todos.push({
         key: booking.booking_id,
-        title: provider?.name || "服务记录",
+        title: provider?.name || "Service record",
         note:
           booking.status === "booked"
-            ? `查看自己记录的预约${booking.service_date ? ` · ${booking.service_date}` : "，核对服务日期"}`
-            : "核对收到的报价和服务日期",
-        label: `处理服务：${provider?.name || "服务记录"}`,
+            ? `View your recorded booking ${booking.service_date ? ` · ${booking.service_date}` : " and check the service date"}`
+            : "Check the quote received and service date",
+        label: `Handle service: ${provider?.name || "Service record"}`,
         tab: "services",
         booking: booking.booking_id,
       });
@@ -67,9 +67,9 @@ export default function LivingTodos({
   if (record.profile.move_out_date)
     todos.push({
       key: "moveout",
-      title: "退租计划",
-      note: `已填写预计退租日期 ${record.profile.move_out_date}`,
-      label: "查看退租事项",
+      title: "Move-out plan",
+      note: `Expected move-out date entered: ${record.profile.move_out_date}`,
+      label: "View move-out tasks",
       tab: "moveout",
     });
   if (
@@ -79,17 +79,17 @@ export default function LivingTodos({
   )
     todos.push({
       key: "contacts",
-      title: "补充中介或房东联系方式",
-      note: "填写邮箱或电话，方便报修联系",
-      label: "填写联系人",
+      title: "Add agent or landlord contact details",
+      note: "Enter an email or phone number for repair contact",
+      label: "Add contact",
       tab: "contacts",
     });
   if (!todos.length) return null;
   return (
-    <section className="living-todos" aria-label="待办事项">
+    <section className="living-todos" aria-label="To-do items">
       <div className="living-todos-heading">
         <h2>
-          待办事项 <small>{todos.length} 项</small>
+          To-do items <small>{todos.length} items</small>
         </h2>
         {todos.length > 5 && (
           <Button
@@ -97,7 +97,7 @@ export default function LivingTodos({
             size="small"
             onClick={() => setAll((value) => !value)}
           >
-            {all ? "收起待办" : "查看全部待办"}
+            {all ? "Collapse to-do items" : "View all to-do items"}
           </Button>
         )}
       </div>
@@ -119,7 +119,7 @@ export default function LivingTodos({
           ))}
         </ul>
       ) : (
-        <p className="muted">暂无待跟进事项。</p>
+        <p className="muted">No items awaiting follow-up.</p>
       )}
     </section>
   );

@@ -136,6 +136,25 @@ class BoundaryTests(unittest.TestCase):
         self.assertEqual(self.post('aftercare/commands',dict(plan,operation='operator_decision')).status_code,403)
         self.assertEqual(self.client.get('/api/v1/aftercare/cases/arbitrary').status_code,404)
 
+    def test_operator_inbox_keeps_contract_decision_history_after_correction(self):
+        result, _, _ = self.review(True)
+        rid = result['review']['review_id']
+        key = {'X-Operator-Key': 'test-private-key'}
+        pending = self.client.get('/api/v1/operator/reviews', headers=key)
+        self.assertEqual(pending.status_code, 200, pending.text)
+        self.assertEqual(pending.json()['items'][0]['review_id'], rid)
+        self.assertEqual(pending.json()['items'][0]['status'], 'open')
+        decision = self.client.post(f'/api/v1/contract-reviews/{rid}/decisions', headers=key,
+            json={'expected_version': 1, 'decision': 'approve', 'note': 'Checked the rent discrepancy'})
+        self.assertEqual(decision.status_code, 200, decision.text)
+        corrected = self.post(f'contract-reviews/{rid}/corrections',
+            {'expected_version': 1, 'corrections': {'rent_amount': 500}})
+        self.assertEqual(corrected.status_code, 200, corrected.text)
+        history = self.client.get('/api/v1/operator/reviews', headers=key).json()['items'][0]
+        self.assertEqual(history['status'], 'closed')
+        self.assertEqual(history['case_id'], self.cid)
+        self.assertEqual(history['decisions'][0]['note'], 'Checked the rent discrepancy')
+
     def test_repeated_evaluation_never_overwrites_saved_run(self):
         self.confirm()
         first=self.post(f'cases/{self.cid}/evaluations',{'request_id':'first','confirmation_version':1}).json()

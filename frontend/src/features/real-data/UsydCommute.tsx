@@ -31,7 +31,7 @@ export function UsydCommuteMini({
       {summary ? (
         <strong className="commute-time">{summary.text}</strong>
       ) : (
-        <small>通勤参考待补充</small>
+        <small>Commute reference needed</small>
       )}
     </span>
   );
@@ -60,7 +60,7 @@ export default function UsydCommute({ listing }: { listing: HousingAd }) {
       data-testid="usyd-commute"
     >
       <div className="usyd-commute-title">
-        <h3>到悉大主校区</h3>
+        <h3>Commute to USYD main campus</h3>
         {summary && <span>{summary.text}</span>}
       </div>
       <p className="muted small">Camperdown / Darlington · Fisher Library</p>
@@ -71,18 +71,18 @@ export default function UsydCommute({ listing }: { listing: HousingAd }) {
             <dd>
               <strong>
                 {mode.selected?.estimated
-                  ? `估算 ${mode.selected.lower}–${mode.selected.upper}`
-                  : `约 ${mode.minutes}`}
-                <small> 分钟</small>
+                  ? `Estimated ${mode.selected.lower}–${mode.selected.upper}`
+                  : `Approx. ${mode.minutes}`}
+                <small> minutes</small>
               </strong>
               <a
                 className="usyd-map-link"
                 href={usydDirections(listing, mode.value)}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={`在 Google 地图查看${mode.label}`}
+                aria-label={`View ${mode.label.toLowerCase()} route in Google Maps`}
               >
-                Google 地图 ↗
+                Google Maps ↗
               </a>
             </dd>
           </div>
@@ -95,7 +95,7 @@ export default function UsydCommute({ listing }: { listing: HousingAd }) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Google 地图 ↗
+          Google Maps ↗
         </a>
       )}
       <div className="usyd-commute-sources">

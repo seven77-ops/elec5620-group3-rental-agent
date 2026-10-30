@@ -68,17 +68,17 @@ class LivingTenancy:
         values.update(self._accepted('agent_name', fields.get('agent_name') if agent_present else fields.get('landlord_name')))
         values.update(self._contacts(fields.get('agent_contact') if agent_present else fields.get('landlord_contact')))
         return {'kind': 'lease_draft', 'id': draft['draft_id'], 'version': draft['version'],
-                'label': '已保存租约草稿 v' + str(draft['version']), 'values': values,
+                'label': 'Saved lease draft v' + str(draft['version']), 'values': values,
                 'current': current_token is not None and current_token == draft['context_token'],
                 'basis': {'context_token': draft['context_token'], 'fields': fields},
-                'warning': '来源是未签署租约草稿，不能据此推定已入住。请先核实并确认这是你的实际租约。'}
+                'warning': 'The source is an unsigned lease draft and does not establish occupancy. Verify and confirm it is your actual tenancy first.'}
 
     def _aftercare_source(self, db, case):
         identifier = case.get('aftercare_case_id')
         if not identifier:
             return None
         mapping = self.ctx.repo.get(db, 'aftercare_mapping', identifier)
-        require(mapping and mapping['case_id'] == case['case_id'], 404, 'not_found', '未找到此案例的已确认租约来源。')
+        require(mapping and mapping['case_id'] == case['case_id'], 404, 'not_found', 'Confirmed tenancy source not found for this case.')
         saved = self.ctx.aftercare.get(identifier, TENANT)
         tenancy = saved['tenancy']
         if tenancy.get('confirmed') is not True:
@@ -87,9 +87,9 @@ class LivingTenancy:
         if type(tenancy.get('carpeted')) is bool:
             values['carpeted'] = tenancy['carpeted']
         return {'kind': 'aftercare', 'id': identifier, 'version': tenancy['source_version'],
-                'label': '已确认租后租约资料 v' + str(tenancy['source_version']), 'current': True,
+                'label': 'Confirmed aftercare tenancy details v' + str(tenancy['source_version']), 'current': True,
                 'values': values, 'basis': {'tenancy': tenancy},
-                'warning': '资料来自你已确认的租约记录，请再次核对当前实际居住情况；未提供的联系信息保持未知。'}
+                'warning': 'These details come from your confirmed tenancy record. Recheck your current living situation; unspecified contact details remain unknown.'}
 
     def _preview(self, db, case_id, record):
         case = self.ctx.get(db, 'case', case_id)
@@ -109,17 +109,17 @@ class LivingTenancy:
                 source['basis']['supplementary_draft'] = {
                     'id': draft['id'], 'version': draft['version'],
                     'context_token': draft['basis']['context_token'], 'fields': draft['basis']['fields']}
-                source['label'] += ' + 同地址租约草稿 v' + str(draft['version'])
-                source['warning'] = ('地址和地毯信息来自已确认租约；联系人和租期来自同地址未签署草稿。'
-                                     '请再次核对并确认这些是实际资料；草稿不代表已签约或已入住。')
+                source['label'] += ' + lease draft for the same address v' + str(draft['version'])
+                source['warning'] = ('Address and carpet details come from the confirmed tenancy; contacts and lease dates come from an unsigned draft for the same address. '
+                                     'Review and confirm these are actual details. A draft does not establish signing or occupancy.')
             if new_home:
-                source['warning'] = ('租约草稿地址与已确认租约地址不同，请明确确认是否已换住处。'
-                                     '导入仅更新所选资料，现有水电网络、维修和服务记录都会保留。'
-                                     '未签署草稿本身不代表实际入住。')
+                source['warning'] = ('The draft address differs from the confirmed tenancy. Explicitly confirm whether you have moved. '
+                                     'Import updates only selected details; existing utilities, repairs and service records are retained. '
+                                     'An unsigned draft alone does not establish occupancy.')
         elif draft and draft['current'] and record['profile'].get('address') and draft['values'].get('address') and \
                 _address(record['profile']['address']) != _address(draft['values']['address']):
-            source['warning'] = ('租约草稿地址与当前居住资料地址不同，请确认是否已换住处。'
-                                 '现有水电网络、维修和服务记录都会保留；草稿本身不代表实际入住。')
+            source['warning'] = ('The draft address differs from your current residential details. Confirm whether you have moved. '
+                                 'Existing utilities, repairs and service records are retained. A draft alone does not establish occupancy.')
         values = deepcopy(source['values']) if source else {}
         public_source = None
         if source:
@@ -129,7 +129,7 @@ class LivingTenancy:
             public_source = {k: source[k] for k in ('kind', 'id', 'version', 'label', 'current', 'warning')}
             public_source['token'] = token
             if not source['current']:
-                public_source['warning'] = '此草稿关联的候选、需求或跟进信息已变化，不能导入。请核对并保存当前租约草稿。'
+                public_source['warning'] = 'The candidate, requirements or follow-up linked to this draft changed, so it cannot be imported. Review and save the current lease draft.'
         previous = {key: deepcopy(record['profile'].get(key)) for key in values}
         return {'expected_version': record['version'], 'source': public_source, 'values': values,
                 'previous': previous, 'linked_source': deepcopy(record.get('tenancy_source')),
@@ -143,12 +143,12 @@ class LivingTenancy:
         shape(body, ('request_id', 'expected_version', 'confirmed', 'actual_tenancy_confirmed', 'source_token', 'fields'))
         key = case_id + ':' + request_id(body['request_id'])
         require(body['confirmed'] is True and body['actual_tenancy_confirmed'] is True,
-                422, 'confirmation_required', '请明确确认导入，并确认来源属于你的实际租约。')
+                422, 'confirmation_required', 'Explicitly confirm the import and that the source describes your actual tenancy.')
         require(integer(body['expected_version']) and isinstance(body['source_token'], str),
-                422, 'invalid_input', '请提供当前资料版本和来源标识。')
+                422, 'invalid_input', 'Provide the current record version and source identifier.')
         fields = body['fields']
         require(isinstance(fields, list) and 0 < len(fields) <= 7 and all(isinstance(k, str) for k in fields)
-                and len(set(fields)) == len(fields), 422, 'invalid_input', '请选择不重复的非空来源字段。')
+                and len(set(fields)) == len(fields), 422, 'invalid_input', 'Select unique, nonempty source fields.')
         identity = {'operation': 'tenancy_import', 'body': body}
         with self.ctx.repo.transaction() as db:
             record = self.living._record(db, case_id)
@@ -158,9 +158,9 @@ class LivingTenancy:
             preview = self._preview(db, case_id, record)
             source = preview['source']
             require(source and source['current'] and source['token'] == body['source_token'],
-                    409, 'source_changed', '租约来源已变化或不属于此案例，请重新读取并核对。')
+                    409, 'source_changed', 'The tenancy source changed or belongs to another case. Reload and review it.')
             self.living._version(record, body['expected_version'])
-            require(set(fields) <= set(preview['values']), 422, 'invalid_input', '只能导入来源中已提供的非空字段。')
+            require(set(fields) <= set(preview['values']), 422, 'invalid_input', 'Only nonempty fields supplied by the source can be imported.')
             partial = {key: preview['values'][key] for key in fields}
             record['profile'] = profile_values(merge_profile(record['profile'], partial), self.living.catalog)
             record['tenancy_source'] = {k: source[k] for k in ('kind', 'id', 'version', 'label', 'token')}

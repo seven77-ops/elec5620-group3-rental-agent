@@ -19,9 +19,12 @@ export default function ListingResults({
   );
   if (!listings.length) return null;
   return (
-    <section className="assistant-listing-results" aria-label="已筛选房源">
+    <section
+      className="assistant-listing-results"
+      aria-label="Filtered listings"
+    >
       <div className="assistant-listing-results-heading">
-        <span>已筛选 {listings.length} 套房源</span>
+        <span>Filtered {listings.length} listings</span>
         <Button
           size="small"
           aria-expanded={expanded}
@@ -30,7 +33,9 @@ export default function ListingResults({
             setPage(1);
           }}
         >
-          {expanded ? "收起房源" : `查看全部${listings.length}套房源`}
+          {expanded
+            ? "Collapse listings"
+            : `View all ${listings.length} listings`}
         </Button>
       </div>
       {expanded && (
@@ -43,7 +48,7 @@ export default function ListingResults({
           {listings.length > pageSize && (
             <nav
               className="assistant-listing-pagination"
-              aria-label="已筛选房源分页"
+              aria-label="Filtered listing pages"
             >
               <Pagination
                 current={current}

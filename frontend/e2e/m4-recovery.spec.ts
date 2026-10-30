@@ -56,16 +56,21 @@ async function seeded(request: APIRequestContext) {
 }
 async function activate(page: Page) {
   await page
-    .getByRole("button", { name: "确认事实并激活跟进", exact: true })
+    .getByRole("button", {
+      name: "Confirm facts and activate follow-up",
+      exact: true,
+    })
     .click();
   const dialog = page.getByRole("dialog", {
-    name: "确认事实并激活跟进",
+    name: "Confirm facts and activate follow-up",
     exact: true,
   });
   await dialog
-    .getByLabel("租客报告的事实", { exact: true })
+    .getByLabel("Facts reported by the tenant", { exact: true })
     .fill("Fictional test: tenant reports deposit paid.");
-  await dialog.getByRole("button", { name: "确认并记录", exact: true }).click();
+  await dialog
+    .getByRole("button", { name: "Confirm and record", exact: true })
+    .click();
   await expect(dialog).toBeHidden();
 }
 
@@ -76,18 +81,23 @@ test("unknown tenancy can be completed in the same case before confirming a plan
   const c = await (await request.post("/api/v1/cases", { data: {} })).json();
   await page.goto(`/cases/${c.case_id}/aftercare?tab=moveout`);
   await page
-    .getByLabel("租约地址", { exact: true })
+    .getByLabel("Lease address", { exact: true })
     .fill("1 Example Street, Sydney NSW (fictional test)");
   await page
     .getByRole("checkbox", {
-      name: "我已核对并确认上述租约、房间、家具及资料来源。",
+      name: "I have checked and confirmed the lease, rooms, furniture, and sources above.",
       exact: true,
     })
     .check();
   await page
-    .getByRole("button", { name: "确认资料并创建租后案件", exact: true })
+    .getByRole("button", {
+      name: "Confirm details and create aftercare case",
+      exact: true,
+    })
     .click();
-  await expect(page.getByText("已确认租约资料", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Confirmed lease details", { exact: true }),
+  ).toBeVisible();
   await command(request, c.case_id, "add_evidence", {
     evidence: {
       evidence_id: "preserved-evidence",
@@ -100,39 +110,50 @@ test("unknown tenancy can be completed in the same case before confirming a plan
   });
   await page.reload();
   const before = await record(request, c.case_id);
-  await expect(page.getByText("先补齐房屋资料", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Complete property details first", { exact: true }),
+  ).toBeVisible();
   await page
-    .getByRole("button", { name: "补齐资料后生成计划", exact: true })
+    .getByRole("button", {
+      name: "Complete details before generating a plan",
+      exact: true,
+    })
     .click();
   const dialog = page.getByRole("dialog", {
-    name: "补充租约资料",
+    name: "Complete lease details",
     exact: true,
   });
-  await expect(dialog.getByLabel("租约地址", { exact: true })).toHaveValue(
+  await expect(dialog.getByLabel("Lease address", { exact: true })).toHaveValue(
     before.tenancy.address,
   );
-  for (const label of ["有地毯", "有室外区域", "带家具"]) {
+  for (const label of ["Has carpet", "Has outdoor area", "Furnished"]) {
     await dialog.getByRole("combobox", { name: label, exact: true }).click();
     await page
       .locator(".ant-select-dropdown:visible")
-      .getByText("否", { exact: true })
+      .getByText("No", { exact: true })
       .last()
       .click();
     await expect(page.locator(".ant-select-dropdown:visible")).toHaveCount(0);
   }
-  await dialog.getByRole("button", { name: "添加房间", exact: true }).click();
-  await dialog.getByLabel("房间名称", { exact: true }).fill("Bedroom");
+  await dialog.getByRole("button", { name: "Add room", exact: true }).click();
+  await dialog.getByLabel("Room name", { exact: true }).fill("Bedroom");
   await expect(
-    dialog.getByRole("button", { name: "确认并保存租约资料", exact: true }),
+    dialog.getByRole("button", {
+      name: "Confirm and save lease details",
+      exact: true,
+    }),
   ).toBeDisabled();
   await dialog
     .getByRole("checkbox", {
-      name: "我已核对并确认上述租约、房间、家具及资料来源。",
+      name: "I have checked and confirmed the lease, rooms, furniture, and sources above.",
       exact: true,
     })
     .check();
   await dialog
-    .getByRole("button", { name: "确认并保存租约资料", exact: true })
+    .getByRole("button", {
+      name: "Confirm and save lease details",
+      exact: true,
+    })
     .click();
   await expect(dialog).toBeHidden();
   const saved = await record(request, c.case_id);
@@ -142,14 +163,14 @@ test("unknown tenancy can be completed in the same case before confirming a plan
   expect(saved.evidence).toEqual(before.evidence);
   expect(saved.tenancy.carpeted).toBe(false);
   await page
-    .getByRole("button", { name: "生成并确认计划", exact: true })
+    .getByRole("button", { name: "Generate and confirm plan", exact: true })
     .click();
-  await page.getByRole("button", { name: "确认计划", exact: true }).click();
+  await page.getByRole("button", { name: "Confirm plan", exact: true }).click();
   await expect
     .poll(async () => (await record(request, c.case_id)).plan?.state)
     .toBe("Active");
   await expect(
-    page.getByRole("button", { name: "补充租约资料", exact: true }),
+    page.getByRole("button", { name: "Complete lease details", exact: true }),
   ).toBeDisabled();
 });
 
@@ -159,39 +180,46 @@ test("blank bond draft can receive a reference and activate once without duplica
 }) => {
   const cid = await seeded(request);
   await page.goto(`/cases/${cid}/aftercare?tab=moveout`);
-  await page.getByRole("tab", { name: "押金跟进", exact: true }).click();
-  await page.getByRole("button", { name: "建立押金跟进", exact: true }).click();
+  await page.getByRole("tab", { name: "Bond follow-up", exact: true }).click();
   await page
-    .getByRole("button", { name: "确认事实并激活跟进", exact: true })
+    .getByRole("button", { name: "Create bond follow-up", exact: true })
+    .click();
+  await page
+    .getByRole("button", {
+      name: "Confirm facts and activate follow-up",
+      exact: true,
+    })
     .click();
   const blocked = page.getByRole("dialog", {
-    name: "确认事实并激活跟进",
+    name: "Confirm facts and activate follow-up",
     exact: true,
   });
   await blocked
-    .getByLabel("租客报告的事实", { exact: true })
+    .getByLabel("Facts reported by the tenant", { exact: true })
     .fill("Fictional activation before reference provided");
   await blocked
-    .getByRole("button", { name: "确认并记录", exact: true })
+    .getByRole("button", { name: "Confirm and record", exact: true })
     .click();
-  await expect(blocked.getByText(/请先补录押金编号/).first()).toBeVisible();
+  await expect(blocked.getByText(/Add a bond reference/).first()).toBeVisible();
   await blocked
-    .getByRole("button", { name: "取消本次编辑", exact: true })
+    .getByRole("button", { name: "Cancel this edit", exact: true })
     .click();
   expect((await record(request, cid)).bond.history).toHaveLength(0);
-  await page.getByRole("button", { name: "补录押金资料", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Add bond details", exact: true })
+    .click();
   const dialog = page.getByRole("dialog", {
-    name: "补录押金资料",
+    name: "Add bond details",
     exact: true,
   });
   await expect(
-    dialog.getByRole("button", { name: "保存押金资料", exact: true }),
+    dialog.getByRole("button", { name: "Save bond details", exact: true }),
   ).toBeDisabled();
   await dialog
-    .getByLabel("押金记录编号", { exact: true })
+    .getByLabel("Bond reference", { exact: true })
     .fill("FICTIONAL-BOND-RECOVERY");
   await dialog
-    .getByRole("button", { name: "保存押金资料", exact: true })
+    .getByRole("button", { name: "Save bond details", exact: true })
     .click();
   await expect(dialog).toBeHidden();
   expect((await record(request, cid)).bond.state).toBe("Draft");
@@ -211,7 +239,7 @@ test("blank bond draft can receive a reference and activate once without duplica
   expect(retry.ok()).toBeTruthy();
   expect((await record(request, cid)).bond.history).toHaveLength(1);
   await expect(
-    page.getByRole("button", { name: "补录押金资料", exact: true }),
+    page.getByRole("button", { name: "Add bond details", exact: true }),
   ).toHaveCount(0);
 });
 
@@ -241,15 +269,21 @@ test("a registered deposit record can activate the same blank bond draft", async
     },
   });
   await page.goto(`/cases/${cid}/aftercare?tab=moveout`);
-  await page.getByRole("tab", { name: "押金跟进", exact: true }).click();
-  await page.getByRole("button", { name: "建立押金跟进", exact: true }).click();
+  await page.getByRole("tab", { name: "Bond follow-up", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Create bond follow-up", exact: true })
+    .click();
   const before = await record(request, cid);
-  await page.getByRole("button", { name: "补录押金资料", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Add bond details", exact: true })
+    .click();
   const dialog = page.getByRole("dialog", {
-    name: "补录押金资料",
+    name: "Add bond details",
     exact: true,
   });
-  await dialog.getByRole("combobox", { name: "押金凭证", exact: true }).click();
+  await dialog
+    .getByRole("combobox", { name: "Bond evidence", exact: true })
+    .click();
   await expect(page.getByRole("option", { name: /not-a-deposit/ })).toHaveCount(
     0,
   );
@@ -258,7 +292,7 @@ test("a registered deposit record can activate the same blank bond draft", async
     .getByText("deposit-recovery · Fictional deposit receipt", { exact: true })
     .click();
   await dialog
-    .getByRole("button", { name: "保存押金资料", exact: true })
+    .getByRole("button", { name: "Save bond details", exact: true })
     .click();
   await expect(dialog).toBeHidden();
   const saved = await record(request, cid);
@@ -297,12 +331,15 @@ for (const kind of ["tenancy", "bond"] as const) {
     });
     await page.goto(`/cases/${cid}/aftercare?tab=moveout`);
     if (kind === "bond")
-      await page.getByRole("tab", { name: "押金跟进", exact: true }).click();
-    const title = kind === "tenancy" ? "补充租约资料" : "补录押金资料";
+      await page
+        .getByRole("tab", { name: "Bond follow-up", exact: true })
+        .click();
+    const title =
+      kind === "tenancy" ? "Complete lease details" : "Add bond details";
     await page.getByRole("button", { name: title, exact: true }).click();
     const dialog = page.getByRole("dialog", { name: title, exact: true });
     const field = dialog.getByLabel(
-      kind === "tenancy" ? "租约地址" : "押金记录编号",
+      kind === "tenancy" ? "Lease address" : "Bond reference",
       { exact: true },
     );
     const value =
@@ -313,22 +350,28 @@ for (const kind of ["tenancy", "bond"] as const) {
     if (kind === "tenancy")
       await dialog
         .getByRole("checkbox", {
-          name: "我已核对并确认上述租约、房间、家具及资料来源。",
+          name: "I have checked and confirmed the lease, rooms, furniture, and sources above.",
           exact: true,
         })
         .check();
     await dialog
       .getByRole("button", {
-        name: kind === "tenancy" ? "确认并保存租约资料" : "保存押金资料",
+        name:
+          kind === "tenancy"
+            ? "Confirm and save lease details"
+            : "Save bond details",
         exact: true,
       })
       .click();
     await expect(
-      dialog.getByRole("button", { name: "重试原操作", exact: true }),
+      dialog.getByRole("button", {
+        name: "Retry original action",
+        exact: true,
+      }),
     ).toBeVisible();
     await expect(field).toHaveValue(value);
     await dialog
-      .getByRole("button", { name: "重试原操作", exact: true })
+      .getByRole("button", { name: "Retry original action", exact: true })
       .click();
     await expect(dialog).toBeHidden();
     expect(sent).toHaveLength(2);
@@ -353,17 +396,19 @@ test("tenancy version conflict keeps input and refreshes the version before resa
 }) => {
   const cid = await seeded(request);
   await page.goto(`/cases/${cid}/aftercare?tab=moveout`);
-  await page.getByRole("button", { name: "补充租约资料", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Complete lease details", exact: true })
+    .click();
   const dialog = page.getByRole("dialog", {
-    name: "补充租约资料",
+    name: "Complete lease details",
     exact: true,
   });
   await dialog
-    .getByLabel("租约地址", { exact: true })
+    .getByLabel("Lease address", { exact: true })
     .fill("3 Example Street, Sydney NSW (fictional test)");
   await dialog
     .getByRole("checkbox", {
-      name: "我已核对并确认上述租约、房间、家具及资料来源。",
+      name: "I have checked and confirmed the lease, rooms, furniture, and sources above.",
       exact: true,
     })
     .check();
@@ -378,28 +423,43 @@ test("tenancy version conflict keeps input and refreshes the version before resa
     },
   });
   await dialog
-    .getByRole("button", { name: "确认并保存租约资料", exact: true })
+    .getByRole("button", {
+      name: "Confirm and save lease details",
+      exact: true,
+    })
     .click();
   await expect(
-    dialog.getByRole("button", { name: "读取最新状态并保留输入", exact: true }),
+    dialog.getByRole("button", {
+      name: "Load latest state and preserve input",
+      exact: true,
+    }),
   ).toBeVisible();
   await dialog
-    .getByRole("button", { name: "读取最新状态并保留输入", exact: true })
+    .getByRole("button", {
+      name: "Load latest state and preserve input",
+      exact: true,
+    })
     .click();
   await expect(
-    dialog.getByRole("button", { name: "读取最新状态并保留输入", exact: true }),
+    dialog.getByRole("button", {
+      name: "Load latest state and preserve input",
+      exact: true,
+    }),
   ).toHaveCount(0);
-  await expect(dialog.getByLabel("租约地址", { exact: true })).toHaveValue(
+  await expect(dialog.getByLabel("Lease address", { exact: true })).toHaveValue(
     "3 Example Street, Sydney NSW (fictional test)",
   );
   await dialog
     .getByRole("checkbox", {
-      name: "我已核对并确认上述租约、房间、家具及资料来源。",
+      name: "I have checked and confirmed the lease, rooms, furniture, and sources above.",
       exact: true,
     })
     .check();
   await dialog
-    .getByRole("button", { name: "确认并保存租约资料", exact: true })
+    .getByRole("button", {
+      name: "Confirm and save lease details",
+      exact: true,
+    })
     .click();
   await expect(dialog).toBeHidden();
   const saved = await record(request, cid);

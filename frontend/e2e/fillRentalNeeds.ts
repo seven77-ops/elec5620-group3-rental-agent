@@ -3,7 +3,7 @@ import { expect, type Page } from "@playwright/test";
 export async function fillRentalNeeds(
   page: Page,
   {
-    suburb = "不限区域",
+    suburb = "Any area",
     budget = 1000,
     bedrooms = 0,
     bathrooms = 0,
@@ -11,28 +11,31 @@ export async function fillRentalNeeds(
   } = {},
 ) {
   const drawer = page.getByRole("dialog", {
-    name: "我的租房需求",
+    name: "My rental needs",
     exact: true,
   });
   await expect(drawer).toBeVisible();
-  await drawer.getByLabel("偏好区域", { exact: true }).click();
+  await drawer.getByLabel("Preferred area", { exact: true }).click();
   await page.getByRole("option", { name: suburb, exact: true }).click();
   await drawer
-    .getByLabel("最高预算（AUD）", { exact: true })
+    .getByLabel("Maximum budget (AUD)", { exact: true })
     .fill(String(budget));
   for (const [field, choice] of [
-    ["预算周期", "每周"],
-    ["计价对象", "整套"],
-    ["租赁方式", "整租"],
+    ["Budget period", "Weekly"],
+    ["Pricing basis", "Whole property"],
+    ["Rental type", "Whole property"],
   ]) {
-    await drawer.getByLabel(field, { exact: true }).click();
-    await page.getByRole("option", { name: choice, exact: true }).click();
+    const control = drawer.getByLabel(field, { exact: true });
+    await control.click();
+    const options = await control.getAttribute("aria-controls");
+    expect(options).toBeTruthy();
+    await page.locator(`[id="${options}"]`).getByRole("option", { name: choice, exact: true }).click();
   }
   for (const [field, value] of [
-    ["居住人数", 1],
-    ["至少卧室", bedrooms],
-    ["至少浴室", bathrooms],
-    ["至少车位", parking],
+    ["Number of occupants", 1],
+    ["Minimum bedrooms", bedrooms],
+    ["Minimum bathrooms", bathrooms],
+    ["Minimum car spaces", parking],
   ] as const) {
     await drawer
       .getByRole("spinbutton", { name: field, exact: true })
@@ -43,11 +46,11 @@ export async function fillRentalNeeds(
 
 export async function confirmRentalNeeds(page: Page) {
   const drawer = page.getByRole("dialog", {
-    name: "我的租房需求",
+    name: "My rental needs",
     exact: true,
   });
   await drawer
-    .getByRole("button", { name: "保存找房条件", exact: true })
+    .getByRole("button", { name: "Save rental needs", exact: true })
     .click();
   await expect(drawer).not.toBeVisible();
 }

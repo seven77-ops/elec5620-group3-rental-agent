@@ -29,7 +29,7 @@ export default function ListingActions({
       <Button
         size="small"
         icon={saved ? <HeartFilled /> : <HeartOutlined />}
-        aria-label={saved ? "取消收藏" : "收藏房源"}
+        aria-label={saved ? "Remove favorite" : "Save listing"}
         aria-pressed={saved}
         disabled={
           disabled ||
@@ -39,17 +39,17 @@ export default function ListingActions({
         }
         onClick={() => favorites.toggle(listing)}
       >
-        {saved ? "取消收藏" : "收藏房源"}
+        {saved ? "Remove favorite" : "Save listing"}
       </Button>
       {selected ? (
-        <Tag color="blue">当前跟进房源</Tag>
+        <Tag color="blue">Current follow-up property</Tag>
       ) : (
         <Button
           size="small"
           disabled={disabled || selectDisabled}
           onClick={() => (onSelect ?? favorites.choose)(listing)}
         >
-          选定并跟进
+          Select and follow up
         </Button>
       )}
     </>

@@ -40,11 +40,13 @@ def explicit(conversation,text,question=None):
         elif answer in ('每月','按月','月租','monthly','per month'):patch['budget_period']='month'
     if question['fields']==['occupants']:
         match=re.fullmatch(r'(\d{1,3}|一|两|二|三|四|五|六|七|八|九|十)(?:个)?人(?:入住)?',answer)
+        if not match:
+            match=re.fullmatch(r'(\d{1,3})(?:\s*(?:people|persons?|occupants?|tenants?))?',answer)
         if match:
             digits={'一':1,'两':2,'二':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10}
             count=digits.get(match[1]) or int(match[1])
             if 1<=count<=100:patch['occupants']=count
-    if answer in ('不限','没有要求','都不限') and all(f.startswith('min_') for f in question['fields']):
+    if answer in ('不限','没有要求','都不限','unrestricted','no requirements','any','no preference') and all(f.startswith('min_') for f in question['fields']):
         patch.update({f:0 for f in question['fields']})
     return {'intent':'recommend_areas' if question['task']=='commute' else 'collect_preferences','brief_patch':patch} if patch else None
 

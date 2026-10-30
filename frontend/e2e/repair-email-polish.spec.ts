@@ -9,15 +9,15 @@ test("AI repair email accepts raw text without title, saves edited email and res
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(`/cases/${c.case_id}/aftercare?tab=repairs`);
   await page
-    .getByRole("textbox", { name: "报修邮件收件人姓名", exact: true })
+    .getByRole("textbox", { name: "Repair email recipient name", exact: true })
     .fill("Alex");
   await page
-    .getByRole("textbox", { name: "问题描述", exact: true })
+    .getByRole("textbox", { name: "Issue description", exact: true })
     .fill("厨房水龙头漏水，请安排维修。");
   const called = page.waitForRequest(
     (r) => r.url().endsWith("/repair-email/polish") && r.method() === "POST",
   );
-  await page.getByRole("button", { name: "AI 润色邮件", exact: true }).click();
+  await page.getByRole("button", { name: "Polish email with AI", exact: true }).click();
   const payload = (await called).postDataJSON();
   expect(payload).toMatchObject({
     draft: "厨房水龙头漏水，请安排维修。",
@@ -28,7 +28,7 @@ test("AI repair email accepts raw text without title, saves edited email and res
     title: "",
   });
   await expect(
-    page.getByRole("textbox", { name: "润色邮件正文", exact: true }),
+    page.getByRole("textbox", { name: "Polished email body", exact: true }),
   ).toContainText("Dear Alex");
   const before = await (
     await request.get(`/api/v1/cases/${c.case_id}/living-services`)
@@ -36,10 +36,10 @@ test("AI repair email accepts raw text without title, saves edited email and res
   expect(before.repairs).toHaveLength(0);
   expect(before.version).toBe(0);
   await page
-    .getByRole("textbox", { name: "润色邮件主题", exact: true })
+    .getByRole("textbox", { name: "Polished email subject", exact: true })
     .fill("Please repair the tap");
   await page
-    .getByRole("textbox", { name: "润色邮件正文", exact: true })
+    .getByRole("textbox", { name: "Polished email body", exact: true })
     .fill(
       "Dear Alex,\n\nThe kitchen tap is leaking. Please advise the next steps.\n\nThank you.",
     );
@@ -48,19 +48,19 @@ test("AI repair email accepts raw text without title, saves edited email and res
     fullPage: true,
   });
   await page
-    .getByRole("button", { name: "保存润色报修草稿", exact: true })
+    .getByRole("button", { name: "Save polished repair draft", exact: true })
     .click();
   await expect(page.getByRole("dialog")).toContainText(
     "Please advise the next steps.",
   );
   await page
-    .getByRole("button", { name: "确认保存报修草稿", exact: true })
+    .getByRole("button", { name: "Confirm repair draft", exact: true })
     .click();
   const card = page.locator(".living-repair-card");
   await expect(card).toContainText("Please advise the next steps.");
   await page.reload();
   await expect(card).toContainText("Please repair the tap");
-  await expect(card).toContainText("草稿已准备 · 尚未发送");
+  await expect(card).toContainText("Draft prepared · Not sent");
   const saved = await (
     await request.get(`/api/v1/cases/${c.case_id}/living-services`)
   ).json();
@@ -84,11 +84,11 @@ test("polish failure preserves raw and edited text; retry uses same request; mob
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(`/cases/${c.case_id}/aftercare`);
   await page
-    .getByRole("textbox", { name: "问题描述", exact: true })
+    .getByRole("textbox", { name: "Issue description", exact: true })
     .fill("厨房水龙头漏水");
-  await page.getByRole("button", { name: "AI 润色邮件", exact: true }).click();
+  await page.getByRole("button", { name: "Polish email with AI", exact: true }).click();
   const output = page.getByRole("textbox", {
-    name: "润色邮件正文",
+    name: "Polished email body",
     exact: true,
   });
   await expect(output).toBeVisible();
@@ -109,15 +109,15 @@ test("polish failure preserves raw and edited text; retry uses same request; mob
       });
     else await route.continue();
   });
-  await page.getByRole("button", { name: "重新润色邮件", exact: true }).click();
+  await page.getByRole("button", { name: "Polish email again", exact: true }).click();
   await expect(
-    page.getByRole("alert").filter({ hasText: "邮件润色或保存未完成" }),
+    page.getByRole("alert").filter({ hasText: "Email polishing or saving could not be completed" }),
   ).toBeVisible();
   await expect(output).toHaveValue("My reviewed wording");
   await expect(
-    page.getByRole("textbox", { name: "问题描述", exact: true }),
+    page.getByRole("textbox", { name: "Issue description", exact: true }),
   ).toHaveValue("厨房水龙头漏水");
-  await page.getByRole("button", { name: "重新润色邮件", exact: true }).click();
+  await page.getByRole("button", { name: "Polish email again", exact: true }).click();
   await expect(output).toContainText("Dear Property Manager");
   expect(ids[1]).toBe(ids[0]);
   expect(
@@ -137,9 +137,9 @@ test("chat has a direct entry to repair email page", async ({
 }) => {
   const c = await (await request.post("/api/v1/cases", { data: {} })).json();
   await page.goto(`/cases/${c.case_id}/assistant`);
-  await page.getByRole("button", { name: "润色报修邮件", exact: true }).click();
+  await page.getByRole("button", { name: "Polish repair email", exact: true }).click();
   await expect(page).toHaveURL(/aftercare\?tab=repairs/);
   await expect(
-    page.getByRole("button", { name: "AI 润色邮件", exact: true }),
+    page.getByRole("button", { name: "Polish email with AI", exact: true }),
   ).toBeVisible();
 });

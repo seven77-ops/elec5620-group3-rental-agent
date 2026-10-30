@@ -33,11 +33,11 @@ The single reference is the NSW official Fisher Library facility point, -33.8863
 
 The loader checks the inventory and campus fingerprints, every listing identity, mode keys, official address/range match and mode-specific source backend. Individual observations expire after 7 days for transit and 30 days for roads. A new file timestamp cannot renew an old observation. Route data is cleared when its origin changes.
 
-## Current rental-discovery policy (2026-10-29)
+## Recommendation policy
 
-Housing discovery uses the selected mode, duration ceiling and optional transfer ceiling. Historical arrival clock/day/date are ignored for housing search and selection; the dedicated transport tools retain their own schedule queries. Stored observations retain source-specific expiry (7 days transit, 30 days road); unknowns fail explicit ceilings and coarse estimates use their UPPER bound. Source-backed estimates are not live verified journeys.
+An explicit N-minute ceiling excludes excessive and unknown durations. A coarse range passes only when its upper end is within the limit; a median never establishes eligibility. Coarse transit estimates cannot satisfy an explicit date, transfer cap, or a different reference clock/day. Chat shows these homes separately as inspection-only estimate cards, with no candidate-save action. Areas are drawn only from qualifying houses. Stored annotations shortlist the entire inventory; live public-transport verification is bounded to 12 promising houses, with exact arrival date/time and transfer checks. Road estimates can compare all matching annotated houses locally.
 
-All compatible matches are available. Cards and details show selected-mode minutes or an estimated range, not a cross-mode average. Changes to working criteria recalculate local results only after explicit application; saved requirements/selection retain their own confirmation and version checks. Personal/per-room budgets do not become whole-ad rent caps. One explicit follow-up confirmation atomically saves supplied needs and selects the current preview listing; previews and cancellation do not save. Catalog/requirement/ownership conflicts still reject stale operations. Public advertisements do not certify availability, comparable costs or a signed tenancy.
+Saved requirements retain mode, ceiling, arrival time, weekday/weekend, date and transfer limit. A reference snapshot is used only when compatible with those conditions. Otherwise a recent, checked same-case route (maximum age 30 minutes) is required; no silent weekday-09:00 fallback is allowed. Search, formal reports and candidate selection share this rule. Evidence changes produce a different report ID; selecting from expired or changed evidence is rejected. Historical records stay readable.
 
 ## Rebuild
 

@@ -6,10 +6,10 @@ import { UtilityPlanCard } from "./UtilityPlans";
 import "./utilityPlanBrowser.css";
 
 const categories: Record<Utility, string> = {
-  electricity: "电力",
-  gas: "燃气",
-  internet: "网络",
-  water: "供水",
+  electricity: "Electricity",
+  gas: "Gas",
+  internet: "Internet",
+  water: "Water",
 };
 const pageSize = 4;
 
@@ -42,7 +42,7 @@ export default function UtilityPlanBrowser({
     setPage(1);
   };
   const items = [
-    { key: "all", label: `全部 (${plans.length})` },
+    { key: "all", label: `All (${plans.length})` },
     ...Object.entries(categories)
       .filter(([key]) => plans.some((p) => p.category === key))
       .map(([key, label]) => ({
@@ -51,7 +51,7 @@ export default function UtilityPlanBrowser({
       })),
   ];
   return (
-    <section className="provider-plan-browser" aria-label="套餐与计价">
+    <section className="provider-plan-browser" aria-label="Plans and pricing">
       {items.length > 2 && (
         <Tabs
           activeKey={category}
@@ -65,9 +65,9 @@ export default function UtilityPlanBrowser({
       )}
       <div className="provider-plan-toolbar">
         <Input
-          aria-label="搜索套餐"
+          aria-label="Search plans"
           prefix={<SearchOutlined />}
-          placeholder="搜索套餐名称或网络"
+          placeholder="Search plan name or network"
           allowClear
           value={query}
           onChange={(e) => {
@@ -77,10 +77,10 @@ export default function UtilityPlanBrowser({
         />
         {networks.length > 1 && (
           <Select
-            aria-label="筛选适用网络"
+            aria-label="Filter network"
             value={network}
             options={[
-              { value: "all", label: "全部适用网络" },
+              { value: "all", label: "All networks" },
               ...networks.map((value) => ({ value, label: value })),
             ]}
             onChange={(value) => {
@@ -92,11 +92,11 @@ export default function UtilityPlanBrowser({
       </div>
       <div className="provider-plan-results">
         <span>
-          共 <strong>{matching.length}</strong> 个方案
+          Total <strong>{matching.length}</strong> plans
         </span>
         {(category !== "all" || network !== "all" || query) && (
           <Button type="link" size="small" onClick={reset}>
-            重置筛选
+            Reset filters
           </Button>
         )}
       </div>
@@ -107,7 +107,8 @@ export default function UtilityPlanBrowser({
           .filter((p) => p.category === "electricity" || p.category === "gas")
           .every((p) => p.pricing.gst_basis === "inclusive_10_percent") && (
           <p className="provider-energy-note">
-            能源费率含 GST，为优惠抵扣前的基准价；不同网络及计费方式分别展示。
+            Energy rates include GST and show base prices before discounts.
+            Different networks and billing methods are shown separately.
           </p>
         )}
       {matching.length ? (
@@ -119,7 +120,10 @@ export default function UtilityPlanBrowser({
                 <UtilityPlanCard key={plan.id} plan={plan} compact />
               ))}
           </div>
-          <div className="provider-plan-pagination" aria-label="套餐分页">
+          <div
+            className="provider-plan-pagination"
+            aria-label="Plan pagination"
+          >
             <Pagination
               current={page}
               total={matching.length}
@@ -135,9 +139,9 @@ export default function UtilityPlanBrowser({
       ) : (
         <Empty
           image={Empty.PRESENTED_IMAGE_SIMPLE}
-          description="没有符合筛选条件的方案"
+          description="No plans match the filters"
         >
-          <Button onClick={reset}>清除筛选</Button>
+          <Button onClick={reset}>Clear filters</Button>
         </Empty>
       )}
     </section>

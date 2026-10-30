@@ -15,11 +15,11 @@ export function listingReasons(
     filters.max_weekly_rent ?? (whole ? criteria.budget_amount : undefined);
   if (typeof cap === "number" && cap >= listing.weekly_rent) {
     const saving = Number((cap - listing.weekly_rent).toFixed(2));
-    const label = whole ? "预算" : "周租上限";
+    const label = whole ? "budget" : "weekly rent limit";
     reasons.push(
       saving > 0
-        ? `比${label}低 AUD ${saving.toLocaleString("en-AU")}/周`
-        : `周租符合${label}`,
+        ? `Below ${label} by AUD ${saving.toLocaleString("en-AU")}/week`
+        : `Weekly rent meets ${label}`,
     );
   }
   const mode =
@@ -36,10 +36,10 @@ export function listingReasons(
     listing.bathrooms >= (bathrooms ?? 0)
   )
     reasons.push(
-      `${listing.bedrooms}卧${bathrooms ? `${listing.bathrooms}卫` : ""}，符合房型要求`,
+      `${listing.bedrooms} bed${bathrooms ? ` · ${listing.bathrooms} bath` : ""}, meets your layout needs`,
     );
   const spaces = filters.min_car_spaces ?? criteria.min_car_spaces;
   if (spaces && listing.car_spaces >= spaces)
-    reasons.push(`含 ${listing.car_spaces} 个车位`);
+    reasons.push(`Includes ${listing.car_spaces} car spaces`);
   return reasons.slice(0, 4);
 }

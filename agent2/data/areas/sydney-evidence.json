@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "dataset_version": "2026-10-24.1",
-  "description": "人工核对的简短事实摘要与原文索引；无全文转载、无 AUO 数据、无通用宜居评分。",
+  "description": "A brief factual summary verified manually, with source references only; no full text reproduction, no AUO data, and no general habitability rating.",
   "records": [
     {
       "evidence_id": "burwood-dining",
@@ -11,10 +11,10 @@
         "shopping"
       ],
       "kind": "venue",
-      "summary": "Burwood Chinatown 运营方介绍这里为餐饮与零售街区，提供多种亚洲餐饮选择。",
+      "summary": "Burwood Chinatown’s operator describes this area as a dining and retail precinct offering diverse Asian food options.",
       "geographic_scope": "precinct",
-      "scope_label": "Burwood Chinatown 商业街区",
-      "limitation": "运营方介绍，仅支持餐饮零售配套存在，不代表性价比、噪音或整个区域的体验。",
+      "scope_label": "Burwood Chinatown commercial precinct",
+      "limitation": "An operator description; it supports only the presence of dining and retail facilities, not value for money, noise levels or the overall suburb experience.",
       "review_after_days": 120,
       "source": {
         "publisher": "Burwood Chinatown",
@@ -34,10 +34,10 @@
         "community"
       ],
       "kind": "media",
-      "summary": "SBS 2025年报道 Burwood 入选 Time Out 最酷社区榜单，着重介绍多元餐饮和社区生活。",
+      "summary": "A 2025 SBS report named Burwood one of Time Out’s coolest neighbourhoods, highlighting its diverse dining options and community lifestyle.",
       "geographic_scope": "suburb",
-      "scope_label": "Burwood 区域报道",
-      "limitation": "媒体生活方式介绍；榜单不能证明租金更低、房源安静或最适合某位租客。",
+      "scope_label": "Burwood area report",
+      "limitation": "Lifestyle media feature; inclusion in this list does not guarantee lower rent, quieter accommodation or suitability for any particular tenant.",
       "review_after_days": 120,
       "source": {
         "publisher": "SBS 中文",
@@ -57,10 +57,10 @@
         "walkability"
       ],
       "kind": "official",
-      "summary": "Canada Bay Council 介绍 The Connection 面向 Homebush Bay Corso 步行与骑行路线，邻近连接 Rhodes 与 Wentworth Point 的 Bennelong Bridge。",
+      "summary": "Canada Bay Council describes The Connection as facing the Homebush Bay Corso walking and cycling route, near Bennelong Bridge, which links Rhodes and Wentworth Point.",
       "geographic_scope": "facility",
-      "scope_label": "Rhodes The Connection 及邻近步行路线",
-      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "scope_label": "Rhodes The Connection and nearby walking routes",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
       "review_after_days": 120,
       "source": {
         "publisher": "City of Canada Bay Council",
@@ -79,10 +79,10 @@
         "community"
       ],
       "kind": "official",
-      "summary": "The Connection 提供 Learning Space、Digital Gallery 和可租用的活动空间。",
+      "summary": "The Connection offers a Learning Space, Digital Gallery and bookable event spaces.",
       "geographic_scope": "facility",
-      "scope_label": "Rhodes The Connection 社区设施",
-      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "scope_label": "Rhodes The Connection community facilities",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
       "review_after_days": 120,
       "source": {
         "publisher": "City of Canada Bay Council",
@@ -101,10 +101,10 @@
         "shopping"
       ],
       "kind": "official",
-      "summary": "Council 的到访指南列出附近 Rider Boulevard 的 Rhodes Waterside Shopping Centre。",
+      "summary": "The Council’s visitor guide lists Rhodes Waterside Shopping Centre on nearby Rider Boulevard.",
       "geographic_scope": "facility",
-      "scope_label": "Rhodes The Connection 周边商业设施",
-      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "scope_label": "Commercial facilities near Rhodes The Connection",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
       "review_after_days": 120,
       "source": {
         "publisher": "City of Canada Bay Council",
@@ -123,10 +123,10 @@
         "quiet"
       ],
       "kind": "resident_opinion",
-      "summary": "Homely 页面有2024年住户提到噪音，也有不同的正面居住体验，意见并不一致。",
+      "summary": "Homely’s page includes 2024 resident reviews mentioning noise, alongside other positive but varied living experiences—opinions are inconsistent.",
       "geographic_scope": "suburb",
-      "scope_label": "个人住户评价，非整体区域测量",
-      "limitation": "个体体验可能过时或受具体楼栋与朝向影响；不能据此判断当前房源安静程度。",
+      "scope_label": "Individual resident feedback, not a measurement of the wider area",
+      "limitation": "Personal experiences may be outdated or influenced by specific building design and orientation; they cannot be used to assess current noise levels at a given property.",
       "review_after_days": 120,
       "source": {
         "publisher": "Homely",
@@ -134,7 +134,7 @@
         "url": "https://www.homely.com.au/suburb-profile/rhodes-nsw-2138",
         "published_at": "2024-02-03",
         "updated_at": null,
-        "data_period": "2024及部分日期不明的评论",
+        "data_period": "Reviews from 2024 and some with unspecified dates",
         "checked_at": "2026-10-24"
       }
     },
@@ -145,10 +145,10 @@
         "parks"
       ],
       "kind": "official",
-      "summary": "City of Sydney 列出 Redfern Park 的游乐设施、运动场及篮球设施。",
+      "summary": "The City of Sydney lists playgrounds, sports fields and basketball facilities at Redfern Park.",
       "geographic_scope": "facility",
-      "scope_label": "具体设施资料，不代表整个区域",
-      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "scope_label": "Specific facility information does not represent the entire area.",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
       "review_after_days": 120,
       "source": {
         "publisher": "City of Sydney",
@@ -167,10 +167,10 @@
         "parks"
       ],
       "kind": "official",
-      "summary": "Victoria Park 官方页面列出草地、游乐设施、泳池与咖啡馆，地址标注为 Parramatta Road, Broadway 2008。",
+      "summary": "Victoria Park’s official webpage lists grassed areas, playgrounds, a swimming pool and a café; the address is listed as Parramatta Road, Broadway 2008.",
       "geographic_scope": "nearby_facility",
-      "scope_label": "Camperdown 周边参考设施：Broadway 的 Victoria Park",
-      "limitation": "来源地点标注 Broadway，作为周边设施参考；不代表该区所有房源都能方便步行到达，也不证明房源靠近校门。",
+      "scope_label": "Nearby reference facilities for Camperdown: Victoria Park in Broadway.",
+      "limitation": "The source location is listed as Broadway for reference purposes only; this does not mean all properties in the area are conveniently walkable to these facilities, nor does it confirm proximity to university gates.",
       "review_after_days": 120,
       "source": {
         "publisher": "City of Sydney",
@@ -190,10 +190,10 @@
         "walkability"
       ],
       "kind": "official",
-      "summary": "NSW Government 列出 Glebe Foreshore Walk，地点为 Glebe Point Road, Glebe。",
+      "summary": "The NSW Government lists the Glebe Foreshore Walk at Glebe Point Road, Glebe.",
       "geographic_scope": "facility",
-      "scope_label": "具体设施资料，不代表整个区域",
-      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "scope_label": "Specific facility information does not represent the entire area.",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
       "review_after_days": 120,
       "source": {
         "publisher": "NSW Government",
@@ -213,10 +213,10 @@
         "community"
       ],
       "kind": "official",
-      "summary": "Marrickville Library and Pavilion 位于 Patyegarang Place、313 Marrickville Road；Council 列出轮椅及电梯无障碍设施。",
+      "summary": "Marrickville Library and Pavilion is located at Patyegarang Place, 313 Marrickville Road; the Council lists wheelchair access and lift facilities.",
       "geographic_scope": "facility",
-      "scope_label": "具体设施资料，不代表整个区域",
-      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "scope_label": "Specific facility information does not represent the entire area.",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
       "review_after_days": 120,
       "source": {
         "publisher": "Inner West Council",
@@ -235,10 +235,10 @@
         "parks"
       ],
       "kind": "official",
-      "summary": "Petersham Park 官方设施清单包括运动场、游乐设施、户外健身设备、野餐区及 Fanny Durack Aquatic Centre。",
+      "summary": "Petersham Park’s official facilities list includes sports fields, playgrounds, outdoor fitness equipment, picnic areas and the Fanny Durack Aquatic Centre.",
       "geographic_scope": "facility",
-      "scope_label": "具体设施资料，不代表整个区域",
-      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "scope_label": "Specific facility information does not represent the entire area.",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
       "review_after_days": 120,
       "source": {
         "publisher": "Inner West Council",
@@ -258,10 +258,10 @@
         "community"
       ],
       "kind": "official",
-      "summary": "Strathfield Park 的 Council 页面介绍运动和休闲设施、儿童游乐区、野餐区域及社区活动。",
+      "summary": "Strathfield Park’s Council webpage describes sports and recreation facilities, children’s playgrounds, picnic areas and community events.",
       "geographic_scope": "facility",
-      "scope_label": "具体设施资料，不代表整个区域",
-      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "scope_label": "Specific facility information does not represent the entire area.",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
       "review_after_days": 120,
       "source": {
         "publisher": "Strathfield Council",
@@ -281,10 +281,10 @@
         "community"
       ],
       "kind": "official",
-      "summary": "City of Ryde 将 Eastwood Library 的位置列为 Hillview Road 与 West Parade 路口。",
+      "summary": "The City of Ryde lists Eastwood Library’s location at the corner of Hillview Road and West Parade.",
       "geographic_scope": "facility",
-      "scope_label": "具体设施资料，不代表整个区域",
-      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "scope_label": "Specific facility information does not represent the entire area.",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
       "review_after_days": 120,
       "source": {
         "publisher": "City of Ryde",
@@ -304,10 +304,10 @@
         "community"
       ],
       "kind": "official",
-      "summary": "Willoughby City Library 官方网站列出 Chatswood Library，位于 The Concourse、409 Victoria Avenue 的 Lower Ground 层。",
+      "summary": "Willoughby City Library’s official website lists Chatswood Library at The Concourse, 409 Victoria Avenue, Lower Ground level.",
       "geographic_scope": "facility",
-      "scope_label": "具体设施资料，不代表整个区域",
-      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "scope_label": "Specific facility information does not represent the entire area.",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
       "review_after_days": 120,
       "source": {
         "publisher": "Willoughby City Library",
@@ -326,10 +326,10 @@
         "parks"
       ],
       "kind": "official",
-      "summary": "Greater Sydney Parklands 列出 Parramatta Park 的野餐棚、烧烤和游乐设施；Domain Creek 游乐区位于公园 Westmead 一侧。",
+      "summary": "Greater Sydney Parklands lists picnic shelters, barbecues and playgrounds at Parramatta Park; the Domain Creek Playground is located on the Westmead side of the park.",
       "geographic_scope": "facility",
-      "scope_label": "Parramatta Park 公园设施（包含 Westmead 一侧）",
-      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "scope_label": "Parramatta Park facilities (including those on the Westmead side).",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
       "review_after_days": 120,
       "source": {
         "publisher": "Greater Sydney Parklands",
@@ -349,10 +349,10 @@
         "community"
       ],
       "kind": "official",
-      "summary": "Ashfield Library 官方地址为 260 Liverpool Road、Ashfield Civic Centre 的 Level 3；Council 列出电梯及无障碍设施。",
+      "summary": "Ashfield Library’s official address is 260 Liverpool Road, Level 3, Ashfield Civic Centre; the Council lists lift access and accessible facilities.",
       "geographic_scope": "facility",
-      "scope_label": "具体设施资料，不代表整个区域",
-      "limitation": "只说明设施存在；具体房源到此的步行距离、开放情况和居住体验需另行核实。",
+      "scope_label": "Specific facility information does not represent the entire area.",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
       "review_after_days": 120,
       "source": {
         "publisher": "Inner West Council",

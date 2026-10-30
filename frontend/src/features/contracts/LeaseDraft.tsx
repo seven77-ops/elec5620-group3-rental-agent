@@ -49,11 +49,11 @@ import { housingCopy } from "../real-data/listingPresentation";
 
 const sections: { title: string; fields: (keyof LeaseFields)[] }[] = [
   {
-    title: "房屋信息",
+    title: "Property details",
     fields: ["rental_mode", "address", "max_occupants", "inclusions"],
   },
   {
-    title: "租赁双方",
+    title: "Parties",
     fields: [
       "landlord_name",
       "landlord_contact",
@@ -64,7 +64,7 @@ const sections: { title: string; fields: (keyof LeaseFields)[] }[] = [
     ],
   },
   {
-    title: "租期与租金",
+    title: "Lease term and rent",
     fields: [
       "lease_type",
       "lease_term_months",
@@ -77,7 +77,7 @@ const sections: { title: string; fields: (keyof LeaseFields)[] }[] = [
     ],
   },
   {
-    title: "付款信息",
+    title: "Payment details",
     fields: [
       "payment_method",
       "first_rent_date",
@@ -88,7 +88,7 @@ const sections: { title: string; fields: (keyof LeaseFields)[] }[] = [
 ];
 sections.push(
   {
-    title: "费用与房屋设施",
+    title: "Charges and property facilities",
     fields: [
       "water_usage",
       "electricity_embedded",
@@ -103,7 +103,7 @@ sections.push(
     ],
   },
   {
-    title: "电子通知送达",
+    title: "Electronic service of notices",
     fields: [
       "landlord_email_consent",
       "landlord_notice_email",
@@ -158,14 +158,14 @@ export default function LeaseDraft() {
   const confirmed = currentConfirmation(current);
   const prerequisite = !confirmed
     ? {
-        title: "先确认租房需求",
-        action: "我的租房需求",
+        title: "Confirm your rental needs first",
+        action: "My rental needs",
         target: "assistant?needs=1",
       }
     : !current.selection
       ? {
-          title: "先保存一套房源候选",
-          action: "前往房源推荐",
+          title: "Save a property candidate first",
+          action: "Go to housing recommendations",
           target: "recommendations",
         }
       : null;
@@ -308,7 +308,9 @@ export default function LeaseDraft() {
       setPreview(d);
       const list = await listLeaseDrafts(current.case_id);
       if (token === generation.current) setItems(list.items);
-      message.success(`租约草稿 v${d.version} 已保存，签字栏保持空白。`);
+      message.success(
+        `Lease draft v${d.version} saved. Signature fields remain blank.`,
+      );
     });
   };
   const renderField = (key: keyof LeaseFields) => {
@@ -369,7 +371,7 @@ export default function LeaseDraft() {
         <Select
           virtual={false}
           allowClear
-          placeholder="待确认"
+          placeholder="To be confirmed"
           options={leaseOptions[key]}
         />
       );
@@ -429,23 +431,33 @@ export default function LeaseDraft() {
         }
         extra={
           key === "lease_term_months"
-            ? "按自然月 / 年顺延至同日；月末落到目标月最后一天。"
+            ? "Advances by calendar months / years to the same day, or the last day of the target month."
             : key === "end_date" && fields?.lease_term_months != null
-              ? "已根据租期和起租日期自动计算。"
+              ? "Calculated from the lease duration and start date."
               : !saved && context?.prefill_sources[key]
                 ? housingCopy(context.prefill_sources[key]!)
                 : undefined
         }
         rules={
           key === "rental_mode"
-            ? [{ required: true, message: "请先确认适用新州普通整租住宅。" }]
+            ? [
+                {
+                  required: true,
+                  message:
+                    "Confirm that this is a standard NSW whole-property residential tenancy first.",
+                },
+              ]
             : key === "end_date"
               ? [
                   {
                     validator: (_, value) => {
                       const start = form.getFieldValue("start_date");
                       return value && start && value <= start
-                        ? Promise.reject(new Error("结束日期须晚于起租日期。"))
+                        ? Promise.reject(
+                            new Error(
+                              "The end date must be after the start date.",
+                            ),
+                          )
                         : Promise.resolve();
                     },
                   },
@@ -461,7 +473,7 @@ export default function LeaseDraft() {
     <div className="lease-draft-workspace">
       <section className="panel lease-draft-intro">
         <div>
-          <h2>准备一份租约草稿</h2>
+          <h2>Prepare a lease draft</h2>
         </div>
         <Space wrap>
           <a
@@ -473,13 +485,13 @@ export default function LeaseDraft() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            查看官方模板 ↗
+            View official template ↗
           </a>
           <Button
             onClick={() => setRevision((v) => v + 1)}
             disabled={action.busy || readAction.busy}
           >
-            重新读取
+            Reload
           </Button>
         </Space>
       </section>
@@ -496,21 +508,21 @@ export default function LeaseDraft() {
       {loading ? (
         <div className="lease-loading">
           <Spin />
-          <span>正在读取房源与草稿…</span>
+          <span>Loading property and draft…</span>
         </div>
       ) : (
         <>
           {items.length > 0 && (
             <section className="lease-version-bar">
               <Select
-                aria-label="草稿版本"
+                aria-label="Draft version"
                 virtual={false}
                 value={saved ? `${saved.draft_id}:${saved.version}` : undefined}
-                placeholder="查看已保存草稿"
+                placeholder="View saved drafts"
                 options={items.flatMap((item, index) =>
                   Array.from({ length: item.version }, (_, i) => ({
                     value: `${item.draft_id}:${item.version - i}`,
-                    label: `草稿 ${items.length - index} · v${item.version - i}${item.source_current ? "" : " · 历史房源/需求"}`,
+                    label: `Draft ${items.length - index} · v${item.version - i}${item.source_current ? "" : " · Historical property/needs"}`,
                   })),
                 )}
                 onChange={choose}
@@ -521,25 +533,27 @@ export default function LeaseDraft() {
                   onClick={newDraft}
                   disabled={action.busy || readAction.busy}
                 >
-                  新建当前候选草稿
+                  New draft for current candidate
                 </Button>
               )}
               {saved && (
                 <Tag color="blue">
-                  未签署草稿 v{saved.version}
-                  {dirty ? " · 有未保存修改" : ""}
+                  Unsigned draft v{saved.version}
+                  {dirty ? " · Unsaved changes" : ""}
                 </Tag>
               )}
             </section>
           )}
           {!context && !saved ? (
             <Blank
-              text={prerequisite?.title ?? "请重新选择房源后继续。"}
+              text={
+                prerequisite?.title ?? "Select a property again to continue."
+              }
               action={
                 <Button
                   onClick={() => go(prerequisite?.target ?? "recommendations")}
                 >
-                  {prerequisite?.action ?? "前往房源推荐"}
+                  {prerequisite?.action ?? "Go to housing recommendations"}
                 </Button>
               }
             />
@@ -549,8 +563,8 @@ export default function LeaseDraft() {
                 <Alert
                   type="warning"
                   showIcon
-                  title="正在查看历史版本"
-                  description="这份草稿保留原来的房源与信息，可以下载；请新建当前候选草稿后继续修改。"
+                  title="Viewing a historical version"
+                  description="This draft retains its original property and details and can be downloaded. Create a draft for the current candidate to continue editing."
                 />
               )}
               {context && !readOnly && (
@@ -560,7 +574,7 @@ export default function LeaseDraft() {
                   items={[
                     {
                       key: "ai",
-                      label: "AI 辅助填写（可选）",
+                      label: "AI-assisted entry (optional)",
                       children: (
                         <DraftAi
                           context={context}
@@ -606,27 +620,29 @@ export default function LeaseDraft() {
                 className="panel lease-fields-panel"
               >
                 <div className="lease-form-heading">
-                  <h2>直接填写合同信息</h2>
+                  <h2>Enter contract details directly</h2>
                   <span className="muted small">
-                    金额均为 AUD；房源标价仅作参考，不自动填作已商定租金。
+                    All amounts are AUD. The listing price is a reference only
+                    and is not automatically entered as agreed rent.
                   </span>
                 </div>
                 <p className="muted small">
-                  带 *
-                  的信息是完整草稿需补齐的项目；暂未确认可以先保存未完成草稿。双方通知地址分别填写，区域、State
-                  和邮编可搜索或手动填写。
+                  Fields marked * are required for a complete draft. Save an
+                  incomplete draft while details are unconfirmed. Enter separate
+                  notice addresses for both parties. Suburb, state, and postcode
+                  can be searched or entered manually.
                 </p>
                 {context && (
                   <div className="lease-source-note">
-                    当前房源：
+                    Current property:
                     {String(
                       context.sources.selection.listing_snapshot.address,
                     )}{" "}
-                    · 房源 AUD{" "}
+                    · Listing AUD{" "}
                     {String(
                       context.sources.selection.listing_snapshot.weekly_rent,
                     )}
-                    /周
+                    /week
                   </div>
                 )}
                 {sections.map((section, index) => (
@@ -644,12 +660,14 @@ export default function LeaseDraft() {
                   items={[
                     {
                       key: "details",
-                      label: "出租方中介（如适用）",
+                      label: "Landlord agent (if applicable)",
                       children: (
                         <>
                           <p className="muted small">
-                            替出租方出租或管理房屋的中介，填入 PDF 的 Landlord’s
-                            agent。租客自己聘请的代理请填下一栏。
+                            The agent who lets or manages the property for the
+                            landlord is entered in the PDF as Landlord’s agent.
+                            Enter any agent appointed by the tenant in the next
+                            section.
                           </p>
                           <div className="lease-fields-grid">
                             {extra.map(renderField)}
@@ -659,12 +677,14 @@ export default function LeaseDraft() {
                     },
                     {
                       key: "tenant-agent",
-                      label: "租客代理（如适用）",
+                      label: "Tenant agent (if applicable)",
                       children: (
                         <>
                           <p className="muted small">
-                            只有代表租客办理租约的代理才填写，填入 PDF 的
-                            Tenant’s agent；与出租方中介分别记录。
+                            Only enter an agent who represents the tenant for
+                            this lease. This is entered in the PDF as Tenant’s
+                            agent and recorded separately from the landlord
+                            agent.
                           </p>
                           <div className="lease-fields-grid">
                             {(
@@ -680,7 +700,7 @@ export default function LeaseDraft() {
                     },
                     {
                       key: "corporation",
-                      label: "出租方为公司（如适用）",
+                      label: "Corporate landlord (if applicable)",
                       children: (
                         <div className="lease-fields-grid">
                           {(
@@ -691,7 +711,7 @@ export default function LeaseDraft() {
                     },
                     {
                       key: "signing",
-                      label: "签约信息（可选）",
+                      label: "Signing details (optional)",
                       children: (
                         <div className="lease-fields-grid">
                           {(["agreement_date", "agreement_place"] as const).map(
@@ -702,7 +722,7 @@ export default function LeaseDraft() {
                     },
                     {
                       key: "owners",
-                      label: "补充出租方信息（如适用）",
+                      label: "Additional landlord details (if applicable)",
                       children: (
                         <div className="lease-fields-grid">
                           {(
@@ -717,7 +737,8 @@ export default function LeaseDraft() {
                     },
                     {
                       key: "repairs",
-                      label: "紧急维修联系人（待双方确认）",
+                      label:
+                        "Emergency repair contacts (to be confirmed by both parties)",
                       children: (
                         <div className="lease-fields-grid">
                           {(
@@ -737,10 +758,13 @@ export default function LeaseDraft() {
                 />
                 {missing.length > 0 && (
                   <div className="lease-missing" data-testid="lease-missing">
-                    <strong>完整草稿还有 {missing.length} 项待补充</strong>
-                    <p>{missing.map((k) => leaseLabels[k]).join("、")}</p>
+                    <strong>
+                      Complete draft still needs {missing.length} items
+                    </strong>
+                    <p>{missing.map((k) => leaseLabels[k]).join(", ")}</p>
                     <span className="muted small">
-                      可以先保存未完成草稿；导出的文件会列出这些待确认项。
+                      You can save an incomplete draft. Exported files will list
+                      these unconfirmed items.
                     </span>
                   </div>
                 )}
@@ -751,14 +775,14 @@ export default function LeaseDraft() {
                     loading={action.busy}
                     disabled={readOnly || !context || readAction.busy}
                   >
-                    核对并填入合同
+                    Check and fill contract
                   </Button>
                   {saved && (
                     <Button
                       onClick={() => setPreview(saved)}
                       disabled={action.busy || readAction.busy}
                     >
-                      预览已保存 v{saved.version} 合同
+                      Preview saved v{saved.version} contract
                     </Button>
                   )}
                   {saved && (
@@ -769,17 +793,20 @@ export default function LeaseDraft() {
                           `/${saved.draft_id}/pdf?version=${saved.version}`,
                       )}
                     >
-                      下载已保存 v{saved.version} PDF
+                      Download saved v{saved.version} PDF
                     </a>
                   )}
                 </div>
                 {saved && dirty && (
                   <p className="lease-unsaved-note" role="status">
-                    表单有未保存修改，预览和下载仍为已保存的 v{saved.version}。
+                    The form has unsaved changes. Preview and download still use
+                    saved v{saved.version}.
                   </p>
                 )}
                 <p className="muted small">
-                  标准条款保留在官方表单中。填写内容和相关附件请双方核对；生成草稿不会代替对方确认或签字。
+                  Standard terms remain in the official form. Both parties
+                  should check the completed details and attachments. Generating
+                  a draft does not replace their confirmation or signatures.
                 </p>
               </Form>
             </>
@@ -787,20 +814,23 @@ export default function LeaseDraft() {
         </>
       )}
       <Modal
-        title="确认保存租约草稿"
+        title="Confirm lease draft save"
         open={confirm}
         onCancel={() => {
           if (!action.busy) setConfirm(false);
         }}
         onOk={save}
-        okText="确认保存未签署草稿"
-        cancelText="返回修改"
+        okText="Confirm and save unsigned draft"
+        cancelText="Return to editing"
         confirmLoading={action.busy}
         okButtonProps={{ disabled: !applicable }}
         width={680}
         styles={{ body: { maxHeight: "65vh", overflowY: "auto" } }}
       >
-        <p>以下信息将填写到官方表单；缺失内容保持空白，签字栏不填写。</p>
+        <p>
+          The following details will be entered in the official form. Missing
+          items and signature fields remain blank.
+        </p>
         <Failure error={action.error} retry={action.retry} />
         <Descriptions
           column={1}
@@ -821,14 +851,16 @@ export default function LeaseDraft() {
           <Alert
             type="info"
             showIcon
-            title={`还有 ${missingLeaseFields(reviewFields).length} 项完整草稿信息未填写，将标为待确认。`}
+            title={`There are ${missingLeaseFields(reviewFields).length}  incomplete items for a complete draft. They will be marked unconfirmed.`}
           />
         )}
         <Checkbox
           checked={applicable}
           onChange={(e) => setApplicable(e.target.checked)}
         >
-          我确认这是新州普通整租住宅的拟定信息，理解草稿尚未经双方签署。
+          I confirm these proposed details are for a standard NSW whole-property
+          residential tenancy and understand the draft is not signed by either
+          party.
         </Checkbox>
       </Modal>
       {preview && (

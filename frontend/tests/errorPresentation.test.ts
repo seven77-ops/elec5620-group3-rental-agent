@@ -7,11 +7,11 @@ test("profile and selection prerequisites have readable next steps", () => {
       "unconfirmed_profile",
       "Confirm the exact current saved draft before continuing",
     ).title,
-    "先确认租房需求",
+    "Confirm your rental needs first",
   );
   assert.match(
     userError("selection_required", "backend message").message,
-    /房源/,
+    /Save a property candidate/,
   );
 });
 test("unknown internal errors are not used as user-facing copy", () => {
@@ -20,11 +20,24 @@ test("unknown internal errors are not used as user-facing copy", () => {
     "INTERNAL_BACKEND_DEBUG_MESSAGE",
   );
   assert.doesNotMatch(JSON.stringify(result), /INTERNAL|service_unavailable/);
-  assert.match(result.message, /重试/);
+  assert.match(result.message, /Try again|Retry/);
 });
-test("actionable Chinese input messages remain visible", () => {
+test("actionable English input messages remain visible", () => {
   assert.equal(
-    userError("invalid_input", "结束日期须晚于起租日期。").message,
-    "结束日期须晚于起租日期。",
+    userError("invalid_input", "The end date must be after the start date.")
+      .message,
+    "The end date must be after the start date.",
   );
+});
+
+test("legacy Chinese internal errors receive an English fallback", () => {
+  const result = userError(
+    "service_unavailable",
+    "内部服务暂时不可用，请稍后重试。",
+  );
+  assert.deepEqual(result, {
+    title: "Unable to complete this action",
+    message: "Try again later or load the latest information to continue.",
+  });
+  assert.doesNotMatch(JSON.stringify(result), /[\u3400-\u9fff]/);
 });

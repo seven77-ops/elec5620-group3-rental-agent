@@ -14,7 +14,7 @@ class EstimateTests(unittest.TestCase):
     def test_expansion_has_exactly_200_new_unique_sourced_houses_and_preserves_original_500(self):
         import json,hashlib
         from pathlib import Path
-        from server.app.real_data.catalog import RealCatalog
+        from server.app.real_data.catalog import RealCatalog,catalog_fingerprint
         catalog=RealCatalog();root=catalog.path.parent
         manifest=json.loads((root/'expansion-20261027.json').read_text())
         raw=json.loads(catalog.path.read_text())
@@ -23,10 +23,10 @@ class EstimateTests(unittest.TestCase):
         self.assertEqual(len(ids),200)
         self.assertEqual(ids,{r['record_id'] for r in raw[500:700]})
         original=[catalog._rows[r['record_id']] for r in raw[:500]]
-        fingerprint=hashlib.sha256(json.dumps(original,sort_keys=True,ensure_ascii=False).encode()).hexdigest()
+        fingerprint=catalog_fingerprint(original)
         self.assertEqual(fingerprint,manifest['previous_catalog_fingerprint'])
         historical=[catalog._rows[r['record_id']] for r in raw[:700]]
-        self.assertEqual(hashlib.sha256(json.dumps(historical,sort_keys=True,ensure_ascii=False).encode()).hexdigest(),manifest['new_catalog_fingerprint'])
+        self.assertEqual(catalog_fingerprint(historical),manifest['new_catalog_fingerprint'])
         self.assertEqual(len({r['source_url'] for r in raw}),1000)
         for r in raw[500:700]:
             for key in ('bedrooms','bathrooms','car_spaces','weekly_rent'):

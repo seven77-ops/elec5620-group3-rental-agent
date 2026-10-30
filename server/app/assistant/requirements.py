@@ -11,9 +11,9 @@ from .service import AssistantService, BorrowedRepository, message, signature
 
 def validate(brief, catalog):
     require(isinstance(brief, dict) and not list(Draft202012Validator(BRIEF_SCHEMA).iter_errors(brief)),
-            422, 'invalid_input', '请核对本次租房条件。')
+            422, 'invalid_input', 'Review these rental requirements.')
     require(brief.get('suburb') is None or brief['suburb'] in catalog.suburbs,
-            422, 'invalid_input', '请选择当前房源库中的区域。')
+            422, 'invalid_input', 'Choose a suburb in the current listing catalogue.')
 
 
 def missing(brief):
@@ -28,7 +28,7 @@ def missing(brief):
 
 def save_profile(ctx, db, case, brief):
     validate(brief, ctx.settings.catalog)
-    require(not missing(brief), 422, 'incomplete_requirements', '请补充标出的必要信息。')
+    require(not missing(brief), 422, 'incomplete_requirements', 'Complete the highlighted required fields.')
     base = supplied_profile(case['draft']['profile'], case.get('requirements_contract') != 'supplied-only-v1')
     profile = deepcopy(base)
     housing = {k: v for k, v in profile.get('housing_preferences', {}).items()
@@ -85,7 +85,7 @@ class RequirementsService:
     def save(self, case_id: str, conversation_id: str, body: dict):
         from .workspace import AssistantWorkspace
         shape(body, ('request_id', 'expected_revision', 'expected_profile_fingerprint', 'brief', 'confirmed'))
-        require(body['confirmed'] is True, 422, 'confirmation_required', '请明确保存这些条件。')
+        require(body['confirmed'] is True, 422, 'confirmation_required', 'Explicitly confirm saving these requirements.')
         key = case_id + ':' + request_id(body['request_id'])
         identity = {'conversation_id': conversation_id, **body}
         assistant = AssistantService(self.ctx)
@@ -107,10 +107,10 @@ class RequirementsService:
                 answer = reference_answer(self.ctx.settings.catalog, body['brief'], DESTINATION) if after.get('usyd_max_minutes') else search_answer(self.ctx.settings.catalog, after)
                 answer.pop('_search_filters', None)
                 count = len(self.ctx.settings.catalog.matching(before))
-                answer['content'] = f'找房条件已更新，符合条件的房源从 {count} 套变为 {len(answer["listings"])} 套。'
+                answer['content'] = f'Rental requirements updated. Matching listings changed from {count} to {len(answer["listings"])}.'
                 from .recommendation_workspace import LABELS
                 answer['recommendation_change'] = {'before_count': count, 'after_count': len(answer['listings']),
-                    'changes': [{'field': k, 'label': LABELS.get(k, '找房条件'), 'before': c.get('rental_brief', {}).get(k), 'after': v}
+                    'changes': [{'field': k, 'label': LABELS.get(k, 'Rental requirements'), 'before': c.get('rental_brief', {}).get(k), 'after': v}
                                 for k, v in body['brief'].items() if c.get('rental_brief', {}).get(k) != v]}
                 answer.update(metadata(self.ctx.settings.catalog, after, body['brief']))
                 c['messages'].append(message('assistant', **answer))

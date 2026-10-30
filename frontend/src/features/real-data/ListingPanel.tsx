@@ -13,9 +13,9 @@ import { Failure } from "../../components/Common";
 import { useAction } from "../../components/useAction";
 
 const scopeLabel: Record<string, string> = {
-  whole_property: "整套",
-  per_room: "单间",
-  per_person: "按人",
+  whole_property: "Whole property",
+  per_room: "Room",
+  per_person: "Per person",
 };
 export default function ListingPanel({
   onPoint,
@@ -54,11 +54,15 @@ export default function ListingPanel({
   return (
     <section className="panel real-panel">
       <div className="real-result-title">
-        <h2>记录已找到的真实房源</h2>
-        <a href={downloadUrl(`${path}/export`)}>下载真实房源记录</a>
+        <h2>Record a real listing you found</h2>
+        <a href={downloadUrl(`${path}/export`)}>
+          Download real listing records
+        </a>
       </div>
       <p>
-        填入你实际看到的信息，并保留来源与观察时间。只保存观察记录；缺少的事实保持未知，尚不进入推荐、选房或合同流程。
+        Enter what you observed, including the source and observation time. This
+        saves an observation only. Missing facts stay unknown; it does not enter
+        recommendations, selection or contract workflows yet.
       </p>
       <Form
         layout="vertical"
@@ -89,40 +93,40 @@ export default function ListingPanel({
         <div className="real-form-grid">
           <Form.Item
             name="address"
-            label="房源地址或位置说明"
+            label="Property address or location description"
             rules={[{ required: true, whitespace: true, max: 300 }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="source_url"
-            label="原始房源链接"
+            label="Original listing link"
             rules={[{ required: true, type: "url" }]}
           >
             <Input placeholder="https://…" />
           </Form.Item>
           <Form.Item
             name="postcode"
-            label="房源邮区"
+            label="Property postcode"
             rules={[{ required: true }]}
           >
             <Select options={postcodeOptions} />
           </Form.Item>
           <Form.Item
             name="weekly_rent"
-            label="周租（AUD）"
+            label="Weekly rent (AUD)"
             rules={[{ required: true }]}
           >
             <InputNumber min={0} max={100000} style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item
             name="rent_scope"
-            label="房源计价对象"
+            label="Listing pricing basis"
             rules={[{ required: true }]}
           >
             <Select options={scopeOptions} />
           </Form.Item>
-          <Form.Item name="bedrooms" label="卧室数（未知留空）">
+          <Form.Item name="bedrooms" label="Bedrooms (leave blank if unknown)">
             <InputNumber
               min={0}
               max={20}
@@ -130,28 +134,28 @@ export default function ListingPanel({
               style={{ width: "100%" }}
             />
           </Form.Item>
-          <Form.Item name="bills_included" label="是否含账单">
+          <Form.Item name="bills_included" label="Bills included?">
             <Select
               allowClear
-              placeholder="未知"
+              placeholder="Unknown"
               options={[
-                { value: "yes", label: "含账单" },
-                { value: "no", label: "不含账单" },
+                { value: "yes", label: "Bills included" },
+                { value: "no", label: "Bills excluded" },
               ]}
             />
           </Form.Item>
           <Form.Item
             name="observed_at"
-            label="实际观察时间（带时区）"
+            label="Actual observation time (with timezone)"
             rules={[{ required: true }]}
-            extra="默认是本次打开表单的时间。录入旧房源时，请改为实际观察时间。"
+            extra="Defaults to when you opened this form. For an older listing, enter the actual observation time."
           >
             <Input />
           </Form.Item>
-          <Form.Item name="latitude" label="房源纬度（可留空）">
+          <Form.Item name="latitude" label="Property latitude (optional)">
             <InputNumber min={-90} max={90} style={{ width: "100%" }} />
           </Form.Item>
-          <Form.Item name="longitude" label="房源经度（可留空）">
+          <Form.Item name="longitude" label="Property longitude (optional)">
             <InputNumber min={-180} max={180} style={{ width: "100%" }} />
           </Form.Item>
         </div>
@@ -161,38 +165,42 @@ export default function ListingPanel({
           loading={action.busy}
           disabled={items.length >= 30}
         >
-          保存真实房源记录
+          Save real listing record
         </Button>
       </Form>
       <Failure error={action.error} retry={action.retry} />
       <Failure error={error} retry={() => void reload()} />
       <div data-testid="saved-real-listings">
-        <h3>已保存 {items.length} / 30 条</h3>
-        {!items.length && <p className="muted">还没有真实房源观察记录。</p>}
+        <h3>Saved {items.length} / 30 records</h3>
+        {!items.length && (
+          <p className="muted">No real listing observations yet.</p>
+        )}
         {items.map((item) => (
           <article className="real-record" key={item.record_id}>
             <div className="real-result-title">
               <h3>{item.address}</h3>
               <span className="muted">
-                尚未评估 ·{" "}
+                Not assessed ·{" "}
                 {item.freshness === "within_24h"
-                  ? "观察记录在24小时内"
-                  : "观察记录已超过24小时"}
+                  ? "Observed within 24 hours"
+                  : "Observed more than 24 hours ago"}
               </span>
             </div>
             <p>
-              A${item.weekly_rent}/周 · {scopeLabel[item.rent_scope]} ·{" "}
+              A${item.weekly_rent}/week · {scopeLabel[item.rent_scope]} ·{" "}
               {item.bills_included == null
-                ? "账单范围未知"
+                ? "Bills unknown"
                 : item.bills_included
-                  ? "含账单"
-                  : "不含账单"}
+                  ? "Bills included"
+                  : "Bills excluded"}
             </p>
-            <p className="muted">观察时间 {item.observed_at}</p>
-              <details>
-                <summary>房源详情</summary>
-                <a href={item.source_url} target="_blank" rel="noreferrer">查看原始来源</a>
-              </details>
+            <p className="muted">Observed at {item.observed_at}</p>
+            <details>
+              <summary>Listing details</summary>
+              <a href={item.source_url} target="_blank" rel="noreferrer">
+                View original source
+              </a>
+            </details>
             {item.latitude != null && item.longitude != null && (
               <>
                 <a
@@ -203,7 +211,7 @@ export default function ListingPanel({
                   target="_blank"
                   rel="noreferrer"
                 >
-                  在地图查看位置
+                  View location on map
                 </a>
                 <Button
                   onClick={() =>
@@ -213,7 +221,7 @@ export default function ListingPanel({
                     })
                   }
                 >
-                  用此坐标查通勤
+                  Check commute from these coordinates
                 </Button>
               </>
             )}

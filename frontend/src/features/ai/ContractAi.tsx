@@ -62,8 +62,8 @@ export default function ContractAi({
       await onApplied(result.review);
       message.success(
         result.review.version > previousVersion
-          ? "已应用核对字段并保存新复核版本。"
-          : "所选字段与现有值一致，无需新增版本。",
+          ? "Checked fields applied and a new review version saved."
+          : "Selected fields match the existing values. No new version is needed.",
       );
     });
   };
@@ -76,13 +76,16 @@ export default function ContractAi({
         record.status !== "failed" &&
         candidates.some((c) => c.valid)));
   return (
-    <section className="panel ai-panel" aria-label="AI 合同辅助分析">
+    <section className="panel ai-panel" aria-label="AI contract analysis">
       <div className="ai-title">
-        <h2>AI 合同辅助分析</h2>
-        <span className="muted">候选提取、原文引用与差异解释</span>
+        <h2>AI contract analysis</h2>
+        <span className="muted">
+          Candidate extraction, source quotations, and difference explanations
+        </span>
       </div>
       <p>
-        模型辅助提取租金、地址与起止日期。候选值需逐项核对，确认应用后更新复核结果。
+        AI helps extract rent, address, and lease dates. Check each candidate
+        value. Confirming applies them and updates the review.
       </p>
       <AiSetup config={config} />
       <Checkbox
@@ -90,7 +93,8 @@ export default function ContractAi({
         disabled={busy || !active}
         onChange={(e) => setConsent(e.target.checked)}
       >
-        我同意将本合同文本及本次复核资料发送到配置的模型，用于本次 AI 辅助分析。
+        I agree to send this contract text and review information to the
+        configured model for this AI analysis.
       </Checkbox>
       <Space wrap>
         <Button
@@ -100,12 +104,12 @@ export default function ContractAi({
           }
           loading={action.busy}
           onClick={generate}
-          aria-label="AI 辅助分析合同"
+          aria-label="Analyse contract with AI"
         >
-          AI 辅助分析合同
+          Analyse contract with AI
         </Button>
         <Button disabled={busy} onClick={reload}>
-          读取最新 AI 分析
+          Load latest AI analysis
         </Button>
       </Space>
       <Failure
@@ -120,7 +124,8 @@ export default function ContractAi({
       />
       {!active && (
         <p className="muted">
-          独立合同同意未生效或当前选房已变化，AI 分析与应用暂停。
+          Separate contract consent is inactive or the selected property has
+          changed. AI analysis and field application are paused.
         </p>
       )}
       {record && (
@@ -130,22 +135,23 @@ export default function ContractAi({
               showIcon
               type="warning"
               title={record.error.message}
-              description={`状态：${record.status} · ${record.error.code}`}
+              description={`Status: ${record.status} · ${record.error.code}`}
             />
           )}
           {stale && (
             <Alert
               showIcon
               type="warning"
-              title="AI 候选对应的复核已变化，历史分析可读；请重新分析当前版本。"
+              title="The review linked to these AI candidates has changed. Historical analysis remains readable. Analyse the current version again."
             />
           )}
           {record.result && (
             <>
-              <h3>AI 候选提取结果</h3>
+              <h3>AI candidate fields</h3>
               <p className="muted">
-                分析对应复核 v{record.binding.review_version}
-                。未知或未通过证据校验的字段保持待确认。
+                Analysis for review v{record.binding.review_version}. Unknown
+                fields or fields that failed evidence validation remain
+                unconfirmed.
               </p>
               <div className="ai-candidates">
                 {candidates.map((candidate, i) => {
@@ -156,22 +162,26 @@ export default function ContractAi({
                   return (
                     <article className="ai-candidate" key={`${field}:${i}`}>
                       <div className="ai-candidate-heading">
-                        <strong>{field ? label(field) : "未知字段"}</strong>
+                        <strong>
+                          {field ? label(field) : "Unknown field"}
+                        </strong>
                         <Tag color={usable ? "cyan" : "default"}>
-                          {usable ? "原文校验通过" : "待确认"}
+                          {usable
+                            ? "Source validation passed"
+                            : "To be confirmed"}
                         </Tag>
                       </div>
                       <p className="ai-candidate-value">
                         {candidate.value === null
-                          ? "未确定"
+                          ? "Uncertain"
                           : text(candidate.value)}
                       </p>
                       {candidate.evidence && (
                         <>
                           <p className="muted">
-                            {candidate.evidence.source_name} · 第{" "}
-                            {candidate.evidence.page} 页 · 原文第{" "}
-                            {candidate.evidence.line} 行
+                            {candidate.evidence.source_name} · Page{" "}
+                            {candidate.evidence.page} · Source line{" "}
+                            {candidate.evidence.line} line
                           </p>
                           <blockquote className="ai-quote">
                             {candidate.evidence.quote}
@@ -181,13 +191,13 @@ export default function ContractAi({
                       {!usable && (
                         <p className="muted">
                           {candidate.reason === "unknown"
-                            ? "模型未确定，需要人工核对。"
-                            : (candidate.reason ?? "没有可核对的候选。")}
+                            ? "The model could not determine this. Human review is needed."
+                            : (candidate.reason ?? "No verifiable candidates.")}
                         </p>
                       )}
                       {usable && field && (
                         <Checkbox
-                          aria-label={`选择 AI 字段：${label(field)}`}
+                          aria-label={`Select AI field: ${label(field)}`}
                           checked={selected.includes(field)}
                           disabled={busy || !active || !record.can_apply}
                           onChange={(e) => {
@@ -200,19 +210,24 @@ export default function ContractAi({
                             applyAction.clear();
                           }}
                         >
-                          应用此字段
+                          Apply this field
                         </Checkbox>
                       )}
                     </article>
                   );
                 })}
               </div>
-              <h3>按候选值预览的规则核对结果</h3>
+              <h3>Rule checks preview using candidate values</h3>
               <p className="muted">
-                下列为辅助预览，正式复核状态仍以当前已保存版本为准；人工审核由操作员流程处理。
+                This is an assisted preview. The saved version remains the
+                official review state. Human review is handled through the
+                operator workflow.
               </p>
               {(record.result.preview_findings ?? []).length === 0 ? (
-                <p>当前预览没有发现项，不额外生成风险解释。</p>
+                <p>
+                  The current preview has no findings. No additional risk
+                  explanation is generated.
+                </p>
               ) : (
                 record.result.preview_findings?.map((finding) => (
                   <article className="ai-finding" key={finding.id}>
@@ -223,7 +238,7 @@ export default function ContractAi({
                     {record.result?.explanations
                       ?.filter((e) => e.finding_id === finding.id)
                       .map((e) => (
-                        <p key={e.finding_id}>AI 解释：{e.text}</p>
+                        <p key={e.finding_id}>AI explanation: {e.text}</p>
                       ))}
                   </article>
                 ))
@@ -231,7 +246,7 @@ export default function ContractAi({
               {record.result.explanation_status === "failed" && (
                 <Alert
                   type="warning"
-                  title="风险解释未完成，已校验的候选和原规则核对结果仍保留。"
+                  title="Risk explanation could not be completed. Validated candidates and original rule checks are preserved."
                 />
               )}
               <Checkbox
@@ -241,7 +256,8 @@ export default function ContractAi({
                 }
                 onChange={(e) => setConfirmed(e.target.checked)}
               >
-                我已逐项核对所选字段的原文，确认应用到当前复核。
+                I have checked the source for each selected field and confirm
+                applying them to the current review.
               </Checkbox>
               <Button
                 type="primary"
@@ -253,10 +269,10 @@ export default function ContractAi({
                   action.busy
                 }
                 loading={applyAction.busy}
-                aria-label="确认应用所选字段"
+                aria-label="Confirm selected fields"
                 onClick={apply}
               >
-                确认应用所选字段
+                Confirm selected fields
               </Button>
             </>
           )}

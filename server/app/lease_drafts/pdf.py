@@ -48,7 +48,7 @@ YES_NO_MAP={'water_usage':'Check Box 4.8','electricity_embedded':'Check Box 4.9'
 
 def template_metadata():
     meta=json.loads(MANIFEST.read_text())
-    require(sha256(TEMPLATE.read_bytes()).hexdigest()==meta['sha256'],503,'template_changed','官方租约模板完整性检查失败。')
+    require(sha256(TEMPLATE.read_bytes()).hexdigest()==meta['sha256'],503,'template_changed','The official lease template failed its integrity check.')
     return meta
 
 
@@ -138,7 +138,7 @@ def font_for(value):return 'STSong-Light' if any(ord(c)>127 for c in value) else
 def fitted(value,width):
     font=font_for(value)
     size=min(10,(width-5)/max(pdfmetrics.stringWidth(value,font,10),1)*10)
-    require(size>=6.5,422,'draft_field_too_long','有字段超出官方表单可读长度，请缩短姓名、地址或说明内容后保存。')
+    require(size>=6.5,422,'draft_field_too_long','A field exceeds the readable length of the official form. Shorten names, addresses or descriptions before saving.')
     return font,size
 
 
@@ -220,7 +220,7 @@ def cover_pages(draft):
 
 def generate_pdf(draft):
     meta=template_metadata()
-    require(meta['sha256']==draft['template']['sha256'],409,'template_changed','草稿对应的模板版本不可用。')
+    require(meta['sha256']==draft['template']['sha256'],409,'template_changed','The template version used by this draft is unavailable.')
     values=validate_pdf_values(draft['fields']);reader=PdfReader(TEMPLATE);writer=PdfWriter();writer.clone_document_from_reader(reader)
     # Preserve the canonical field tree and all signature widgets. pypdf updates values and radio states.
     unicode_values={k:v for k,v in values.items() if not k.startswith('Check Box') and any(ord(c)>127 for c in v)}
@@ -260,6 +260,6 @@ def generate_pdf(draft):
     # Check the final canonical values as well as visible widget appearances before returning bytes.
     check=PdfReader(BytesIO(data));saved=check.get_fields() or {}
     require(all(name in saved and str(saved[name].get('/V'))==value for name,value in values.items()),
-            500,'pdf_validation_failed','生成的表单字段校验失败。')
-    require(all(not f.get('/V') for f in saved.values() if f.get('/FT')=='/Sig'),500,'pdf_validation_failed','签字栏必须保持空白。')
+            500,'pdf_validation_failed','Generated form fields failed validation.')
+    require(all(not f.get('/V') for f in saved.values() if f.get('/FT')=='/Sig'),500,'pdf_validation_failed','Signature fields must remain blank.')
     return data

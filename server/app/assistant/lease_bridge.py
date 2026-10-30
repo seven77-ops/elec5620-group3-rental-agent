@@ -23,7 +23,7 @@ class LeaseChatBridge:
     def _conversation(self, db, case_id, conversation_id):
         self.ctx.get(db, 'case', case_id)
         conversation = self.ctx.get(db, 'assistant_conversation', conversation_id)
-        require(conversation['case_id'] == case_id, 404, 'not_found', '未找到这个对话。')
+        require(conversation['case_id'] == case_id, 404, 'not_found', 'Conversation not found.')
         return conversation
 
     def _state(self, db, case_id):
@@ -36,7 +36,7 @@ class LeaseChatBridge:
                 continue
             latest = self.leases.owned(db, case_id, item['draft_id'])
             require(latest['context_token'] == token, 409, 'draft_context_changed',
-                    '草稿来源已变化，请重新读取。')
+                    'The draft source changed. Reload it.')
             break
         return {'context_token': token, 'draft_id': latest['draft_id'] if latest else None,
                 'base_version': latest['version'] if latest else 0}, latest
@@ -48,7 +48,7 @@ class LeaseChatBridge:
         with self.ctx.repo.transaction() as db:
             state, latest = self._state(db, case_id)
             require(source['context_token'] == state['context_token'], 409,
-                    'draft_context_changed', '房源或跟进资料已变化，请重新读取。')
+                    'draft_context_changed', 'Listing or follow-up details changed. Reload them.')
         fields = validate_fields(latest['fields'] if latest else source['defaults'])
         return state, fields
 
@@ -67,17 +67,17 @@ class LeaseChatBridge:
     def _current(self, db, pending, revision):
         conversation = self._conversation(db, pending['case_id'], pending['conversation_id'])
         require(conversation['revision'] == revision, 409, 'conversation_conflict',
-                '对话已更新，请重新提出租约修改。')
+                'The conversation changed. Submit the lease changes again.')
         state, _ = self._state(db, pending['case_id'])
         require(all(state[key] == pending[key] for key in state), 409,
-                'draft_context_changed', '房源、跟进或共享草稿已变化，请重新提取并确认。')
+                'draft_context_changed', 'The listing, follow-up or shared draft changed. Extract and confirm again.')
         return conversation
 
     def _pending_base(self, db, conversation, state):
         """Retain only the latest still-applicable unsaved proposal in this chat."""
         current = self._conversation(db, conversation['case_id'], conversation['conversation_id'])
         require(current['revision'] == conversation['revision'], 409,
-                'conversation_conflict', '对话已更新，请刷新后重试。')
+                'conversation_conflict', 'The conversation changed. Refresh and retry.')
         for entry in reversed(current.get('messages', [])):
             card = entry.get('lease_proposal')
             if not isinstance(card, dict):
@@ -98,21 +98,21 @@ class LeaseChatBridge:
                     'status': status or pending['status']}
 
     def prepare(self, case_id, conversation, message):
-        require(conversation.get('case_id') == case_id, 404, 'not_found', '未找到这个对话。')
+        require(conversation.get('case_id') == case_id, 404, 'not_found', 'Conversation not found.')
         with self.ctx.repo.transaction() as db:
             current = self._conversation(db, case_id, conversation['conversation_id'])
             require(current['revision'] == conversation['revision'], 409,
-                    'conversation_conflict', '对话已更新，请刷新后重试。')
+                    'conversation_conflict', 'The conversation changed. Refresh and retry.')
         require(isinstance(message, str) and 0 < len(message.strip()) <= 3000,
-                422, 'invalid_input', '描述须为1至3000字。')
+                422, 'invalid_input', 'The description must contain 1 to 3000 characters.')
         answer = {'intent': 'draft_contract', 'agent': 'agent3', 'listings': [],
-                  'actions': [{'type': 'navigate', 'label': '查看租约草稿', 'page': 'contract?mode=draft'}]}
+                  'actions': [{'type': 'navigate', 'label': 'View lease draft', 'page': 'contract?mode=draft'}]}
         try:
             state, fields = self._snapshot(case_id)
         except ApiError as exc:
             if exc.code not in SOURCE_ERRORS:
                 raise
-            answer['content'] = '请先确认当前租房偏好并保存一套真实房源候选，再准备租约草稿。已知资料可在合同助手核对，未知信息留空。'
+            answer['content'] = 'Confirm your rental preferences and save a live listing candidate before preparing a lease draft. Review known details in the contract assistant and leave unknown fields blank.'
             return {'answer': answer, 'pending': None, 'call': None}
         with self.ctx.repo.transaction() as db:
             inherited = self._pending_base(db, conversation, state)
@@ -140,7 +140,7 @@ class LeaseChatBridge:
         try:
             combined = validate_fields({**fields, **patch})
         except ApiError:
-            require(False, 502, 'ai_invalid_response', '提取内容与现有租约字段冲突，请核对日期、租期和金额。')
+            require(False, 502, 'ai_invalid_response', 'Extracted details conflict with existing lease fields. Check dates, term and amounts.')
         latest_patch = patch
         patch = {**(inherited['patch'] if inherited else {}), **latest_patch}
         followups = [question for question in questions(combined) if question['field'] not in ambiguous]
@@ -150,7 +150,7 @@ class LeaseChatBridge:
             followups.extend(deepcopy(question) for question in inherited['questions']
                              if question['field'] not in latest_patch and question['field'] not in known_questions)
         followups.extend({'field': field, 'label': LABELS[field],
-                          'question': '请明确' + LABELS[field] + '的年份，并提供 YYYY-MM-DD 日期。'}
+                          'question': 'Specify the year for ' + LABELS[field] + ' and provide a YYYY-MM-DD date.'}
                          for field in dict.fromkeys(ambiguous))
         pending = {'proposal_id': uid('lease-proposal'), 'case_id': case_id,
                    'conversation_id': conversation['conversation_id'],
@@ -159,11 +159,11 @@ class LeaseChatBridge:
                    'questions': followups, 'status': 'pending'}
         with self.ctx.repo.transaction() as db:
             self._current(db, pending, conversation['revision'])
-        answer['content'] = '已整理租约草稿建议。请核对完整字段、变更和待补充问题；确认适用于新州普通整租住宅后，才会保存到合同助手的共享草稿。'
+        answer['content'] = 'The lease draft proposal is ready. Review all fields, changes and outstanding questions, then confirm this is an ordinary NSW whole-property residential tenancy to save it to the shared contract draft.'
         if inherited:
-            answer['content'] += ' 已保留此前待确认的信息，并合并本次明确修改。'
+            answer['content'] += ' Previous unconfirmed details are retained and your explicit changes are merged.'
         if ambiguous:
-            answer['content'] += ' 日期尚缺明确年份，请补充 YYYY-MM-DD；本次没有猜测或更改这些日期。'
+            answer['content'] += ' Some dates have no explicit year. Provide YYYY-MM-DD dates; these dates have not been inferred or changed.'
         answer['lease_proposal'] = self._public(pending)
         return {'answer': answer, 'pending': pending,
                 'call': {key: value for key, value in metadata.items() if key in CALL_FIELDS}}
@@ -174,7 +174,7 @@ class LeaseChatBridge:
         self._current(db, pending, pending['conversation_revision'] - 1)
         validate_fields(pending['fields'])
         require(self.ctx.repo.get(db, PROPOSALS, pending['proposal_id']) is None,
-                409, 'proposal_conflict', '此租约提案已经记录，请刷新。')
+                409, 'proposal_conflict', 'This lease proposal is already recorded. Refresh the page.')
         self.ctx.repo.put(db, PROPOSALS, pending['proposal_id'], pending)
 
     def hydrate(self, db, conversation):
@@ -209,8 +209,8 @@ class LeaseChatBridge:
         shape(body, ('request_id', 'expected_revision', 'confirmed', 'applicability_confirmed'))
         request_id(body['request_id']); opaque_ref(proposal_id); opaque_ref(conversation_id)
         require(body['confirmed'] is True and body['applicability_confirmed'] is True,
-                403, 'confirmation_required', '请核对信息并明确确认适用于新州普通整租住宅。')
-        require(integer(body['expected_revision']), 422, 'invalid_input', '请提供当前对话版本。')
+                403, 'confirmation_required', 'Review the details and explicitly confirm this is an ordinary NSW whole-property residential tenancy.')
+        require(integer(body['expected_revision']), 422, 'invalid_input', 'Provide the current conversation version.')
         identity = {'conversation_id': conversation_id, 'proposal_id': proposal_id, **body}
         key = case_id + ':' + body['request_id']
         # Import locally to keep the bridge usable from AssistantService itself.
@@ -219,13 +219,13 @@ class LeaseChatBridge:
             conversation = self._conversation(db, case_id, conversation_id)
             pending = self.ctx.get(db, PROPOSALS, proposal_id)
             require(pending['case_id'] == case_id and pending['conversation_id'] == conversation_id,
-                    404, 'not_found', '未找到这个租约提案。')
+                    404, 'not_found', 'Lease proposal not found.')
             old = self.ctx.receipt(db, RECEIPTS, key, identity)
             if old:
                 return old['result']
-            require(pending['status'] == 'pending', 409, 'proposal_applied', '此租约提案已应用，请读取当前草稿。')
+            require(pending['status'] == 'pending', 409, 'proposal_applied', 'This lease proposal has already been applied. Reload the current draft.')
             require(body['expected_revision'] == pending['conversation_revision'], 409,
-                    'conversation_conflict', '对话版本已变化，请刷新后重新确认。')
+                    'conversation_conflict', 'The conversation version changed. Refresh and confirm again.')
             self._current(db, pending, pending['conversation_revision'])
             fields = validate_fields(pending['fields'])
             # This one field is affirmed explicitly by the applicability checkbox.
@@ -242,9 +242,9 @@ class LeaseChatBridge:
             pending['status'] = 'applied'
             self.ctx.repo.put(db, PROPOSALS, proposal_id, pending)
             conversation['messages'].append(message('assistant',
-                '已保存共享租约草稿 v' + str(draft['version']) + '。可前往合同助手继续补充、核对并下载未签署草稿。',
+                'Saved shared lease draft v' + str(draft['version']) + '. Open the contract assistant to complete, review and download the unsigned draft.',
                 'agent3', intent='draft_contract', actions=[{
-                    'type': 'navigate', 'label': '查看已保存租约草稿', 'page': 'contract?mode=draft'}]))
+                    'type': 'navigate', 'label': 'View saved lease draft', 'page': 'contract?mode=draft'}]))
             conversation['revision'] += 1
             AssistantService(joined).save(db, conversation)
             result = {'draft': draft, 'conversation': self.hydrate(db, conversation)}

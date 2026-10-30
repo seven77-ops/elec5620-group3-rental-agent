@@ -24,24 +24,29 @@ test("all houses have seven mode records and the webpage enforces walk twenty mi
   }
   await page.goto(`/cases/${c.case_id}/recommendations`);
   await page
-    .getByRole("combobox", { name: "到校通勤方式", exact: true })
+    .getByRole("combobox", { name: "Commute mode to campus", exact: true })
     .click();
-  await page.getByRole("option", { name: "步行", exact: true }).click();
+  await page.getByRole("option", { name: "Walking", exact: true }).click();
   await page
-    .getByRole("spinbutton", { name: "到悉大最多（分钟）", exact: true })
+    .getByRole("spinbutton", {
+      name: "Maximum commute to USYD (minutes)",
+      exact: true,
+    })
     .fill("20");
   await page
-    .getByRole("spinbutton", { name: "最高周租（AUD）", exact: true })
+    .getByRole("spinbutton", { name: "Maximum weekly rent (AUD)", exact: true })
     .fill("1200");
-  await page.getByRole("button", { name: "应用筛选", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Apply filters", exact: true })
+    .click();
   await expect(
     page.getByRole("heading", {
-      name: `筛选结果 · ${data.total} 条`,
+      name: `Filtered results · ${data.total} records`,
       exact: true,
     }),
   ).toBeVisible();
   await page
-    .getByRole("button", { name: "查看房源详情", exact: true })
+    .getByRole("button", { name: "View listing details", exact: true })
     .first()
     .click();
   const details = page.getByTestId("usyd-commute");
@@ -83,38 +88,54 @@ test("chat uses the main campus without school questions and syncs the actual co
   const c = await (await request.post("/api/v1/cases", { data: {} })).json();
   await page.goto(`/cases/${c.case_id}/assistant`);
   await page
-    .getByPlaceholder("描述你的租房需求，或问一个问题…")
+    .getByPlaceholder("Describe your rental needs or ask a question…")
     .fill(
       "我是悉大学生，步行20分钟，整租每周1200，一卧一卫，车位不限，一个人住",
     );
-  await page.getByRole("button", { name: "发送消息", exact: true }).click();
+  await page.getByRole("button", { name: "Send message", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "到悉大主校区找房", exact: true }),
+    page.getByRole("heading", {
+      name: "Find homes near USYD main campus",
+      exact: true,
+    }),
   ).toBeVisible();
   const times = await page
     .locator(".commute-homes .commute-time")
     .allTextContents();
   expect(times.length).toBeGreaterThan(0);
   for (const time of times)
-    expect(time).toMatch(/^步行(?:约 \d+|估算 \d+–\d+) 分钟$/);
-  const estimates = page.getByRole("region", { name: "街道与区域通勤估算" });
+    expect(time).toMatch(
+      /^Walking (?:Approx\. \d+|Estimated \d+–\d+) minutes$/,
+    );
+  const estimates = page.getByRole("region", {
+    name: "Street and area commute estimates",
+  });
   await expect(estimates).toHaveCount(0);
-  await expect(page.getByText("通勤时间参考", { exact: true })).toHaveCount(0);
-  await expect(page.getByText("选择这个地点", { exact: true })).toHaveCount(0);
+  await expect(
+    page.getByText("Commute time reference", { exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByText("Choose this destination", { exact: true }),
+  ).toHaveCount(0);
   await page.screenshot({
     path: "/tmp/usyd-chat-twenty-minutes.png",
     fullPage: true,
   });
-  await page.getByRole("button", { name: "我的租房需求", exact: true }).click();
+  await page
+    .getByRole("button", { name: "My rental needs", exact: true })
+    .click();
   const drawer = page.getByRole("dialog", {
-    name: "我的租房需求",
+    name: "My rental needs",
     exact: true,
   });
   await expect(
-    drawer.getByRole("spinbutton", { name: "单程最多（分钟）", exact: true }),
+    drawer.getByRole("spinbutton", {
+      name: "Maximum one-way commute (minutes)",
+      exact: true,
+    }),
   ).toHaveValue("20");
   await drawer
-    .getByRole("button", { name: "保存找房条件", exact: true })
+    .getByRole("button", { name: "Save rental needs", exact: true })
     .click();
   await expect(drawer).not.toBeVisible();
   const saved = await (await request.get(`/api/v1/cases/${c.case_id}`)).json();
@@ -122,12 +143,17 @@ test("chat uses the main campus without school questions and syncs the actual co
     mode: "walk",
     maximum_minutes: 20,
   });
-  await page.getByRole("menuitem", { name: "房源推荐", exact: true }).click();
+  await page
+    .getByRole("menuitem", { name: "Housing recommendations", exact: true })
+    .click();
   await expect(
-    page.getByRole("spinbutton", { name: "到悉大最多（分钟）", exact: true }),
+    page.getByRole("spinbutton", {
+      name: "Maximum commute to USYD (minutes)",
+      exact: true,
+    }),
   ).toHaveValue("20");
   await expect(page.locator(".usyd-commute-mini").first()).toContainText(
-    "步行",
+    "Walking",
   );
 });
 
@@ -168,12 +194,14 @@ test("unlocated houses show a labelled range and cannot use its midpoint to pass
   const c = await (await request.post("/api/v1/cases", { data: {} })).json();
   await page.goto(`/cases/${c.case_id}/recommendations`);
   await page
-    .getByRole("combobox", { name: "房源区域", exact: true })
+    .getByRole("combobox", { name: "Listing area", exact: true })
     .fill("Redfern");
   await page
-    .getByRole("combobox", { name: "房源区域", exact: true })
+    .getByRole("combobox", { name: "Listing area", exact: true })
     .press("Enter");
-  await page.getByRole("button", { name: "应用筛选", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Apply filters", exact: true })
+    .click();
   // New lower-rent houses can move the historical unlocated fixture beyond page one.
   const index = redfern.items.findIndex(
     (r: { listing_id: string }) => r.listing_id === listing.listing_id,
@@ -185,14 +213,16 @@ test("unlocated houses show a labelled range and cannot use its midpoint to pass
     .getByTestId("real-catalog")
     .locator("tbody tr.ant-table-row")
     .filter({ hasText: listing.address });
-  await expect(row).toContainText("公共交通");
-  await row.getByRole("button", { name: "查看房源详情", exact: true }).click();
+  await expect(row).toContainText("Public transport");
+  await row
+    .getByRole("button", { name: "View listing details", exact: true })
+    .click();
   const detail = page.getByTestId("usyd-commute");
   await expect(detail).toContainText(
     `${Math.floor(estimate.lower_minutes)}–${Math.ceil(estimate.upper_minutes)}`,
   );
-  await expect(detail).toContainText("公共交通");
-  await expect(detail).not.toContainText("直线");
+  await expect(detail).toContainText("Public transport");
+  await expect(detail).not.toContainText("Straight-line");
   await detail.scrollIntoViewIfNeeded();
   await page.screenshot({
     path: "/tmp/usyd-expanded-estimated-home.png",
@@ -223,7 +253,7 @@ test("historical unlocated cards open the newly refined house routes inside deta
   old.usyd_commute.estimates = {
     public_transport: {
       status: "coarse_estimate",
-      label: "街道估算",
+      label: "Street estimate",
       lower_minutes: 4,
       upper_minutes: 20,
     },
@@ -233,21 +263,25 @@ test("historical unlocated cards open the newly refined house routes inside deta
   );
   await page.goto(`/cases/${c.case_id}/recommendations`);
   await expect(page.getByTestId("real-catalog")).toContainText(
-    "公共交通估算 4–20 分钟",
+    "Public transport Estimated 4–20 minutes",
   );
-  await expect(page.getByRole("link", { name: "原始房源 ↗" })).toHaveCount(0);
-  await page.getByRole("button", { name: "查看房源详情", exact: true }).click();
+  await expect(
+    page.getByRole("link", { name: "Original listing ↗" }),
+  ).toHaveCount(0);
+  await page
+    .getByRole("button", { name: "View listing details", exact: true })
+    .click();
   const details = page.getByTestId("usyd-commute");
-  await expect(details).toContainText("公共交通");
+  await expect(details).toContainText("Public transport");
   await expect(details).not.toContainText("4–20");
   const walk = details
     .locator(".usyd-mode-grid > div")
-    .filter({ has: page.getByText("步行", { exact: true }) });
+    .filter({ has: page.getByText("Walking", { exact: true }) });
   await expect(walk.locator("strong")).toContainText(
     String(Math.ceil(current.usyd_commute.modes.walk.duration_minutes)),
   );
   await expect(
-    details.getByRole("link", { name: /在 Google 地图查看/ }),
+    details.getByRole("link", { name: /View .+ route in Google Maps/ }),
   ).toHaveCount(commuteSummary(current.usyd_commute).items.length);
   await details.scrollIntoViewIfNeeded();
   await expect

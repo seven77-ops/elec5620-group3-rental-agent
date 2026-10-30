@@ -7,6 +7,8 @@ from .adapters.aftercare import AftercareAdapter
 
 
 def register_routes(app, services):
+    from .rag.service import register_rag_routes
+    register_rag_routes(app, services)
     system = SystemAdapter(services)
     app.get('/api/v1/health')(system.health)
     app.get('/api/v1/demo-config')(system.config)
@@ -74,6 +76,14 @@ def register_routes(app, services):
     app.post('/api/v1/aftercare/commands')(aftercare.aftercare_command)
     app.get('/api/v1/aftercare/cases/{aftercare_id}')(aftercare.read_aftercare)
     app.get('/api/v1/aftercare/cases/{aftercare_id}/export')(aftercare.export_aftercare)
+    from .adapters.aftercare_assist import AftercareAssist
+    assist = AftercareAssist(services)
+    app.get('/api/v1/cases/{case_id}/aftercare/tenancy-prefill')(assist.tenancy_prefill)
+    app.post('/api/v1/cases/{case_id}/aftercare/deduction-extract')(assist.extract_deductions)
+    from .adapters.progress import ProgressAdapter
+    app.get('/api/v1/cases/{case_id}/progress')(ProgressAdapter(services).progress)
+    from .adapters.operator_inbox import OperatorInbox
+    app.get('/api/v1/operator/reviews')(OperatorInbox(services).read)
 
     from .living.service import LivingService
     living = LivingService(services)

@@ -17,7 +17,7 @@ class FollowupStart:
 
     def _preview(self, db, case_id, body):
         opaque_ref(body['listing_id'])
-        require(not ('conversation_id' in body and 'filters' in body), 422, 'invalid_input', '请选择单一的找房条件来源。')
+        require(not ('conversation_id' in body and 'filters' in body), 422, 'invalid_input', 'Choose one source for rental requirements.')
         if 'conversation_id' in body: opaque_ref(body['conversation_id'])
         case = self.ctx.get(db, 'case', case_id)
         catalog = self.ctx.settings.catalog
@@ -54,7 +54,7 @@ class FollowupStart:
             temp['student_commute'] = {'mode': brief['commute_mode'], 'maximum_minutes': brief['commute_max_minutes']}
         summary = preference_summary(temp)
         if brief.get('budget_amount') is not None and brief.get('budget_period') != 'week':
-            summary[0] = f"预算：AUD {brief['budget_amount']:g}，" + ('每月。' if brief.get('budget_period') == 'month' else '周期待补充。')
+            summary[0] = f"Budget: AUD {brief['budget_amount']:g}," + ('per month.' if brief.get('budget_period') == 'month' else 'Period not supplied.')
         return {'source': source, 'listing': row, 'brief': brief, 'missing_fields': missing(brief),
                 'summary': summary, 'context_token': token}, c, case
 
@@ -64,15 +64,15 @@ class FollowupStart:
 
     def start(self, case_id: str, body: dict):
         shape(body, ('request_id', 'listing_id', 'context_token', 'confirmed', 'supplement'), ('conversation_id', 'filters'))
-        require(body['confirmed'] is True, 422, 'confirmation_required', '请确认选定这套房并开始跟进。')
+        require(body['confirmed'] is True, 422, 'confirmation_required', 'Confirm selecting this property and starting follow-up.')
         key = case_id + ':' + request_id(body['request_id'])
         with self.ctx.repo.transaction() as db, self.ctx.preferences.store.join(db):
             self.ctx.get(db, 'case', case_id)
             old = self.ctx.receipt(db, 'followup_start_receipt', key, body)
             if old: return old['result']
             preview, c, case = self._preview(db, case_id, body)
-            require(body['context_token'] == preview['context_token'], 409, 'selection_context_changed', '房源或找房条件已更新，请读取最新条件再确认。')
-            require(isinstance(body['supplement'], dict) and set(body['supplement']) <= set(preview['missing_fields']), 422, 'invalid_input', '只需补充标出的缺失信息。')
+            require(body['context_token'] == preview['context_token'], 409, 'selection_context_changed', 'The listing or requirements changed. Reload the latest requirements before confirming.')
+            require(isinstance(body['supplement'], dict) and set(body['supplement']) <= set(preview['missing_fields']), 422, 'invalid_input', 'Complete only the highlighted missing fields.')
             brief = {**preview['brief'], **body['supplement']}
             case = save_profile(self.ctx, db, case, brief)
             joined = copy(self.ctx); joined.repo = BorrowedRepository(self.ctx.repo, db)
@@ -83,9 +83,9 @@ class FollowupStart:
             adapter.select(case_id, {'request_id': operation, 'run_id': run['run_id'], 'listing_id': body['listing_id'], 'confirmed': True})
             case = self.ctx.get(db, 'case', case_id)
             if c:
-                require(len(c['messages']) < 200, 409, 'message_limit', '这个会话已满，请新建会话后继续。')
+                require(len(c['messages']) < 200, 409, 'message_limit', 'This conversation is full. Start a new conversation to continue.')
                 finish_sync(self.ctx, db, c, case, brief)
-                c['messages'].append(message('assistant', '已选定 ' + preview['listing']['address'] + '，可以准备看房、记录中介回复或生成租约草稿。', 'agent2', intent='select'))
+                c['messages'].append(message('assistant', 'Selected ' + preview['listing']['address'] + '. Prepare an inspection or generate a lease draft.', 'agent2', intent='select'))
                 c['revision'] += 1
                 AssistantService(self.ctx).save(db, c)
             result = {'case': case, 'conversation': c}

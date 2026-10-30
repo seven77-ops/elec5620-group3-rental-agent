@@ -14,53 +14,63 @@ test("living profile and utility choices require confirmation and restore after 
   expect(energy).toBeTruthy();
   await page.goto(`/cases/${c.case_id}/aftercare?tab=utilities`);
   await expect(
-    page.getByRole("heading", { name: "租后生活服务", exact: true }),
+    page.getByRole("heading", {
+      name: "Living and aftercare services",
+      exact: true,
+    }),
   ).toBeVisible();
   await page
-    .getByRole("button", { name: "编辑住处与联系人", exact: true })
+    .getByRole("button", { name: "Edit home and contacts", exact: true })
     .click();
   const dialog = page.getByRole("dialog");
   await expect(
-    dialog.getByRole("textbox", { name: "居住地址", exact: true }),
+    dialog.getByRole("textbox", { name: "Home address", exact: true }),
   ).toBeEmpty();
   await dialog
-    .getByRole("textbox", { name: "居住地址", exact: true })
+    .getByRole("textbox", { name: "Home address", exact: true })
     .fill("Test unit, Sydney NSW");
   await dialog
-    .getByRole("textbox", { name: "中介或房东姓名", exact: true })
+    .getByRole("textbox", { name: "Agent or landlord name", exact: true })
     .fill("Test contact");
   await dialog
-    .getByRole("textbox", { name: "联系邮箱", exact: true })
+    .getByRole("textbox", { name: "Contact email", exact: true })
     .fill("agent@example.com");
   await expect(
-    dialog.getByRole("button", { name: "确认保存资料", exact: true }),
+    dialog.getByRole("button", {
+      name: "Confirm and save details",
+      exact: true,
+    }),
   ).toBeDisabled();
   await dialog
     .getByRole("checkbox", {
-      name: "我确认保存这些住处与联系人资料。",
+      name: "I confirm saving these home and contact details.",
       exact: true,
     })
     .check();
   await dialog
-    .getByRole("button", { name: "确认保存资料", exact: true })
+    .getByRole("button", { name: "Confirm and save details", exact: true })
     .click();
   await expect(
     page.getByText("agent@example.com", { exact: true }),
   ).toBeVisible();
-  await page.getByRole("combobox", { name: "电力供应商", exact: true }).click();
+  await page
+    .getByRole("combobox", { name: "Electricity provider", exact: true })
+    .click();
   await page
     .locator(".ant-select-dropdown .ant-select-item-option-content")
     .getByText(energy.name, { exact: true })
     .click();
   await page
-    .getByRole("button", { name: "保存供应商选择", exact: true })
+    .getByRole("button", { name: "Save provider selection", exact: true })
     .click();
   await expect(page.getByRole("dialog")).toContainText(energy.name);
   const before = await (
     await request.get(`/api/v1/cases/${c.case_id}/living-services`)
   ).json();
   expect(before.profile.utilities.electricity).toBeNull();
-  await page.getByRole("button", { name: "确认保存选择", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Confirm selection", exact: true })
+    .click();
   await page.reload();
   await expect(
     page.getByText(energy.name, { exact: true }).first(),
@@ -86,52 +96,56 @@ test("repairs preserve an unsent email draft and status without sending", async 
   await page.goto(`/cases/${c.case_id}/aftercare?tab=repairs`);
   await expect(
     page.getByText(
-      "未填写邮箱，可先保存报修草稿或拨打已记录电话；补充邮箱后可在邮件客户端打开。",
+      "No email address entered. You can save a repair draft or call the recorded number. Add an email to open it in your email app.",
       { exact: true },
     ),
   ).toBeVisible();
   await page
-    .getByRole("textbox", { name: "报修标题", exact: true })
+    .getByRole("textbox", { name: "Repair title", exact: true })
     .fill("厨房水龙头漏水");
   await page
-    .getByRole("textbox", { name: "问题描述", exact: true })
+    .getByRole("textbox", { name: "Issue description", exact: true })
     .fill("今天发现关闭后仍持续滴水，尚未联系维修人员。");
-  await page.getByRole("textbox", { name: "位置", exact: true }).fill("厨房");
-  await page.getByRole("button", { name: "准备报修邮件", exact: true }).click();
-  await expect(page.getByRole("dialog")).toContainText("只保存邮件草稿");
   await page
-    .getByRole("button", { name: "确认保存报修草稿", exact: true })
+    .getByRole("textbox", { name: "Location", exact: true })
+    .fill("Kitchen");
+  await page
+    .getByRole("button", { name: "Prepare repair email", exact: true })
+    .click();
+  await expect(page.getByRole("dialog")).toContainText("Save email draft only");
+  await page
+    .getByRole("button", { name: "Confirm repair draft", exact: true })
     .click();
   await expect(
-    page.getByText("草稿已准备 · 尚未发送", { exact: true }),
+    page.getByText("Draft prepared · Not sent", { exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("link", { name: "在邮箱中打开", exact: true }),
+    page.getByRole("link", { name: "Open in email app", exact: true }),
   ).toHaveCount(0);
   await page
-    .getByRole("button", { name: "编辑住处与联系人", exact: true })
+    .getByRole("button", { name: "Edit home and contacts", exact: true })
     .click();
   const dialog = page.getByRole("dialog");
   await dialog
-    .getByRole("textbox", { name: "联系邮箱", exact: true })
+    .getByRole("textbox", { name: "Contact email", exact: true })
     .fill("agent@example.com");
   await dialog
-    .getByRole("textbox", { name: "联系电话", exact: true })
+    .getByRole("textbox", { name: "Contact phone", exact: true })
     .fill("0400000000");
   await dialog
     .getByRole("checkbox", {
-      name: "我确认保存这些住处与联系人资料。",
+      name: "I confirm saving these home and contact details.",
       exact: true,
     })
     .check();
   await dialog
-    .getByRole("button", { name: "确认保存资料", exact: true })
+    .getByRole("button", { name: "Confirm and save details", exact: true })
     .click();
   await expect(
-    page.getByRole("link", { name: "拨打联系人电话", exact: true }),
+    page.getByRole("link", { name: "Call contact", exact: true }),
   ).toHaveAttribute("href", "tel:0400000000");
   await expect(
-    page.getByRole("link", { name: "在邮箱中打开", exact: true }),
+    page.getByRole("link", { name: "Open in email app", exact: true }),
   ).toHaveAttribute("href", /^mailto:agent%40example\.com\?subject=/);
   const saved = await (
     await request.get(`/api/v1/cases/${c.case_id}/living-services`)
@@ -164,35 +178,35 @@ test("provider cards use directory sources and save quote records on mobile", as
   const card = page.locator(`[data-provider-id="${provider.id}"]`);
   await card.click();
   const details = page.getByRole("dialog", {
-    name: `${provider.name} · 服务商详情`,
+    name: `${provider.name} · Provider details`,
     exact: true,
   });
   await expect(
-    details.getByRole("link", { name: "公司网站", exact: true }),
+    details.getByRole("link", { name: "Company website", exact: true }),
   ).toHaveAttribute("href", provider.website);
   await expect(details.getByRole("link")).toHaveCount(1);
-  await expect(details).not.toContainText("路线");
+  await expect(details).not.toContainText("Route");
   await details
-    .getByRole("button", { name: "记录报价或预约", exact: true })
+    .getByRole("button", { name: "Record quote or booking", exact: true })
     .click();
   const dialog = page.getByRole("dialog");
   await dialog
-    .getByRole("spinbutton", { name: "收到的报价（AUD）", exact: true })
+    .getByRole("spinbutton", { name: "Quote received (AUD)", exact: true })
     .fill("250");
   await dialog
-    .getByRole("textbox", { name: "服务日期", exact: true })
+    .getByRole("textbox", { name: "Service date", exact: true })
     .fill("2026-12-15");
   await dialog
-    .getByRole("textbox", { name: "服务备注", exact: true })
+    .getByRole("textbox", { name: "Service notes", exact: true })
     .fill("仅记录电话报价，尚未确认预约。");
   await dialog
     .getByRole("checkbox", {
-      name: "我确认仅保存记录，不会向服务商提交预约。",
+      name: "I confirm this only saves a record and does not submit a booking to the provider.",
       exact: true,
     })
     .check();
   await dialog
-    .getByRole("button", { name: "确认保存服务记录", exact: true })
+    .getByRole("button", { name: "Confirm service record", exact: true })
     .click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await page.reload();
@@ -211,13 +225,15 @@ test("provider cards use directory sources and save quote records on mobile", as
     path: "/tmp/living-services-mobile.png",
     fullPage: true,
   });
-  await page.getByRole("tab", { name: "退租与押金", exact: true }).click();
+  await page
+    .getByRole("tab", { name: "Move-out and bond", exact: true })
+    .click();
   await expect(
-    page.getByRole("textbox", { name: "租约地址", exact: true }),
+    page.getByRole("textbox", { name: "Lease address", exact: true }),
   ).toBeEmpty();
   await expect(page.getByText("synthetic://", { exact: false })).toHaveCount(0);
   await expect(
-    page.getByRole("button", { name: "添加房间", exact: true }),
+    page.getByRole("button", { name: "Add room", exact: true }),
   ).toBeVisible();
 });
 
@@ -232,28 +248,39 @@ test("real tenancy confirmation sends no sample rooms, inventory or evidence", a
     await route.continue();
   });
   await page.goto(`/cases/${c.case_id}/aftercare?tab=moveout`);
-  const address = page.getByRole("textbox", { name: "租约地址", exact: true });
+  const address = page.getByRole("textbox", {
+    name: "Lease address",
+    exact: true,
+  });
   await expect(address).toBeEmpty();
   await expect(
-    page.getByRole("textbox", { name: "房间名称", exact: true }),
+    page.getByRole("textbox", { name: "Room name", exact: true }),
   ).toHaveCount(0);
   await expect(
-    page.getByRole("textbox", { name: "家具名称", exact: true }),
+    page.getByRole("textbox", { name: "Furniture name", exact: true }),
   ).toHaveCount(0);
   await expect(
-    page.getByRole("textbox", { name: "资料来源引用", exact: true }),
+    page.getByRole("textbox", {
+      name: "Information source reference",
+      exact: true,
+    }),
   ).toHaveCount(0);
   await address.fill("User-confirmed test tenancy, Sydney NSW");
   await page
     .getByRole("checkbox", {
-      name: "我已核对并确认上述租约、房间、家具及资料来源。",
+      name: "I have checked and confirmed the lease, rooms, furniture, and sources above.",
       exact: true,
     })
     .check();
   await page
-    .getByRole("button", { name: "确认资料并创建租后案件", exact: true })
+    .getByRole("button", {
+      name: "Confirm details and create aftercare case",
+      exact: true,
+    })
     .click();
-  await expect(page.getByText("已确认租约资料", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Confirmed lease details", { exact: true }),
+  ).toBeVisible();
   expect(payloads).toHaveLength(1);
   expect(payloads[0]).toMatchObject({
     operation: "create",
@@ -274,9 +301,9 @@ test("real tenancy confirmation sends no sample rooms, inventory or evidence", a
     },
   });
   expect(JSON.stringify(payloads[0])).not.toContain("synthetic://");
-  await page.getByRole("tab", { name: "押金跟进", exact: true }).click();
+  await page.getByRole("tab", { name: "Bond follow-up", exact: true }).click();
   await expect(
-    page.getByLabel("押金记录编号（可暂不填写）", { exact: true }),
+    page.getByLabel("Bond reference (optional for now)", { exact: true }),
   ).toBeEmpty();
 });
 
@@ -296,7 +323,7 @@ test("utility edits retain their base version across refresh and cannot erase a 
   await page.goto(`/cases/${c.case_id}/aftercare?tab=utilities`);
   const chooseElectricity = async () => {
     await page
-      .getByRole("combobox", { name: "电力供应商", exact: true })
+      .getByRole("combobox", { name: "Electricity provider", exact: true })
       .click();
     await page
       .locator(".ant-select-dropdown .ant-select-item-option-content")
@@ -317,33 +344,47 @@ test("utility edits retain their base version across refresh and cannot erase a 
     },
   });
   expect(changed.ok()).toBe(true);
-  await page.getByRole("button", { name: "读取最新资料", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Load latest information", exact: true })
+    .click();
   await expect(
     page.getByText(
-      "资料已有新版本，你未保存的选择仍保留。恢复最新选择后再修改并保存。",
+      "A newer version is available. Your unsaved selection is preserved. Restore the latest selection before editing and saving.",
       { exact: true },
     ),
   ).toBeVisible();
   await page
-    .getByRole("button", { name: "保存供应商选择", exact: true })
+    .getByRole("button", { name: "Save provider selection", exact: true })
     .click();
-  await page.getByRole("button", { name: "确认保存选择", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Confirm selection", exact: true })
+    .click();
   await expect(
-    page.getByText("请读取最新资料，核对当前输入后重新保存。", { exact: true }),
+    page.getByText(
+      "Load the latest information, check your input, and save again.",
+      { exact: true },
+    ),
   ).toBeVisible();
   const protectedRecord = await (await request.get(root)).json();
   expect(protectedRecord.profile.utilities).toMatchObject({
     electricity: null,
     gas: provider.id,
   });
-  await page.getByRole("button", { name: "恢复最新选择", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Restore latest selection", exact: true })
+    .click();
   await chooseElectricity();
   await page
-    .getByRole("button", { name: "保存供应商选择", exact: true })
+    .getByRole("button", { name: "Save provider selection", exact: true })
     .click();
-  await page.getByRole("button", { name: "确认保存选择", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Confirm selection", exact: true })
+    .click();
   await expect(
-    page.getByText("请读取最新资料，核对当前输入后重新保存。", { exact: true }),
+    page.getByText(
+      "Load the latest information, check your input, and save again.",
+      { exact: true },
+    ),
   ).toHaveCount(0);
   const saved = await (await request.get(root)).json();
   expect(saved.profile.utilities).toMatchObject({
@@ -352,7 +393,7 @@ test("utility edits retain their base version across refresh and cannot erase a 
   });
 });
 
-test("a real uploaded PNG remains downloadable after reload and is marked unverified", async ({
+test("living services hide standalone attachments and preserve saved file downloads", async ({
   page,
   request,
 }) => {
@@ -371,37 +412,34 @@ test("a real uploaded PNG remains downloadable after reload and is marked unveri
     }),
     "base64",
   );
-  const files = page.getByRole("region", {
-    name: "照片与收据附件",
-    exact: true,
+  const upload = await request.post(`${root}/attachments?purpose=repair`, {
+    headers: {
+      "Content-Type": "image/png",
+      "X-Request-Id": `test-${crypto.randomUUID()}`,
+      "X-Filename": "repair-photo.png",
+    },
+    data: png,
   });
-  await expect(
-    files.getByRole("button", { name: "上传并保存附件", exact: true }),
-  ).toBeDisabled();
-  await files.locator('input[type="file"]').setInputFiles({
-    name: "报修照片.png",
-    mimeType: "image/png",
-    buffer: png,
-  });
-  expect(
-    (await (await request.get(`${root}/attachments`)).json()).items,
-  ).toHaveLength(0);
-  await files
-    .getByRole("button", { name: "上传并保存附件", exact: true })
-    .click();
-  await expect(
-    files.getByRole("link", { name: "下载 报修照片.png", exact: true }),
-  ).toBeVisible();
-  await expect(
-    files.getByText("用户上传 · 未核实", { exact: true }),
-  ).toBeVisible();
+  expect(upload.ok()).toBe(true);
+  const attachment = await upload.json();
+  expect(attachment.verification_status).toBe("user_uploaded_unverified");
   await page.reload();
-  const link = files.getByRole("link", {
-    name: "下载 报修照片.png",
-    exact: true,
-  });
-  await expect(link).toBeVisible();
-  const download = await request.get((await link.getAttribute("href"))!);
+  await expect(
+    page.getByRole("heading", {
+      name: "Living and aftercare services",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("region", {
+      name: "Photo and receipt attachments",
+      exact: true,
+    }),
+  ).toHaveCount(0);
+  const saved = await (await request.get(`${root}/attachments`)).json();
+  expect(saved.items).toHaveLength(1);
+  expect(saved.items[0].attachment_id).toBe(attachment.attachment_id);
+  const download = await request.get(attachment.download_url);
   expect(download.ok()).toBe(true);
   expect(download.headers()["content-type"]).toContain("image/png");
   expect(await download.body()).toEqual(png);

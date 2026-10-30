@@ -59,7 +59,7 @@ class LeaseDraftTests(unittest.TestCase):
         self.assertEqual(r.status_code,200,r.text)
         new=self.context(); self.assertNotEqual(c['context_token'],new['context_token'])
         self.assertEqual(new['defaults']['rent_amount'],620)
-        self.assertEqual(new['prefill_sources']['rent_amount'],'用户跟进记录 v1：中介邮件')
+        self.assertEqual(new['prefill_sources']['rent_amount'],'User follow-up record v1:中介邮件')
         self.assertIsNone(new['defaults']['rental_mode'])
         self.assertEqual(self.save(c).status_code,409)
 
@@ -177,6 +177,39 @@ class LeaseDraftTests(unittest.TestCase):
         # Use a valid bounded request ID to exercise model output rejection.
         self.provider.by_task['lease_draft_extract']={'fields':[{'field':'rent_amount','value':800,'quote':'每周600'}]}
         self.assertEqual(self.proposal(c,request_id='hallucination').status_code,502)
+
+    def test_lease_ai_timeout_retains_safe_diagnostics_and_does_not_save_or_change_draft(self):
+        from unittest.mock import patch
+        from server.app.ai.provider import ProviderError
+        c = self.context()
+        error = ProviderError('ai_timeout', {'task': 'lease_draft_extract', 'provider': 'test',
+            'duration_ms': 45000, 'status': 'failed', 'attempted': True, 'error_code': 'ai_timeout',
+            'secret': 'must-not-be-saved', 'message': 'private raw content'})
+        with patch.object(self.provider, 'call', side_effect=error):
+            result = self.proposal(c, request_id='timeout-detail')
+        self.assertEqual(result.status_code, 504, result.text)
+        self.assertEqual(result.json()['error']['code'], 'lease_ai_timeout')
+        repo = self.client.app.state.repository
+        with repo.transaction() as db:
+            receipt = repo.get(db, 'lease_ai_receipt', self.cid + ':timeout-detail')
+        self.assertEqual(receipt['call']['error_code'], 'ai_timeout')
+        self.assertNotIn('secret', receipt['call'])
+        self.assertNotIn('message', receipt['call'])
+        self.assertEqual(self.client.get(self.root).json()['items'], [])
+
+    def test_lease_ai_retains_grounded_fields_and_flags_individual_unverified_values(self):
+        c = self.context()
+        self.provider.by_task['lease_draft_extract'] = {'fields': [
+            {'field': 'rent_amount', 'value': 600, 'quote': '每周600'},
+            {'field': 'landlord_phone', 'value': '0400 000 001', 'quote': '0400000001'},
+            {'field': 'postcode', 'value': '2000', 'quote': '邮编2000'},
+        ]}
+        result = self.proposal(c, message='每周600，出租方通知送达地址1 Example Street，邮编2000，电话0400000001', request_id='partial')
+        self.assertEqual(result.status_code, 200, result.text)
+        data = result.json()
+        self.assertEqual(data['patch'], {'rent_amount': 600})
+        self.assertEqual({item['field'] for item in data['warnings']}, {'landlord_phone', 'postcode'})
+        self.assertEqual(self.client.get(self.root).json()['items'], [])
 
     def test_ai_handles_formatted_amounts_and_explicit_periodic_term_without_inventing_end_dates(self):
         c=self.context()
@@ -377,7 +410,7 @@ class LeaseDraftTests(unittest.TestCase):
         self.assertEqual(context['defaults']['state'],'NSW')
         self.assertEqual(context['defaults']['postcode'],snapshot['postcode'])
         for name in ('suburb','state','postcode'):
-            self.assertIn('候选',context['prefill_sources'][name])
+            self.assertIn('candidate',context['prefill_sources'][name])
         for prefix in ('landlord_notice','tenant_notice','agent_notice'):
             for name in ('suburb','state','postcode'):
                 self.assertEqual(context['defaults'][prefix+'_'+name],'')

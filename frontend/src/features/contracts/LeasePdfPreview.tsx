@@ -35,7 +35,8 @@ export default function LeasePdfPreview({
         if (!response.ok) {
           const body = await response.json().catch(() => null);
           throw new Error(
-            body?.error?.message ?? "合同预览暂时无法读取，请重试。",
+            body?.error?.message ??
+              "Contract preview unavailable. Please retry.",
           );
         }
         const blob = await response.blob();
@@ -43,7 +44,9 @@ export default function LeasePdfPreview({
           !response.headers.get("content-type")?.includes("application/pdf") ||
           (await blob.slice(0, 5).text()) !== "%PDF-"
         )
-          throw new Error("返回的文件不是有效 PDF，请重新加载预览。");
+          throw new Error(
+            "The returned file is not a valid PDF. Reload the preview.",
+          );
         if (active) {
           resource = URL.createObjectURL(blob);
           setUrl(resource);
@@ -52,7 +55,7 @@ export default function LeasePdfPreview({
         if (active)
           setError(
             controller.signal.aborted
-              ? new Error("合同预览加载超时，请重试。")
+              ? new Error("Contract preview timed out. Please retry.")
               : e,
           );
       } finally {
@@ -70,41 +73,42 @@ export default function LeasePdfPreview({
   return (
     <Modal
       open
-      title={`合同预览 · v${draft.version}`}
+      title={`Contract preview · v${draft.version}`}
       onCancel={onClose}
       width={1040}
       className="lease-pdf-modal"
       footer={[
         <Button key="back" onClick={onClose}>
-          返回填写
+          Return to form
         </Button>,
         <Button key="download" type="primary" href={endpoint}>
-          下载此版本 PDF
+          Download this PDF version
         </Button>,
       ]}
     >
       <p className="muted small">
-        已将确认的信息填入 NSW 官方模板；未填项与签字栏保持空白。
+        Confirmed details have been entered in the official NSW template.
+        Missing items and signature fields remain blank.
       </p>
       <Failure error={error} />
       {Boolean(error) && (
-        <Button onClick={() => setAttempt((v) => v + 1)}>重新加载预览</Button>
+        <Button onClick={() => setAttempt((v) => v + 1)}>Reload preview</Button>
       )}
       {loading && (
         <div className="lease-pdf-loading" role="status">
           <Spin />
-          <span>正在填写并加载合同…</span>
+          <span>Filling and loading contract…</span>
         </div>
       )}
       {url && (
         <iframe
           src={`${url}#view=FitH`}
-          title={`已填写的合同草稿 v${draft.version}`}
+          title={`Completed contract draft v${draft.version}`}
           className="lease-pdf-frame"
         />
       )}
       <p className="muted small">
-        未签署草稿 · 如浏览器无法显示，可下载 PDF 查看。
+        Unsigned draft · Download the PDF if your browser cannot display it.
       </p>
     </Modal>
   );

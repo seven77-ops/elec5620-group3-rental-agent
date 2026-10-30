@@ -161,7 +161,7 @@ class PlannerTests(unittest.TestCase):
         self.assertEqual(self.resolver.calls,[]); self.assertEqual(self.provider.calls,[])
         self.provider.configured=False
         report=self.prepare()['commute_recommendation']
-        self.assertTrue(any('TFNSW_API_KEY' in x for x in report['limitations']))
+        self.assertTrue(any('not configured' in x for x in report['limitations']))
         self.assertEqual(self.resolver.calls,[])
         self.provider.configured=True
         report=self.prepare(commute_mode='drive')['commute_recommendation']
@@ -299,7 +299,7 @@ class PlannerTests(unittest.TestCase):
         self.assertEqual(result['listings'][0]['listing_id'],'domain:1')
         result=self.prepare(budget_scope='per_person',budget_amount=300,occupants=2)
         self.assertNotIn('max_weekly_rent',self.catalog.last_filters)
-        self.assertTrue(any('计价' in s for s in result['commute_recommendation']['limitations']))
+        self.assertTrue(any('scope' in s for s in result['commute_recommendation']['limitations']))
 
     def test_does_not_touch_repo_and_inputs_or_hold_transaction_for_external_queries(self):
         before=deepcopy(self.brief)
@@ -493,7 +493,7 @@ class ReviewRouteRegressions(unittest.TestCase):
                 result=self.prepare()
                 self.assertEqual(result['listings'],[])
                 self.assertEqual(result['commute_recommendation']['routes'][0]['status'],'unavailable')
-                self.assertIn('到达',result['commute_recommendation']['routes'][0]['reason'])
+                self.assertIn('arrives on time',result['commute_recommendation']['routes'][0]['reason'])
 
     def test_aware_utc_timestamps_on_requested_sydney_date_are_valid(self):
         from datetime import timezone

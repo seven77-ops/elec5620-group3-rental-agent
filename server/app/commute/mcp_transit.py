@@ -24,10 +24,10 @@ class TransitProvider:
 
     def trips(self,body):
         shape(body,('origin','destination','arrival_at','allow_external'))
-        require(body['allow_external'] is True,422,'external_query_required','请同意本次交通查询。')
+        require(body['allow_external'] is True,422,'external_query_required','Consent is required for this transit query.')
         origin,destination=coordinates(body['origin']),coordinates(body['destination'])
         require(valid_point(origin) and all(abs(destination[k]-DESTINATION[k])<.000001 for k in ('latitude','longitude')),
-                422,'outside_commute_scope','通勤目的地须为悉大主校区。')
+                422,'outside_commute_scope','The commute destination must be the USYD main campus.')
         arrival=instant(body['arrival_at']);started=monotonic();fallback_code=None
         if self.client:
             coord=lambda p:f"{p['longitude']:.7f}:{p['latitude']:.7f}:EPSG:4326"
@@ -49,5 +49,5 @@ class TransitProvider:
                 **({'fallback_code':fallback_code} if fallback_code else {})}
 
     def tool(self,name,arguments):
-        require(self.client is not None,503,'mcp_not_configured','交通信息服务暂时不可用。')
+        require(self.client is not None,503,'mcp_not_configured','The transit information service is temporarily unavailable.')
         return self.client.call_tool(name,arguments)

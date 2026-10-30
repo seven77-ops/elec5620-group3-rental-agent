@@ -16,13 +16,13 @@ def unique_object(pairs):
     result = {}
     for key, value in pairs:
         if key in result:
-            raise ValidationError(f'JSON 重复字段：{key}')
+            raise ValidationError(f'Duplicate JSON field: {key}')
         result[key] = value
     return result
 
 
 def invalid_constant(value):
-    raise ValidationError(f'JSON 非有限数字：{value}')
+    raise ValidationError(f'Non-finite JSON number: {value}')
 
 
 def load_json(path):
@@ -31,17 +31,17 @@ def load_json(path):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description='悉尼租房评估课程原型：仅模拟数据，无网络和 API 密钥。')
-    parser.add_argument('--profile', required=True, help='已确认客户偏好 JSON')
-    parser.add_argument('--listings', required=True, help='包含 as_of 的模拟房源 JSON')
-    parser.add_argument('--output', required=True, help='输出文件前缀（自动添加 .json / .md；拒绝覆盖）')
-    parser.add_argument('--compare-profile', help='可选功能：调整后的偏好 JSON，与原偏好比较')
-    parser.add_argument('--as-of', help='显式覆盖评估时点，例如 2026-09-17T09:00:00+10:00')
-    parser.add_argument('--select-listing', help='用户明确选中的合格房源ID；仅构建本地交接证据包')
-    parser.add_argument('--selected-at', help='选择发生的带时区时间；必须与 --select-listing 一起提供')
+    parser = argparse.ArgumentParser(description='Sydney rental evaluation coursework prototype: synthetic data only, without network access or API keys.')
+    parser.add_argument('--profile', required=True, help='Confirmed client preferences JSON')
+    parser.add_argument('--listings', required=True, help='Synthetic listings JSON containing as_of')
+    parser.add_argument('--output', required=True, help='Output file prefix (.json / .md appended automatically; existing files are not overwritten)')
+    parser.add_argument('--compare-profile', help='Optional adjusted-preferences JSON to compare with the original preferences')
+    parser.add_argument('--as-of', help='Explicit evaluation timestamp override, e.g. 2026-09-17T09:00:00+10:00')
+    parser.add_argument('--select-listing', help='Eligible listing ID explicitly selected by the user; builds a local handoff evidence package only')
+    parser.add_argument('--selected-at', help='Timezone-aware selection timestamp; must accompany --select-listing')
     args = parser.parse_args(argv)
     if (args.select_listing is None) != (args.selected_at is None):
-        parser.error('--select-listing 和 --selected-at 必须一起提供')
+        parser.error('--select-listing and --selected-at must be supplied together')
     try:
         profile, listings = load_json(args.profile), load_json(args.listings)
         report = evaluate(profile, listings, as_of=args.as_of)
@@ -59,7 +59,7 @@ def main(argv=None):
         if packet is not None:
             paths.append(Path(args.output + '.selection.json'))
         if any(path.exists() or path.is_symlink() for path in paths):
-            raise ValidationError('输出文件已存在；请使用新的 --output 前缀，不会覆盖已有文件')
+            raise ValidationError('An output file already exists. Use a new --output prefix; existing files will not be overwritten')
         contents = [json.dumps(report, ensure_ascii=False, indent=2, allow_nan=False) + '\n', render_markdown(report)]
         if packet is not None:
             contents.append(json.dumps(packet, ensure_ascii=False, indent=2, allow_nan=False) + '\n')
@@ -68,14 +68,14 @@ def main(argv=None):
         for path, content in zip(paths, contents):
             with path.open('x', encoding='utf-8') as stream:
                 stream.write(content)
-        print(f'已生成（仅模拟）：{md_path}\n结构化报告：{json_path}')
-        print(f"推荐批次：{report['recommendation_run_id']}")
+        print(f'Generated (synthetic only): {md_path}\nStructured report: {json_path}')
+        print(f"Recommendation run: {report['recommendation_run_id']}")
         if packet is not None:
-            print(f'选房证据包（未发送）：{paths[2]}')
-        print('结果：' + ', '.join(f'{key}={value}' for key, value in report['counts'].items()))
+            print(f'Selection evidence package (not sent): {paths[2]}')
+        print('Results: ' + ', '.join(f'{key}={value}' for key, value in report['counts'].items()))
         return 0
     except (ValidationError, OSError, ValueError, UnicodeError) as exc:
-        print(f'输入或输出错误：{exc}', file=sys.stderr)
+        print(f'Input or output error:{exc}', file=sys.stderr)
         return 2
 
 

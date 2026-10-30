@@ -152,7 +152,7 @@ class LivingTenancyTests(unittest.TestCase):
         self.assertEqual(preview['values'],{'address':'Confirmed Home','carpeted':False,
             'agent_name':'Alex Agent','agent_email':'alex@example.com','agent_phone':'+61 2 9000 1234',
             'lease_start_date':'2026-11-01','lease_end_date':'2027-11-01'})
-        self.assertIn('未签署草稿',preview['source']['warning'])
+        self.assertIn('unsigned draft',preview['source']['warning'])
         result=self.service.apply(self.cid,self.apply_body(preview))
         self.assertEqual(result['profile']['address'],'Confirmed Home');self.assertFalse(result['profile']['carpeted'])
         self.assertEqual(result['profile']['agent_email'],'alex@example.com')
@@ -180,8 +180,8 @@ class LivingTenancyTests(unittest.TestCase):
         self.select();self.draft({'address':'New Home'});self.seed_aftercare('Old Home')
         preview=self.service.preview(self.cid)
         self.assertEqual(preview['source']['kind'],'lease_draft')
-        self.assertTrue(preview['source']['current']);self.assertIn('地址',preview['source']['warning'])
-        self.assertIn('保留',preview['source']['warning'])
+        self.assertTrue(preview['source']['current']);self.assertIn('draft address differs',preview['source']['warning'])
+        self.assertIn('retained',preview['source']['warning'])
 
     def test_aftercare_task_changes_do_not_change_source_token_but_tenancy_changes_do(self):
         self.seed_aftercare();preview=self.service.preview(self.cid)

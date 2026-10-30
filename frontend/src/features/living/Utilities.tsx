@@ -10,10 +10,14 @@ import UtilityProviderDetails, {
   providerCategories,
 } from "./UtilityProviderDetails";
 const fields: { key: Utility; label: string; category: string }[] = [
-  { key: "electricity", label: "电力供应商", category: "electricity" },
-  { key: "gas", label: "燃气供应商", category: "gas" },
-  { key: "internet", label: "网络供应商", category: "internet" },
-  { key: "water", label: "供水机构", category: "water" },
+  {
+    key: "electricity",
+    label: "Electricity provider",
+    category: "electricity",
+  },
+  { key: "gas", label: "Gas provider", category: "gas" },
+  { key: "internet", label: "Internet provider", category: "internet" },
+  { key: "water", label: "Water authority", category: "water" },
 ];
 export default function Utilities({
   record,
@@ -46,20 +50,20 @@ export default function Utilities({
     const profile = { ...snapshot.current.profile, utilities };
     const expectedVersion = snapshot.current.version;
     modal.confirm({
-      title: "确认保存供应商选择？",
+      title: "Save provider selection?",
       content: (
         <ul>
           {fields.map((f) => (
             <li key={f.key}>
-              {f.label}：
+              {f.label}:
               {providers.find((p) => p.id === utilities[f.key])?.name ||
-                "尚未选择"}
+                "Not selected"}
             </li>
           ))}
         </ul>
       ),
-      okText: "确认保存选择",
-      cancelText: "取消",
+      okText: "Confirm selection",
+      cancelText: "Cancel",
       onOk: () =>
         save("/profile", profile, expectedVersion, () => {
           setDirty(false);
@@ -70,17 +74,17 @@ export default function Utilities({
     <section className="living-section">
       <div className="living-section-heading">
         <div>
-          <h2>水电气网</h2>
+          <h2>Utilities</h2>
         </div>
       </div>
       <Alert
         type="info"
-        title="供水通常由地址对应的供水机构提供，不能像电力或网络一样自由更换。"
+        title="Water is usually supplied by the authority serving the address and cannot be freely switched like electricity or internet."
       />
       {dirty && snapshot.current.version !== record.version && (
         <Alert
           type="warning"
-          title="资料已有新版本，你未保存的选择仍保留。恢复最新选择后再修改并保存。"
+          title="A newer version is available. Your unsaved selection is preserved. Restore the latest selection before editing and saving."
           action={
             <Button
               disabled={busy}
@@ -90,7 +94,7 @@ export default function Utilities({
                 setDirty(false);
               }}
             >
-              恢复最新选择
+              Restore latest selection
             </Button>
           }
         />
@@ -111,7 +115,7 @@ export default function Utilities({
               <Select
                 aria-label={field.label}
                 allowClear
-                placeholder="尚未选择"
+                placeholder="Not selected"
                 options={providers
                   .filter((p) =>
                     p.categories.some(
@@ -124,12 +128,12 @@ export default function Utilities({
           ))}
         </div>
         <Button
-          aria-label="保存供应商选择"
+          aria-label="Save provider selection"
           type="primary"
           htmlType="submit"
           loading={busy}
         >
-          保存供应商选择
+          Save provider selection
         </Button>
       </Form>
       <div className="living-provider-grid">
@@ -145,7 +149,7 @@ export default function Utilities({
               className="living-provider-card living-provider-trigger"
               key={p.id}
               data-provider-id={p.id}
-              aria-label={`${p.name}，查看供应商详情`}
+              aria-label={`${p.name}, view provider details`}
               aria-haspopup="dialog"
               onClick={() => setDetailsId(p.id)}
             >
@@ -155,10 +159,10 @@ export default function Utilities({
               <span className="living-provider-card-action">
                 <span className="muted">
                   {p.plans?.length
-                    ? `${p.plans.length} 个套餐 / 费率方案`
-                    : "服务与联系方式"}
+                    ? `${p.plans.length}  plans / tariffs`
+                    : "Services and contact details"}
                 </span>
-                <span>查看详情 →</span>
+                <span>View details →</span>
               </span>
             </button>
           ))}

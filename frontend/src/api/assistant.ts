@@ -1,3 +1,5 @@
+import type { SoftPreferenceReport } from "./softPreferences";
+import type { KnowledgeAnswer } from "./knowledge";
 import { api } from "./client";
 import type { HousingAd, UsydRoute } from "./catalog";
 import type { CaseState } from "./types";
@@ -128,6 +130,15 @@ export interface AssistantAction {
   summary?: string[];
 }
 export interface AssistantMessage {
+  repair_email?: {
+    subject: string;
+    body: string;
+    to: string;
+    language: "en";
+    tone: "standard" | "polite" | "concise";
+    proposal_id: string;
+    repair_id?: string;
+  };
   recommendation_criteria?: RentalBrief;
   recommendation_filters?: import("./catalog").HousingFilters;
   recommendation_catalog_fingerprint?: string;
@@ -152,6 +163,8 @@ export interface AssistantMessage {
     stops: { id: string; name: string; distance_m: number }[];
     alerts: { title: string; url: string | null }[];
   };
+  knowledge?: KnowledgeAnswer;
+  soft_preferences?: SoftPreferenceReport;
   message_id: string;
   role: "user" | "assistant";
   content: string;

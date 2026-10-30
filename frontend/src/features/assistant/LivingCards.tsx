@@ -16,7 +16,9 @@ export default function LivingCards({
           data-provider-id={provider.id}
         >
           <Tag color="blue">
-            {provider.plans?.length ? "官方套餐参考" : "官方服务入口"}
+            {provider.plans?.length
+              ? "Official plan reference"
+              : "Official service portal"}
           </Tag>
           <h3>{provider.name}</h3>
           <p className="muted">{provider.coverage}</p>
@@ -28,17 +30,17 @@ export default function LivingCards({
               target="_blank"
               rel="noopener noreferrer"
             >
-              公司网站 ↗
+              Company website ↗
             </a>
             <a
               href={provider.contact_url}
               target="_blank"
               rel="noopener noreferrer"
             >
-              联系 / 询价 ↗
+              Contact / request a quote ↗
             </a>
             {provider.phone && (
-              <a href={`tel:${provider.phone.replace(/[^+0-9]/g, "")}`}>
+              <a href={`tel: ${provider.phone.replace(/[^+0-9]/g, "")}`}>
                 {provider.phone}
               </a>
             )}
@@ -49,9 +51,11 @@ export default function LivingCards({
               target="_blank"
               rel="noopener noreferrer"
             >
-              {provider.plans?.length ? "联系信息来源" : "资料来源"}
+              {provider.plans?.length
+                ? "Contact information source"
+                : "Information source"}
             </a>{" "}
-            · 核验 {provider.checked_on}
+            · Checked {provider.checked_on}
           </p>
         </article>
       ))}

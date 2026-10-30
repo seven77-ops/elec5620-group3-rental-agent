@@ -15,17 +15,26 @@ from ..real_data.providers import DataProviders
 
 class Services:
     """Shared saved-object authorization, identity, gates and durable receipt helpers."""
-    def __init__(self, settings, ai_provider=None, data_provider=None):
+    def __init__(self, settings, ai_provider=None, data_provider=None, decision_provider=None):
         self.settings = settings
         self.ai_provider = ai_provider if ai_provider is not None else ModelProvider()
         self.data_provider = data_provider if data_provider is not None else DataProviders()
         from ..commute.mcp_transit import TransitProvider
         self.transit_provider = TransitProvider(self.data_provider)
         self.repo = Repository(settings.runtime_dir)
+        from ..routing.jev import JevProvider
+        from ..routing.router import DecisionRouter
+        self.decision_router = DecisionRouter(decision_provider if decision_provider is not None else JevProvider(), self.repo)
         from ..living.utility_catalog import UtilityPlanCatalog
         self.utility_plans = UtilityPlanCatalog(self.repo.directory / 'utility_catalog.sqlite3')
         self.preferences = Agent1Bridge(self.repo, real=settings.catalog is not None)
-        self.aftercare = AftercareAgent(self.repo.directory / 'aftercare.sqlite3', operator_ids={OPERATOR}, gateway=None)
+        from ..rag.service import KnowledgeService
+        self.knowledge = KnowledgeService(self)
+        from ..rag.contracts import ContractKnowledge
+        self.contract_knowledge = ContractKnowledge(self)
+        from .aftercare_assist import AftercareAssist
+        self.aftercare = AftercareAgent(self.repo.directory / 'aftercare.sqlite3', operator_ids={OPERATOR},
+                                        gateway=AftercareAssist(self).gateway)
 
     def safe_message(self, message):
         repo = self.repo
@@ -59,9 +68,9 @@ class Services:
         require(case['selection'] is not None and case['selection']['profile_version'] == latest['version'],
                 409, 'selection_required', 'Choose and confirm a listing from the current confirmed preferences')
         require(self.settings.catalog is None or case['selection'].get('data_mode') == 'real_listings',
-                409, 'legacy_selection', '历史模拟选择不参与真实房源流程，请重新生成真实候选。')
+                409, 'legacy_selection', 'Historical simulated selections cannot enter the live listing workflow. Generate live candidates again.')
         require(case['selection'].get('data_mode') != 'real_listings', 409, 'real_selection_unverified',
-                '此房源已保存为真实候选；尚需核实在租状态、租金计价和租期，当前合同接口不能把它当作已核实证据包。')
+                'This listing is saved as a live candidate. Availability, rent scope and lease term remain unverified; the contract interface cannot treat it as a verified evidence package.')
         return case['selection']
 
     def contract_selection(self, case):
@@ -72,7 +81,7 @@ class Services:
         selection = case['selection']
         require(selection['profile_version'] == latest['version'] and
                 selection.get('profile_fingerprint') == latest['fingerprint'],
-                409, 'stale_selection', '请按当前确认需求重新选择候选。')
+                409, 'stale_selection', 'Select a candidate again using current confirmed requirements.')
         return selection
 
     def receipt(self, db, kind, key, body):

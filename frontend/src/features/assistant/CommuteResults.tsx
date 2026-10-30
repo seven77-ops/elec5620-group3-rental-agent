@@ -1,3 +1,4 @@
+import { SoftPreferenceEvidence } from "./SoftPreferenceEvidence";
 import { Alert, Button, Pagination, Tag } from "antd";
 import { useRef, useState } from "react";
 import type { AssistantMessage } from "../../api/assistant";
@@ -49,16 +50,18 @@ export default function CommuteResults({
     return (
       <Alert
         type="info"
-        title="到校地点已统一为悉大主校区"
-        description="Camperdown / Darlington · Fisher Library。旧地点选项已停用。"
+        title="The destination is now USYD main campus"
+        description="Camperdown / Darlington · Fisher Library.Previous destination options have been retired."
         action={
           <Button
             disabled={disabled || !onSuggest}
             onClick={() =>
-              onSuggest?.("保留我的预算和房型，按悉大主校区继续推荐通勤房源。")
+              onSuggest?.(
+                "Keep my budget and housing needs, and recommend homes for commuting to the University of Sydney main campus.",
+              )
             }
           >
-            按主校区继续
+            Continue with main campus
           </Button>
         }
       />
@@ -71,66 +74,74 @@ export default function CommuteResults({
       <Alert
         type="info"
         showIcon
-        title="这份结果使用了旧校区"
-        description="现在只按悉大 Camperdown / Darlington 主校区找房，请重新生成通勤推荐。"
+        title="These results use a previous campus"
+        description="Searches now use the University of Sydney Camperdown / Darlington main campus. Please generate new commute recommendations."
         action={
           <Button
             disabled={disabled || !onSuggest}
             onClick={() =>
               onSuggest?.(
-                "保留我的预算和房型，重新按悉大主校区及原来的通勤上限推荐。",
+                "Keep my budget and housing needs, and regenerate recommendations for USYD main campus with my original commute limit.",
               )
             }
           >
-            重新推荐
+            Recommend again
           </Button>
         }
       />
     );
   return (
-    <section className="commute-results" aria-label="通勤与区域建议">
+    <section
+      className="commute-results"
+      aria-label="Commute and area suggestions"
+    >
       {result ? (
         <>
           <div className="commute-heading">
-            <h3>到悉大主校区找房</h3>
-            <Tag color="blue">已筛选</Tag>
+            <h3>Find homes near USYD main campus</h3>
+            <Tag color="blue">Filtered</Tag>
           </div>
-          <p className="commute-destination">前往 {result.destination.label}</p>
-          <div className="commute-filter-tags" aria-label="本次通勤条件">
+          <p className="commute-destination">
+            Go to {result.destination.label}
+          </p>
+          <div
+            className="commute-filter-tags"
+            aria-label="Current commute criteria"
+          >
             <Tag color="blue">
               {commuteModes.find(
                 (m) => m.value === result.criteria.commute_mode,
-              )?.label ?? "公共交通"}
+              )?.label ?? "Public transport"}
               {result.criteria.commute_max_minutes
-                ? ` ≤${result.criteria.commute_max_minutes}分钟`
+                ? ` ≤${result.criteria.commute_max_minutes} minutes`
                 : ""}
             </Tag>
           </div>
           <p className="muted small">
-            本次找到 {result.matching_count ?? message.listings.length}{" "}
-            套符合通勤条件的房源
+            Found {result.matching_count ?? message.listings.length} listings
+            within your commute criteria
           </p>
           {!message.listings.length && (
             <Alert
               type="info"
               showIcon
-              title="当前条件下没有匹配房源"
-              description="可以调整预算或房型，或明确放宽通勤时间。"
+              title="No listings match the current criteria"
+              description="Adjust your budget or housing needs, or explicitly increase the commute limit."
             />
           )}
           <div
             className="commute-area-buttons"
             role="group"
-            aria-label="按区域查看房源"
+            aria-label="Browse listings by area"
           >
             <Button
-              aria-label="全部"
+              aria-label="All"
               autoInsertSpace={false}
               type={suburb === null ? "primary" : "default"}
               aria-pressed={suburb === null}
               onClick={() => chooseSuburb(null)}
             >
-              全部
+              All
             </Button>
             {suburbs.map((name) => (
               <Button
@@ -144,7 +155,9 @@ export default function CommuteResults({
             ))}
           </div>
           {suburb && !filtered.length && (
-            <p className="muted small">本次结果暂无该区房源。</p>
+            <p className="muted small">
+              No listings from this area in the current results.
+            </p>
           )}
           <div className="commute-homes" ref={homes}>
             {shown.map((listing) => {
@@ -153,12 +166,12 @@ export default function CommuteResults({
                   <div>
                     <h4>{listing.address}</h4>
                     <p className="small muted">
-                      {listing.bedroom_label} 卧 · {listing.bathrooms} 卫 ·{" "}
-                      {listing.car_spaces} 车位
+                      {listing.bedroom_label} bed · {listing.bathrooms} bath ·{" "}
+                      {listing.car_spaces} car spaces
                     </p>
                     <strong className="commute-price">
                       AUD {listing.weekly_rent}
-                      <small>/周</small>
+                      <small>/week</small>
                     </strong>
                   </div>
                   <div className="commute-route">
@@ -172,10 +185,16 @@ export default function CommuteResults({
                     criteria={result.criteria}
                     filters={message.recommendation_filters}
                   />
+                  {message.soft_preferences && (
+                    <SoftPreferenceEvidence
+                      report={message.soft_preferences}
+                      listingId={listing.listing_id}
+                    />
+                  )}
                   <div className="commute-actions">
                     {onView ? (
                       <Button size="small" onClick={() => onView(listing)}>
-                        房源详情
+                        Listing details
                       </Button>
                     ) : null}
                     <ListingActions
@@ -191,7 +210,7 @@ export default function CommuteResults({
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      Google 地图 ↗
+                      Google Maps ↗
                     </a>
                   </div>
                 </article>
@@ -199,7 +218,7 @@ export default function CommuteResults({
             })}
           </div>
           {filtered.length > pageSize && (
-            <nav aria-label="房源分页" className="commute-pagination">
+            <nav aria-label="Listing pages" className="commute-pagination">
               <Pagination
                 current={currentPage}
                 total={filtered.length}
@@ -222,42 +241,46 @@ export default function CommuteResults({
                 disabled={disabled}
                 onClick={() =>
                   onSuggest(
-                    "保持全部已确认的预算、房型和通勤条件，换一批推荐，优先展示之前没看过的房源。",
+                    "Keep all confirmed budget, housing and commute criteria. Show another set of recommendations, prioritising listings I have not seen before.",
                   )
                 }
               >
-                换一批
-              </Button>
-              <Button
-                disabled={disabled}
-                onClick={() =>
-                  onSuggest("保持刚才的户型和目的地，优先推荐租金更低的房源。")
-                }
-              >
-                更看重租金
-              </Button>
-              <Button
-                disabled={disabled}
-                onClick={() =>
-                  onSuggest("保持刚才的预算和户型，优先推荐通勤更短的房源。")
-                }
-              >
-                更看重通勤
+                Show more options
               </Button>
               <Button
                 disabled={disabled}
                 onClick={() =>
                   onSuggest(
-                    "保持其他需求，单程最多可接受" +
+                    "Keep my housing needs and destination, and prioritise lower-rent listings.",
+                  )
+                }
+              >
+                Prioritise lower rent
+              </Button>
+              <Button
+                disabled={disabled}
+                onClick={() =>
+                  onSuggest(
+                    "Keep my budget and housing needs, and prioritise shorter commutes.",
+                  )
+                }
+              >
+                Prioritise shorter commute
+              </Button>
+              <Button
+                disabled={disabled}
+                onClick={() =>
+                  onSuggest(
+                    "Keep my other requirements. My maximum one-way commute is " +
                       Math.min(
                         240,
                         (result.criteria.commute_max_minutes ?? 40) + 10,
                       ) +
-                      "分钟，请重新推荐。",
+                      " minutes. Please recommend again.",
                   )
                 }
               >
-                通勤放宽10分钟
+                Add 10 minutes to commute
               </Button>
             </div>
           ) : null}

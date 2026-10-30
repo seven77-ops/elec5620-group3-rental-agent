@@ -139,14 +139,16 @@ export default function RentalNeeds({
       await refresh();
       setDirty(false);
       onClose();
-      message.success("找房条件已保存。");
+      message.success("Rental needs saved.");
     });
   };
-  const required = [{ required: true, message: "请填写或选择这一项" }];
+  const required = [
+    { required: true, message: "Please complete or select this field" },
+  ];
   return (
     <Drawer
       rootClassName="rental-needs-drawer"
-      title="我的租房需求"
+      title="My rental needs"
       open={open}
       onClose={onClose}
       size={500}
@@ -154,7 +156,7 @@ export default function RentalNeeds({
     >
       <div className="assistant-needs-intro">
         <Tag color={synced ? "blue" : "orange"}>
-          {synced ? `已保存 v${confirmed?.version}` : "当前找房条件"}
+          {synced ? `Saved v${confirmed?.version}` : "Current rental needs"}
         </Tag>
       </div>
       {error && (
@@ -166,7 +168,7 @@ export default function RentalNeeds({
             <Space>
               {canRetry && (
                 <Button size="small" onClick={onRetry} disabled={busy}>
-                  重试原操作
+                  Retry original action
                 </Button>
               )}
               <Button
@@ -174,7 +176,7 @@ export default function RentalNeeds({
                 onClick={() => void reload()}
                 disabled={busy}
               >
-                重新读取
+                Reload
               </Button>
             </Space>
           }
@@ -184,8 +186,10 @@ export default function RentalNeeds({
         <Alert
           type="warning"
           showIcon
-          title="对话或需求已更新，请重新读取后确认。"
-          action={<Button onClick={() => void reload()}>读取最新需求</Button>}
+          title="The conversation or requirements have changed. Reload before confirming."
+          action={
+            <Button onClick={() => void reload()}>Load latest needs</Button>
+          }
         />
       )}
       <Form
@@ -197,14 +201,14 @@ export default function RentalNeeds({
         onFinish={submit}
         disabled={busy || canRetry}
       >
-        <Form.Item name="suburb" label="偏好区域" rules={required}>
+        <Form.Item name="suburb" label="Preferred area" rules={required}>
           <Select
             virtual={false}
             showSearch
             optionFilterProp="label"
-            placeholder="选择区域或不限"
+            placeholder="Choose an area or any area"
             options={[
-              { value: "__all__", label: "不限区域" },
+              { value: "__all__", label: "Any area" },
               ...(config.catalog?.suburbs ?? []).map((value) => ({
                 value,
                 label: value,
@@ -215,32 +219,32 @@ export default function RentalNeeds({
         <div className="assistant-needs-grid">
           <Form.Item
             name="budget_amount"
-            label="最高预算（AUD）"
+            label="Maximum budget (AUD)"
             rules={required}
           >
             <InputNumber min={1} max={1000000000000} />
           </Form.Item>
           <Form.Item
             name="budget_period"
-            label="预算周期"
+            label="Budget period"
             rules={[
               ...required,
               {
                 validator: (_, value) =>
                   value === "week"
                     ? Promise.resolve()
-                    : Promise.reject(new Error("请填写按周计算的预算")),
+                    : Promise.reject(new Error("Please enter a weekly budget")),
               },
             ]}
           >
             <Select
               virtual={false}
-              placeholder="确认预算周期"
+              placeholder="Confirm budget period"
               options={[
-                { value: "week", label: "每周" },
+                { value: "week", label: "Weekly" },
                 {
                   value: "month",
-                  label: "每月（请换算为周预算）",
+                  label: "Monthly (convert to a weekly budget)",
                   disabled: true,
                 },
               ]}
@@ -248,49 +252,58 @@ export default function RentalNeeds({
           </Form.Item>
           <Form.Item
             name="budget_scope"
-            label="计价对象"
+            label="Pricing basis"
             rules={[
               ...required,
               {
                 validator: (_, value) =>
                   value !== "unknown"
                     ? Promise.resolve()
-                    : Promise.reject(new Error("请选择计价对象")),
+                    : Promise.reject(
+                        new Error("Please select a pricing basis"),
+                      ),
               },
             ]}
           >
             <Select
               virtual={false}
-              placeholder="整套还是每人"
+              placeholder="Whole property or per person"
               options={[
-                { value: "whole_property", label: "整套" },
-                { value: "per_room", label: "每个房间" },
-                { value: "per_person", label: "每人" },
+                { value: "whole_property", label: "Whole property" },
+                { value: "per_room", label: "Per room" },
+                { value: "per_person", label: "Per person" },
               ]}
             />
           </Form.Item>
-          <Form.Item name="rental_mode" label="租赁方式" rules={required}>
+          <Form.Item name="rental_mode" label="Rental type" rules={required}>
             <Select
               virtual={false}
-              placeholder="选择租住方式"
+              placeholder="Choose a rental type"
               options={[
-                { value: "whole_property", label: "整租" },
-                { value: "private_room", label: "独立单间" },
-                { value: "shared_room", label: "共享房间" },
-                { value: "student_accommodation", label: "学生公寓" },
+                { value: "whole_property", label: "Whole property" },
+                { value: "private_room", label: "Private room" },
+                { value: "shared_room", label: "Shared room" },
+                {
+                  value: "student_accommodation",
+                  label: "Student accommodation",
+                },
               ]}
             />
           </Form.Item>
-          <Form.Item name="occupants" label="居住人数" rules={required}>
+          <Form.Item
+            name="occupants"
+            label="Number of occupants"
+            rules={required}
+          >
             <InputNumber min={1} max={100} precision={0} />
           </Form.Item>
         </div>
         <div className="assistant-needs-counts">
           {(
             [
-              ["min_bedrooms", "至少卧室"],
-              ["min_bathrooms", "至少浴室"],
-              ["min_car_spaces", "至少车位"],
+              ["min_bedrooms", "Minimum bedrooms"],
+              ["min_bathrooms", "Minimum bathrooms"],
+              ["min_car_spaces", "Minimum car spaces"],
             ] as const
           ).map(([name, label]) => (
             <Form.Item key={name} name={name} label={label} rules={required}>
@@ -298,30 +311,36 @@ export default function RentalNeeds({
             </Form.Item>
           ))}
         </div>
-        <h3>到悉大主校区</h3>
+        <h3>Commute to USYD main campus</h3>
         <p className="muted small">Camperdown / Darlington · Fisher Library</p>
         <div className="form-grid">
-          <Form.Item name="commute_mode" label="通勤方式">
+          <Form.Item name="commute_mode" label="Commute mode">
             <Select
               allowClear
-              placeholder="可选，也可以在对话里说"
+              placeholder="Optional; you can also mention it in chat"
               options={commuteModes}
             />
           </Form.Item>
-          <Form.Item name="commute_max_minutes" label="单程最多（分钟）">
+          <Form.Item
+            name="commute_max_minutes"
+            label="Maximum one-way commute (minutes)"
+          >
             <InputNumber min={1} max={240} precision={0} />
           </Form.Item>
         </div>
         <div className="form-grid">
-          <Form.Item name="max_transfers" label="最多换乘（可选）">
+          <Form.Item name="max_transfers" label="Maximum transfers (optional)">
             <InputNumber min={0} max={5} precision={0} />
           </Form.Item>
         </div>
-        <Form.Item name="lifestyle_priorities" label="生活偏好（用于区域参考）">
+        <Form.Item
+          name="lifestyle_priorities"
+          label="Lifestyle preferences (for area suggestions)"
+        >
           <Select
             mode="multiple"
             allowClear
-            placeholder="可选，也可以直接在聊天里说"
+            placeholder="Optional; you can also tell us in chat"
             options={Object.entries(lifestyleTopics).map(([value, label]) => ({
               value,
               label,
@@ -329,14 +348,14 @@ export default function RentalNeeds({
           />
         </Form.Item>
         <Button
-          aria-label="保存找房条件"
+          aria-label="Save rental needs"
           type="primary"
           htmlType="submit"
           block
           loading={busy}
           disabled={stale || canRetry || (synced && !dirty)}
         >
-          保存找房条件
+          Save rental needs
         </Button>
       </Form>
     </Drawer>

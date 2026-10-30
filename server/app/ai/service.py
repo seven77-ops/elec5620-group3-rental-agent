@@ -24,9 +24,9 @@ class AiService:
         consent = self.ctx.repo.get(db, 'consent', saved.get('consent_id',''))
         case = self.ctx.get(db, 'case', saved['case_id'])
         require(consent and consent['active'] and self.contracts.selection_is_current(case,consent),
-                403, 'consent_required', '合同处理同意已撤销或选房上下文已变化，历史结果仍可查看。')
+                403, 'consent_required', 'Contract-processing consent was revoked or the selection context changed. Historical results remain available.')
         if expected_version is not None:
-            require(integer(expected_version) and expected_version == review['version'],409,'version_conflict','请读取当前合同复核版本。')
+            require(integer(expected_version) and expected_version == review['version'],409,'version_conflict','Reload the current contract review version.')
         return {'case_id':saved['case_id'],'review_id':review_id,'review_version':review['version'],
                 'source_digest':digest(review),'document_sha256':review['document']['sha256'],
                 'consent_id':saved['consent_id']}, saved
@@ -36,9 +36,9 @@ class AiService:
         case = self.ctx.get(db,'case',saved['case_id'])
         report = saved['response']['report']
         require(report.get('data_mode') != 'real_listings',409,'real_ai_not_supported',
-                '真实房源当前使用事实筛选；旧的模拟评分解读器不适用于此报告。')
+                'Live listings use fact-based filters. The older simulated-score interpreter does not apply to this report.')
         current = self.ctx.current(case,report['profile_version'])
-        require(current['fingerprint']==report['profile_fingerprint'],409,'stale_evaluation','请使用当前确认偏好的推荐报告。')
+        require(current['fingerprint']==report['profile_fingerprint'],409,'stale_evaluation','Use a recommendation report for current confirmed preferences.')
         return {'case_id':case['case_id'],'run_id':run_id,'profile_version':report['profile_version'],
                 'source_digest':digest(report)}, saved
 
@@ -50,7 +50,7 @@ class AiService:
     def check(self, kind, ref, body, binding):
         with self.ctx.repo.transaction() as db:
             current,_ = self.source(db,kind,ref,body)
-            require(current==binding,409,'ai_context_changed','输入上下文已变化，请按最新版本重新分析。')
+            require(current==binding,409,'ai_context_changed','Input context changed. Analyse the latest version again.')
 
     def decorate(self, record):
         result = dict(record)
@@ -66,21 +66,21 @@ class AiService:
 
     def generate(self, kind, ref, body):
         shape(body,('request_id','allow_external_ai','expected_version') if kind=='contract' else ('request_id','allow_external_ai'))
-        require(body['allow_external_ai'] is True,403,'ai_consent_required','请单独同意本次外部模型处理后再提交。')
+        require(body['allow_external_ai'] is True,403,'ai_consent_required','Provide separate consent for external model processing before submitting.')
         if kind == 'contract':
-            require(integer(body['expected_version']) and body['expected_version'] > 0,422,'invalid_input','复核版本必须为正整数。')
+            require(integer(body['expected_version']) and body['expected_version'] > 0,422,'invalid_input','The review version must be a positive integer.')
         key=kind+':'+ref+':'+request_id(body['request_id'])
         repo=self.ctx.repo
         with repo.transaction() as db:
             binding,saved=self.source(db,kind,ref,body)
             old=self.ctx.receipt(db,'ai_receipt',key,body)
             if old:
-                require(old['binding']==binding,409,'ai_context_changed','原请求绑定的输入已变化，请按当前版本新建分析。')
+                require(old['binding']==binding,409,'ai_context_changed','Inputs bound to the original request changed. Create a new analysis for the current version.')
             if old and 'result' in old:
                 completed=old['result']
             else:
                 completed=None
-                require(not old or old['lease_until']<time.time(),409,'operation_in_progress','本次 AI 请求仍在处理，请稍后读取或重试原请求。')
+                require(not old or old['lease_until']<time.time(),409,'operation_in_progress','This AI request is still processing. Read its status later or retry the original request.')
                 token=uid('lease')
                 reservation={'input':body,'binding':binding,'analysis_id':old['analysis_id'] if old else uid('ai'),
                              'token':token,'lease_until':time.time()+90,'created_at':old['created_at'] if old else now()}
@@ -101,7 +101,7 @@ class AiService:
                     result['status']='partial'
                 if not any(c.get('valid') and c.get('value') is not None for c in result['result']['candidates']):
                     result['status']='failed'
-                    result['error']={'code':'ai_no_valid_candidates','message':'模型未返回可核对的有效候选值，原复核结果保留。'}
+                    result['error']={'code':'ai_no_valid_candidates','message':'The model returned no verifiable valid candidate values. The original review is retained.'}
             else:
                 from rental_agent.ai_explanation import explain_recommendations
                 result['result']=explain_recommendations(saved['response']['report'],gateway)
@@ -110,22 +110,22 @@ class AiService:
         except ProviderError as exc:
             result.update(status='failed',error={'code':exc.code,'message':error_message(exc.code)})
         except ApiError:
-            result.update(status='stale',error={'code':'ai_context_changed','message':'处理同意或输入上下文已变化，结果不可应用。'})
+            result.update(status='stale',error={'code':'ai_context_changed','message':'Processing consent or input context changed. The result cannot be applied.'})
         except (ValueError,TypeError,KeyError):
-            result.update(status='failed',error={'code':'ai_invalid_result','message':'模型结果未通过结构或证据校验，原结果保留。'})
+            result.update(status='failed',error={'code':'ai_invalid_result','message':'The model result failed schema or evidence checks. The original result is retained.'})
         except Exception:
-            result.update(status='failed',error={'code':'ai_analysis_failed','message':'AI 辅助分析未完成，原结果保留。'})
+            result.update(status='failed',error={'code':'ai_analysis_failed','message':'AI-assisted analysis did not complete. The original result is retained.'})
         result['calls']=recorder.calls
         stale=False
         with repo.transaction() as db:
             reserved=self.ctx.get(db,'ai_receipt',key)
-            require(reserved['token']==token,409,'operation_in_progress','请求已由新的恢复操作接管，请读取最新状态。')
+            require(reserved['token']==token,409,'operation_in_progress','A newer recovery operation took over this request. Reload its latest status.')
             try:
                 latest,_=self.source(db,kind,ref,body)
-                require(latest==binding,409,'ai_context_changed','输入已变化。')
+                require(latest==binding,409,'ai_context_changed','Inputs changed.')
             except ApiError:
                 stale=True
-                result.update(status='stale',error={'code':'ai_context_changed','message':'处理同意或输入上下文已变化，历史分析不可应用。'})
+                result.update(status='stale',error={'code':'ai_context_changed','message':'Processing consent or input context changed. Historical analysis cannot be applied.'})
             reserved['result']=result
             repo.put(db,'ai_receipt',key,reserved)
             repo.put(db,'ai_analysis',result['analysis_id'],result)
@@ -133,7 +133,7 @@ class AiService:
             previous=repo.get(db,'ai_analysis',pointer['analysis_id']) if pointer else None
             if previous is None or previous['created_at'] <= result['created_at']:
                 repo.put(db,'ai_latest',kind+':'+ref,{'analysis_id':result['analysis_id']})
-        require(not stale,409,'ai_context_changed','分析期间同意或上下文已变化，请读取最新状态；原复核结果保留。')
+        require(not stale,409,'ai_context_changed','Consent or context changed during analysis. Reload the latest status; the original review is retained.')
         return self.decorate(result)
 
     def latest(self,kind,ref):
@@ -145,8 +145,8 @@ class AiService:
 
 
 def error_message(code):
-    return {'ai_disabled':'外部模型功能尚未开启；请在后端配置并重启服务，原规则结果保留。',
-            'ai_not_configured':'模型 API 尚未完整配置；请在本机后端填写地址、模型和密钥后重启。',
-            'ai_timeout':'模型调用超时，原结果保留；可检查服务后发起新的 AI 请求。',
-            'ai_http_error':'模型服务拒绝了本次请求，请检查后端 API 配置。',
-            'ai_connection_error':'无法连接模型服务，原结果保留。'}.get(code,'模型响应未通过读取或校验，原结果保留。')
+    return {'ai_disabled':'External models are disabled. Configure the backend and restart; original rule results are retained.',
+            'ai_not_configured':'The model API is not fully configured. Set its endpoint, model and key in the local backend, then restart.',
+            'ai_timeout':'The model call timed out. The original result is retained. Check the service and submit a new AI request.',
+            'ai_http_error':'The model service rejected this request. Check the backend API configuration.',
+            'ai_connection_error':'The model service is unreachable. The original result is retained.'}.get(code,'The model response could not be read or validated. The original result is retained.')

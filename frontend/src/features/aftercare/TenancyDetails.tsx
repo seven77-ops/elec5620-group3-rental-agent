@@ -24,100 +24,108 @@ export default function TenancyDetails({
   const inventory = (tenancy.inventory ?? []) as Dict[];
   const missing = missingTenancyDetails(tenancy);
   const booleanLabel = (value: unknown) =>
-    value == null ? "尚未确认" : value ? "有" : "无";
+    value == null ? "Not confirmed" : value ? "Yes" : "None";
   const listStatus =
     tenancy.furnished === false
-      ? "无需填写"
+      ? "Not required"
       : !inventory.length
-        ? "待补充清单"
+        ? "Missing information"
         : tenancy.inventory_confirmed
-          ? "已核对"
-          : "待核对";
+          ? "Checked"
+          : "To be checked";
   return (
     <div className="aftercare-details">
       <header>
         <Tag color={missing.length ? "gold" : "blue"}>
-          {missing.length ? `待补充 ${missing.length} 项` : "资料已齐备"}
+          {missing.length
+            ? `Missing ${missing.length}  items`
+            : "Information complete"}
         </Tag>
-        <h2>{String(tenancy.address || "租约地址尚未填写")}</h2>
+        <h2>{String(tenancy.address || "Lease address not entered")}</h2>
         <p className="muted">
-          {tenancySource(tenancy.source_ref)} · 资料版本{" "}
+          {tenancySource(tenancy.source_ref)} · Information version{" "}
           {String(tenancy.source_version ?? 1)}
         </p>
         <Space wrap>
           <Button type="primary" disabled={!editable} onClick={onEdit}>
-            补充租约资料
+            Complete lease details
           </Button>
-          <Button onClick={onAddEvidence}>登记资料</Button>
+          <Button onClick={onAddEvidence}>Register information</Button>
         </Space>
       </header>
       {missing.length > 0 && (
         <Alert
           type="info"
           showIcon
-          title="还需要这些信息"
-          description={missing.join("、")}
+          title="This information is still needed"
+          description={missing.join(", ")}
         />
       )}
-      <section aria-label="房屋概览">
-        <h3>房屋概览</h3>
+      <section aria-label="Property overview">
+        <h3>Property overview</h3>
         <Descriptions
           column={1}
           size="small"
           items={[
             {
               key: "jurisdiction",
-              label: "所在地区",
+              label: "Location",
               children:
                 tenancy.jurisdiction === "NSW"
-                  ? "新南威尔士州（NSW）"
-                  : String(tenancy.jurisdiction || "尚未填写"),
+                  ? "New South Wales (NSW)"
+                  : String(tenancy.jurisdiction || "Not entered"),
             },
             {
               key: "type",
-              label: "租约类型",
+              label: "Lease type",
               children:
                 tenancy.tenancy_type === "standard_residential"
-                  ? "标准住宅租约"
-                  : String(tenancy.tenancy_type || "尚未填写"),
+                  ? "Standard residential tenancy"
+                  : String(tenancy.tenancy_type || "Not entered"),
             },
             {
               key: "carpet",
-              label: "地毯",
+              label: "Carpet",
               children: booleanLabel(tenancy.carpeted),
             },
             {
               key: "outdoor",
-              label: "室外区域",
+              label: "Outdoor area",
               children: booleanLabel(tenancy.outdoor),
             },
             {
               key: "furnished",
-              label: "随房家具",
+              label: "Included furniture",
               children: booleanLabel(tenancy.furnished),
             },
-            { key: "inventory", label: "家具清单", children: listStatus },
+            {
+              key: "inventory",
+              label: "Furniture inventory",
+              children: listStatus,
+            },
           ]}
         />
       </section>
-      <section aria-label="房间信息">
-        <h3>房间信息{rooms.length ? ` · ${rooms.length} 间` : ""}</h3>
+      <section aria-label="Room details">
+        <h3>Room details{rooms.length ? ` · ${rooms.length}  rooms` : ""}</h3>
         {rooms.length ? (
           <Space wrap>
             {rooms.map((r, i) => (
               <Tag key={String(r.id ?? i)}>
-                {String(r.name || "未命名房间")}
+                {String(r.name || "Unnamed room")}
               </Tag>
             ))}
           </Space>
         ) : (
-          <p className="aftercare-empty">尚未添加房间</p>
+          <p className="aftercare-empty">No rooms added</p>
         )}
       </section>
-      <section aria-label="家具清单">
-        <h3>家具清单</h3>
+      <section aria-label="Furniture inventory">
+        <h3>Furniture inventory</h3>
         {tenancy.furnished === false ? (
-          <p className="muted">房屋不带家具，无需填写清单。</p>
+          <p className="muted">
+            The property is unfurnished. No inventory is required.
+          </p>
         ) : inventory.length ? (
           <div>
             {inventory.map((item, i) => {
@@ -127,25 +135,26 @@ export default function TenancyDetails({
                   className="aftercare-inventory-item"
                   key={String(item.id ?? i)}
                 >
-                  <strong>{String(item.name || "未命名家具")}</strong>
-                  <span>{String(room?.name || "所属房间待确认")}</span>
+                  <strong>{String(item.name || "Unnamed furniture")}</strong>
+                  <span>{String(room?.name || "Room to be confirmed")}</span>
                 </div>
               );
             })}
           </div>
         ) : (
-          <p className="aftercare-empty">尚未添加家具清单</p>
+          <p className="aftercare-empty">No furniture inventory added</p>
         )}
       </section>
-      <section aria-label="已登记资料">
+      <section aria-label="Registered information">
         <div className="section-heading">
-          <h3>已登记资料 · {evidence.length} 份</h3>
+          <h3>Registered information · {evidence.length} documents</h3>
           <Button size="small" onClick={onAddEvidence}>
-            登记资料
+            Register information
           </Button>
         </div>
         <p className="muted small">
-          这里只登记资料名称、位置与摘要，内容尚未核实。
+          Only names, locations, and summaries are registered here. Contents
+          have not been verified.
         </p>
         {evidence.length ? (
           evidence.map((e, i) => (
@@ -154,17 +163,17 @@ export default function TenancyDetails({
               key={String(e.evidence_id ?? i)}
             >
               <Tag>{evidenceKind(e.kind)}</Tag>
-              <p>{String(e.summary || "尚未填写摘要")}</p>
+              <p>{String(e.summary || "No summary entered")}</p>
               <small>
-                资料位置：{String(e.source_ref || "尚未填写")} · 版本{" "}
-                {String(e.source_version ?? 1)}
+                Document location: {String(e.source_ref || "Not entered")} ·
+                Version {String(e.source_version ?? 1)}
               </small>
             </article>
           ))
         ) : (
           <Empty
             image={Empty.PRESENTED_IMAGE_SIMPLE}
-            description="暂无登记资料"
+            description="No registered information"
           />
         )}
       </section>
@@ -174,7 +183,7 @@ export default function TenancyDetails({
         items={[
           {
             key: "raw",
-            label: "查看原始资料",
+            label: "View original information",
             children: <JsonDetails value={{ tenancy, evidence }} />,
           },
         ]}

@@ -63,7 +63,7 @@ class TimelessCommuteTests(unittest.TestCase):
             'commute_mode':'public_transport','commute_max_minutes':30,'arrival_time':'03:17',
             'travel_day':'weekend','travel_date':'2000-01-01'}
         with patch.object(self.ctx.transit_provider,'trips',side_effect=AssertionError('No scheduled lookup')):
-            result,_=prepare(self.ctx,{'messages':[]},brief,{},'找房',True)
+            result,_=prepare(self.ctx,{'messages':[]},brief,{},'find a home',True)
         self.assertTrue(result['listings'])
         criteria=result['commute_recommendation']['criteria']
         for key in ('arrival_time','travel_day','travel_date'):self.assertNotIn(key,criteria)

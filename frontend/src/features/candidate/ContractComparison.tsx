@@ -1,10 +1,10 @@
 import { Alert, Space, Tag } from "antd";
 import type { RealContractContext } from "../../api/followup";
 const statuses = {
-  match: { label: "内容一致", color: "blue" },
-  different: { label: "需要核对差异", color: "orange" },
-  missing: { label: "合同字段待补充", color: "default" },
-  basis_unknown: { label: "计价口径待确认", color: "default" },
+  match: { label: "Matches", color: "blue" },
+  different: { label: "Review differences", color: "orange" },
+  missing: { label: "Contract field missing", color: "default" },
+  basis_unknown: { label: "Confirm pricing basis", color: "default" },
 };
 export default function ContractComparison({
   context,
@@ -13,19 +13,19 @@ export default function ContractComparison({
 }) {
   return (
     <section className="panel" data-testid="real-contract-comparison">
-      <h2>与房源和补充记录比对</h2>
+      <h2>Compare with listing and follow-up records</h2>
       <p className="muted">
-        本次上传关联：{String(context.selection.listing_snapshot.address)} ·
-        需求 v{context.profile.version}
+        Upload linked to: {String(context.selection.listing_snapshot.address)} ·
+        Needs v{context.profile.version}
       </p>
       <Alert
         type="info"
         showIcon
-        title="房源与用户记录分别保留"
+        title="Listing and user records kept separately"
         description={
           context.followup.version
-            ? `信息来源：${context.followup.facts.source_note}。使用上传时保存的跟进 v${context.followup.version}，后续修改不会覆盖本次依据。`
-            : "本次上传尚无补充记录，使用房源快照作为参考。房源租金的计价对象仍待核实。"
+            ? `Information source: ${context.followup.facts.source_note}. Using follow-up v${context.followup.version}, saved at upload. Later edits do not change this evidence.`
+            : "No follow-up record was saved for this upload. The listing snapshot is used as a reference. Its rent pricing basis still needs verification."
         }
       />
       {context.checks.map((check) => (
@@ -43,17 +43,18 @@ export default function ContractComparison({
           <div className="contract-comparison-values">
             <div>
               <span className="muted small">{check.source}</span>
-              {check.reference_value ?? "待确认"}
+              {check.reference_value ?? "To confirm"}
             </div>
             <div>
-              <span className="muted small">合同提取</span>
-              {check.contract_value ?? "未提取到"}
+              <span className="muted small">Extracted from contract</span>
+              {check.contract_value ?? "Not extracted"}
             </div>
           </div>
         </div>
       ))}
       <p className="muted small">
-        内容一致仅表示记录与提取字段相同；请结合合同原文核对。
+        A match only means the record and extracted field agree. Check against
+        the original contract.
       </p>
     </section>
   );

@@ -17,9 +17,9 @@ test("source feature noise and inherited property names cannot become facilities
     "Gas",
   ];
   assert.deepEqual(propertyFeatures(source), [
-    "阳台",
-    "阳台 / 露台",
-    "燃气设施",
+    "Balcony",
+    "Balcony / deck",
+    "Gas connection",
   ]);
   assert.equal(source.length, 8);
 });
@@ -41,5 +41,23 @@ test("explicit budget and billing questions are preserved instead of deleting ev
   assert.equal(
     recommendationCopy("周租 AUD 700 在上限900内；个人费用待核实"),
     "周租 AUD 700 在上限900内",
+  );
+});
+
+test("historical next-step notices do not advertise the retired reply form", () => {
+  const old = "已选定 Example Road，可以准备看房、记录中介回复或生成租约草稿。";
+  assert.equal(
+    recommendationCopy(old),
+    "已选定 Example Road，Prepare an inspection or generate a lease draft。",
+  );
+  assert.equal(
+    recommendationCopy(
+      "可在房源跟进里记录中介回复；已有合同可直接复核。这份清单尚未发送给中介。",
+    ),
+    "View the inspection enquiry checklist or go straight to lease drafting and review.这份清单尚未发送给中介。",
+  );
+  assert.equal(
+    recommendationCopy("中介回复：每周900澳元。"),
+    "中介回复：每周900澳元。",
   );
 });

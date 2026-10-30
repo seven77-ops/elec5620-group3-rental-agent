@@ -20,10 +20,10 @@ import "./recommendationControls.css";
 
 type Group = "budget" | "rooms" | "commute" | "area";
 const titles: Record<Group, string> = {
-  budget: "调整预算",
-  rooms: "调整房型",
-  commute: "调整通勤",
-  area: "调整区域",
+  budget: "Adjust budget",
+  rooms: "Adjust housing needs",
+  commute: "Adjust commute",
+  area: "Adjust area",
 };
 const fields: Record<Group, (keyof RecommendationPatch)[]> = {
   budget: ["budget_amount"],
@@ -79,12 +79,16 @@ export default function RecommendationControls({
             !Array.isArray(value.alternatives) ||
             !Array.isArray(value.suburbs))
         )
-          throw new Error("筛选条件返回格式不完整，请读取最新会话。");
+          throw new Error(
+            "The filter response is incomplete. Please load the latest conversation.",
+          );
         if (valid) setContext(value);
       })
       .catch((e) => {
         if (valid)
-          setReadError(e instanceof Error ? e.message : "条件读取失败");
+          setReadError(
+            e instanceof Error ? e.message : "Could not load criteria",
+          );
       })
       .finally(() => {
         if (valid) setLoading(false);
@@ -97,9 +101,9 @@ export default function RecommendationControls({
     return readError ? (
       <Alert
         type="warning"
-        title="本次筛选条件暂未读取"
+        title="The current filters have not loaded"
         action={
-          <Button onClick={() => setReload((v) => v + 1)}>重试读取</Button>
+          <Button onClick={() => setReload((v) => v + 1)}>Retry loading</Button>
         }
       />
     ) : null;
@@ -110,14 +114,16 @@ export default function RecommendationControls({
     (item) => item.value === (f.usyd_mode || c.commute_mode),
   )?.label;
   const roomParts = [
-    [f.min_bedrooms ?? c.min_bedrooms ?? 0, "卧"],
-    [f.min_bathrooms ?? c.min_bathrooms ?? 0, "卫"],
-    [f.min_car_spaces ?? c.min_car_spaces ?? 0, "车位"],
+    [f.min_bedrooms ?? c.min_bedrooms ?? 0, "bed"],
+    [f.min_bathrooms ?? c.min_bathrooms ?? 0, "bath"],
+    [f.min_car_spaces ?? c.min_car_spaces ?? 0, "car spaces"],
   ] as const;
   const parts = roomParts
     .filter(([value]) => value > 0)
     .map(([value, label]) => `${value} ${label}`);
-  const roomLabel = parts.length ? `至少 ${parts.join(" · ")}` : "房型不限";
+  const roomLabel = parts.length
+    ? `At least ${parts.join(" · ")}`
+    : "Any layout";
   const open = (group: Group) => {
     setSnapshot(context);
     setEditing(group);
@@ -145,7 +151,7 @@ export default function RecommendationControls({
         if (next !== old) patch[key] = next;
       }
       if (!Object.keys(patch).length) {
-        message.info("条件没有变化。");
+        message.info("The criteria have not changed.");
         return;
       }
       if (await onApply(patch as RecommendationPatch, snapshot))
@@ -155,31 +161,38 @@ export default function RecommendationControls({
     }
   };
   return (
-    <section className="recommendation-controls" aria-label="本次找房条件">
+    <section
+      className="recommendation-controls"
+      aria-label="Current housing criteria"
+    >
       <div className="recommendation-controls-heading">
-        <strong>本次找房条件</strong>
+        <strong>Current housing criteria</strong>
         <span>
-          {loading ? <Spin size="small" /> : `已筛选 ${context.total} 套`}
+          {loading ? (
+            <Spin size="small" />
+          ) : (
+            `Filtered ${context.total} properties`
+          )}
         </span>
       </div>
       <div className="recommendation-condition-buttons">
         <Button
           size="small"
           icon={<EditOutlined />}
-          aria-label="修改预算条件"
+          aria-label="Edit budget criteria"
           disabled={locked}
           onClick={() => open("budget")}
         >
           {f.max_weekly_rent != null
-            ? `周租 ≤AUD ${f.max_weekly_rent}`
+            ? `Weekly rent ≤AUD ${f.max_weekly_rent}`
             : c.budget_amount != null
-              ? `预算 AUD ${c.budget_amount}（未用于房源筛选）`
-              : "预算不限"}
+              ? `Budget AUD ${c.budget_amount} (not used to filter listings)`
+              : "Any budget"}
         </Button>
         <Button
           size="small"
           icon={<EditOutlined />}
-          aria-label="修改房型条件"
+          aria-label="Edit housing criteria"
           disabled={locked}
           onClick={() => open("rooms")}
         >
@@ -188,30 +201,30 @@ export default function RecommendationControls({
         <Button
           size="small"
           icon={<EditOutlined />}
-          aria-label="修改通勤条件"
+          aria-label="Edit commute criteria"
           disabled={locked}
           onClick={() => open("commute")}
         >
           {modeLabel
-            ? `${modeLabel}${f.usyd_max_minutes || c.commute_max_minutes ? ` ≤${f.usyd_max_minutes ?? c.commute_max_minutes}分钟` : ""}`
-            : "添加通勤条件"}
+            ? `${modeLabel}${f.usyd_max_minutes || c.commute_max_minutes ? ` ≤${f.usyd_max_minutes ?? c.commute_max_minutes} minutes` : ""}`
+            : "Add commute criteria"}
         </Button>
         <Button
           size="small"
           icon={<EditOutlined />}
-          aria-label="修改区域条件"
+          aria-label="Edit area criteria"
           disabled={locked}
           onClick={() => open("area")}
         >
-          {f.suburb || "全部区域"}
+          {f.suburb || "All areas"}
         </Button>
       </div>
       {context.total === 0 && context.alternatives.length > 0 && (
         <div
           className="recommendation-alternatives"
-          aria-label="无结果调整方案"
+          aria-label="Options when there are no matches"
         >
-          <p>可以只调整下面一项，其余条件保持不变：</p>
+          <p>Adjust one item below while keeping the other criteria:</p>
           {context.alternatives.map((option) => (
             <Button
               key={option.id}
@@ -219,7 +232,9 @@ export default function RecommendationControls({
               onClick={() => void onApply(option.patch, context)}
             >
               {option.label} ·{" "}
-              {option.count ? `可找到 ${option.count} 套` : "仍无匹配"}
+              {option.count
+                ? `Matches available: ${option.count} properties`
+                : "Still no matches"}
             </Button>
           ))}
         </div>
@@ -227,21 +242,21 @@ export default function RecommendationControls({
       {(readError || context.revision !== revision) && (
         <Alert
           type="warning"
-          title="本次条件已有更新，请读取最新会话后再修改。"
+          title="These criteria have changed. Load the latest conversation before editing."
           action={
             <Button onClick={onReload} disabled={busy}>
-              读取最新会话
+              Load latest conversation
             </Button>
           }
         />
       )}
       <Modal
-        title={editing ? titles[editing] : "调整本次条件"}
+        title={editing ? titles[editing] : "Adjust current criteria"}
         open={!!editing}
         onCancel={() => !busy && setEditing(null)}
         onOk={() => void apply()}
-        okText="应用修改并重新筛选"
-        cancelText="取消"
+        okText="Apply changes and filter again"
+        cancelText="Cancel"
         confirmLoading={busy}
         okButtonProps={{
           disabled:
@@ -250,7 +265,7 @@ export default function RecommendationControls({
             loading ||
             snapshot?.revision !== context.revision,
         }}
-        cancelButtonProps={{ disabled: busy, "aria-label": "取消" }}
+        cancelButtonProps={{ disabled: busy, "aria-label": "Cancel" }}
         closable={!busy}
       >
         <Form form={form} layout="vertical" disabled={busy} preserve>
@@ -259,13 +274,13 @@ export default function RecommendationControls({
               name="budget_amount"
               label={
                 snapshot?.filters.max_weekly_rent != null
-                  ? "每周周租上限（AUD）"
-                  : "预算金额（保留原计价方式）"
+                  ? "Maximum weekly rent (AUD)"
+                  : "Budget amount (keep current pricing basis)"
               }
               rules={[{ required: true }]}
             >
               <InputNumber
-                aria-label="本次预算上限"
+                aria-label="Current budget limit"
                 min={0.01}
                 max={1e12}
                 precision={2}
@@ -277,9 +292,9 @@ export default function RecommendationControls({
             <div className="recommendation-edit-grid">
               {(
                 [
-                  ["min_bedrooms", "至少卧室数"],
-                  ["min_bathrooms", "至少浴室数"],
-                  ["min_car_spaces", "至少车位数"],
+                  ["min_bedrooms", "Minimum bedrooms"],
+                  ["min_bathrooms", "Minimum bathrooms"],
+                  ["min_car_spaces", "Minimum car spaces"],
                 ] as const
               ).map(([key, label]) => (
                 <Form.Item
@@ -303,18 +318,21 @@ export default function RecommendationControls({
             <>
               <Form.Item
                 name="commute_mode"
-                label="交通方式"
+                label="Travel mode"
                 rules={[{ required: true }]}
               >
-                <Select aria-label="本次交通方式" options={commuteModes} />
+                <Select
+                  aria-label="Current travel mode"
+                  options={commuteModes}
+                />
               </Form.Item>
               <Form.Item
                 name="commute_max_minutes"
-                label="单程最多分钟数"
+                label="Maximum one-way minutes"
                 rules={[{ required: true }]}
               >
                 <InputNumber
-                  aria-label="本次通勤上限"
+                  aria-label="Current commute limit"
                   min={1}
                   max={240}
                   precision={0}
@@ -324,13 +342,13 @@ export default function RecommendationControls({
             </>
           )}
           {editing === "area" && (
-            <Form.Item name="suburb" label="区域" rules={[{ required: true }]}>
+            <Form.Item name="suburb" label="Area" rules={[{ required: true }]}>
               <Select
-                aria-label="本次区域"
+                aria-label="Current area"
                 showSearch
                 optionFilterProp="label"
                 options={[
-                  { value: "__all__", label: "全部区域" },
+                  { value: "__all__", label: "All areas" },
                   ...(context.suburbs || []).map((value) => ({
                     value,
                     label: value,
@@ -341,10 +359,14 @@ export default function RecommendationControls({
           )}
         </Form>
         <p className="muted small">
-          应用后更新本次找房结果，其他条件保持不变。
+          Applying updates these results and keeps the other criteria.
         </p>
         {error && (
-          <Alert type="error" title="修改暂未完成" description={error} />
+          <Alert
+            type="error"
+            title="Could not complete the change"
+            description={error}
+          />
         )}
       </Modal>
     </section>

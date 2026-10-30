@@ -8,8 +8,8 @@ from .dialogue import BRIEF_SCHEMA
 from .living import INTENT_PROPERTIES, LIVING_INTENT_SCHEMA
 from .transit_info import TRANSIT_SCHEMA
 
-INTENTS = {'outside_scope','transit_info','area_advice','collect_preferences','recommend_areas','search','update_preferences','compare','explain','market','select','clarify','contract','aftercare','followup','draft_contract','living_services','workflow','other'}
-CLARIFICATION_REASONS = ('budget_units','reference','unknown_fact','missing_preferences','conflicting_preferences')
+INTENTS = {'knowledge','outside_scope','transit_info','area_advice','collect_preferences','recommend_areas','search','update_preferences','compare','explain','market','select','clarify','contract','aftercare','followup','draft_contract','living_services','workflow','other'}
+CLARIFICATION_REASONS = ('budget_units','reference','unknown_fact','missing_preferences','conflicting_preferences','multiple_tasks')
 PROFILE_SCHEMA = load('agent2/schemas/rental-profile.schema.json')
 PATCH_SCHEMA = deepcopy(PROFILE_SCHEMA)
 PATCH_SCHEMA['required'] = []
@@ -21,7 +21,7 @@ PATCH_VALIDATOR = Draft202012Validator(PATCH_SCHEMA, format_checker=FormatChecke
 
 
 def model_require(ok):
-    require(ok,502,'ai_invalid_response','模型返回的数据格式无效，请重试。')
+    require(ok,502,'ai_invalid_response','The model returned an invalid response. Please retry.')
 
 
 def finite_tree(value):
@@ -82,7 +82,7 @@ def validate_intent(value,catalog,known_ids):
         model_require(m.get('weekly_rent') is None or (type(m['weekly_rent']) in (int,float) and 0<=m['weekly_rent']<=100000))
     # Each operation accepts only data it can actually execute.
     if 'refresh_recommendations' in value:model_require(type(value['refresh_recommendations']) is bool)
-    allowed={'transit_info':{'transit_topic','listing_ids'},'outside_scope':set(),'area_advice':{'areas','focus','brief_patch'},'collect_preferences':{'brief_patch'},'recommend_areas':{'brief_patch','refresh_recommendations'},'search':{'filters'},'update_preferences':{'preference_patch'},'compare':{'listing_ids'},
+    allowed={'knowledge':set(),'transit_info':{'transit_topic','listing_ids'},'outside_scope':set(),'area_advice':{'areas','focus','brief_patch'},'collect_preferences':{'brief_patch'},'recommend_areas':{'brief_patch','refresh_recommendations'},'search':{'filters'},'update_preferences':{'preference_patch'},'compare':{'listing_ids'},
         'explain':{'listing_ids'},'select':{'listing_ids'},'market':{'market','listing_ids'},
         'clarify':{'clarification','clarification_reason'},'contract':set(),'aftercare':set(),'followup':set(),'draft_contract':set(),'living_services':set(INTENT_PROPERTIES),'workflow':{'steps'},'other':set()}
     model_require(set(value)-{'intent'}<=allowed[value['intent']])
@@ -119,7 +119,7 @@ def response_schema():
         'market':{'market':market,'listing_ids':ids},
         'clarify':{'clarification':{'type':'string','minLength':1,'maxLength':300},
             'clarification_reason':{'enum':list(CLARIFICATION_REASONS)}},
-        'outside_scope':{},'contract':{},'aftercare':{},'followup':{},'draft_contract':{},'other':{}}
+        'knowledge':{},'outside_scope':{},'contract':{},'aftercare':{},'followup':{},'draft_contract':{},'other':{}}
     return {'oneOf':[{'type':'object','required':['intent'],'additionalProperties':False,
         'properties':{'intent':{'const':name},**properties}} for name,properties in fields.items()]+[LIVING_INTENT_SCHEMA,TRANSIT_SCHEMA,workflow_schema(filters)]}
 

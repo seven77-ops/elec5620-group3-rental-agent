@@ -22,12 +22,12 @@ def energy_plan(detail, observed_at):
                 'blocks':[{'unit_price_aud':gross(r['unitPrice']), 'volume':r.get('volume'),
                     'unit':r.get('measureUnit',unit).replace('KWH','kWh')} for r in group.get('rates',[])]})
         periods.append(p)
-    conditions=['NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。',
-                '展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。',
-                '费率'+('固定，但仍须核对固定期及例外条款。' if contract.get('isFixed') else '可变，供应商可按条款通知调整。')]
-    if 'New' in detail['displayName'] or 'new' in detail['displayName']:conditions.append('仅限符合条件的新开户或搬家客户。')
-    if 'CONT_LOAD' in contract['pricingModel']:conditions.append('含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。')
-    if contract.get('benefitPeriod'):conditions.append('优惠期：'+contract['benefitPeriod'])
+    conditions=['NSW residential. A matching postcode does not verify the building or meter. Check distribution network, meter and network tariff.',
+                'Displayed usage and daily supply charges include 10% GST. Baseline rates exclude discounts, cashback and rebates.',
+                'Rates: '+('Fixed; check the fixed period and exceptions.' if contract.get('isFixed') else 'Variable; the provider may change them with notice under its terms.')]
+    if 'New' in detail['displayName'] or 'new' in detail['displayName']:conditions.append('Only for eligible new or moving customers.')
+    if 'CONT_LOAD' in contract['pricingModel']:conditions.append('Includes controlled-load rates. Dedicated circuits such as hot water are charged separately; general usage rates alone cannot establish the total.')
+    if contract.get('benefitPeriod'):conditions.append('Benefit period: '+contract['benefitPeriod'])
     discounts=[]
     for discount in contract.get('discounts',[]):
         method=discount.get('methodUType');v=discount.get(method,{})
@@ -36,7 +36,7 @@ def energy_plan(detail, observed_at):
     for raw in contract.get('controlledLoad',[]):
         groups=([raw['singleRate']] if raw.get('singleRate') else raw.get('timeOfUseRates',[]))
         for group in groups:
-            controlled.append({'name':raw.get('displayName',group.get('displayName','受控负荷')),
+            controlled.append({'name':raw.get('displayName',group.get('displayName','Controlled load')),
                 'block_period':group.get('period'),'time_windows':deepcopy(group.get('timeOfUse',[])),
                 'daily_supply_aud':gross(group['dailySupplyCharge']) if group.get('dailySupplyCharge') is not None else None,
                 'blocks':[{'unit_price_aud':gross(r['unitPrice']),'volume':r.get('volume'),'unit':r.get('measureUnit',unit)} for r in group.get('rates',[])]})

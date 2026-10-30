@@ -31,38 +31,47 @@ test("both agent roles and conditional contract details save separately and gene
     ).status(),
   ).toBe(200);
   await page.goto(`/cases/${c.case_id}/contract?mode=draft`);
-  await page.getByLabel("租约适用范围", { exact: true }).click();
+  await page.getByLabel("Lease scope", { exact: true }).click();
   await page
-    .getByRole("option", { name: "新州普通整租住宅", exact: true })
+    .getByRole("option", {
+      name: "Standard NSW whole-property residential tenancy",
+      exact: true,
+    })
     .click();
-  await page.getByText("出租方中介（如适用）", { exact: true }).click();
   await page
-    .getByLabel("出租方中介姓名 / 公司", { exact: true })
+    .getByText("Landlord agent (if applicable)", { exact: true })
+    .click();
+  await page
+    .getByLabel("Landlord agent name / company", { exact: true })
     .fill("Owner Agency");
   await page
-    .getByLabel("出租方中介联系方式（须含电话）", { exact: true })
+    .getByLabel("Landlord agent contact details (must include phone)", {
+      exact: true,
+    })
     .fill("0400000001");
   await page
-    .getByLabel("出租方中介送达地址", { exact: true })
+    .getByLabel("Landlord agent notice address", { exact: true })
     .fill("1 Owner Agency Road");
   await page
-    .getByLabel("出租方中介区域（Suburb）", { exact: true })
+    .getByLabel("Landlord agent suburb", { exact: true })
     .fill("Rhodes");
-  await page.getByLabel("出租方中介 State", { exact: true }).fill("NSW");
-  await page.getByLabel("出租方中介邮编", { exact: true }).fill("2138");
-  await page.getByText("租客代理（如适用）", { exact: true }).click();
+  await page.getByLabel("Landlord agent State", { exact: true }).fill("NSW");
   await page
-    .getByLabel("租客代理姓名 / 公司", { exact: true })
+    .getByLabel("Landlord agent postcode", { exact: true })
+    .fill("2138");
+  await page.getByText("Tenant agent (if applicable)", { exact: true }).click();
+  await page
+    .getByLabel("Tenant agent name / company", { exact: true })
     .fill("Tenant Representative");
-  await page.getByLabel("租客代理联系方式", { exact: true }).fill("0400000002");
   await page
-    .getByLabel("租客代理送达地址", { exact: true })
+    .getByLabel("Tenant agent contact details", { exact: true })
+    .fill("0400000002");
+  await page
+    .getByLabel("Tenant agent notice address", { exact: true })
     .fill("2 Representative Road");
-  await page
-    .getByLabel("租客代理区域（Suburb）", { exact: true })
-    .fill("Glebe");
-  await page.getByLabel("租客代理 State", { exact: true }).fill("NSW");
-  await page.getByLabel("租客代理邮编", { exact: true }).fill("2037");
+  await page.getByLabel("Tenant agent suburb", { exact: true }).fill("Glebe");
+  await page.getByLabel("Tenant agent State", { exact: true }).fill("NSW");
+  await page.getByLabel("Tenant agent postcode", { exact: true }).fill("2037");
   const pick = async (label: string, option: string) => {
     const control = page.getByLabel(label, { exact: true });
     await control.click();
@@ -72,31 +81,34 @@ test("both agent roles and conditional contract details save separately and gene
       .getByRole("option", { name: option, exact: true })
       .click();
   };
-  await pick("是否另付用水费", "否");
-  await pick("烟雾报警器类型", "电池供电");
-  await pick("报警器电池是否可由租客更换", "是");
-  await page.getByLabel("报警器电池型号", { exact: true }).fill("AA");
-  await pick("出租方是否同意电子送达", "是");
+  await pick("Separate water usage charge", "No");
+  await pick("Smoke alarm type", "Battery powered");
+  await pick("Tenant-replaceable alarm battery", "Yes");
+  await page.getByLabel("Alarm battery type", { exact: true }).fill("AA");
+  await pick("Landlord agrees to electronic service", "Yes");
   await page
-    .getByLabel("出租方电子送达邮箱", { exact: true })
+    .getByLabel("Landlord email for electronic service", { exact: true })
     .fill("owner@example.com");
-  await pick("租客是否同意电子送达", "否");
+  await pick("Tenant agrees to electronic service", "No");
   await expect(
-    page.getByLabel("租客电子送达邮箱", { exact: true }),
+    page.getByLabel("Tenant email for electronic service", { exact: true }),
   ).toHaveCount(0);
   await page
-    .getByRole("button", { name: "核对并填入合同", exact: true })
+    .getByRole("button", { name: "Check and fill contract", exact: true })
     .click();
   const modal = page.getByRole("dialog", {
-    name: "确认保存租约草稿",
+    name: "Confirm lease draft save",
     exact: true,
   });
   await modal.getByRole("checkbox").check();
   await modal
-    .getByRole("button", { name: "确认保存未签署草稿", exact: true })
+    .getByRole("button", {
+      name: "Confirm and save unsigned draft",
+      exact: true,
+    })
     .click();
   const preview = page.getByRole("dialog", {
-    name: "合同预览 · v1",
+    name: "Contract preview · v1",
     exact: true,
   });
   await expect(preview).toBeVisible();
@@ -116,11 +128,13 @@ test("both agent roles and conditional contract details save separately and gene
   );
   expect(pdf.status()).toBe(200);
   expect((await pdf.body()).subarray(0, 5).toString()).toBe("%PDF-");
-  await preview.getByRole("button", { name: "返回填写", exact: true }).click();
+  await preview
+    .getByRole("button", { name: "Return to form", exact: true })
+    .click();
   await page.reload();
-  await page.getByText("租客代理（如适用）", { exact: true }).click();
+  await page.getByText("Tenant agent (if applicable)", { exact: true }).click();
   await expect(
-    page.getByLabel("租客代理姓名 / 公司", { exact: true }),
+    page.getByLabel("Tenant agent name / company", { exact: true }),
   ).toHaveValue("Tenant Representative");
   await page.setViewportSize({ width: 390, height: 844 });
   expect(

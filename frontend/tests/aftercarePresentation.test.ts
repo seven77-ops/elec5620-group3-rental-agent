@@ -13,11 +13,11 @@ test("unknown values remain pending and false values are complete", () => {
       outdoor: null,
       furnished: null,
     }),
-    ["房间信息", "是否有地毯", "是否有室外区域", "是否带家具"],
+    ["Room details", "Does the property have carpet?", "Does the property have an outdoor area?", "Is the property furnished?"],
   );
   assert.deepEqual(
     missingTenancyDetails({
-      rooms: [{ id: "room-1", name: "卧室" }],
+      rooms: [{ id: "room-1", name: "Bedrooms" }],
       carpeted: false,
       outdoor: false,
       furnished: false,
@@ -35,7 +35,7 @@ test("an empty furnished inventory is not labelled complete even if checked", ()
       inventory: null,
       inventory_confirmed: true,
     }),
-    ["家具清单"],
+    ["Furniture inventory"],
   );
   assert.deepEqual(
     missingTenancyDetails({
@@ -46,16 +46,16 @@ test("an empty furnished inventory is not labelled complete even if checked", ()
       inventory: [{ name: "床" }],
       inventory_confirmed: false,
     }),
-    ["家具清单核对"],
+    ["Furniture inventory check"],
   );
 });
 test("sources and evidence have user-facing names without exposing internal references", () => {
-  assert.equal(tenancySource("user-entered:tenant-confirmation"), "用户填写");
+  assert.equal(tenancySource("user-entered:tenant-confirmation"), "Entered by user");
   assert.equal(
     tenancySource("review:review-123@1#fields.address"),
-    "合同复核预填",
+    "Prefilled from contract review",
   );
-  assert.equal(evidenceKind("deposit_record"), "押金凭证");
-  assert.equal(evidenceKind("other"), "其他资料");
-  assert.equal(evidenceKind("constructor"), "其他资料");
+  assert.equal(evidenceKind("deposit_record"), "Bond evidence");
+  assert.equal(evidenceKind("other"), "Other information");
+  assert.equal(evidenceKind("constructor"), "Other information");
 });

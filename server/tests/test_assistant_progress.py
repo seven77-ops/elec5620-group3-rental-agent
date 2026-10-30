@@ -30,7 +30,7 @@ class AssistantProgressTests(unittest.TestCase):
         self.assertEqual(c['rental_brief']['suburb'],'Rhodes')
         self.assertEqual(c['rental_brief']['budget_amount'],900)
         self.assertEqual(c['rental_brief']['min_bedrooms'],2)
-        self.assertIn('悉大主校区',c['messages'][-1]['content'])
+        self.assertIn('USYD main campus',c['messages'][-1]['content'])
         return c
 
     def test_exact_rendered_region_action_advances_even_when_router_misclassifies(self):
@@ -44,7 +44,7 @@ class AssistantProgressTests(unittest.TestCase):
         self.assertEqual(answer['intent'],'recommend_areas')
         self.assertEqual(c['rental_brief']['destination_query'],DESTINATION['label'])
         self.assertNotIn('area_advice',answer)
-        self.assertIn('多少分钟',answer['content']);self.assertNotIn('哪个学校',answer['content'])
+        self.assertIn('minutes',answer['content']);self.assertNotIn('which university',answer['content'])
         self.assertEqual(answer['commute_question']['fields'],['commute_max_minutes'])
         self.assertIn('pending_question',self.provider.inputs[-1])
         from server.app.assistant.commute import normalized_query
@@ -98,7 +98,7 @@ class AssistantProgressTests(unittest.TestCase):
         r=self.send(c,'legacy-resume','usyd')
         self.assertEqual(r.status_code,200,r.text)
         answer=r.json()['messages'][-1]
-        self.assertNotIn('area_advice',answer);self.assertIn('多少分钟',answer['content'])
+        self.assertNotIn('area_advice',answer);self.assertIn('minutes',answer['content'])
 
     def test_failed_optional_repair_never_overrides_explicit_area_question(self):
         c=self.choose(self.compare())

@@ -15,11 +15,11 @@ class LeaseAddresses:
     def __init__(self,ctx):self.ctx=ctx
 
     def search(self,q: str = ''):
-        require(isinstance(q,str) and len(q)<=120,422,'invalid_address_query','地址搜索最多120字。')
+        require(isinstance(q,str) and len(q)<=120,422,'invalid_address_query','Address searches may contain at most 120 characters.')
         query=q.strip().casefold()
         if len(query)<2:return {'items':[],'source':'local_catalog'}
         catalog=self.ctx.settings.catalog
-        require(catalog is not None,503,'real_catalog_unavailable','本地新州地址库未加载。')
+        require(catalog is not None,503,'real_catalog_unavailable','The local NSW address catalogue is unavailable.')
         rows=catalog.matching({});localities={};addresses=[]
         for row in rows:
             suburb,postcode=row['suburb'],row['postcode']

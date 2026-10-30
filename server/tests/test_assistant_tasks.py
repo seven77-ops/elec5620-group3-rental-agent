@@ -22,13 +22,13 @@ class AssistantTaskTests(unittest.TestCase):
         response=self.send(c,'compare','比较这两套，我不需要车位')
         self.assertEqual(response.status_code,200,response.text)
         comparison=response.json()['messages'][-1]['comparison']
-        self.assertIn('查询',comparison['basis'])
+        self.assertIn('query',comparison['basis'])
         self.assertEqual([i['listing_id'] for i in comparison['items']],selected)
-        self.assertTrue(all(any('车位无要求' in x for x in i['matches']) for i in comparison['items']))
+        self.assertTrue(all(any('parking spaces unrestricted' in x for x in i['matches']) for i in comparison['items']))
         self.assertTrue(all(i['to_verify'] for i in comparison['items']))
         self.assertNotIn('%',str(comparison))
-        self.assertNotIn('计价对象',comparison['summary'])
-        self.assertNotIn('待核实',comparison['summary'])
+        self.assertNotIn('Pricing basis',comparison['summary'])
+        self.assertNotIn('unverified',comparison['summary'])
         self.assertEqual(self.client.get('/api/v1/cases/'+self.case['case_id']).json(),self.case)
 
     def test_comparison_without_explicit_context_never_uses_example_profile(self):
@@ -42,7 +42,7 @@ class AssistantTaskTests(unittest.TestCase):
         self.assertEqual(response.status_code,200,response.text)
         value=response.json()['messages'][-1]['comparison']
         self.assertIsNone(value['recommended_listing_id'])
-        self.assertIn('未提供',value['basis'])
+        self.assertIn('No personal comparison criteria supplied',value['basis'])
         self.assertNotIn('550',str(value)); self.assertNotIn('450',str(value))
 
     def test_comparison_current_brief_overrides_old_query_and_monthly_budget_is_not_weekly(self):
@@ -53,9 +53,9 @@ class AssistantTaskTests(unittest.TestCase):
             repo.put(db,'assistant_conversation',c['conversation_id'],stored)
         self.provider.result={'intent':'compare','listing_ids':[r['listing_id'] for r in rows[:2]]}
         result=self.send(c,'compare').json()['messages'][-1]['comparison']
-        self.assertTrue(all(any('区域' in s for s in item['tradeoffs']) for item in result['items']))
-        self.assertFalse(any('预算内' in s for item in result['items'] for s in item['matches']))
-        self.assertIn('月预算',result['summary'])
+        self.assertTrue(all(any('Suburb' in s for s in item['tradeoffs']) for item in result['items']))
+        self.assertFalse(any('within the query limit' in s for item in result['items'] for s in item['matches']))
+        self.assertIn('Monthly budgets',result['summary'])
 
     def test_workflow_compare_then_cheapest_enquiry_is_readonly(self):
         c,rows=self.shown(); selected=[r['listing_id'] for r in rows[:2]]
@@ -67,7 +67,7 @@ class AssistantTaskTests(unittest.TestCase):
         self.assertEqual([s['status'] for s in answer['task_steps']],['completed','completed'])
         self.assertEqual(answer['enquiry']['listing_id'],min(rows[:2],key=lambda r:r['weekly_rent'])['listing_id'])
         self.assertTrue(answer['enquiry']['questions'])
-        self.assertIn('账单',answer['enquiry']['body'])
+        self.assertIn('bills',answer['enquiry']['body'])
         self.assertEqual({r['listing_id'] for r in answer['listings']},set(selected))
         self.assertEqual(self.client.get('/api/v1/cases/'+self.case['case_id']).json(),self.case)
 
@@ -103,13 +103,13 @@ class AssistantTaskTests(unittest.TestCase):
         response=self.send(self.conversation(),message='哪套安静隔音好？')
         self.assertEqual(response.status_code,200,response.text)
         answer=response.json()['messages'][-1]
-        self.assertTrue(any('噪音' in item or '隔音' in item for item in answer['verification_checklist']['items']))
-        self.assertNotIn('请先核实这些事实',answer['content'])
+        self.assertTrue(any('noise' in item or 'soundproofing' in item for item in answer['verification_checklist']['items']))
+        self.assertNotIn('Verify these facts first',answer['content'])
 
     def test_negative_feedback_offers_explicit_suggestions_without_saving_preferences(self):
         self.provider.result={'intent':'other'}
         answer=self.send(self.conversation(),message='这些都不满意').json()['messages'][-1]
-        self.assertIn('哪',answer['content'])
+        self.assertIn('What makes these listings unsuitable',answer['content'])
         self.assertTrue(any(a['type']=='suggestion' for a in answer['actions']))
         self.assertEqual(self.client.get('/api/v1/cases/'+self.case['case_id']).json(),self.case)
 
@@ -135,7 +135,7 @@ class AssistantTaskTests(unittest.TestCase):
         self.provider.result={'intent':'compare','listing_ids':[r['listing_id'] for r in rows[:2]]}
         response=self.send(c,'valid-confirmed');self.assertEqual(response.status_code,200,response.text)
         c=response.json();comparison=c['messages'][-1]['comparison']
-        self.assertIn('已确认',comparison['basis']);self.assertTrue(comparison['items'])
+        self.assertIn('confirmed preferences',comparison['basis']);self.assertTrue(comparison['items'])
         profile=deepcopy(self.case['draft']['profile']);profile['occupants']=2
         self.client.post(root+'/profile-drafts',json={'expected_revision':self.case['draft']['revision'],'profile':profile})
         response=self.send(c,'stale-confirmed');self.assertEqual(response.status_code,200,response.text)
@@ -146,7 +146,7 @@ class AssistantTaskTests(unittest.TestCase):
         rows=self.client.get('/api/v1/listings',params={'page_size':100}).json()['items']
         studio=next(row for row in rows if row['advertised_bedrooms']==0)
         result=build_comparison([studio],self.case,{'rental_brief':{'min_bedrooms':1}})
-        self.assertTrue(any('开放式' in value for value in result['items'][0]['matches']))
+        self.assertTrue(any('open-plan sleeping space' in value for value in result['items'][0]['matches']))
 
     def test_no_listing_is_recommended_when_every_candidate_violates_explicit_needs(self):
         from server.app.assistant.comparison import build_comparison
@@ -154,7 +154,7 @@ class AssistantTaskTests(unittest.TestCase):
         for brief in ({'suburb':'Burwood'},{'min_bathrooms':99},{'budget_amount':1,'budget_period':'week'}):
             result=build_comparison(rows[:2],self.case,{'rental_brief':brief})
             self.assertIsNone(result['recommended_listing_id'],brief)
-            self.assertIn('没有完全符合',result['summary'])
+            self.assertIn('None of these listings meets all explicit requirements',result['summary'])
             self.assertTrue(all(item['tradeoffs'] for item in result['items']))
 
     def test_confirmed_independent_bedroom_requirement_rejects_known_open_plan(self):
@@ -168,7 +168,7 @@ class AssistantTaskTests(unittest.TestCase):
         case['agent1']['state']='Confirmed'
         result=build_comparison([studio],case,{})
         self.assertIsNone(result['recommended_listing_id'])
-        self.assertTrue(any('独立卧室' in value for value in result['items'][0]['tradeoffs']))
+        self.assertTrue(any('private-bedroom' in value for value in result['items'][0]['tradeoffs']))
 
 
 class LeaseAssistantIntegrationTests(unittest.TestCase):

@@ -23,7 +23,7 @@ export default function WeightControl({
     >
       <Slider
         id={`${id}-slider`}
-        ariaLabelForHandle={`${dimension}权重滑块`}
+        ariaLabelForHandle={`${dimension} weight slider`}
         min={0}
         max={1}
         step={0.05}
@@ -33,7 +33,7 @@ export default function WeightControl({
       />
       <InputNumber
         id={id}
-        aria-label={`${dimension}权重数值`}
+        aria-label={`${dimension} weight value`}
         min={0}
         max={1}
         step={0.05}

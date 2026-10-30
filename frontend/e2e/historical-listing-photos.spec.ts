@@ -45,15 +45,15 @@ for (const hasOrigin of [true, false]) {
         : conversation });
     });
     await page.goto(`/cases/${rentalCase.case_id}/assistant`);
-    await page.getByRole("button", { name: "房源详情", exact: true }).click();
+    await page.getByRole("button", { name: "Listing details", exact: true }).click();
     const drawer = page.getByRole("dialog");
     const photo = drawer.locator(".listing-photo-gallery img").first();
     await expect(photo).toHaveAttribute("src", fresh.photos[0].url);
     await expect.poll(() => photo.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBeTruthy();
     await expect(drawer.getByTestId("listing-detail-rent")).toContainText("1,111");
-    await expect(drawer.locator(".usyd-mode-grid > div").filter({ has: page.getByText("公共交通", { exact: true }) }))
-      .toContainText(/约\s*7\s*分钟/);
-    await expect(drawer.getByRole("link", { name: "照片来源", exact: true }))
+    await expect(drawer.locator(".usyd-mode-grid > div").filter({ has: page.getByText("Public transport", { exact: true }) }))
+      .toContainText(/Approx\.\s*7\s*minutes/);
+    await expect(drawer.getByRole("link", { name: "Photo source", exact: true }))
       .toHaveAttribute("href", fresh.photos[0].photo_source_url ?? fresh.source_url);
     expect(writes).toBe(0);
     expect(conversation.messages[0].listings[0].photos).toEqual([]);

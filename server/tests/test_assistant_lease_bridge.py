@@ -161,7 +161,7 @@ class LeaseBridgeTests(unittest.TestCase):
         result=self.prepare([entry],'11月1日开始')
         self.assertIsNone(result['answer']['lease_proposal']['fields']['start_date'])
         self.assertNotIn('start_date',result['answer']['lease_proposal']['patch'])
-        self.assertIn('年份',result['answer']['content'])
+        self.assertIn('year',result['answer']['content'])
         self.save({'start_date':'2027-08-31'})
         result=self.prepare([entry],'11月1日开始')
         self.assertEqual(result['answer']['lease_proposal']['fields']['start_date'],'2027-08-31')
@@ -192,7 +192,7 @@ class LeaseBridgeTests(unittest.TestCase):
         self.assertEqual(proposal['fields']['rent_amount'],680)
         self.assertEqual(proposal['patch'],{'tenant_names':'Mike','rent_amount':680,'rent_period':'week','landlord_name':'Austin'})
         self.assertEqual(proposal['base_version'],0)
-        self.assertIn('保留此前待确认的信息',result['answer']['content'])
+        self.assertIn('Previous unconfirmed details are retained',result['answer']['content'])
         self.assertNotIn('Mike',str(self.provider.inputs[-1]))
         self.assertEqual(self.leases.list(self.cid)['items'],[])
         proposal=self.persist(result)
@@ -223,7 +223,7 @@ class LeaseBridgeTests(unittest.TestCase):
         fourth=self.prepare([{'field':'landlord_name','value':'Austin','quote':'房东Austin'}],'房东Austin')
         proposal=self.persist(fourth)
         self.assertEqual(proposal['fields']['start_date'],'2028-02-29')
-        self.assertTrue(any(q['field']=='start_date' and '年份' in q['question'] for q in proposal['questions']))
+        self.assertTrue(any(q['field']=='start_date' and 'year' in q['question'] for q in proposal['questions']))
         saved=self.apply(proposal)['draft']
         self.assertEqual(saved['draft_id'],draft['draft_id'])
         self.assertEqual(saved['version'],2)
@@ -239,7 +239,7 @@ class LeaseBridgeTests(unittest.TestCase):
         self.assertEqual(proposal['fields']['tenant_names'],'Manual Tenant')
         self.assertEqual(proposal['fields']['rent_amount'],700)
         self.assertEqual(proposal['patch'],{'landlord_name':'Austin'})
-        self.assertNotIn('保留此前待确认的信息',result['answer']['content'])
+        self.assertNotIn('Previous unconfirmed details are retained',result['answer']['content'])
 
     def test_pending_fields_are_not_inherited_after_source_change(self):
         self.tenant_pending();self.select(1)

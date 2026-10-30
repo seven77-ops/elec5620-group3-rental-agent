@@ -34,7 +34,20 @@ import {
   missingTenancyDetails,
   tenancySource,
   evidenceKind,
+  sydneyIso,
+  sydneyTime,
+  sydneyToday,
+  taskTitle,
 } from "./aftercare/presentation";
+import { useTenancyPrefill } from "./aftercare/prefill";
+
+const decisionNames: Record<string, string> = {
+  annotate: "Notes",
+  return: "Return for more information",
+  hold: "Defer",
+  refer: "Refer",
+  release: "Release",
+};
 export default function Aftercare({
   embedded = false,
   initialTab = "plan",
@@ -55,6 +68,9 @@ export default function Aftercare({
   const [refreshing, setRefreshing] = useState(false);
   const [pendingOperation, setPendingOperation] = useState("");
   const [evidenceForm] = Form.useForm();
+  const prefill = useTenancyPrefill(current.case_id, current.reviews.length);
+  const [followDate, setFollowDate] = useState("");
+  const [followTime, setFollowTime] = useState("10:00");
   const activeRef = useRef(false);
   activeRef.current = action.busy || refreshing || Boolean(action.error);
   const load = useCallback(async () => {
@@ -103,7 +119,7 @@ export default function Aftercare({
         if (id) {
           setRecord(await api<AftercareCase>(`/aftercare/cases/${id}`));
         }
-        if (operation !== "poll_reminders") message.success("操作已保存。");
+        if (operation !== "poll_reminders") message.success("Action saved.");
       });
     },
     [current, refresh, action, message, refreshing],
@@ -112,6 +128,8 @@ export default function Aftercare({
   pollRef.current = send;
   useEffect(() => {
     if (!record?.reminders_enabled) return;
+    // Show anything that fell due while the page was closed, then keep checking.
+    if (!activeRef.current) void pollRef.current("poll_reminders", {});
     const timer = window.setInterval(() => {
       if (document.visibilityState === "visible" && !activeRef.current)
         pollRef.current("poll_reminders", {});
@@ -125,7 +143,9 @@ export default function Aftercare({
       await load();
       action.clear();
       setError(null);
-      message.success("已读取最新状态，当前输入已保留，请核对后重新保存。");
+      message.success(
+        "Latest state loaded. Your input is preserved. Check it and save again.",
+      );
     } catch (e) {
       setError(e);
     } finally {
@@ -148,6 +168,16 @@ export default function Aftercare({
   const evidence = (record?.evidence ?? []) as Dict[];
   const reviews = (record?.reviews ?? []) as Dict[];
   const reminders = (record?.reminders ?? []) as Dict[];
+  const bondState = String((record?.bond as Dict | null)?.state ?? "");
+  const bondActive = ["AwaitingOutcome", "UnderReview"].includes(bondState);
+  const savedFollowUp = bondActive
+    ? ((record?.bond as Dict).follow_up_at as string | null)
+    : null;
+  // A follow-up time already in the past cannot be re-saved; keep only future ones.
+  const keptFollowUp =
+    savedFollowUp && new Date(savedFollowUp) > new Date()
+      ? savedFollowUp
+      : null;
   const tenancyEditable = Boolean(
     record &&
     (!record.plan || record.plan.state === "Draft") &&
@@ -182,28 +212,28 @@ export default function Aftercare({
     <>
       {!embedded && (
         <PageTitle
-          title="租后服务"
-          description="确认租约资料，安排退租事项，保留每一步的事实与证据。"
+          title="Aftercare services"
+          description="Confirm lease details, plan your move-out, and preserve facts and evidence at every step."
           extra={
             record ? (
               <Space wrap>
                 <span className="revision-label">
-                  案件版本 {record.version}
+                  Case version {record.version}
                 </span>
                 <Button
                   loading={refreshing}
                   disabled={action.busy}
-                  aria-label="读取最新状态"
+                  aria-label="Load latest state"
                   onClick={() => void refreshCurrent()}
                 >
-                  读取最新状态
+                  Load latest state
                 </Button>
                 <a
                   href={downloadUrl(
                     `/aftercare/cases/${record.case_id}/export`,
                   )}
                 >
-                  下载案件 JSON
+                  Download case JSON
                 </a>
               </Space>
             ) : undefined
@@ -217,10 +247,10 @@ export default function Aftercare({
             disabled={action.busy}
             onClick={() => void refreshCurrent()}
           >
-            读取最新退租状态
+            Load latest move-out state
           </Button>
           <a href={downloadUrl(`/aftercare/cases/${record.case_id}/export`)}>
-            下载案件记录
+            Download case record
           </a>
         </Space>
       )}
@@ -233,20 +263,23 @@ export default function Aftercare({
             ? openTenancy
             : undefined
         }
-        resolveLabel="补充租约资料"
+        resolveLabel="Complete lease details"
       />
       {!record ? (
         current.aftercare_case_id ? (
           error ? (
             <section className="panel">
-              <p>已有租后案件暂时无法读取，请重试读取当前案件。</p>
+              <p>
+                Unable to load the existing aftercare case. Retry loading the
+                current case.
+              </p>
               <Button
                 loading={refreshing}
                 disabled={action.busy}
-                aria-label="读取最新状态"
+                aria-label="Load latest state"
                 onClick={() => void refreshCurrent()}
               >
-                读取最新状态
+                Load latest state
               </Button>
             </section>
           ) : (
@@ -262,15 +295,15 @@ export default function Aftercare({
         <>
           <section className="selection-strip">
             <div>
-              <span>已确认租约资料</span>
+              <span>Confirmed lease details</span>
               <strong>{text(record.tenancy.address)}</strong>
               <p>
-                {tenancySource(record.tenancy.source_ref)} · 资料版本{" "}
+                {tenancySource(record.tenancy.source_ref)} · Information version{" "}
                 {text(record.tenancy.source_version)}
               </p>
               {missingTenancy.length > 0 && (
                 <p className="aftercare-missing">
-                  待补充：{missingTenancy.join("、")}
+                  Missing: {missingTenancy.join(", ")}
                 </p>
               )}
             </div>
@@ -279,10 +312,10 @@ export default function Aftercare({
                 disabled={!tenancyEditable || action.busy || refreshing}
                 onClick={openTenancy}
               >
-                补充租约资料
+                Complete lease details
               </Button>
               <Button onClick={() => setEvidenceOpen(true)}>
-                查看资料与证据
+                View details and evidence
               </Button>
             </Space>
           </section>
@@ -291,12 +324,19 @@ export default function Aftercare({
             items={[
               {
                 key: "plan",
-                label: "退租计划与任务",
+                label: "Move-out plan and tasks",
                 children: (
                   <AftercarePlan
+                    key={
+                      record.plan
+                        ? "plan"
+                        : String(prefill?.values.move_out_date?.value ?? "")
+                    }
                     initialDate={
                       config.mode === "real_listings"
                         ? initialMoveOutDate ||
+                          (prefill?.values.move_out_date?.value as
+                            string | undefined) ||
                           config.clocks.aftercare.slice(0, 10)
                         : undefined
                     }
@@ -320,7 +360,7 @@ export default function Aftercare({
               },
               {
                 key: "bond",
-                label: "押金跟进",
+                label: "Bond follow-up",
                 children: (
                   <AftercareBond
                     bond={(record.bond ?? null) as Dict | null}
@@ -338,56 +378,106 @@ export default function Aftercare({
                         : null,
                     }}
                     clock={String(record.updated_at ?? config.clocks.aftercare)}
+                    bondAmount={prefill?.values.bond_amount}
                   />
                 ),
               },
               {
                 key: "reminders",
-                label: "本地提醒",
+                label: "Local reminders",
                 children: (
                   <section className="panel">
-                    <h2>可选本地提醒</h2>
+                    <h2>Optional local reminders</h2>
                     <p className="muted">
                       {config.mode === "real_listings"
-                        ? "默认关闭，开启后只在活跃页面每30秒查询。页面关闭后不保证提醒投递。"
-                        : "默认关闭，开启后只在活跃页面每30秒查询。本次固定合成回放会在查询时推进至样例提醒检查点；页面关闭后不保证投递。"}
+                        ? "Off by default. When enabled, the active page checks every 30 seconds. Delivery is not guaranteed after the page closes."
+                        : "Off by default. When enabled, the active page checks every 30 seconds. This fixed synthetic replay advances to the sample reminder checkpoint when checked. Delivery is not guaranteed after the page closes."}
                     </p>
                     <Space wrap>
                       <Switch
-                        aria-label="开启本地提醒"
+                        aria-label="Enable local reminders"
                         checked={Boolean(record.reminders_enabled)}
                         disabled={action.busy}
                         onChange={(enabled) =>
                           send("reminder_preferences", {
                             enabled,
-                            follow_up_at: null,
+                            follow_up_at: enabled ? keptFollowUp : null,
                           })
                         }
                       />
                       <span>
-                        {record.reminders_enabled ? "提醒已开启" : "提醒已关闭"}
+                        {record.reminders_enabled
+                          ? "Reminders enabled"
+                          : "Reminders disabled"}
                       </span>
                       <Button
                         disabled={!record.reminders_enabled}
                         loading={action.busy}
                         onClick={() => send("poll_reminders", {})}
-                        aria-label="查询到期提醒"
+                        aria-label="Check due reminders"
                       >
-                        查询到期提醒
+                        Check due reminders
                       </Button>
                     </Space>
-                    <h3>本地收件箱</h3>
+                    <h3>Bond follow-up reminder</h3>
+                    {bondActive ? (
+                      <>
+                        <p className="muted small">
+                          Current reminder time:
+                          {savedFollowUp
+                            ? sydneyTime(savedFollowUp)
+                            : "Not set"}
+                          . You choose the date. The system does not calculate
+                          legal deadlines.
+                        </p>
+                        <Space wrap>
+                          <Input
+                            type="date"
+                            aria-label="Bond follow-up reminder date"
+                            min={sydneyToday()}
+                            value={followDate}
+                            onChange={(e) => setFollowDate(e.target.value)}
+                          />
+                          <Input
+                            type="time"
+                            aria-label="Bond follow-up reminder time"
+                            value={followTime}
+                            onChange={(e) => setFollowTime(e.target.value)}
+                          />
+                          <Button
+                            disabled={!followDate || !followTime}
+                            loading={action.busy}
+                            onClick={() =>
+                              send("reminder_preferences", {
+                                enabled: true,
+                                follow_up_at: sydneyIso(followDate, followTime),
+                              })
+                            }
+                          >
+                            Save reminder time (Sydney time)
+                          </Button>
+                        </Space>
+                      </>
+                    ) : (
+                      <p className="muted small">
+                        Once bond follow-up is active, choose a reminder time to
+                        check its status.
+                      </p>
+                    )}
+                    <h3>Local inbox</h3>
                     {reminders.filter((r) => r.state === "delivered").length ===
                     0 ? (
-                      <p className="muted">当前没有已投递提醒。</p>
+                      <p className="muted">No delivered reminders.</p>
                     ) : (
                       reminders
                         .filter((r) => r.state === "delivered")
                         .map((r, i) => (
                           <div className="detail-row" key={i}>
-                            <strong>{text(r.title)}</strong>
-                            <p>{text(r.due_at)}</p>
-                            <small>{text(r.delivered_at)}</small>
+                            <strong>{taskTitle(r.title)}</strong>
+                            <p>Due: {sydneyTime(r.due_at)}</p>
+                            <small>
+                              Reminder at {sydneyTime(r.delivered_at)}
+                            </small>
                           </div>
                         ))
                     )}
@@ -396,13 +486,13 @@ export default function Aftercare({
                       items={[
                         {
                           key: "all",
-                          label: "查看计划中及已抑制的提醒",
+                          label: "View scheduled and suppressed reminders",
                           children: reminders.map((r, i) => (
                             <div className="detail-row" key={i}>
-                              <strong>{text(r.title)}</strong>
+                              <strong>{taskTitle(r.title)}</strong>
                               <p>
-                                到期：{text(r.due_at)} · 原始状态：
-                                {text(r.state)}
+                                Due: {sydneyTime(r.due_at)} ·{" "}
+                                <Status value={String(r.state)} />
                               </p>
                             </div>
                           )),
@@ -414,22 +504,31 @@ export default function Aftercare({
               },
               {
                 key: "review",
-                label: `待审核事项 ${reviews.filter((r) => r.status === "open").length}`,
+                label: `Review items ${reviews.filter((r) => r.status === "open").length}`,
                 children: (
                   <section className="panel">
-                    <h2>人工审核事项</h2>
+                    <h2>Human review items</h2>
                     <p className="muted">
-                      本地演示操作员在独立视图处理，租客不能放行。
+                      The local demo operator handles these in a separate view.
+                      Tenants cannot release restrictions.
                     </p>
                     {reviews.length === 0 ? (
-                      <p>当前没有审核事项。</p>
+                      <p>No review items.</p>
                     ) : (
                       reviews.map((r, i) => (
                         <div className="detail-row" key={i}>
                           <Status value={String(r.status)} />
                           <strong>{text(r.reason)}</strong>
-                          <p>引用：{text(r.source_refs)}</p>
-                          <JsonDetails value={r.decisions} />
+                          <p className="small">
+                            Submitted at {sydneyTime(r.created_at)}
+                          </p>
+                          {((r.decisions as Dict[]) ?? []).map((d, j) => (
+                            <p className="small" key={j}>
+                              {decisionNames[String(d.decision)] ??
+                                text(d.decision)}
+                              : {text(d.note)}({sydneyTime(d.at)})
+                            </p>
+                          ))}
                         </div>
                       ))
                     )}
@@ -442,7 +541,7 @@ export default function Aftercare({
             items={[
               {
                 key: "audit",
-                label: "操作记录与原始案件引用",
+                label: "Action history and original case references",
                 children: (
                   <JsonDetails
                     value={{
@@ -459,7 +558,7 @@ export default function Aftercare({
         </>
       )}
       <EvidenceDrawer
-        title="已确认资料与证据"
+        title="Confirmed details and evidence"
         open={evidenceOpen}
         onClose={() => setEvidenceOpen(false)}
       >
@@ -474,7 +573,7 @@ export default function Aftercare({
         )}
       </EvidenceDrawer>
       <Modal
-        title="补充租约资料"
+        title="Complete lease details"
         open={tenancyOpen}
         footer={null}
         width={840}
@@ -493,7 +592,7 @@ export default function Aftercare({
             {!tenancyEditable && (
               <Alert
                 type="warning"
-                title="计划已确认或押金跟进已激活，当前租约资料不可修改。"
+                title="The plan is confirmed or bond follow-up is active. Current lease details cannot be edited."
               />
             )}
             <TenancyForm
@@ -522,8 +621,8 @@ export default function Aftercare({
       <Modal
         title={
           config.mode === "real_listings"
-            ? "登记资料引用"
-            : "登记合成证据元数据"
+            ? "Register information reference"
+            : "Register synthetic evidence metadata"
         }
         open={formOpen}
         onCancel={() => {
@@ -532,16 +631,19 @@ export default function Aftercare({
           setFormOpen(false);
         }}
         confirmLoading={action.busy}
-        okButtonProps={{ "aria-label": "保存证据引用", disabled: refreshing }}
+        okButtonProps={{
+          "aria-label": "Save evidence reference",
+          disabled: refreshing,
+        }}
         cancelButtonProps={{ disabled: action.busy || refreshing }}
         closable={!action.busy && !refreshing}
         mask={{ closable: !action.busy && !refreshing }}
         onOk={addEvidence}
-        okText="保存证据引用"
+        okText="Save evidence reference"
         cancelText={
           pendingOperation === "add_evidence" && recovery.error
-            ? "取消本次编辑"
-            : "取消"
+            ? "Cancel this edit"
+            : "Cancel"
         }
       >
         <CommandRecovery
@@ -559,7 +661,7 @@ export default function Aftercare({
           layout="vertical"
           initialValues={{ kind: "other", source_version: 1 }}
         >
-          <Form.Item name="kind" label="证据类型">
+          <Form.Item name="kind" label="Evidence type">
             <Select
               options={[
                 "photo",
@@ -577,29 +679,29 @@ export default function Aftercare({
             name="source_ref"
             label={
               config.mode === "real_listings"
-                ? "资料位置或文档名称"
-                : "合成来源引用"
+                ? "Document name or location"
+                : "Synthetic source reference"
             }
             rules={[{ required: true }]}
           >
             <Input
               placeholder={
                 config.mode === "real_listings"
-                  ? "填写你保存资料的位置或名称"
+                  ? "Enter the name or location of your saved documents"
                   : "synthetic://…"
               }
             />
           </Form.Item>
           <Form.Item
             name="source_version"
-            label="来源版本"
+            label="Source version"
             rules={[{ required: true }]}
           >
             <InputNumber min={1} precision={0} />
           </Form.Item>
           <Form.Item
             name="summary"
-            label="证据摘要"
+            label="Evidence summary"
             rules={[{ required: true }]}
           >
             <Input.TextArea rows={3} />

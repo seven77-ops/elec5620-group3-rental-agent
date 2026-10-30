@@ -41,12 +41,12 @@ def latest(ctx,case_id):
         activity=ctx.repo.get(db,'assistant_commute_activity',case_id)
     result=deepcopy(saved); reasons=[]
     if activity and (activity['conversation_id']!=saved['conversation_id'] or activity['brief']!=saved['brief']):
-        reasons.append('已有新的区域或通勤需求，请在最新对话重新比较。')
+        reasons.append('Suburb or commute requirements changed. Compare again in the latest conversation.')
     if not conversation or conversation.get('rental_brief')!=saved['brief']:
-        reasons.append('聊天需求已更新，请重新比较区域。')
-    if signature(case)!=saved['case_signature']:reasons.append('已保存的需求已更新，请重新核对区域参考。')
-    if ctx.settings.catalog.fingerprint!=saved['catalog_fingerprint']:reasons.append('房源数据已更新，请重新比较区域。')
-    if AreaKnowledge().fingerprint!=saved['area_knowledge_fingerprint']:reasons.append('区域资料已更新，请重新检索。')
-    if needs_review(saved.get('message',{}).get('area_advice',{})):reasons.append('区域资料已到重新核对时间，请重新检索。')
+        reasons.append('Conversation requirements changed. Compare areas again.')
+    if signature(case)!=saved['case_signature']:reasons.append('Saved requirements changed. Review the area references again.')
+    if ctx.settings.catalog.fingerprint!=saved['catalog_fingerprint']:reasons.append('Listing data changed. Compare areas again.')
+    if AreaKnowledge().fingerprint!=saved['area_knowledge_fingerprint']:reasons.append('Area information changed. Search again.')
+    if needs_review(saved.get('message',{}).get('area_advice',{})):reasons.append('Area information is due for review. Search again.')
     result.update(stale=bool(reasons),stale_reasons=reasons)
     return result

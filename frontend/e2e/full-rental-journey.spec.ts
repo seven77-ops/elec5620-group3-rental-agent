@@ -51,13 +51,13 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
   await test.step("01 从首页新建案例，并通过聊天收集找房条件", async () => {
     await page.goto("/");
     await page
-      .getByRole("button", { name: "新建演示案例", exact: true })
+      .getByRole("button", { name: "New demo case", exact: true })
       .click();
     await expect(page).toHaveURL(/\/cases\/[^/]+\/assistant$/);
     caseId = new URL(page.url()).pathname.split("/")[2];
     root = `/api/v1/cases/${caseId}`;
     const input = page.getByRole("textbox", {
-      name: "给租房助手的消息",
+      name: "Message to Rental Assistant",
       exact: true,
     });
     await input.fill(
@@ -68,11 +68,11 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
       page.locator(".commute-results .commute-home").first(),
     ).toBeVisible();
     const controls = page.getByRole("region", {
-      name: "本次找房条件",
+      name: "Current housing criteria",
       exact: true,
     });
-    await expect(controls).toContainText("步行");
-    await expect(controls).toContainText("≤20分钟");
+    await expect(controls).toContainText("Walking");
+    await expect(controls).toContainText("≤20 minutes");
     expect((await state()).selection).toBeNull();
     expect((await state()).confirmations).toHaveLength(0);
   });
@@ -86,27 +86,30 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
     expect(reference.items.length).toBeGreaterThan(1);
     const cap = reference.items[0].weekly_rent - 25;
     const controls = page.getByRole("region", {
-      name: "本次找房条件",
+      name: "Current housing criteria",
       exact: true,
     });
     async function budget(value: number) {
       await controls
-        .getByRole("button", { name: "修改预算条件", exact: true })
+        .getByRole("button", { name: "Edit budget criteria", exact: true })
         .click();
       const dialog = page.getByRole("dialog", {
-        name: "调整预算",
+        name: "Adjust budget",
         exact: true,
       });
       await dialog
-        .getByRole("spinbutton", { name: "本次预算上限", exact: true })
+        .getByRole("spinbutton", { name: "Current budget limit", exact: true })
         .fill(String(value));
       await dialog
-        .getByRole("button", { name: "应用修改并重新筛选", exact: true })
+        .getByRole("button", {
+          name: "Apply changes and filter again",
+          exact: true,
+        })
         .click();
       await expect(dialog).toHaveCount(0);
     }
     await budget(cap);
-    await expect(controls).toContainText("已筛选 0 套");
+    await expect(controls).toContainText("Filtered 0 properties");
     const conversations = await (
       await request.get(`${root}/assistant/conversations`)
     ).json();
@@ -119,11 +122,11 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
     expect(context.criteria.budget_amount).toBe(cap);
     await controls
       .getByRole("button", {
-        name: `${option.label} · 可找到 ${option.count} 套`,
+        name: `${option.label} · Matches available: ${option.count} properties`,
         exact: true,
       })
       .click();
-    await expect(controls).toContainText(`已筛选 ${option.count} 套`);
+    await expect(controls).toContainText(`Filtered ${option.count} properties`);
     const updated = await (await request.get(contextUrl)).json();
     expect(updated.criteria).toMatchObject({
       budget_amount: cap + 50,
@@ -133,24 +136,32 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
     await budget(1200);
     const results = page.locator(".commute-results").last();
     await expect(
-      results.getByRole("list", { name: "推荐理由" }).first(),
-    ).toContainText("步行");
-    await expect(results).not.toContainText("平均通勤");
+      results.getByRole("list", { name: "Recommendation reasons" }).first(),
+    ).toContainText("Walking");
+    await expect(results).not.toContainText("Average commute");
     await controls
-      .getByRole("button", { name: "修改通勤条件", exact: true })
+      .getByRole("button", { name: "Edit commute criteria", exact: true })
       .click();
-    const commute = page.getByRole("dialog", { name: "调整通勤", exact: true });
-    await choose(page, commute, "本次交通方式", "公共交通");
-    await commute.getByLabel("本次通勤上限", { exact: true }).fill("30");
+    const commute = page.getByRole("dialog", {
+      name: "Adjust commute",
+      exact: true,
+    });
+    await choose(page, commute, "Current travel mode", "Public transport");
     await commute
-      .getByRole("button", { name: "应用修改并重新筛选", exact: true })
+      .getByLabel("Current commute limit", { exact: true })
+      .fill("30");
+    await commute
+      .getByRole("button", {
+        name: "Apply changes and filter again",
+        exact: true,
+      })
       .click();
     await expect(commute).toHaveCount(0);
-    await expect(controls).toContainText("公共交通 ≤30分钟");
+    await expect(controls).toContainText("Public transport ≤30 minutes");
     await expect(
-      results.getByRole("list", { name: "推荐理由" }).first(),
-    ).toContainText("公共交通");
-    await expect(results).not.toContainText("平均通勤");
+      results.getByRole("list", { name: "Recommendation reasons" }).first(),
+    ).toContainText("Public transport");
+    await expect(results).not.toContainText("Average commute");
     const publicContext = await (await request.get(contextUrl)).json();
     const currentConversation = await (
       await request.get(contextUrl.replace(/\/recommendation-context$/, ""))
@@ -158,7 +169,7 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
     expect(currentConversation.messages.at(-1).listings).toHaveLength(
       publicContext.total,
     );
-    await results.getByRole("button", { name: "全部", exact: true }).click();
+    await results.getByRole("button", { name: "All", exact: true }).click();
     await expect(results.locator(".commute-home")).toHaveCount(
       Math.min(12, publicContext.total),
     );
@@ -167,42 +178,47 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
 
   await test.step("03 确认需求，收藏两套并比较；收藏本身不选定房源", async () => {
     await page
-      .getByRole("button", { name: "我的租房需求", exact: true })
+      .getByRole("button", { name: "My rental needs", exact: true })
       .click();
     await fillRentalNeeds(page, { budget: 1200, bedrooms: 1, bathrooms: 1 });
     await confirmRentalNeeds(page);
     expect((await state()).confirmations).toHaveLength(1);
-    await page.getByRole("menuitem", { name: "房源推荐", exact: true }).click();
+    await page
+      .getByRole("menuitem", { name: "Housing recommendations", exact: true })
+      .click();
     const table = page.getByTestId("real-catalog");
     for (let n = 1; n <= 2; n++) {
       await table
-        .getByRole("button", { name: "收藏房源", exact: true })
+        .getByRole("button", { name: "Save listing", exact: true })
         .first()
         .click();
       await expect(
-        table.getByRole("button", { name: "取消收藏", exact: true }),
+        table.getByRole("button", { name: "Remove favorite", exact: true }),
       ).toHaveCount(n);
     }
     expect((await state()).selection).toBeNull();
     await page.reload();
     await page
-      .getByRole("button", { name: "我的收藏（2）", exact: true })
+      .getByRole("button", { name: "My favorites (2)", exact: true })
       .click();
-    const drawer = page.getByRole("dialog", { name: "我的收藏", exact: true });
+    const drawer = page.getByRole("dialog", {
+      name: "My favorites",
+      exact: true,
+    });
     await expect(drawer.getByTestId("favorite-home")).toHaveCount(2);
     await drawer.getByRole("checkbox").nth(0).check();
     await drawer.getByRole("checkbox").nth(1).check();
     await expect(
-      drawer.getByRole("table", { name: "收藏房源比较" }),
+      drawer.getByRole("table", { name: "Saved listing comparison" }),
     ).toBeVisible();
     await screenshot("02-favorites-comparison");
     await drawer
-      .getByRole("button", { name: "选定并跟进", exact: true })
+      .getByRole("button", { name: "Select and follow up", exact: true })
       .first()
       .click();
     expect((await state()).selection).toBeNull();
     await page
-      .getByRole("button", { name: "确认并开始跟进", exact: true })
+      .getByRole("button", { name: "Confirm and start follow-up", exact: true })
       .click();
     await expect(drawer).not.toBeVisible();
     const selected = (await state()).selection;
@@ -212,101 +228,108 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
     await expect(page.getByTestId("candidate-next")).toContainText(address);
   });
 
-  await test.step("04 记录中介回复，跨页面保留约定租金及来源", async () => {
+  await test.step("04 查看询问清单后直接填写合同，无需录入中介回复", async () => {
     await page
       .getByTestId("candidate-next")
-      .getByRole("button", { name: "准备看房与询问", exact: true })
+      .getByRole("button", {
+        name: "Prepare inspection and enquiry",
+        exact: true,
+      })
       .click();
-    const drawer = page.getByRole("dialog", { name: "房源跟进", exact: true });
+    const drawer = page.getByRole("dialog", {
+      name: "Inspection enquiry checklist",
+      exact: true,
+    });
+    await expect(drawer.locator("input, textarea")).toHaveCount(0);
+    await expect(
+      page.getByRole("button", { name: "Record agent reply", exact: true }),
+    ).toHaveCount(0);
     await drawer
-      .getByLabel("回复中的租金（AUD）", { exact: true })
+      .getByRole("button", { name: "Enter lease details", exact: true })
+      .click();
+    await expect(
+      page.getByLabel("Property address", { exact: true }),
+    ).toHaveValue(address);
+    await expect(
+      page.getByLabel("Proposed rent (AUD)", { exact: true }),
+    ).toBeEmpty();
+    await page
+      .getByLabel("Proposed rent (AUD)", { exact: true })
       .fill(String(agreedRent));
-    await choose(page, drawer, "租金周期", "每周");
-    await choose(page, drawer, "租金计价对象", "整套");
-    await drawer
-      .getByLabel("信息来源", { exact: true })
-      .fill("E2E synthetic agent reply");
-    await drawer
-      .getByLabel("看房安排", { exact: true })
-      .fill("仅测试记录：周六看房，尚未向中介发送预约。");
-    await drawer
-      .getByRole("button", { name: "确认保存跟进信息", exact: true })
-      .click();
-    await expect(
-      drawer.getByText("已保存 v1 · 用户记录", { exact: true }),
-    ).toBeVisible();
-    expect((await state()).selection.contract_ready).toBe(false);
-    await drawer.getByRole("button", { name: "关闭", exact: true }).click();
-    await page
-      .getByTestId("candidate-next")
-      .getByRole("button", { name: "生成租约草稿", exact: true })
-      .click();
-    await expect(page.getByLabel("房屋地址", { exact: true })).toHaveValue(
-      address,
-    );
-    await expect(
-      page.getByLabel("拟定租金（AUD）", { exact: true }),
-    ).toHaveAttribute("aria-valuenow", String(agreedRent));
+    await choose(page, page, "Rent period", "Weekly");
   });
 
   await test.step("05 录入双方及中介资料，明确确认后生成并检查真实 PDF", async () => {
-    await choose(page, page, "租约适用范围", "新州普通整租住宅");
+    await choose(
+      page,
+      page,
+      "Lease scope",
+      "Standard NSW whole-property residential tenancy",
+    );
     for (const [label, value] of [
-      ["出租方姓名", "E2E Example Owner"],
-      ["出租方联系方式", "owner@example.com"],
-      ["出租方送达地址", "1 Example Road, Sydney NSW 2000"],
-      ["租客姓名（每行一名）", "E2E Example Tenant"],
-      ["租客联系方式", "tenant@example.com"],
-      ["起租日期", start],
-      ["结束日期", end],
-      ["拟定押金（AUD）", String(agreedRent * 4)],
-      ["约定最多居住人数", "1"],
-      ["首期租金付款日期", start],
-      ["租金付款日", "每周一"],
+      ["Landlord name", "E2E Example Owner"],
+      ["Landlord contact details", "owner@example.com"],
+      ["Landlord notice address", "1 Example Road, Sydney NSW 2000"],
+      ["Tenant names (one per line)", "E2E Example Tenant"],
+      ["Tenant contact details", "tenant@example.com"],
+      ["Lease start date", start],
+      ["End date", end],
+      ["Proposed bond (AUD)", String(agreedRent * 4)],
+      ["Maximum agreed occupants", "1"],
+      ["First rent payment date", start],
+      ["Rent due day", "每周一"],
     ])
       await page.getByLabel(label, { exact: true }).fill(value);
-    await choose(page, page, "租期类型", "固定租期");
-    await page.getByText("出租方中介（如适用）", { exact: true }).click();
+    await choose(page, page, "Lease type", "Fixed term");
+    await page
+      .getByText("Landlord agent (if applicable)", { exact: true })
+      .click();
     for (const [label, value] of [
-      ["出租方中介姓名 / 公司", "E2E Agency"],
+      ["Landlord agent name / company", "E2E Agency"],
       [
-        "出租方中介联系方式（须含电话）",
+        "Landlord agent contact details (must include phone)",
         "agent@example.com; Phone: 0400000001",
       ],
-      ["出租方中介送达地址", "2 Example Road"],
-      ["出租方中介区域（Suburb）", "Rhodes"],
-      ["出租方中介 State", "NSW"],
-      ["出租方中介邮编", "2138"],
+      ["Landlord agent notice address", "2 Example Road"],
+      ["Landlord agent suburb", "Rhodes"],
+      ["Landlord agent State", "NSW"],
+      ["Landlord agent postcode", "2138"],
     ])
       await page.getByLabel(label, { exact: true }).fill(value);
     await page
-      .getByRole("button", { name: "核对并填入合同", exact: true })
+      .getByRole("button", { name: "Check and fill contract", exact: true })
       .click();
     const confirm = page.getByRole("dialog", {
-      name: "确认保存租约草稿",
+      name: "Confirm lease draft save",
       exact: true,
     });
     expect(
       (await (await request.get(`${root}/lease-drafts`)).json()).items,
     ).toHaveLength(0);
     await expect(
-      confirm.getByRole("button", { name: "确认保存未签署草稿", exact: true }),
+      confirm.getByRole("button", {
+        name: "Confirm and save unsigned draft",
+        exact: true,
+      }),
     ).toBeDisabled();
     await confirm.getByRole("checkbox").check();
     await confirm
-      .getByRole("button", { name: "确认保存未签署草稿", exact: true })
+      .getByRole("button", {
+        name: "Confirm and save unsigned draft",
+        exact: true,
+      })
       .click();
     const preview = page.getByRole("dialog", {
-      name: "合同预览 · v1",
+      name: "Contract preview · v1",
       exact: true,
     });
     await expect(preview.locator("iframe")).toHaveAttribute("src", /^blob:/);
     await preview
-      .getByRole("button", { name: "返回填写", exact: true })
+      .getByRole("button", { name: "Return to form", exact: true })
       .click();
     const pending = page.waitForEvent("download");
     await page
-      .getByRole("link", { name: "下载已保存 v1 PDF", exact: true })
+      .getByRole("link", { name: "Download saved v1 PDF", exact: true })
       .click();
     const file = info.outputPath("unsigned-lease-v1.pdf");
     await (await pending).saveAs(file);
@@ -344,19 +367,27 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
     expect((await state()).selection.contract_ready).toBe(false);
   });
 
-  await test.step("05B 上传测试合同复核，比较合同租金与跟进记录的差异", async () => {
-    await page.getByRole("tab", { name: "上传合同复核", exact: true }).click();
+  await test.step("05B 上传测试合同复核，核对合同与原始房源信息", async () => {
+    await page
+      .getByRole("tab", { name: "Upload contract for review", exact: true })
+      .click();
     await expect(
-      page.getByRole("button", { name: "同意处理此合同", exact: true }),
+      page.getByRole("button", {
+        name: "Agree to process this contract",
+        exact: true,
+      }),
     ).toBeDisabled();
     await page
       .getByRole("checkbox", {
-        name: "我同意为本次复核处理此合同，理解此同意独立于选房确认。",
+        name: "I agree to process this contract for this review and understand this consent is separate from property selection.",
         exact: true,
       })
       .check();
     await page
-      .getByRole("button", { name: "同意处理此合同", exact: true })
+      .getByRole("button", {
+        name: "Agree to process this contract",
+        exact: true,
+      })
       .click();
     const contractRent = agreedRent + 10;
     await page.locator("input[type=file]").setInputFiles({
@@ -368,46 +399,49 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
     });
     await page
       .getByRole("checkbox", {
-        name: "我确认有权提交此合同用于本次复核。",
+        name: "I confirm I am authorised to submit this contract for review.",
         exact: true,
       })
       .check();
-    await page.getByRole("button", { name: "上传并复核", exact: true }).click();
+    await page
+      .getByRole("button", { name: "Upload and review", exact: true })
+      .click();
     await expect(page.getByTestId("real-contract-comparison")).toContainText(
-      "E2E synthetic agent reply",
+      address,
     );
-    const comparison = page.getByTestId("comparison-recorded_rent");
-    await expect(comparison).toContainText("需要核对差异");
-    await expect(comparison).toContainText(String(agreedRent));
+    const comparison = page.getByTestId("comparison-advertised_rent");
+    await expect(comparison).toContainText("Confirm pricing basis");
     await expect(comparison).toContainText(String(contractRent));
     expect((await state()).reviews).toHaveLength(1);
     await page.reload();
-    await expect(comparison).toContainText("需要核对差异");
+    await expect(comparison).toContainText("Confirm pricing basis");
   });
 
   await test.step("06 租约资料先预览，人工确认实际资料后接入租后页面", async () => {
-    await page.getByRole("menuitem", { name: "租后服务", exact: true }).click();
+    await page
+      .getByRole("menuitem", { name: "Aftercare services", exact: true })
+      .click();
     expect((await living()).profile.address).toBe("");
     await page
-      .getByRole("button", { name: "查看租约来源", exact: true })
+      .getByRole("button", { name: "View lease source", exact: true })
       .click();
     const modal = page.getByRole("dialog", {
-      name: "核对租约来源",
+      name: "Check lease source",
       exact: true,
     });
     await expect(modal).toContainText(address);
     expect((await living()).profile.address).toBe("");
     await modal
       .getByRole("checkbox", {
-        name: "我确认这些资料对应我的实际租约。",
+        name: "I confirm these details correspond to my actual lease.",
         exact: true,
       })
       .check();
     await modal
-      .getByRole("button", { name: "接入所选资料", exact: true })
+      .getByRole("button", { name: "Import selected details", exact: true })
       .click();
     await page
-      .getByRole("button", { name: "确认接入租约资料", exact: true })
+      .getByRole("button", { name: "Confirm lease import", exact: true })
       .click();
     await expect(modal).toHaveCount(0);
     expect((await living()).profile).toMatchObject({
@@ -420,7 +454,7 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
   });
 
   await test.step("07 查看供应商详情并保存水电选择；搬运与清洁分组展示", async () => {
-    await page.getByRole("tab", { name: "水电气网", exact: true }).click();
+    await page.getByRole("tab", { name: "Utilities", exact: true }).click();
     const directory = await (
       await request.get("/api/v1/living-providers")
     ).json();
@@ -429,61 +463,63 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
     );
     await page.locator(`[data-provider-id="${power.id}"]`).click();
     const details = page.getByRole("dialog", {
-      name: "AGL · 供应商详情",
+      name: "AGL · Provider details",
       exact: true,
     });
     await expect(details).toBeVisible();
     await screenshot("03-utility-details");
     await details
-      .getByRole("button", { name: "关闭详情", exact: true })
+      .getByRole("button", { name: "Close details", exact: true })
       .click();
-    await choose(page, page, "电力供应商", "AGL");
+    await choose(page, page, "Electricity provider", "AGL");
     await page
-      .getByRole("button", { name: "保存供应商选择", exact: true })
+      .getByRole("button", { name: "Save provider selection", exact: true })
       .click();
     expect((await living()).profile.utilities.electricity).toBeNull();
     await page
-      .getByRole("button", { name: "确认保存选择", exact: true })
+      .getByRole("button", { name: "Confirm selection", exact: true })
       .click();
     await expect
       .poll(async () => (await living()).profile.utilities.electricity)
       .toBe(power.id);
-    await page.getByRole("tab", { name: "搬运与清洁", exact: true }).click();
+    await page
+      .getByRole("tab", { name: "Moving and cleaning", exact: true })
+      .click();
     await expect(
-      page.getByRole("heading", { name: "搬运公司", exact: true }),
+      page.getByRole("heading", { name: "Removalists", exact: true }),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "清洁公司", exact: true }),
+      page.getByRole("heading", { name: "Cleaning companies", exact: true }),
     ).toBeVisible();
     const mover = directory.providers.find((p: { categories: string[] }) =>
       p.categories.includes("removalist"),
     );
     await page.locator(`[data-provider-id="${mover.id}"]`).click();
     const modal = page.getByRole("dialog", {
-      name: `${mover.name} · 服务商详情`,
+      name: `${mover.name} · Provider details`,
       exact: true,
     });
     await expect(
-      modal.getByRole("link", { name: "公司网站", exact: true }),
+      modal.getByRole("link", { name: "Company website", exact: true }),
     ).toHaveAttribute("href", mover.website);
-    await expect(modal).not.toContainText("路线");
+    await expect(modal).not.toContainText("Route");
     await modal
-      .getByRole("button", { name: "记录报价或预约", exact: true })
+      .getByRole("button", { name: "Record quote or booking", exact: true })
       .click();
     const form = page.getByRole("dialog");
-    await form.getByLabel("收到的报价（AUD）", { exact: true }).fill("250");
-    await form.getByLabel("服务日期", { exact: true }).fill(start);
+    await form.getByLabel("Quote received (AUD)", { exact: true }).fill("250");
+    await form.getByLabel("Service date", { exact: true }).fill(start);
     await form
-      .getByLabel("服务备注", { exact: true })
+      .getByLabel("Service notes", { exact: true })
       .fill("测试电话报价，尚未向商家预约。");
     await form
       .getByRole("checkbox", {
-        name: "我确认仅保存记录，不会向服务商提交预约。",
+        name: "I confirm this only saves a record and does not submit a booking to the provider.",
         exact: true,
       })
       .check();
     await form
-      .getByRole("button", { name: "确认保存服务记录", exact: true })
+      .getByRole("button", { name: "Confirm service record", exact: true })
       .click();
     await expect(form).toHaveCount(0);
     expect((await living()).bookings[0]).toMatchObject({
@@ -494,55 +530,57 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
   });
 
   await test.step("08 AI 润色报修邮件，用户编辑确认保存，记录后续并在手机恢复", async () => {
-    await page.getByRole("tab", { name: "日常报修", exact: true }).click();
+    await page.getByRole("tab", { name: "Repairs", exact: true }).click();
     await page
-      .getByLabel("报修邮件收件人姓名", { exact: true })
+      .getByLabel("Repair email recipient name", { exact: true })
       .fill("E2E Agency");
     await page
-      .getByLabel("问题描述", { exact: true })
+      .getByLabel("Issue description", { exact: true })
       .fill("厨房水龙头关闭后仍滴水，请安排维修。");
     await page
-      .getByRole("button", { name: "AI 润色邮件", exact: true })
+      .getByRole("button", { name: "Polish email with AI", exact: true })
       .click();
     await expect(
-      page.getByLabel("润色邮件正文", { exact: true }),
+      page.getByLabel("Polished email body", { exact: true }),
     ).toContainText("Dear E2E Agency");
     expect((await living()).repairs).toHaveLength(0);
     await page
-      .getByLabel("润色邮件主题", { exact: true })
+      .getByLabel("Polished email subject", { exact: true })
       .fill("E2E kitchen tap repair");
     await page
-      .getByLabel("润色邮件正文", { exact: true })
+      .getByLabel("Polished email body", { exact: true })
       .fill(
         "Dear E2E Agency,\n\nThe kitchen tap is leaking. Please arrange a repair.\n\nThank you.",
       );
     await page
-      .getByRole("button", { name: "保存润色报修草稿", exact: true })
+      .getByRole("button", { name: "Save polished repair draft", exact: true })
       .click();
     await page
-      .getByRole("button", { name: "确认保存报修草稿", exact: true })
+      .getByRole("button", { name: "Confirm repair draft", exact: true })
       .click();
     const card = page.locator(".living-repair-card");
     await expect(card).toContainText("E2E kitchen tap repair");
-    await card.getByRole("button", { name: "记录后续", exact: true }).click();
+    await card
+      .getByRole("button", { name: "Record follow-up", exact: true })
+      .click();
     const modal = page.getByRole("dialog", {
-      name: "记录报修后续",
+      name: "Record repair follow-up",
       exact: true,
     });
     await modal
-      .getByLabel("对方回复或我的记录", { exact: true })
+      .getByLabel("Reply or my notes", { exact: true })
       .fill("测试记录：已联系中介，等待安排维修。");
     await modal
-      .getByRole("button", { name: "核对并保存后续", exact: true })
+      .getByRole("button", { name: "Check and save follow-up", exact: true })
       .click();
     await page
-      .getByRole("button", { name: "确认保存报修后续", exact: true })
+      .getByRole("button", { name: "Confirm repair follow-up", exact: true })
       .click();
     await expect(modal).toHaveCount(0);
     await page.setViewportSize({ width: 390, height: 844 });
     await page.reload();
     await expect(card).toContainText("测试记录：已联系中介，等待安排维修。");
-    await expect(card).toContainText("草稿已准备 · 尚未发送");
+    await expect(card).toContainText("Draft prepared · Not sent");
     const saved = await living();
     expect(saved.repairs).toHaveLength(1);
     expect(saved.repairs[0].email).toMatchObject({
@@ -567,52 +605,62 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
 
   await test.step("09 从已复核地址创建退租案件，生成计划并保存任务进度", async () => {
     await page.setViewportSize({ width: 1440, height: 1000 });
-    await page.getByRole("tab", { name: "退租与押金", exact: true }).click();
+    await page
+      .getByRole("tab", { name: "Move-out and bond", exact: true })
+      .click();
     // The unsigned draft and review must not silently create a confirmed tenancy.
     expect((await state()).aftercare_case_id).toBeNull();
     await page
       .getByRole("button", {
-        name: "从最近合同复核预填地址与来源",
+        name: "Import existing details",
         exact: true,
       })
       .click();
-    await expect(page.getByLabel("租约地址", { exact: true })).toHaveValue(
+    await expect(page.getByLabel("Lease address", { exact: true })).toHaveValue(
       address,
     );
-    for (const field of ["有地毯", "有室外区域", "带家具"])
-      await choose(page, page, field, "否");
-    await page.getByRole("button", { name: "添加房间", exact: true }).click();
-    await page.getByLabel("房间名称", { exact: true }).fill("E2E Bedroom");
+    for (const field of ["Has carpet", "Has outdoor area", "Furnished"])
+      await choose(page, page, field, "No");
+    await page.getByRole("button", { name: "Add room", exact: true }).click();
+    await page.getByLabel("Room name", { exact: true }).fill("E2E Bedroom");
     await expect(
-      page.getByRole("button", { name: "确认资料并创建租后案件", exact: true }),
+      page.getByRole("button", {
+        name: "Confirm details and create aftercare case",
+        exact: true,
+      }),
     ).toBeDisabled();
     await page
       .getByRole("checkbox", {
-        name: "我已核对并确认上述租约、房间、家具及资料来源。",
+        name: "I have checked and confirmed the lease, rooms, furniture, and sources above.",
         exact: true,
       })
       .check();
     await page
-      .getByRole("button", { name: "确认资料并创建租后案件", exact: true })
+      .getByRole("button", {
+        name: "Confirm details and create aftercare case",
+        exact: true,
+      })
       .click();
     await expect(
-      page.getByText("已确认租约资料", { exact: true }),
+      page.getByText("Confirmed lease details", { exact: true }),
     ).toBeVisible();
-    await page.getByLabel("计划退租日期", { exact: true }).fill(end);
+    await page.getByLabel("Planned move-out date", { exact: true }).fill(end);
     await page
-      .getByRole("button", { name: "生成并确认计划", exact: true })
+      .getByRole("button", { name: "Generate and confirm plan", exact: true })
       .click();
-    await page.getByRole("button", { name: "确认计划", exact: true }).click();
     await page
-      .getByRole("button", { name: "编辑任务", exact: true })
+      .getByRole("button", { name: "Confirm plan", exact: true })
+      .click();
+    await page
+      .getByRole("button", { name: "Edit task", exact: true })
       .first()
       .click();
     const modal = page.getByRole("dialog", {
-      name: "编辑任务与证据",
+      name: "Edit task and evidence",
       exact: true,
     });
-    await choose(page, modal, "任务状态", "已完成");
-    await modal.getByRole("button", { name: "保存任务", exact: true }).click();
+    await choose(page, modal, "Task status", "Completed");
+    await modal.getByRole("button", { name: "Save task", exact: true }).click();
     await expect(modal).toHaveCount(0);
     const m4 = (await state()).aftercare_case_id;
     const saved = await (
@@ -629,39 +677,57 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
   });
 
   await test.step("10 建立押金跟进、生成未发送草稿，明确确认结果后关闭", async () => {
-    await page.getByRole("tab", { name: "押金跟进", exact: true }).click();
     await page
-      .getByLabel("押金记录编号（可暂不填写）", { exact: true })
+      .getByRole("tab", { name: "Bond follow-up", exact: true })
+      .click();
+    await page
+      .getByLabel("Bond reference (optional for now)", { exact: true })
       .fill("E2E-BOND-001");
     await page
-      .getByRole("button", { name: "建立押金跟进", exact: true })
+      .getByRole("button", { name: "Create bond follow-up", exact: true })
       .click();
     await page
-      .getByRole("button", { name: "确认事实并激活跟进", exact: true })
+      .getByRole("button", {
+        name: "Confirm facts and activate follow-up",
+        exact: true,
+      })
       .click();
     await page
-      .getByLabel("租客报告的事实", { exact: true })
+      .getByLabel("Facts reported by the tenant", { exact: true })
       .fill("E2E 测试记录：钥匙已交还，等待押金结果。");
-    await page.getByRole("button", { name: "确认并记录", exact: true }).click();
     await page
-      .getByRole("button", { name: "准备跟进草稿", exact: true })
+      .getByRole("button", { name: "Confirm and record", exact: true })
+      .click();
+    await page
+      .getByRole("button", { name: "Prepare follow-up draft", exact: true })
       .click();
     await expect(
-      page.getByText("跟进草稿 · 尚未发送", { exact: true }),
+      page.getByText("Follow-up draft · Not sent", { exact: true }),
     ).toBeVisible();
     await page
-      .getByLabel("你确认的结果或撤回原因", { exact: true })
+      .getByLabel("Your confirmed outcome or reason for withdrawal", {
+        exact: true,
+      })
       .fill("E2E 测试结果：用户确认押金已退回，关闭本次跟进。");
     await page
-      .getByRole("button", { name: "确认结果并关闭跟进", exact: true })
+      .getByRole("button", {
+        name: "Confirm outcome and close follow-up",
+        exact: true,
+      })
       .click();
     await page
-      .getByRole("button", { name: "确认结果并关闭", exact: true })
+      .getByRole("button", { name: "Confirm outcome and close", exact: true })
       .click();
-    await expect(page.getByText("已确认结果", { exact: true })).toBeVisible();
+    await expect(
+      page.getByText("Outcome confirmed", { exact: true }),
+    ).toBeVisible();
     await page.reload();
-    await page.getByRole("tab", { name: "押金跟进", exact: true }).click();
-    await expect(page.getByText("已确认结果", { exact: true })).toBeVisible();
+    await page
+      .getByRole("tab", { name: "Bond follow-up", exact: true })
+      .click();
+    await expect(
+      page.getByText("Outcome confirmed", { exact: true }),
+    ).toBeVisible();
     const finalCase = await state();
     const aftercare = await (
       await request.get(

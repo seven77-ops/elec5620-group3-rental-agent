@@ -41,7 +41,8 @@ class EnglishReleaseTests(unittest.TestCase):
         values['budget.maximum'] = 1
         result = assess({'values': values, 'issues': []}, 'test-search', 1)
         self.assertFalse(result['valid'])
-        self.assertIn('maximum budget', ' '.join(result['errors']))
+        self.assertIn('budget.maximum', ' '.join(result['errors']))
+        self.assertIn('preferred budget', ' '.join(result['errors']))
         self.assertIsNone(re.search(r'[\u3400-\u9fff]', json.dumps(result, ensure_ascii=False)))
 
     def test_summary_is_english_and_does_not_change_upstream_report(self):

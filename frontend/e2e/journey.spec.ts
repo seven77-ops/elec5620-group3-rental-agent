@@ -43,33 +43,50 @@ test("tenant completes confirmed profile, true recommendation, selection, contra
     if (message.type() === "error") errors.push(message.text());
   });
   await page.goto("/");
-  await expect(page).toHaveTitle("租房助手 · ELEC5620");
-  await page.getByRole("button", { name: "新建演示案例", exact: true }).click();
+  await expect(page).toHaveTitle("Rental Assistant · ELEC5620");
+  await page
+    .getByRole("button", { name: "New demo case", exact: true })
+    .click();
   await expect(
-    page.getByRole("button", { name: "生成推荐", exact: true }),
+    page.getByRole("button", { name: "Generate recommendations", exact: true }),
   ).toBeDisabled();
-  await expect(page.getByText("Agent1 本地偏好服务已接入", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "确认当前偏好", exact: true }).click();
-  await expect(page.getByText("房源为固定时点的合成数据。居住人数会被记录，但当前不检查房源可容纳人数。", { exact: true })).toHaveCount(2);
-  await page.getByRole("button", { name: "确认这些条件", exact: true }).click();
   await expect(
-    page.getByText("当前草稿已确认 · v1", { exact: true }),
+    page.getByText("Agent1 local preference service connected", {
+      exact: true,
+    }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "生成推荐", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Confirm current preferences", exact: true })
+    .click();
   await expect(
-    page.getByRole("heading", { name: "房源推荐", exact: true }),
+    page.getByText(
+      "Listings are synthetic data at a fixed snapshot. Occupant count is recorded, but listing capacity is not currently checked.",
+      { exact: true },
+    ),
+  ).toHaveCount(2);
+  await page
+    .getByRole("button", { name: "Confirm these criteria", exact: true })
+    .click();
+  await expect(
+    page.getByText("Current draft confirmed · v1", { exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Generate recommendations", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Housing recommendations", exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("tab", { name: "全部合格 15", exact: true }),
+    page.getByRole("tab", { name: "All eligible 15", exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("tab", { name: "待确认 9", exact: true }),
+    page.getByRole("tab", { name: "To confirm 9", exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("tab", { name: "已排除 5", exact: true }),
+    page.getByRole("tab", { name: "Excluded 5", exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("tab", { name: "重复记录 1", exact: true }),
+    page.getByRole("tab", { name: "Duplicate records 1", exact: true }),
   ).toBeVisible();
   const first = page.locator("article.listing-row").first();
   await expect(first).toContainText("DEMO-006");
@@ -77,37 +94,51 @@ test("tenant completes confirmed profile, true recommendation, selection, contra
   await page.screenshot({
     path: resolve(artifactDir, "recommendations-desktop.png"),
   });
-  await first.getByRole("button", { name: "查看推荐依据" }).click();
+  await first
+    .getByRole("button", { name: "View recommendation evidence" })
+    .click();
   await expect(
     page.getByText("fixture:DEMO-006#rent_amount", { exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "关闭", exact: true }).click();
-  await page.getByRole("tab", { name: "待确认 9", exact: true }).click();
-  await expect(page.getByText("未评分", { exact: true })).toHaveCount(9);
+  await page.getByRole("button", { name: "Close", exact: true }).click();
+  await page.getByRole("tab", { name: "To confirm 9", exact: true }).click();
+  await expect(page.getByText("Unscored", { exact: true })).toHaveCount(9);
   await expect(
-    page.getByRole("button", { name: "选择此房源", exact: true }),
+    page.getByRole("button", { name: "Select this listing", exact: true }),
   ).toHaveCount(0);
-  await page.getByRole("tab", { name: "推荐房源 5", exact: true }).click();
-  await first.getByRole("button", { name: "选择此房源", exact: true }).click();
   await page
-    .getByRole("button", { name: "确认选择此房源", exact: true })
+    .getByRole("tab", { name: "Recommended listings 5", exact: true })
     .click();
-  await page.getByRole("button", { name: "继续合同复核", exact: true }).click();
+  await first
+    .getByRole("button", { name: "Select this listing", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Confirm this listing", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Continue to contract review", exact: true })
+    .click();
   await expect(
-    page.getByRole("heading", { name: "合同复核", exact: true }),
+    page.getByRole("heading", { name: "Contract review", exact: true }),
   ).toBeVisible();
   await expect(page.locator("input[type=file]")).toHaveCount(0);
   await expect(
-    page.getByRole("button", { name: "同意处理此合同", exact: true }),
+    page.getByRole("button", {
+      name: "Agree to process this contract",
+      exact: true,
+    }),
   ).toBeDisabled();
   await page
     .getByRole("checkbox", {
-      name: "我同意为本次复核处理此合同，理解此同意独立于选房确认。",
+      name: "I agree to process this contract for this review and understand this consent is separate from property selection.",
       exact: true,
     })
     .check();
   await page
-    .getByRole("button", { name: "同意处理此合同", exact: true })
+    .getByRole("button", {
+      name: "Agree to process this contract",
+      exact: true,
+    })
     .click();
   await page
     .locator("input[type=file]")
@@ -116,24 +147,31 @@ test("tenant completes confirmed profile, true recommendation, selection, contra
     );
   await page
     .getByRole("checkbox", {
-      name: "我确认上传的是合成演示合同。",
+      name: "I confirm this is a synthetic demo contract.",
       exact: true,
     })
     .check();
-  await page.getByRole("button", { name: "上传并复核", exact: true }).click();
-  await expect(page.getByText("复核完成", { exact: true })).toBeVisible();
+  await page
+    .getByRole("button", { name: "Upload and review", exact: true })
+    .click();
   await expect(
-    page.getByText("当前复核没有发现项，不生成额外问题。", { exact: true }),
+    page.getByText("Review complete", { exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "准备问题清单", exact: true }),
+    page.getByText(
+      "This review has no findings. No additional questions will be generated.",
+      { exact: true },
+    ),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Prepare question list", exact: true }),
   ).toBeDisabled();
   await page
-    .getByRole("button", { name: "查看原文", exact: true })
+    .getByRole("button", { name: "View source text", exact: true })
     .first()
     .click();
   await expect(page.locator("blockquote")).toContainText("Address:");
-  await page.getByRole("button", { name: "关闭", exact: true }).click();
+  await page.getByRole("button", { name: "Close", exact: true }).click();
   const caseId = page.url().split("/")[4];
   const c = await (await request.get(`/api/v1/cases/${caseId}`)).json();
   const selection = await (
@@ -145,7 +183,9 @@ test("tenant completes confirmed profile, true recommendation, selection, contra
   expect(c.evaluations[0].agent1_task_id).toMatch(/^task-/);
   expect(c.aftercare_case_id).toBeNull();
   await page.reload();
-  await expect(page.getByText("复核完成", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Review complete", { exact: true }),
+  ).toBeVisible();
   await page.screenshot({ path: resolve(artifactDir, "contract-desktop.png") });
   await expect(page.locator("vite-error-overlay")).toHaveCount(0);
   expect(errors).toEqual([]);
@@ -157,37 +197,52 @@ test("edited preferences require reconfirmation and zero-match remains a valid r
 }) => {
   const { c } = await seed(request);
   await page.goto(`/cases/${c.case_id}/preferences`);
-  await page.getByRole("spinbutton", { name: "期望周预算（AUD）" }).fill("1");
-  await page.getByRole("spinbutton", { name: "最高周预算（AUD）" }).fill("1");
+  await page
+    .getByRole("spinbutton", { name: "Preferred weekly budget (AUD)" })
+    .fill("1");
+  await page
+    .getByRole("spinbutton", { name: "Maximum weekly budget (AUD)" })
+    .fill("1");
   await expect(
-    page.getByRole("button", { name: "生成推荐", exact: true }),
+    page.getByRole("button", { name: "Generate recommendations", exact: true }),
   ).toBeDisabled();
-  await page.getByRole("button", { name: "保存草稿", exact: true }).click();
+  await page.getByRole("button", { name: "Save draft", exact: true }).click();
   await expect(
-    page.getByText("当前草稿尚未确认", { exact: true }),
-  ).toBeVisible();
-  await page.getByRole("button", { name: "确认当前偏好", exact: true }).click();
-  await page.getByRole("button", { name: "确认这些条件", exact: true }).click();
-  await expect(
-    page.getByText("当前草稿已确认 · v2", { exact: true }),
-  ).toBeVisible();
-  await page.getByRole("button", { name: "生成推荐", exact: true }).click();
-  await expect(
-    page.getByRole("heading", { name: "房源推荐", exact: true }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("tab", { name: "推荐房源 0", exact: true }),
-  ).toBeVisible();
-  await expect(
-    page.getByText("当前分类没有房源。可查看其他分类或返回偏好调整条件。", {
-      exact: true,
-    }),
+    page.getByText("Current draft is not confirmed", { exact: true }),
   ).toBeVisible();
   await page
-    .getByRole("button", { name: "查看偏好版本比较", exact: true })
+    .getByRole("button", { name: "Confirm current preferences", exact: true })
     .click();
-  await expect(page.getByText("偏好变化", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "关闭", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Confirm these criteria", exact: true })
+    .click();
+  await expect(
+    page.getByText("Current draft confirmed · v2", { exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Generate recommendations", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Housing recommendations", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("tab", { name: "Recommended listings 0", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByText(
+      "No listings in this category. Try another category or adjust your preferences.",
+      {
+        exact: true,
+      },
+    ),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Compare preference versions", exact: true })
+    .click();
+  await expect(
+    page.getByText("Preference changes", { exact: true }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Close", exact: true }).click();
   const saved = await (await request.get(`/api/v1/cases/${c.case_id}`)).json();
   expect(saved.confirmations).toHaveLength(2);
   expect(saved.evaluations).toHaveLength(2);
@@ -197,145 +252,214 @@ test("independent aftercare requires confirmation and supports tasks, dispute ga
   page,
 }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "新建演示案例", exact: true }).click();
+  await page
+    .getByRole("button", { name: "New demo case", exact: true })
+    .click();
   await expect(
-    page.getByRole("heading", { name: "租房偏好", exact: true }),
+    page.getByRole("heading", { name: "Rental preferences", exact: true }),
   ).toBeVisible();
-  await navigate(page, "租后服务");
+  await navigate(page, "Aftercare services");
   await expect(
-    page.getByRole("button", { name: "确认资料并创建租后案件", exact: true }),
+    page.getByRole("button", {
+      name: "Confirm details and create aftercare case",
+      exact: true,
+    }),
   ).toBeDisabled();
   await page
     .getByRole("checkbox", {
-      name: "我已核对并确认上述租约、房间、家具及资料来源。",
+      name: "I have checked and confirmed the lease, rooms, furniture, and sources above.",
       exact: true,
     })
     .check();
   await page
-    .getByRole("button", { name: "确认资料并创建租后案件", exact: true })
+    .getByRole("button", {
+      name: "Confirm details and create aftercare case",
+      exact: true,
+    })
     .click();
-  await expect(page.getByText("已确认租约资料", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Confirmed lease details", { exact: true }),
+  ).toBeVisible();
   await page
-    .getByRole("button", { name: "生成并确认计划", exact: true })
+    .getByRole("button", { name: "Generate and confirm plan", exact: true })
     .click();
-  await page.getByRole("button", { name: "确认计划", exact: true }).click();
+  await page.getByRole("button", { name: "Confirm plan", exact: true }).click();
   await expect(
     page.getByText("Clean Bedroom and record its condition", { exact: true }),
   ).toBeVisible();
   await page
-    .getByRole("button", { name: "编辑任务", exact: true })
+    .getByRole("button", { name: "Edit task", exact: true })
     .first()
     .click();
-  await page.getByRole("combobox", { name: "任务状态", exact: true }).click();
-  await page.getByText("已完成", { exact: true }).last().click();
-  await page.getByRole("button", { name: "保存任务", exact: true }).click();
-  await expect(page.getByText("已完成", { exact: true }).first()).toBeVisible();
-  await page.getByLabel("提议新的退租日期", { exact: true }).fill("2026-11-02");
-  await page.getByRole("button", { name: "提交改期提案", exact: true }).click();
-  await page.getByRole("button", { name: "提交提案", exact: true }).click();
+  await page
+    .getByRole("combobox", { name: "Task status", exact: true })
+    .click();
+  await page.getByText("Completed", { exact: true }).last().click();
+  await page.getByRole("button", { name: "Save task", exact: true }).click();
   await expect(
-    page.getByText("有待确认的日期变更", { exact: true }),
+    page.getByText("Completed", { exact: true }).first(),
   ).toBeVisible();
   await page
-    .getByRole("button", { name: "编辑任务", exact: true })
+    .getByLabel("Propose a new move-out date", { exact: true })
+    .fill("2026-11-02");
+  await page
+    .getByRole("button", { name: "Submit date change proposal", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Submit proposal", exact: true })
+    .click();
+  await expect(
+    page.getByText("A date change awaits confirmation", { exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Edit task", exact: true })
     .first()
     .click();
   await page
     .getByRole("dialog")
-    .getByRole("textbox", { name: "任务内容" })
+    .getByRole("textbox", { name: "Task details" })
     .fill("Synthetic completed task during pending proposal");
-  await page.getByRole("button", { name: "保存任务", exact: true }).click();
+  await page.getByRole("button", { name: "Save task", exact: true }).click();
   await expect(
     page.getByText("Synthetic completed task during pending proposal", {
       exact: true,
     }),
   ).toBeVisible();
   await expect(
-    page.getByText("有待确认的日期变更", { exact: true }),
+    page.getByText("A date change awaits confirmation", { exact: true }),
   ).toBeVisible();
 
-  await page.getByRole("button", { name: "确认改期", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Confirm date change", exact: true })
+    .click();
   await page
     .getByRole("dialog")
-    .getByRole("button", { name: "确认改期", exact: true })
+    .getByRole("button", { name: "Confirm date change", exact: true })
     .click();
   await expect(
-    page.getByText("有待确认的日期变更", { exact: true }),
+    page.getByText("A date change awaits confirmation", { exact: true }),
   ).toHaveCount(0);
-  await page.getByRole("tab", { name: "押金跟进", exact: true }).click();
-  await page.getByRole("button", { name: "建立押金跟进", exact: true }).click();
+  await page.getByRole("tab", { name: "Bond follow-up", exact: true }).click();
   await page
-    .getByRole("button", { name: "确认事实并激活跟进", exact: true })
+    .getByRole("button", { name: "Create bond follow-up", exact: true })
     .click();
   await page
-    .getByRole("textbox", { name: "租客报告的事实" })
+    .getByRole("button", {
+      name: "Confirm facts and activate follow-up",
+      exact: true,
+    })
+    .click();
+  await page
+    .getByRole("textbox", { name: "Facts reported by the tenant" })
     .fill("Synthetic report: keys return arranged; no outcome yet.");
-  await page.getByRole("button", { name: "确认并记录", exact: true }).click();
-  await expect(page.getByText("等待结果", { exact: true })).toBeVisible();
   await page
-    .getByRole("button", { name: "记录新事实或扣款主张", exact: true })
+    .getByRole("button", { name: "Confirm and record", exact: true })
+    .click();
+  await expect(
+    page.getByText("Awaiting outcome", { exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", {
+      name: "Record new facts or deduction claims",
+      exact: true,
+    })
     .click();
   await page
-    .getByRole("textbox", { name: "租客报告的事实" })
+    .getByRole("textbox", { name: "Facts reported by the tenant" })
     .fill("Synthetic tenant disputes a reported deduction.");
   await page
-    .getByRole("checkbox", { name: "包含一项报告的扣款主张", exact: true })
+    .getByRole("checkbox", {
+      name: "Include a reported deduction claim",
+      exact: true,
+    })
     .check();
   await page
-    .getByRole("textbox", { name: "报告的扣款原因" })
+    .getByRole("textbox", { name: "Reported deduction reason" })
     .fill("Synthetic wall mark");
-  await page.getByRole("button", { name: "确认并记录", exact: true }).click();
-  await expect(
-    page.getByText("存在争议或审核门禁", { exact: true }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: "准备跟进草稿", exact: true }),
-  ).toBeDisabled();
-  await page.getByRole("link", { name: "本地演示操作员", exact: true }).click();
-  await expect(
-    page.getByRole("heading", { name: "本地演示操作员", exact: true }),
-  ).toBeVisible();
-  await page.getByLabel("本地操作员密钥", { exact: true }).fill("qa-local-key");
   await page
-    .getByLabel("人工核对记录")
+    .getByRole("button", { name: "Confirm and record", exact: true })
+    .click();
+  await expect(
+    page.getByText("Dispute or review restriction", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Prepare follow-up draft", exact: true }),
+  ).toBeDisabled();
+  await page
+    .getByRole("link", { name: "Local demo operator", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Local demo operator", exact: true }),
+  ).toBeVisible();
+  await page
+    .getByLabel("Local operator key", { exact: true })
+    .fill("qa-local-key");
+  await page
+    .getByLabel("Human review notes")
     .fill("Synthetic test evidence reviewed; no liability determination.");
   await page
-    .getByRole("combobox", { name: "押金审核决定", exact: true })
+    .getByRole("combobox", { name: "Bond review decision", exact: true })
     .click();
-  await page.getByText("已核对并解除门禁", { exact: true }).click();
   await page
-    .getByRole("button", { name: "记录选定的审核决定", exact: true })
+    .getByText("Checked and restrictions released", { exact: true })
     .click();
-  await page.getByRole("button", { name: "确认记录", exact: true }).click();
+  await page
+    .getByRole("button", {
+      name: "Record selected review decision",
+      exact: true,
+    })
+    .click();
+  await page
+    .getByRole("button", { name: "Confirm record", exact: true })
+    .click();
   await expect(
-    page.getByText("当前案例没有未决押金审核事项。", { exact: true }),
+    page.getByText("This case has no unresolved bond review items.", {
+      exact: true,
+    }),
   ).toBeVisible();
-  await navigate(page, "租后服务");
-  await page.getByRole("tab", { name: "押金跟进", exact: true }).click();
-  await page.getByRole("button", { name: "准备跟进草稿", exact: true }).click();
+  await navigate(page, "Aftercare services");
+  await page.getByRole("tab", { name: "Bond follow-up", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Prepare follow-up draft", exact: true })
+    .click();
   await expect(
-    page.getByText("跟进草稿 · 尚未发送", { exact: true }),
+    page.getByText("Follow-up draft · Not sent", { exact: true }),
   ).toBeVisible();
-  await page.getByRole("tab", { name: "本地提醒", exact: true }).click();
-  await page.getByRole("switch", { name: "开启本地提醒", exact: true }).click();
-  await expect(page.getByText("提醒已开启", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "查询到期提醒", exact: true }).click();
+  await page.getByRole("tab", { name: "Local reminders", exact: true }).click();
+  await page
+    .getByRole("switch", { name: "Enable local reminders", exact: true })
+    .click();
   await expect(
-    page.getByText("当前没有已投递提醒。", { exact: true }),
+    page.getByText("Reminders enabled", { exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Check due reminders", exact: true })
+    .click();
+  await expect(
+    page.getByText("No delivered reminders.", { exact: true }),
   ).toHaveCount(0);
-  await page.getByRole("tab", { name: "押金跟进", exact: true }).click();
+  await page.getByRole("tab", { name: "Bond follow-up", exact: true }).click();
   await page
-    .getByLabel("你确认的结果或撤回原因", { exact: true })
+    .getByLabel("Your confirmed outcome or reason for withdrawal", {
+      exact: true,
+    })
     .fill("Synthetic outcome explicitly confirmed by tenant.");
   await page
-    .getByRole("button", { name: "确认结果并关闭跟进", exact: true })
+    .getByRole("button", {
+      name: "Confirm outcome and close follow-up",
+      exact: true,
+    })
     .click();
   await page
-    .getByRole("button", { name: "确认结果并关闭", exact: true })
+    .getByRole("button", { name: "Confirm outcome and close", exact: true })
     .click();
-  await expect(page.getByText("已确认结果", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Outcome confirmed", { exact: true }),
+  ).toBeVisible();
   await page.reload();
-  await expect(page.getByText("已确认租约资料", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Confirmed lease details", { exact: true }),
+  ).toBeVisible();
   await page.screenshot({
     path: resolve(artifactDir, "aftercare-desktop.png"),
   });
@@ -350,7 +474,10 @@ for (const width of [360, 768, 1440])
     await page.setViewportSize({ width, height: 1000 });
     await page.goto(`/cases/${c.case_id}/recommendations`);
     await expect(
-      page.getByRole("heading", { name: "房源推荐", exact: true }),
+      page.getByRole("heading", {
+        name: "Housing recommendations",
+        exact: true,
+      }),
     ).toBeVisible();
     expect(
       await page.evaluate(
@@ -360,11 +487,16 @@ for (const width of [360, 768, 1440])
     await page
       .locator("article.listing-row")
       .first()
-      .getByRole("button", { name: "查看推荐依据", exact: true })
+      .getByRole("button", {
+        name: "View recommendation evidence",
+        exact: true,
+      })
       .focus();
     await page.keyboard.press("Enter");
     await expect(
-      page.getByText("四维匹配分与有效权重", { exact: true }),
+      page.getByText("Four-dimension scores and effective weights", {
+        exact: true,
+      }),
     ).toBeVisible();
     await page.keyboard.press("Escape");
     await expect(page.getByRole("dialog")).toBeHidden();
@@ -389,12 +521,15 @@ test("contract conflict requires operator, prepares unsent questions and retains
   await page.goto(`/cases/${c.case_id}/contract`);
   await page
     .getByRole("checkbox", {
-      name: "我同意为本次复核处理此合同，理解此同意独立于选房确认。",
+      name: "I agree to process this contract for this review and understand this consent is separate from property selection.",
       exact: true,
     })
     .check();
   await page
-    .getByRole("button", { name: "同意处理此合同", exact: true })
+    .getByRole("button", {
+      name: "Agree to process this contract",
+      exact: true,
+    })
     .click();
   const buffer = Buffer.from(
     readFileSync(
@@ -409,33 +544,45 @@ test("contract conflict requires operator, prepares unsent questions and retains
   });
   await page
     .getByRole("checkbox", {
-      name: "我确认上传的是合成演示合同。",
+      name: "I confirm this is a synthetic demo contract.",
       exact: true,
     })
     .check();
-  await page.getByRole("button", { name: "上传并复核", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Upload and review", exact: true })
+    .click();
   await expect(
-    page.getByText("等待本地演示操作员处理", { exact: true }),
+    page.getByText("Awaiting local demo operator", { exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "准备问题清单", exact: true }),
+    page.getByRole("button", { name: "Prepare question list", exact: true }),
   ).toBeDisabled();
-  await page.getByRole("link", { name: "本地演示操作员", exact: true }).click();
-  await page.getByLabel("本地操作员密钥", { exact: true }).fill("qa-local-key");
   await page
-    .getByLabel("人工核对记录")
+    .getByRole("link", { name: "Local demo operator", exact: true })
+    .click();
+  await page
+    .getByLabel("Local operator key", { exact: true })
+    .fill("qa-local-key");
+  await page
+    .getByLabel("Human review notes")
     .fill("Synthetic rent difference reviewed; demonstration decision only.");
   await page
-    .getByRole("button", { name: "完成本次人工复核", exact: true })
+    .getByRole("button", { name: "Complete this human review", exact: true })
     .click();
-  await page.getByRole("button", { name: "记录人工决定", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Record human decision", exact: true })
+    .click();
   await expect(
-    page.getByText("当前案例没有待人工复核的合同。", { exact: true }),
+    page.getByText("This case has no contracts awaiting human review.", {
+      exact: true,
+    }),
   ).toBeVisible();
-  await navigate(page, "合同复核");
-  await page.getByRole("button", { name: "准备问题清单", exact: true }).click();
+  await navigate(page, "Contract review");
+  await page
+    .getByRole("button", { name: "Prepare question list", exact: true })
+    .click();
   await expect(
-    page.getByText("问题清单 · 尚未发送", { exact: true }),
+    page.getByText("Questions · Not sent", { exact: true }),
   ).toBeVisible();
   const saved = await (await request.get(`/api/v1/cases/${c.case_id}`)).json();
   const reviewId = saved.reviews.at(-1).review_id;
@@ -444,29 +591,46 @@ test("contract conflict requires operator, prepares unsent questions and retains
   ).json();
   expect(packet.handoff_status).toBe("prepared_not_sent");
   expect(packet.questions.length).toBeGreaterThan(0);
-  await page.getByRole("button", { name: "修正提取字段", exact: true }).click();
-  await page.getByRole("spinbutton", { name: "合同租金（AUD）" }).fill("500");
   await page
-    .getByRole("button", { name: "保存为新复核版本", exact: true })
+    .getByRole("button", { name: "Correct extracted fields", exact: true })
     .click();
-  await expect(page.getByText("复核版本 v2", { exact: true })).toBeVisible();
+  await page
+    .getByRole("spinbutton", { name: "Contract rent (AUD)" })
+    .fill("500");
+  await page
+    .getByRole("button", { name: "Save as a new review version", exact: true })
+    .click();
   await expect(
-    page.getByText("当前复核没有发现项，不生成额外问题。", { exact: true }),
+    page.getByText("Review version v2", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByText(
+      "This review has no findings. No additional questions will be generated.",
+      { exact: true },
+    ),
   ).toBeVisible();
   await page
-    .getByRole("button", { name: "查看历史复核版本", exact: true })
-    .click();
-  await expect(page.getByText("历史快照只读", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "关闭", exact: true }).click();
-  await page
-    .getByRole("button", { name: "撤销本次复核处理同意", exact: true })
+    .getByRole("button", { name: "View review history", exact: true })
     .click();
   await expect(
-    page.getByText("本次复核处理同意未生效或上下文已变化", { exact: true }),
+    page.getByText("Historical snapshots are read-only", { exact: true }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Close", exact: true }).click();
+  await page
+    .getByRole("button", {
+      name: "Revoke processing consent for this review",
+      exact: true,
+    })
+    .click();
+  await expect(
+    page.getByText(
+      "Review processing consent is inactive or the context has changed",
+      { exact: true },
+    ),
   ).toBeVisible();
   await page.reload();
   await expect(
-    page.getByRole("button", { name: "修正提取字段", exact: true }),
+    page.getByRole("button", { name: "Correct extracted fields", exact: true }),
   ).toBeDisabled();
   await expect(page.locator("input[type=file]")).toHaveCount(0);
 });
@@ -475,15 +639,17 @@ test("failed case navigation never exposes writes to the previous case", async (
   page,
 }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "新建演示案例", exact: true }).click();
+  await page
+    .getByRole("button", { name: "New demo case", exact: true })
+    .click();
   await expect(
-    page.getByRole("heading", { name: "租房偏好", exact: true }),
+    page.getByRole("heading", { name: "Rental preferences", exact: true }),
   ).toBeVisible();
   const caseA = page.url().split("/")[4];
-  await page.getByRole("button", { name: "新建案例", exact: true }).click();
+  await page.getByRole("button", { name: "New case", exact: true }).click();
   await expect(page).not.toHaveURL(new RegExp(caseA));
   await expect(
-    page.getByRole("heading", { name: "租房偏好", exact: true }),
+    page.getByRole("heading", { name: "Rental preferences", exact: true }),
   ).toBeVisible();
   await page.route(`**/api/v1/cases/${caseA}`, (route) =>
     route.fulfill({
@@ -504,7 +670,7 @@ test("failed case navigation never exposes writes to the previous case", async (
     page.getByText("Temporary case read failure", { exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "保存草稿", exact: true }),
+    page.getByRole("button", { name: "Save draft", exact: true }),
   ).toHaveCount(0);
 });
 
@@ -550,17 +716,27 @@ test("failed report selection preserves clearly labeled prior data and disables 
     }),
   );
   await page
-    .getByRole("combobox", { name: "选择推荐版本", exact: true })
+    .getByRole("combobox", {
+      name: "Choose recommendation version",
+      exact: true,
+    })
     .click();
-  await page.getByText("偏好 v1 · 报告 1", { exact: true }).click();
+  await page.getByText("Preferences v1 · Report 1", { exact: true }).click();
   await expect(
-    page.getByText("所选报告尚未成功读取", { exact: true }),
+    page.getByText("Could not load selected report", { exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "选择此房源", exact: true }).first(),
+    page
+      .getByRole("button", { name: "Select this listing", exact: true })
+      .first(),
   ).toBeDisabled();
   await expect(
-    page.getByRole("button", { name: "查看推荐依据", exact: true }).first(),
+    page
+      .getByRole("button", {
+        name: "View recommendation evidence",
+        exact: true,
+      })
+      .first(),
   ).toBeDisabled();
 });
 
@@ -609,21 +785,25 @@ test("lost aftercare response preserves modal input and retry identity while rem
   await page.clock.install();
   await page.goto(`/cases/${c.case_id}/aftercare`);
   await page
-    .getByRole("button", { name: "编辑任务", exact: true })
+    .getByRole("button", { name: "Edit task", exact: true })
     .first()
     .click();
   const dialog = page.getByRole("dialog");
   await dialog
-    .getByRole("textbox", { name: "任务内容" })
+    .getByRole("textbox", { name: "Task details" })
     .fill("Synthetic task edited before response loss");
-  await dialog.getByRole("button", { name: "保存任务", exact: true }).click();
-  await expect(dialog.getByText("操作未完成", { exact: true })).toBeVisible();
-  await expect(dialog.getByRole("textbox", { name: "任务内容" })).toHaveValue(
-    "Synthetic task edited before response loss",
-  );
+  await dialog.getByRole("button", { name: "Save task", exact: true }).click();
+  await expect(
+    dialog.getByText("Unable to complete this action", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    dialog.getByRole("textbox", { name: "Task details" }),
+  ).toHaveValue("Synthetic task edited before response loss");
   await page.clock.fastForward(31_000);
   expect(commands.some((c) => c.operation === "poll_reminders")).toBeFalsy();
-  await dialog.getByRole("button", { name: "重试原操作", exact: true }).click();
+  await dialog
+    .getByRole("button", { name: "Retry original action", exact: true })
+    .click();
   await expect(dialog).toBeHidden();
   await expect(
     page.getByText("Synthetic task edited before response loss", {
@@ -691,37 +871,37 @@ test("cancelling a failed task edit cannot retry the previous task from a new ed
   });
   await page.goto(`/cases/${c.case_id}/aftercare`);
   await page
-    .getByRole("button", { name: "编辑任务", exact: true })
+    .getByRole("button", { name: "Edit task", exact: true })
     .first()
     .click();
   let dialog = page.getByRole("dialog");
   await dialog
-    .getByRole("textbox", { name: "任务内容" })
+    .getByRole("textbox", { name: "Task details" })
     .fill("Unsubmitted first task edit");
-  await dialog.getByRole("button", { name: "保存任务", exact: true }).click();
+  await dialog.getByRole("button", { name: "Save task", exact: true }).click();
   await expect(
     dialog.getByText("Synthetic task conflict", { exact: true }),
   ).toBeVisible();
   await dialog
-    .getByRole("button", { name: "取消本次编辑", exact: true })
+    .getByRole("button", { name: "Cancel this edit", exact: true })
     .click();
   await expect(dialog).toBeHidden();
   await page
-    .getByRole("button", { name: "编辑任务", exact: true })
+    .getByRole("button", { name: "Edit task", exact: true })
     .nth(1)
     .click();
   dialog = page.getByRole("dialog");
   await expect(
-    dialog.getByRole("button", { name: "重试原操作", exact: true }),
+    dialog.getByRole("button", { name: "Retry original action", exact: true }),
   ).toHaveCount(0);
   await expect(
-    dialog.getByRole("textbox", { name: "任务内容" }),
+    dialog.getByRole("textbox", { name: "Task details" }),
   ).not.toHaveValue("Unsubmitted first task edit");
   fail = false;
   await dialog
-    .getByRole("textbox", { name: "任务内容" })
+    .getByRole("textbox", { name: "Task details" })
     .fill("Second task intentional edit");
-  await dialog.getByRole("button", { name: "保存任务", exact: true }).click();
+  await dialog.getByRole("button", { name: "Save task", exact: true }).click();
   await expect(dialog).toBeHidden();
   const record = await (
     await request.get(`/api/v1/aftercare/cases/${m4id}`)
@@ -754,9 +934,16 @@ test("an existing aftercare read failure offers recovery instead of creating a s
     page.getByText("Synthetic aftercare read unavailable", { exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "确认资料并创建租后案件", exact: true }),
+    page.getByRole("button", {
+      name: "Confirm details and create aftercare case",
+      exact: true,
+    }),
   ).toHaveCount(0);
   await page.unroute(pattern);
-  await page.getByRole("button", { name: "读取最新状态", exact: true }).click();
-  await expect(page.getByText("已确认租约资料", { exact: true })).toBeVisible();
+  await page
+    .getByRole("button", { name: "Load latest state", exact: true })
+    .click();
+  await expect(
+    page.getByText("Confirmed lease details", { exact: true }),
+  ).toBeVisible();
 });

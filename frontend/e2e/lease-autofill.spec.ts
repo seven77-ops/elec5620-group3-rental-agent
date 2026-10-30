@@ -31,44 +31,49 @@ test("calendar lease lengths calculate end dates, preserve explicit custom dates
 }) => {
   const { c } = await seed(request);
   await page.goto(`/cases/${c.case_id}/contract?mode=draft`);
-  await page.getByLabel("租期类型", { exact: true }).click();
-  await page.getByRole("option", { name: "固定租期", exact: true }).click();
+  await page.getByLabel("Lease type", { exact: true }).click();
+  await page.getByRole("option", { name: "Fixed term", exact: true }).click();
   await expect(
     page
       .locator(".ant-form-item")
-      .filter({ has: page.getByLabel("租期时长", { exact: true }) }),
-  ).toContainText("1年");
-  await page.getByLabel("租期时长", { exact: true }).click();
-  await page.getByRole("option", { name: "6个月", exact: true }).click();
-  await page.getByLabel("起租日期", { exact: true }).fill("2026-08-31");
-  await expect(page.getByLabel("结束日期", { exact: true })).toHaveValue(
+      .filter({ has: page.getByLabel("Lease duration", { exact: true }) }),
+  ).toContainText("1 year");
+  await page.getByLabel("Lease duration", { exact: true }).click();
+  await page.getByRole("option", { name: "6 months", exact: true }).click();
+  await page.getByLabel("Lease start date", { exact: true }).fill("2026-08-31");
+  await expect(page.getByLabel("End date", { exact: true })).toHaveValue(
     "2027-02-28",
   );
-  await expect(page.getByLabel("结束日期", { exact: true })).toBeDisabled();
-  await page.getByLabel("租期时长", { exact: true }).click();
-  await page.getByRole("option", { name: "1年", exact: true }).click();
-  await expect(page.getByLabel("结束日期", { exact: true })).toHaveValue(
+  await expect(page.getByLabel("End date", { exact: true })).toBeDisabled();
+  await page.getByLabel("Lease duration", { exact: true }).click();
+  await page.getByRole("option", { name: "1 year", exact: true }).click();
+  await expect(page.getByLabel("End date", { exact: true })).toHaveValue(
     "2027-08-31",
   );
-  await page.getByLabel("租期时长", { exact: true }).click();
-  await page.getByRole("option", { name: "自定义日期", exact: true }).click();
-  await expect(page.getByLabel("结束日期", { exact: true })).toBeEnabled();
-  await page.getByLabel("结束日期", { exact: true }).fill("2026-08-01");
+  await page.getByLabel("Lease duration", { exact: true }).click();
+  await page.getByRole("option", { name: "Custom dates", exact: true }).click();
+  await expect(page.getByLabel("End date", { exact: true })).toBeEnabled();
+  await page.getByLabel("End date", { exact: true }).fill("2026-08-01");
   await page
-    .getByRole("button", { name: "核对并填入合同", exact: true })
+    .getByRole("button", { name: "Check and fill contract", exact: true })
     .click();
   await expect(
-    page.getByRole("dialog", { name: "确认保存租约草稿", exact: true }),
+    page.getByRole("dialog", { name: "Confirm lease draft save", exact: true }),
   ).toHaveCount(0);
   await expect(
-    page.getByText("结束日期须晚于起租日期。", { exact: true }),
+    page.getByText("The end date must be after the start date.", {
+      exact: true,
+    }),
   ).toBeVisible();
-  await page.getByLabel("租期类型", { exact: true }).click();
+  await page.getByLabel("Lease type", { exact: true }).click();
   await page
-    .getByRole("option", { name: "持续租约（无结束日期）", exact: true })
+    .getByRole("option", {
+      name: "Periodic tenancy (no end date)",
+      exact: true,
+    })
     .click();
-  await expect(page.getByLabel("结束日期", { exact: true })).toHaveValue("");
-  await expect(page.getByLabel("结束日期", { exact: true })).toBeDisabled();
+  await expect(page.getByLabel("End date", { exact: true })).toHaveValue("");
+  await expect(page.getByLabel("End date", { exact: true })).toBeDisabled();
 });
 test("chosen addresses populate structured PDF boxes, additional fields and a standard calendar term", async ({
   page,
@@ -77,63 +82,79 @@ test("chosen addresses populate structured PDF boxes, additional fields and a st
   const { c, root } = await seed(request);
   await page.goto(`/cases/${c.case_id}/contract?mode=draft`);
   for (const [prefix, street, suburb, postcode] of [
-    ["出租方", "1 Example Street", "Redfern", "2016"],
-    ["租客", "Unit 2001, 10 Example Street", "Redfern", "2016"],
-    ["出租方中介", "2 Example Road", "Burwood", "2134"],
+    ["Landlord", "1 Example Street", "Redfern", "2016"],
+    ["Tenant", "Unit 2001, 10 Example Street", "Redfern", "2016"],
+    ["Landlord agent", "2 Example Road", "Burwood", "2134"],
   ]) {
-    if (prefix === "出租方中介")
-      await page.getByText("出租方中介（如适用）", { exact: true }).click();
-    await page.getByLabel(`${prefix}送达地址`, { exact: true }).fill(street);
-    await page.getByLabel(`${prefix} State`, { exact: true }).fill("NSW");
+    if (prefix === "Landlord agent")
+      await page
+        .getByText("Landlord agent (if applicable)", { exact: true })
+        .click();
     await page
-      .getByLabel(`${prefix}区域（Suburb）`, { exact: true })
-      .fill(suburb);
+      .getByLabel(`${prefix} notice address`, { exact: true })
+      .fill(street);
+    await page.getByLabel(`${prefix} State`, { exact: true }).fill("NSW");
+    await page.getByLabel(`${prefix} suburb`, { exact: true }).fill(suburb);
     const field =
-      prefix === "出租方" ? "landlord" : prefix === "租客" ? "tenant" : "agent";
+      prefix === "Landlord"
+        ? "landlord"
+        : prefix === "Tenant"
+          ? "tenant"
+          : "agent";
     await page
       .locator(`#${field}_notice_suburb_list`)
       .getByRole("option", { name: `${suburb} · NSW ${postcode}`, exact: true })
       .click();
     await expect(
-      page.getByLabel(`${prefix}送达地址`, { exact: true }),
+      page.getByLabel(`${prefix} notice address`, { exact: true }),
     ).toHaveValue(street);
     await expect(
-      page.getByLabel(`${prefix}区域（Suburb）`, { exact: true }),
+      page.getByLabel(`${prefix} suburb`, { exact: true }),
     ).toHaveValue(suburb);
     await expect(
       page.getByLabel(`${prefix} State`, { exact: true }),
     ).toHaveValue("NSW");
-    await expect(page.getByLabel(`${prefix}邮编`, { exact: true })).toHaveValue(
-      postcode,
-    );
+    await expect(
+      page.getByLabel(`${prefix} postcode`, { exact: true }),
+    ).toHaveValue(postcode);
   }
-  await page.getByLabel("租约适用范围", { exact: true }).click();
+  await page.getByLabel("Lease scope", { exact: true }).click();
   await page
-    .getByRole("option", { name: "新州普通整租住宅", exact: true })
+    .getByRole("option", {
+      name: "Standard NSW whole-property residential tenancy",
+      exact: true,
+    })
     .click();
-  await page.getByLabel("租期类型", { exact: true }).click();
-  await page.getByRole("option", { name: "固定租期", exact: true }).click();
-  await page.getByLabel("租期时长", { exact: true }).click();
-  await page.getByRole("option", { name: "6个月", exact: true }).click();
-  await page.getByLabel("起租日期", { exact: true }).fill("2026-08-31");
-  await page.getByText("签约信息（可选）", { exact: true }).click();
-  await page.getByLabel("拟定签约日期", { exact: true }).fill("2026-08-20");
-  await page.getByLabel("拟定签约地点", { exact: true }).fill("Sydney");
+  await page.getByLabel("Lease type", { exact: true }).click();
+  await page.getByRole("option", { name: "Fixed term", exact: true }).click();
+  await page.getByLabel("Lease duration", { exact: true }).click();
+  await page.getByRole("option", { name: "6 months", exact: true }).click();
+  await page.getByLabel("Lease start date", { exact: true }).fill("2026-08-31");
+  await page.getByText("Signing details (optional)", { exact: true }).click();
   await page
-    .getByRole("button", { name: "核对并填入合同", exact: true })
+    .getByLabel("Proposed signing date", { exact: true })
+    .fill("2026-08-20");
+  await page
+    .getByLabel("Proposed signing location", { exact: true })
+    .fill("Sydney");
+  await page
+    .getByRole("button", { name: "Check and fill contract", exact: true })
     .click();
   const modal = page.getByRole("dialog", {
-    name: "确认保存租约草稿",
+    name: "Confirm lease draft save",
     exact: true,
   });
   await expect(modal).toContainText("2016");
-  await expect(modal).toContainText("6个月");
+  await expect(modal).toContainText("6 months");
   await modal.getByRole("checkbox").check();
   await modal
-    .getByRole("button", { name: "确认保存未签署草稿", exact: true })
+    .getByRole("button", {
+      name: "Confirm and save unsigned draft",
+      exact: true,
+    })
     .click();
   await expect(
-    page.getByRole("dialog", { name: "合同预览 · v1", exact: true }),
+    page.getByRole("dialog", { name: "Contract preview · v1", exact: true }),
   ).toBeVisible();
   const list = await (await request.get(root + "/lease-drafts")).json();
   const draft = await (
@@ -150,10 +171,10 @@ test("chosen addresses populate structured PDF boxes, additional fields and a st
   expect(pdf.ok()).toBe(true);
   await writeFile("/tmp/lease-autofill-browser.pdf", await pdf.body());
   await page.reload();
-  await expect(page.getByLabel("出租方邮编", { exact: true })).toHaveValue(
-    "2016",
-  );
-  await expect(page.getByLabel("结束日期", { exact: true })).toHaveValue(
+  await expect(
+    page.getByLabel("Landlord postcode", { exact: true }),
+  ).toHaveValue("2016");
+  await expect(page.getByLabel("End date", { exact: true })).toHaveValue(
     "2027-02-28",
   );
 });
@@ -185,7 +206,7 @@ test("mobile property search ignores late results and permits explicit manual ad
     else await route.fulfill({ json: { items: [], source: "local_catalog" } });
   });
   await page.goto(`/cases/${c.case_id}/contract?mode=draft`);
-  const input = page.getByLabel("房屋地址", { exact: true });
+  const input = page.getByLabel("Property address", { exact: true });
   await input.fill("Redfern");
   await expect.poll(() => oldStarted).toBe(true);
   await input.fill("Burwood");
@@ -202,14 +223,16 @@ test("mobile property search ignores late results and permits explicit manual ad
     .filter({ has: page.locator('[data-address-kind="address"]') })
     .first()
     .click();
-  await expect(page.getByLabel("房屋邮编", { exact: true })).toHaveValue(
-    "2134",
-  );
+  await expect(
+    page.getByLabel("Property postcode", { exact: true }),
+  ).toHaveValue("2134");
   await input.fill("Unit 20, Unlisted Example Road");
-  await expect(page.getByLabel("房屋邮编", { exact: true })).toHaveValue("");
-  await page.getByLabel("房屋区域（Suburb）", { exact: true }).fill("Sydney");
-  await page.getByLabel("房屋 State", { exact: true }).fill("NSW");
-  await page.getByLabel("房屋邮编", { exact: true }).fill("2000");
+  await expect(
+    page.getByLabel("Property postcode", { exact: true }),
+  ).toHaveValue("");
+  await page.getByLabel("Property suburb", { exact: true }).fill("Sydney");
+  await page.getByLabel("Property State", { exact: true }).fill("NSW");
+  await page.getByLabel("Property postcode", { exact: true }).fill("2000");
   await expect(input).toHaveValue("Unit 20, Unlisted Example Road");
   expect(
     await page.evaluate(

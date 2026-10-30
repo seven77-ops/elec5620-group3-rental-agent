@@ -17,11 +17,11 @@ export default function AftercareFailure({
   if (!(error instanceof ApiError) || error.code !== "needs_clarification")
     return <Failure error={error} retry={retry} />;
   return (
-    <section className="aftercare-guidance" aria-label="操作提示">
+    <section className="aftercare-guidance" aria-label="Action guidance">
       <Alert
         type="warning"
         showIcon
-        title="资料还需补充"
+        title="More information is needed"
         description={
           <>
             <ul>
@@ -31,7 +31,7 @@ export default function AftercareFailure({
             </ul>
             {onResolve && (
               <Button type="primary" onClick={onResolve}>
-                {resolveLabel || "补充资料"}
+                {resolveLabel || "Add information"}
               </Button>
             )}
           </>
@@ -43,7 +43,7 @@ export default function AftercareFailure({
         items={[
           {
             key: "details",
-            label: "查看错误详情",
+            label: "View error details",
             children: (
               <JsonDetails
                 value={{

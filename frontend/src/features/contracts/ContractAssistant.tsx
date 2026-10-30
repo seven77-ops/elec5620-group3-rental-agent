@@ -1,3 +1,4 @@
+import KnowledgePanel from "../knowledge/KnowledgePanel";
 import { lazy, Suspense } from "react";
 import { Tabs } from "antd";
 import { useSearchParams } from "react-router-dom";
@@ -16,7 +17,7 @@ export default function ContractAssistant() {
       : "draft";
   return (
     <>
-      <PageTitle title="合同助手" />
+      <PageTitle title="Contract assistant" extra={<KnowledgePanel />} />
       <Tabs
         activeKey={mode}
         onChange={(key) => setParams({ mode: key })}
@@ -24,7 +25,7 @@ export default function ContractAssistant() {
         items={[
           {
             key: "draft",
-            label: "生成租约草稿",
+            label: "Generate lease draft",
             children: (
               <Suspense fallback={<Loading />}>
                 <LeaseDraft />
@@ -33,7 +34,7 @@ export default function ContractAssistant() {
           },
           {
             key: "review",
-            label: "上传合同复核",
+            label: "Upload contract for review",
             children: <Contract embedded />,
           },
         ]}

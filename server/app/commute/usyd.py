@@ -5,17 +5,20 @@ import json
 
 DESTINATION = {
     'id':'usyd:camperdown-darlington:fisher-library',
-    'label':'悉尼大学 Camperdown / Darlington 主校区 · Fisher Library',
+    'label':'University of Sydney Camperdown / Darlington main campus · Fisher Library',
     'latitude':-33.88630396441765, 'longitude':151.190498785334,
     'precision':'official_poi_point_not_entrance', 'accuracy_metres':10,
     'source_url':'https://portal.spatial.nsw.gov.au/server/rest/services/NSW_Features_of_Interest_Category_multiCRS/MapServer/3/query?objectIds=238482&outFields=*&outSR=4326&f=pjson',
     'campus_url':'https://www.sydney.edu.au/about-us/campuses/getting-to-campus.html',
-    'reference_note':'以 Fisher Library 官方设施点为统一到校参考；到具体教室及楼内的时间另计。',
+    'reference_note':'Fisher Library is the common official campus reference point. Travel to specific classrooms and indoor walking are additional.',
 }
-CAMPUS_FINGERPRINT = hashlib.sha256(json.dumps(DESTINATION,sort_keys=True).encode()).hexdigest()
+# Presentation-only translation must not invalidate existing route evidence.
+_HASH_REFERENCE = {**DESTINATION, 'label': "\u6089\u5c3c\u5927\u5b66 Camperdown / Darlington \u4e3b\u6821\u533a \u00b7 Fisher Library",
+                   'reference_note': "\u4ee5 Fisher Library \u5b98\u65b9\u8bbe\u65bd\u70b9\u4e3a\u7edf\u4e00\u5230\u6821\u53c2\u8003\uff1b\u5230\u5177\u4f53\u6559\u5ba4\u53ca\u697c\u5185\u7684\u65f6\u95f4\u53e6\u8ba1\u3002"}
+CAMPUS_FINGERPRINT = hashlib.sha256(json.dumps(_HASH_REFERENCE,sort_keys=True).encode()).hexdigest()
 MODES = ('public_transport','train','metro','bus','drive','bike','walk')
-MODE_LABELS = {'public_transport':'公共交通','train':'火车','metro':'地铁','bus':'公交车',
-               'drive':'开车','bike':'骑行','walk':'步行','light_rail':'轻轨','ferry':'轮渡'}
+MODE_LABELS = {'public_transport':'public transport','train':'train','metro':'metro','bus':'bus',
+               'drive':'driving','bike':'cycling','walk':'walking','light_rail':'light rail','ferry':'ferry'}
 
 
 def student_brief(brief):

@@ -15,7 +15,7 @@ class AssistantFlexibilityTests(unittest.TestCase):
             'lifestyle_priorities':['library']}}
         r=self.send(c,'libraries','比较Chatswood和Eastwood，预算1100两卧，喜欢图书馆');self.assertEqual(r.status_code,200,r.text)
         c=r.json();first=c['messages'][-1]['content']
-        for term in ('Chatswood','Eastwood','图书馆','1100'):self.assertIn(term,first)
+        for term in ('Chatswood','Eastwood','Libraries','1100'):self.assertIn(term,first)
         self.provider.result={'intent':'area_advice','areas':['Parramatta','Strathfield'],'focus':'housing','brief_patch':{'budget_amount':700}}
         r=self.send(c,'cheaper','改为Parramatta和Strathfield，预算700，按房型和价格比较')
         self.assertEqual(r.status_code,200,r.text);second=r.json()['messages'][-1]['content']
@@ -26,7 +26,7 @@ class AssistantFlexibilityTests(unittest.TestCase):
         self.provider.result={'intent':'area_advice','areas':['Redfern','Marrickville'],'brief_patch':{'lifestyle_priorities':['quiet']}}
         r=self.send(self.conversation(),'quiet','Redfern和Marrickville哪个更安静？')
         self.assertEqual(r.status_code,200,r.text);text=r.json()['messages'][-1]['content']
-        self.assertIn('不能判断',text);self.assertIn('安静',text)
+        self.assertIn('cannot determine',text);self.assertIn('Quietness',text)
         self.assertIn('Redfern',text);self.assertNotIn('Rhodes',text)
 
     def test_incomplete_suburb_is_clarified_without_losing_budget_and_rooms(self):
@@ -36,7 +36,7 @@ class AssistantFlexibilityTests(unittest.TestCase):
         self.assertEqual(r.status_code,200,r.text);c=r.json()
         self.assertNotIn('suburb',c['rental_brief']);self.assertEqual(c['rental_brief']['budget_amount'],900)
         self.assertEqual(c['rental_brief']['min_bedrooms'],2)
-        self.assertIn('完整',c['messages'][-1]['content']);self.assertIn('Rose',c['messages'][-1]['content'])
+        self.assertIn('full English name',c['messages'][-1]['content']);self.assertIn('Rose',c['messages'][-1]['content'])
 
     def test_known_pending_school_reply_is_accepted_despite_malformed_router_fields(self):
         self.provider.result={'intent':'recommend_areas','brief_patch':{
@@ -47,7 +47,7 @@ class AssistantFlexibilityTests(unittest.TestCase):
         self.assertEqual(r.status_code,200,r.text);c=r.json()
         self.assertEqual(c['rental_brief']['suburb'],'Camperdown')
         self.assertEqual(c['messages'][-1]['intent'],'outside_scope')
-        self.assertIn('悉尼大学',c['messages'][-1]['content'])
+        self.assertIn('University of Sydney',c['messages'][-1]['content'])
 
     def test_natural_area_choice_recovers_a_misrouted_area_introduction(self):
         self.provider.result={'intent':'area_advice','areas':['Burwood','Ashfield'],'brief_patch':{
@@ -59,7 +59,7 @@ class AssistantFlexibilityTests(unittest.TestCase):
         self.assertEqual(r.status_code,200,r.text);c=r.json();answer=c['messages'][-1]
         self.assertEqual(answer['intent'],'recommend_areas');self.assertNotIn('area_advice',answer)
         self.assertEqual(c['rental_brief']['suburb'],'Ashfield');self.assertEqual(c['rental_brief']['budget_amount'],850)
-        self.assertIn('悉大主校区',answer['content'])
+        self.assertIn('USYD main campus',answer['content'])
 
     def test_area_followup_recovery_does_not_steal_another_comparison(self):
         self.provider.result={'intent':'area_advice','areas':['Burwood','Ashfield']}
@@ -76,15 +76,15 @@ class AssistantFlexibilityTests(unittest.TestCase):
         self.assertEqual(r.status_code,200,r.text);c=r.json();answer=c['messages'][-1]
         self.assertEqual(answer['intent'],'collect_preferences');self.assertEqual(answer['listings'],[])
         self.assertNotIn('suburb',c['rental_brief']);self.assertEqual(c['rental_brief']['budget_amount'],900)
-        self.assertEqual(c['rental_brief']['min_bedrooms'],2);self.assertIn('完整',answer['content'])
+        self.assertEqual(c['rental_brief']['min_bedrooms'],2);self.assertIn('full English name',answer['content'])
 
     def test_evidence_tie_names_supported_areas_without_including_missing_area(self):
         self.provider.result={'intent':'area_advice','areas':['Burwood','Marrickville','Carlton'],
                               'brief_patch':{'lifestyle_priorities':['food','library']}}
         c=self.send(self.conversation(),'tie','比较Burwood、Marrickville和Carlton，喜欢餐饮图书馆').json()
         answer=c['messages'][-1]['content']
-        self.assertNotIn('这几个区域各有相应配套资料',answer)
-        self.assertIn('Burwood、Marrickville',answer)
+        self.assertNotIn('these areas all have relevant facilities evidence',answer)
+        self.assertIn('Burwood, Marrickville',answer)
 
     def test_invalid_intent_gets_one_schema_repair_attempt(self):
         self.provider.result={'intent':'area_advice','areas':['Carlton','Rosebery'],'focus':'price'}

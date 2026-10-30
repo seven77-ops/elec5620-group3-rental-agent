@@ -1,13 +1,13 @@
 import type { UsydCommute } from "../../api/catalog.ts";
 
 export const commuteModes = [
-  { value: "public_transport", label: "公共交通" },
-  { value: "train", label: "火车" },
-  { value: "metro", label: "地铁" },
-  { value: "bus", label: "公交车" },
-  { value: "drive", label: "开车" },
-  { value: "bike", label: "骑行" },
-  { value: "walk", label: "步行" },
+  { value: "public_transport", label: "Public transport" },
+  { value: "train", label: "Train" },
+  { value: "metro", label: "Metro" },
+  { value: "bus", label: "Bus" },
+  { value: "drive", label: "Driving" },
+  { value: "bike", label: "Cycling" },
+  { value: "walk", label: "Walking" },
 ];
 const validMinutes = (value: unknown): value is number =>
   typeof value === "number" && Number.isFinite(value) && value >= 0;
@@ -40,7 +40,7 @@ export function selectedCommute(
       lower: minutes,
       upper: minutes,
       estimated: false,
-      text: `${label}约 ${minutes} 分钟`,
+      text: `${label} Approx. ${minutes} minutes`,
     };
   }
   const estimate = data?.estimates?.[mode];
@@ -72,7 +72,7 @@ export function selectedCommute(
       lower,
       upper,
       estimated: true,
-      text: `${label}估算 ${lower}–${upper} 分钟`,
+      text: `${label} Estimated ${lower}–${upper} minutes`,
     };
   }
   return null;

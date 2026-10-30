@@ -9,23 +9,23 @@ def preference_context(profile, catalog, legacy=False):
     housing = profile.get('housing_preferences') or {}
     filters = {key:housing[key] for key in ('suburb','min_bedrooms','min_bathrooms','min_car_spaces')
                if housing.get(key) is not None}
-    notes = ['是否仍在租、入住日期、租期与可容纳人数待核实。',
-             '到校时间见逐套房源的计划时刻或路网估算；独立卧卫、家具和设施仍需核实，不使用虚构综合分数。',
-             '租赁方式和广告计价对象待核实；不把整租广告自动认定为单间或按人报价。']
+    notes = ['Availability, move-in date, lease term and capacity remain unverified.',
+             'Campus travel times use per-listing scheduled routes or road-network estimates. Private rooms, bathrooms, furnishings and facilities still need checks. No invented aggregate scores are used.',
+             'Rental mode and advertised rent scope remain unverified. Whole-property advertisements are not automatically treated as room or per-person prices.']
     student=profile.get('student_commute')
     if student:
         filters.update(usyd_mode=student['mode'],usyd_max_minutes=student['maximum_minutes'])
         for key in ('max_transfers',):
             if student.get(key) is not None:filters['usyd_'+key]=student[key]
-        notes.insert(0,'到校通勤按每套房源的参考路线或估算区间筛选；为大概时长，不绑定上课时间或具体班次。')
+        notes.insert(0,'Campus commute filters use each listing reference route or estimated range. These are approximate durations, independent of class times or specific services.')
     budget = profile.get('budget',{})
     if 'maximum' not in budget:
-        notes.insert(0,'尚未填写预算上限，暂不按价格排除房源。')
+        notes.insert(0,'No budget limit is supplied. Listings are not excluded by price.')
     elif budget.get('hard_limit') is not False and housing.get('budget_match_mode','advertised_amount') == 'advertised_amount':
         filters['max_weekly_rent'] = budget['maximum']
-        notes.insert(0, f"偏好默认按预算金额 AUD {budget['maximum']:g}/周粗筛广告标价；计价对象与账单待核实，不代表已满足个人或含账单预算。")
+        notes.insert(0, f"Preferences use AUD {budget['maximum']:g}/week to filter advertised rent provisionally. Rent scope and bills remain unverified; this does not establish a personal or bills-inclusive budget match.")
     elif budget.get('hard_limit') is not False:
-        notes.insert(0,'选择仅在计价对象一致时筛预算；当前广告计价对象未知，暂不应用预算上限，全部列为待核实。')
+        notes.insert(0,'Budget filtering requires matching rent scopes. Advertisement scopes are unknown, so the budget limit is not applied and all remain unverified.')
     else:
-        notes.insert(0,'最高预算为可协商条件，暂不排除超预算广告；计价对象与账单待核实。')
+        notes.insert(0,'The maximum budget is flexible, so above-budget advertisements are retained. Rent scope and bills remain unverified.')
     return {'filters':catalog.filters(filters), 'unverified_preferences':notes, 'mapping_policy':POLICY}

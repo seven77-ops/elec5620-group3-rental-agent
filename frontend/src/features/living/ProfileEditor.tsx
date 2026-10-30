@@ -15,9 +15,9 @@ import type {
   LivingWrite,
 } from "../../api/living";
 const yesNo = [
-  { value: "unknown", label: "尚未填写" },
-  { value: "yes", label: "是" },
-  { value: "no", label: "否" },
+  { value: "unknown", label: "Not entered" },
+  { value: "yes", label: "Yes" },
+  { value: "no", label: "No" },
 ];
 export default function ProfileEditor({
   record,
@@ -77,44 +77,50 @@ export default function ProfileEditor({
     <>
       <section className="living-contact-strip">
         <div>
-          <strong>{profile.address || "住处与联系人"}</strong>
+          <strong>{profile.address || "Home and contacts"}</strong>
           <Descriptions
             size="small"
             column={1}
             items={[
               {
                 key: "agent",
-                label: "中介 / 房东",
-                children: profile.agent_name || "尚未填写",
+                label: "Agent / landlord",
+                children: profile.agent_name || "Not entered",
               },
               {
                 key: "email",
-                label: "联系邮箱",
-                children: profile.agent_email || "尚未填写",
+                label: "Contact email",
+                children: profile.agent_email || "Not entered",
               },
             ]}
           />
         </div>
         <Button id="living-contact-editor" onClick={start} disabled={busy}>
-          编辑住处与联系人
+          Edit home and contacts
         </Button>
       </section>
       <Modal
         forceRender
-        title="住处与联系人"
+        title="Home and contacts"
         open={open}
         onCancel={() => !busy && setOpen(false)}
         onOk={submit}
-        okText="确认保存资料"
-        cancelText="取消"
+        okText="Confirm and save details"
+        cancelText="Cancel"
         confirmLoading={busy}
-        okButtonProps={{ disabled: !confirmed, "aria-label": "确认保存资料" }}
+        okButtonProps={{
+          disabled: !confirmed,
+          "aria-label": "Confirm and save details",
+        }}
         cancelButtonProps={{ disabled: busy }}
         mask={{ closable: !busy }}
         closable={!busy}
         width={700}
       >
-        <p className="muted">填写你确认的实际资料。未填写的条件保留为未知。</p>
+        <p className="muted">
+          Enter actual details you have confirmed. Unspecified conditions remain
+          unknown.
+        </p>
         <Form
           name="living-profile"
           form={form}
@@ -122,67 +128,72 @@ export default function ProfileEditor({
           layout="vertical"
           onValuesChange={() => setConfirmed(false)}
         >
-          <Form.Item name="address" label="居住地址">
+          <Form.Item name="address" label="Home address">
             <Input maxLength={1000} />
           </Form.Item>
           <div className="living-form-grid">
-            <Form.Item name="suburb" label="区域">
+            <Form.Item name="suburb" label="Suburb">
               <Input />
             </Form.Item>
-            <Form.Item name="postcode" label="邮编">
+            <Form.Item name="postcode" label="Postcode">
               <Input maxLength={10} />
             </Form.Item>
-            <Form.Item name="agent_name" label="中介或房东姓名">
+            <Form.Item name="agent_name" label="Agent or landlord name">
               <Input />
             </Form.Item>
             <Form.Item
               name="agent_email"
-              label="联系邮箱"
-              rules={[{ type: "email", message: "请填写有效邮箱" }]}
+              label="Contact email"
+              rules={[
+                { type: "email", message: "Enter a valid email address" },
+              ]}
             >
               <Input type="email" />
             </Form.Item>
-            <Form.Item name="agent_phone" label="联系电话">
+            <Form.Item name="agent_phone" label="Contact phone">
               <Input type="tel" />
             </Form.Item>
-            <Form.Item name="emergency_phone" label="紧急维修电话">
+            <Form.Item name="emergency_phone" label="Emergency repair phone">
               <Input type="tel" />
             </Form.Item>
-            <Form.Item name="lease_start_date" label="租约开始日期">
+            <Form.Item name="lease_start_date" label="Lease start date">
               <Input type="date" />
             </Form.Item>
-            <Form.Item name="lease_end_date" label="租约结束日期">
+            <Form.Item name="lease_end_date" label="Lease end date">
               <Input type="date" />
             </Form.Item>
-            <Form.Item name="move_out_date" label="预计退租日期">
+            <Form.Item name="move_out_date" label="Expected move-out date">
               <Input type="date" />
             </Form.Item>
-            <Form.Item name="moving_to" label="搬往地点">
+            <Form.Item name="moving_to" label="Moving destination">
               <Input />
             </Form.Item>
-            <Form.Item name="bedrooms" label="卧室数量">
+            <Form.Item name="bedrooms" label="Bedrooms">
               <InputNumber min={0} max={100} precision={0} />
             </Form.Item>
-            <Form.Item name="bathrooms" label="浴室数量">
+            <Form.Item name="bathrooms" label="Bathrooms">
               <InputNumber min={0} max={100} precision={0} />
             </Form.Item>
-            <Form.Item name="carpeted" label="是否有地毯">
+            <Form.Item name="carpeted" label="Does the property have carpet?">
               <Select options={yesNo} />
             </Form.Item>
-            <Form.Item name="has_pets" label="是否有宠物">
+            <Form.Item name="has_pets" label="Pets">
               <Select options={yesNo} />
             </Form.Item>
-            <Form.Item name="has_elevator" label="是否有电梯">
+            <Form.Item name="has_elevator" label="Lift available">
               <Select options={yesNo} />
             </Form.Item>
           </div>
-          <Form.Item name="own_furniture" label="自己的家具">
+          <Form.Item name="own_furniture" label="My furniture">
             <Input.TextArea rows={2} />
           </Form.Item>
-          <Form.Item name="landlord_furniture" label="房东提供的家具">
+          <Form.Item
+            name="landlord_furniture"
+            label="Landlord-provided furniture"
+          >
             <Input.TextArea rows={2} />
           </Form.Item>
-          <Form.Item name="notes" label="其他备注">
+          <Form.Item name="notes" label="Other notes">
             <Input.TextArea rows={2} />
           </Form.Item>
         </Form>
@@ -191,10 +202,13 @@ export default function ProfileEditor({
           disabled={busy}
           onChange={(e) => setConfirmed(e.target.checked)}
         >
-          我确认保存这些住处与联系人资料。
+          I confirm saving these home and contact details.
         </Checkbox>
         {record.version !== snapshot.version && (
-          <p role="alert">资料已更新，请关闭窗口后重新核对最新资料。</p>
+          <p role="alert">
+            Information has changed. Close this window and check the latest
+            details again.
+          </p>
         )}
       </Modal>
     </>

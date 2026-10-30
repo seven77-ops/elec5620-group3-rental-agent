@@ -9,12 +9,12 @@ test("utility providers show compact cards and open full details without saving 
   const list = page.locator(".living-provider-grid");
   await expect(list.locator(".utility-plan")).toHaveCount(0);
   const card = page.getByRole("button", {
-    name: "AGL，查看供应商详情",
+    name: "AGL, view provider details",
     exact: true,
   });
   await expect(card).toBeVisible();
   const electricity = page.getByRole("combobox", {
-    name: "电力供应商",
+    name: "Electricity provider",
     exact: true,
   });
   await electricity.click();
@@ -25,15 +25,17 @@ test("utility providers show compact cards and open full details without saving 
   await card.focus();
   await page.keyboard.press("Enter");
   const modal = page.getByRole("dialog", {
-    name: "AGL · 供应商详情",
+    name: "AGL · Provider details",
     exact: true,
   });
   await expect(modal).toBeVisible();
   await expect(modal.locator(".utility-plan").first()).toBeVisible();
   await expect(
-    modal.getByRole("link", { name: "官方网站", exact: true }),
+    modal.getByRole("link", { name: "Official website", exact: true }),
   ).toHaveAttribute("href", /^https:\/\//);
-  await modal.getByRole("button", { name: "关闭详情", exact: true }).click();
+  await modal
+    .getByRole("button", { name: "Close details", exact: true })
+    .click();
   await expect(modal).toHaveCount(0);
   await expect(card).toBeFocused();
   await expect(

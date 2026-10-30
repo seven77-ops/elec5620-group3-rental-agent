@@ -36,10 +36,10 @@ class DataProviders:
                                             follow_redirects=False, trust_env=False) as client:
                     async with client.stream(method, url, headers=headers, **kwargs) as response:
                         require(response.status_code == 200, 502, 'data_provider_error',
-                                '数据服务未成功返回，请检查接口权限、额度或服务状态。')
+                                'The data service request failed. Check permissions, quota or service status.')
                         content = bytearray()
                         async for chunk in response.aiter_bytes():
-                            require(len(content) + len(chunk) <= response_limit, 502, 'data_response_too_large', '数据响应超过大小限制。')
+                            require(len(content) + len(chunk) <= response_limit, 502, 'data_response_too_large', 'The data response exceeds the size limit.')
                             content.extend(chunk)
                         return strict_json(bytes(content).decode('utf-8'))
         try:
@@ -47,21 +47,21 @@ class DataProviders:
         except ApiError:
             raise
         except (TimeoutError, httpx.TimeoutException):
-            raise ApiError(504, 'data_timeout', '数据查询超时，未自动重试。') from None
+            raise ApiError(504, 'data_timeout', 'The data query timed out and was not automatically retried.') from None
         except httpx.HTTPError:
-            raise ApiError(502, 'data_connection_error', '暂时无法连接数据服务。') from None
+            raise ApiError(502, 'data_connection_error', 'The data service is temporarily unreachable.') from None
         except (ValueError, TypeError, UnicodeError):
-            raise ApiError(502, 'data_invalid_response', '数据服务返回的格式无法校验。') from None
+            raise ApiError(502, 'data_invalid_response', 'The data service response format could not be validated.') from None
 
     def gate(self, provider, allow_external):
-        require(allow_external is True, 422, 'external_query_required', '请先确认向该数据服务发送本次查询。')
+        require(allow_external is True, 422, 'external_query_required', 'Confirm sending this query to the data service first.')
         require(self.public_config()[provider]['configured'], 503, 'data_not_configured',
-                '后端尚未配置此数据接口或相应用途授权。请按运行说明配置后重启。')
+                'This data endpoint or its permitted purpose is not configured. Follow the setup instructions and restart.')
 
     def search(self, body: dict):
         shape(body, ('postcode', 'maximum_weekly_rent', 'allow_external'))
-        require(body['postcode'] in ('2008', '2037', '2042', '2050'), 422, 'invalid_input', '当前搜索限于已列出的悉大周边邮区。')
-        require(numeric(body['maximum_weekly_rent'], 1, 100_000), 422, 'invalid_input', '最高周租须为有效正数。')
+        require(body['postcode'] in ('2008', '2037', '2042', '2050'), 422, 'invalid_input', 'Search is limited to the listed postcodes near USYD.')
+        require(numeric(body['maximum_weekly_rent'], 1, 100_000), 422, 'invalid_input', 'Maximum weekly rent must be a valid positive amount.')
         self.gate('domain', body['allow_external'])
         data = self.request('POST', 'https://api.domain.com.au/v1/listings/residential/_search',
                             {'X-Api-Key': self.domain_key, 'Accept': 'application/json'}, json={
@@ -96,16 +96,16 @@ class DataProviders:
                               'bedrooms': beds if numeric(beds, 0, 20) else None, 'latitude': lat, 'longitude': lon,
                               'evaluation_status': 'not_evaluated'})
             return {'provider': 'domain', 'queried_at': now(), 'query': body, 'items': items,
-                    'limitations': ['广告不是已核实房源；尚未检查账单、入住窗口、租期和证据。', '只查询前20条，没有自动翻页、保存广告或调用模型。']}
+                    'limitations': ['Advertisements are unverified listings. Bills, move-in window, term and evidence have not been checked.', 'Queries only the first 20 results; no automatic pagination, advertisement saving or model call.']}
         except (ValueError, TypeError, KeyError, AttributeError):
-            raise ApiError(502, 'data_invalid_response', '房源响应未通过结构校验。') from None
+            raise ApiError(502, 'data_invalid_response', 'The listing response failed schema validation.') from None
 
     def trips(self, body: dict):
         shape(body, ('origin', 'destination', 'arrival_at', 'allow_external'))
         origin, destination = coordinates(body['origin']), coordinates(body['destination'])
         arrival = instant(body['arrival_at'])
         require(datetime.now(timezone.utc) < arrival <= datetime.now(timezone.utc) + timedelta(days=30),
-                422, 'invalid_input', '请选择未来30天内的到达时间；供应商实际时刻表范围可能更短。')
+                422, 'invalid_input', 'Choose an arrival time within the next 30 days. The provider timetable window may be shorter.')
         self.gate('tfnsw', body['allow_external'])
         local = arrival.astimezone(ZoneInfo('Australia/Sydney'))
         coord = lambda p: f"{p['longitude']:.7f}:{p['latitude']:.7f}:EPSG:4326"
@@ -161,6 +161,6 @@ class DataProviders:
                                  'departure_at': departure, 'arrival_at': arrives, 'services': names,
                                  'transit_modes':transit_modes,'legs':summary_legs})
             return {'provider': 'tfnsw', 'queried_at': now(), 'query': body, 'journeys': journeys,
-                    'limitations': ['按计划时刻计算，不能保证将来准点或可用。', '总时长包含换乘候车；缺少时刻时不估算总时长。', '未计算 Opal 票价；结果未写入正式推荐或合同流程。']}
+                    'limitations': ['Calculated from scheduled times; future punctuality and availability are not guaranteed.', 'Total duration includes transfers and waiting. It is not estimated when timetable data are missing.', 'Opal fares are excluded. Results are not written into formal recommendations or contract workflows.']}
         except (ValueError, TypeError, KeyError, AttributeError, ApiError):
-            raise ApiError(502, 'data_invalid_response', '通勤响应未通过结构或时刻校验。') from None
+            raise ApiError(502, 'data_invalid_response', 'The commute response failed schema or timetable checks.') from None

@@ -51,7 +51,7 @@ class LivingChatTests(unittest.TestCase):
         self.assertEqual(self.client.post(self.root + '/living-services/profile',json={
             'request_id':'profile','expected_version':0,'confirmed':True,'values':values}).status_code,200)
         answer = self.send({'intent':'living_services','topic':'repairs','service_action':'report_repair',
-                            'repair':{'title':'厨房漏水','description':'厨房水槽下面一直漏水','location':'厨房','priority':'normal'}},
+                            'repair':{'title':'厨房漏水','description':'厨房水槽下面一直漏水','location':'Kitchen','priority':'normal'}},
                            '厨房水槽下面一直漏水，帮我写封报修邮件')
         self.assertEqual(self.client.get(self.root + '/living-services').json()['repairs'],[])
         action = next(a for a in answer['actions'] if a['type']=='apply_living_services')
@@ -59,7 +59,8 @@ class LivingChatTests(unittest.TestCase):
             'request_id':'repair-confirm','expected_version':action['expected_version'],'confirmed':True})
         self.assertEqual(r.status_code,200,r.text)
         repair = r.json()['repairs'][0]
-        self.assertIn('厨房水槽下面一直漏水',repair['email']['body'])
+        self.assertEqual(repair['description'],'厨房水槽下面一直漏水')
+        self.assertIn('Water is continuously leaking beneath the kitchen sink.',repair['email']['body'])
         self.assertEqual(repair['email']['to'],'agent@example.com')
         self.assertEqual(repair['email']['delivery_status'],'prepared_not_sent')
 

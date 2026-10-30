@@ -1,0 +1,52 @@
+{
+  "source_report": "2026-10-30-rag-quality-verified-80.json",
+  "original_gold_sha256": "895fafb00a1795d576d82f987e49642a783412e790384d41c34b2c3e6ba3e148",
+  "by_language": {
+    "en": {
+      "cases": 76,
+      "automated_passes": 76
+    },
+    "zh": {
+      "cases": 4,
+      "automated_passes": 0
+    }
+  },
+  "failures": [
+    {
+      "id": "nsw-015",
+      "outcome": "answered",
+      "requested_language_not_delivered": true,
+      "missing_patterns": [
+        "维修|报销|联系"
+      ]
+    },
+    {
+      "id": "nsw-027",
+      "outcome": "answered",
+      "requested_language_not_delivered": true,
+      "missing_patterns": [
+        "工作日"
+      ]
+    },
+    {
+      "id": "nsw-044",
+      "outcome": "answered",
+      "requested_language_not_delivered": true,
+      "missing_patterns": [
+        "自然日|日历日"
+      ]
+    },
+    {
+      "id": "nsw-072",
+      "outcome": "answered",
+      "requested_language_not_delivered": true,
+      "missing_patterns": [
+        "延期|延长"
+      ]
+    }
+  ],
+  "no_answer_unknowns_preserved": true,
+  "no_exact_duplicate_accepted_claims": true,
+  "human_review_completed": false,
+  "interpretation": "The 76/80 automatic result includes all 76 English cases; four Chinese requested-language failures remain. This is not a human entailment or legal-quality certificate. The final usually/most guard addition is verified separately."
+}

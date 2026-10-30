@@ -24,7 +24,9 @@ type Group = {
 
 function useLocalities(query: string, state: string) {
   const [items, setItems] = useState<LeaseLocality[]>([]);
-  const [status, setStatus] = useState("输入区域或邮编，可手动填写");
+  const [status, setStatus] = useState(
+    "Enter suburb or postcode; manual entry is available",
+  );
   useEffect(() => {
     let active = true;
     setItems([]);
@@ -32,17 +34,17 @@ function useLocalities(query: string, state: string) {
       return () => {
         active = false;
       };
-    setStatus("正在检索…");
+    setStatus("Searching…");
     const timer = window.setTimeout(() => {
       searchLeaseLocalities(query.trim(), state)
         .then((result) => {
           if (active) {
             setItems(result.items);
-            setStatus("暂无匹配，可手动填写");
+            setStatus("No matches; enter details manually");
           }
         })
         .catch(() => {
-          if (active) setStatus("检索暂不可用，可手动填写");
+          if (active) setStatus("Search unavailable; enter details manually");
         });
     }, 220);
     return () => {
@@ -114,12 +116,15 @@ export default function NoticeAddressFields({
         label={leaseLabels[name]}
         required={requiredFields?.includes(name)}
       >
-        <Input maxLength={200} placeholder="手动填写房号、门牌号和街道名" />
+        <Input
+          maxLength={200}
+          placeholder="Enter unit, street number, and street name manually"
+        />
       </Form.Item>
       <div className="lease-address-parts">
         <Form.Item
           name={group.suburb}
-          label={`${group.prefix}区域（Suburb）`}
+          label={`${group.prefix} suburb`}
           required={requiredFields?.includes(group.suburb)}
         >
           <AutoComplete
@@ -141,7 +146,7 @@ export default function NoticeAddressFields({
           >
             <Input
               maxLength={80}
-              placeholder="搜索选择或手动填写区域"
+              placeholder="Search for or manually enter a suburb"
               onClick={() => focusSearch("suburb")}
             />
           </AutoComplete>
@@ -158,14 +163,16 @@ export default function NoticeAddressFields({
               String(option?.value).includes(input.toUpperCase())
             }
           >
-            <Input maxLength={40} placeholder="选择或手动填写" />
+            <Input maxLength={40} placeholder="Select or enter manually" />
           </AutoComplete>
         </Form.Item>
         <Form.Item
           name={group.postcode}
           required={requiredFields?.includes(group.postcode)}
-          label={`${group.prefix}邮编`}
-          rules={[{ pattern: /^\d{4}$/, message: "邮编须为4位数字。" }]}
+          label={`${group.prefix} postcode`}
+          rules={[
+            { pattern: /^\d{4}$/, message: "Postcode must contain 4 digits." },
+          ]}
         >
           <AutoComplete
             options={options(postcodes.items)}
@@ -187,7 +194,7 @@ export default function NoticeAddressFields({
             <Input
               maxLength={4}
               inputMode="numeric"
-              placeholder="选择或输入4位邮编"
+              placeholder="Select or enter a 4-digit postcode"
               onClick={() => focusSearch("postcode")}
             />
           </AutoComplete>

@@ -28,7 +28,7 @@ test("old destination choices are replaced by the fixed main campus and require 
   const conversation = {
     conversation_id: "commute-choice",
     case_id: c.case_id,
-    title: "按通勤选区域",
+    title: "Choose an area by commute",
     revision: 1,
     messages: [{ ...entry, destination_options: [destination] }],
   };
@@ -55,18 +55,22 @@ test("old destination choices are replaced by the fixed main campus and require 
   await page.goto(`/cases/${c.case_id}/assistant`);
   await expect(
     page.getByRole("button", {
-      name: "选择 " + destination.label,
+      name: "Choose " + destination.label,
       exact: true,
     }),
   ).toHaveCount(0);
-  await page.getByRole("button", { name: "按主校区继续", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Continue with main campus", exact: true })
+    .click();
   await expect(
-    page.getByPlaceholder("描述你的租房需求，或问一个问题…"),
-  ).toHaveValue("保留我的预算和房型，按悉大主校区继续推荐通勤房源。");
-  expect(writes).toBe(0);
-  await expect(page.getByRole("checkbox", { name: /位置与交通/ })).toHaveCount(
-    0,
+    page.getByPlaceholder("Describe your rental needs or ask a question…"),
+  ).toHaveValue(
+    "Keep my budget and housing needs, and recommend homes for commuting to the University of Sydney main campus.",
   );
+  expect(writes).toBe(0);
+  await expect(
+    page.getByRole("checkbox", { name: /Location and transport/ }),
+  ).toHaveCount(0);
 });
 
 test("commute results remain in chat and recommendations only show catalogue filters", async ({
@@ -135,7 +139,7 @@ test("commute results remain in chat and recommendations only show catalogue fil
   const conversation = {
     conversation_id: "commute-result",
     case_id: c.case_id,
-    title: "按通勤选区域",
+    title: "Choose an area by commute",
     revision: 1,
     messages: [message],
   };
@@ -149,7 +153,9 @@ test("commute results remain in chat and recommendations only show catalogue fil
               conversation_id: conversation.conversation_id,
               message,
               stale: true,
-              stale_reasons: ["聊天需求已更新，请重新生成推荐。"],
+              stale_reasons: [
+                "Conversation requirements changed. Generate recommendations again.",
+              ],
             }
           : url.endsWith("/conversations")
             ? {
@@ -167,7 +173,10 @@ test("commute results remain in chat and recommendations only show catalogue fil
   );
   await page.goto(`/cases/${c.case_id}/assistant`);
   await expect(
-    page.getByRole("heading", { name: "到悉大主校区找房", exact: true }),
+    page.getByRole("heading", {
+      name: "Find homes near USYD main campus",
+      exact: true,
+    }),
   ).toBeVisible();
   await expect(
     page.getByText(
@@ -176,24 +185,24 @@ test("commute results remain in chat and recommendations only show catalogue fil
     ),
   ).toBeVisible();
   await expect(
-    page.getByText("本次推荐的依据与范围", { exact: true }),
+    page.getByText("Recommendation basis and scope", { exact: true }),
   ).toHaveCount(0);
   await expect(
     page.getByText("仅查询部分候选，不代表整个悉尼。", { exact: true }),
   ).toHaveCount(0);
   await expect(
-    page.getByRole("link", { name: "原始房源 ↗", exact: true }),
+    page.getByRole("link", { name: "Original listing ↗", exact: true }),
   ).toHaveCount(0);
   await page
-    .getByRole("button", { name: "房源详情", exact: true })
+    .getByRole("button", { name: "Listing details", exact: true })
     .first()
     .click();
   const detail = page.getByRole("dialog");
   await expect(
-    detail.getByRole("link", { name: "查看 Domain 房源", exact: true }),
+    detail.getByRole("link", { name: "View Domain listing", exact: true }),
   ).toHaveAttribute("href", rows[0].source_url);
   const directions = detail.getByRole("link", {
-    name: "在 Google 地图查看公共交通",
+    name: "View public transport route in Google Maps",
     exact: true,
   });
   await expect(directions).toHaveAttribute("href", /travelmode=transit/);
@@ -209,9 +218,13 @@ test("commute results remain in chat and recommendations only show catalogue fil
   );
   await page.keyboard.press("Escape");
   await expect(page.locator(".commute-pending")).toHaveCount(0);
-  await expect(page.getByText("通勤时间参考", { exact: true })).toHaveCount(0);
   await expect(
-    page.getByText("本次找到 1 套符合通勤条件的房源", { exact: false }),
+    page.getByText("Commute time reference", { exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByText("Found 1 listings within your commute criteria", {
+      exact: false,
+    }),
   ).toBeVisible();
   await page.setViewportSize({ width: 360, height: 900 });
   expect(
@@ -221,10 +234,16 @@ test("commute results remain in chat and recommendations only show catalogue fil
   ).toBe(true);
   await page.goto(`/cases/${c.case_id}/recommendations`);
   await expect(
-    page.getByRole("region", { name: "聊天中的通勤推荐", exact: true }),
+    page.getByRole("region", {
+      name: "Commute recommendations in chat",
+      exact: true,
+    }),
   ).toHaveCount(0);
   await expect(
-    page.getByRole("button", { name: "回到对话更新推荐", exact: true }),
+    page.getByRole("button", {
+      name: "Return to chat to update recommendations",
+      exact: true,
+    }),
   ).toHaveCount(0);
   await expect(page.locator(".real-catalog-filters")).toBeVisible();
   await expect(page.getByTestId("real-catalog")).toBeVisible();
@@ -287,17 +306,19 @@ test("all eligible homes have region filtering, pagination and a clear commute c
     }),
   );
   await page.goto(`/cases/${c.case_id}/assistant`);
-  const group = page.getByRole("group", { name: "按区域查看房源" });
+  const group = page.getByRole("group", { name: "Browse listings by area" });
   await expect(
-    group.getByRole("button", { name: "全部", exact: true }),
+    group.getByRole("button", { name: "All", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");
   await expect(group.getByRole("button")).toHaveCount(suburbs.length + 1);
-  await expect(page.getByText("已筛选", { exact: true })).toBeVisible();
+  await expect(page.getByText("Filtered", { exact: true })).toBeVisible();
   await expect(
-    page.getByText("公共交通 ≤30分钟", { exact: true }),
+    page.getByText("Public transport ≤30 minutes", { exact: true }),
   ).toBeVisible();
   await expect(page.getByText(/2026-10-28 · 10:00/)).toHaveCount(0);
-  await expect(page.getByText("通勤时间参考", { exact: true })).toHaveCount(0);
+  await expect(
+    page.getByText("Commute time reference", { exact: true }),
+  ).toHaveCount(0);
   await expect(page.locator(".commute-home")).toHaveCount(12);
   await page.getByTitle("2", { exact: true }).click();
   await expect(page.locator(".commute-home h4").first()).toHaveText(
@@ -310,15 +331,17 @@ test("all eligible homes have region filtering, pagination and a clear commute c
   await expect(page.locator(".commute-home h4")).toHaveText(
     matching.slice(0, 12).map((r: { address: string }) => r.address),
   );
-  await group.getByRole("button", { name: "全部", exact: true }).click();
+  await group.getByRole("button", { name: "All", exact: true }).click();
   await expect(page.locator(".commute-home h4").first()).toHaveText(
     listings[0].address,
   );
-  await page.getByRole("button", { name: "换一批", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Show more options", exact: true })
+    .click();
   await expect(
-    page.getByPlaceholder("描述你的租房需求，或问一个问题…"),
+    page.getByPlaceholder("Describe your rental needs or ask a question…"),
   ).toHaveValue(
-    "保持全部已确认的预算、房型和通勤条件，换一批推荐，优先展示之前没看过的房源。",
+    "Keep all confirmed budget, housing and commute criteria. Show another set of recommendations, prioritising listings I have not seen before.",
   );
   await page.setViewportSize({ width: 390, height: 844 });
   expect(

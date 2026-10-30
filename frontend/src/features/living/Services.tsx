@@ -19,14 +19,14 @@ import type {
 } from "../../api/living";
 import { serviceCompanyIntro } from "./serviceCompanyInfo";
 const statuses: Record<BookingStatus, string> = {
-  considering: "考虑中",
-  contacted: "已自行联系",
-  booked: "已自行预约",
-  completed: "已完成",
+  considering: "Considering",
+  contacted: "Contacted independently",
+  booked: "Booked independently",
+  completed: "Completed",
 };
 const serviceGroups = [
-  { category: "removalist", title: "搬运公司", label: "搬运" },
-  { category: "cleaner", title: "清洁公司", label: "清洁" },
+  { category: "removalist", title: "Removalists", label: "Moving" },
+  { category: "cleaner", title: "Cleaning companies", label: "Cleaning" },
 ] as const;
 export default function Services({
   record,
@@ -100,11 +100,12 @@ export default function Services({
     <section className="living-section">
       <div className="living-section-heading">
         <div>
-          <h2>搬运与清洁</h2>
+          <h2>Moving and cleaning</h2>
         </div>
       </div>
       <p className="living-note">
-        服务范围与档期以服务商确认为准，报价由你填写。保存记录不会提交预约。
+        Confirm coverage and availability with the provider. Enter quotes you
+        receive. Saving a record does not make a booking.
       </p>
       {serviceGroups.map((group) => {
         const companies = providers.filter((p) =>
@@ -118,7 +119,7 @@ export default function Services({
           >
             <div className="living-service-group-heading">
               <h3>{group.title}</h3>
-              <span className="muted">{companies.length} 家</span>
+              <span className="muted">{companies.length} providers</span>
             </div>
             <div className="living-provider-grid">
               {companies.map((provider) => (
@@ -127,7 +128,7 @@ export default function Services({
                   className="living-provider-card living-provider-trigger"
                   key={provider.id}
                   data-provider-id={provider.id}
-                  aria-label={`${provider.name}，查看服务商详情`}
+                  aria-label={`${provider.name}, view provider details`}
                   aria-haspopup="dialog"
                   onClick={() => start(provider, null, "details")}
                 >
@@ -139,8 +140,10 @@ export default function Services({
                     {serviceCompanyIntro(provider)}
                   </span>
                   <span className="living-provider-card-action">
-                    <span className="muted">公司介绍与官网</span>
-                    <span>查看详情 →</span>
+                    <span className="muted">
+                      Company information and website
+                    </span>
+                    <span>View details →</span>
                   </span>
                 </button>
               ))}
@@ -148,9 +151,9 @@ export default function Services({
           </section>
         );
       })}
-      <h3 className="living-list-title">我的服务记录</h3>
+      <h3 className="living-list-title">My service records</h3>
       {!record.bookings.length && (
-        <p className="muted">还没有报价或预约记录。</p>
+        <p className="muted">No quote or booking records yet.</p>
       )}
       <div className="living-record-list">
         {[...record.bookings].reverse().map((booking) => {
@@ -164,15 +167,15 @@ export default function Services({
               className={`living-booking-card ${focusedId === booking.booking_id ? "is-targeted" : ""}`}
             >
               <div className="living-card-heading">
-                <h3>{provider?.name || "服务商资料待重新读取"}</h3>
+                <h3>{provider?.name || "Reload provider information"}</h3>
                 <Tag>{statuses[booking.status]}</Tag>
               </div>
               <div className="living-booking-facts">
-                <span>{booking.service_date || "日期未定"}</span>
+                <span>{booking.service_date || "Date not set"}</span>
                 <strong>
                   {booking.quote_amount === null
-                    ? "尚未记录报价"
-                    : `AUD ${booking.quote_amount.toLocaleString()}`}
+                    ? "No quote recorded"
+                    : `AUD ${booking.quote_amount.toLocaleString("en-AU")}`}
                 </strong>
               </div>
               {booking.notes && (
@@ -182,7 +185,7 @@ export default function Services({
                 disabled={busy || !provider}
                 onClick={() => provider && start(provider, booking)}
               >
-                更新服务记录
+                Update service record
               </Button>
             </article>
           );
@@ -193,9 +196,9 @@ export default function Services({
         title={
           selected
             ? mode === "details"
-              ? `${selected.name} · 服务商详情`
-              : `${editing ? "更新" : "记录"} · ${selected.name}`
-            : "服务记录"
+              ? `${selected.name} · Provider details`
+              : `${editing ? "Update" : "Record"} · ${selected.name}`
+            : "Service record"
         }
         open={Boolean(selected)}
         onCancel={() => !busy && setSelected(null)}
@@ -204,8 +207,12 @@ export default function Services({
             if (selected) start(selected);
           } else void submit();
         }}
-        okText={mode === "details" ? "记录报价或预约" : "确认保存服务记录"}
-        cancelText={mode === "details" ? "关闭详情" : "取消"}
+        okText={
+          mode === "details"
+            ? "Record quote or booking"
+            : "Confirm service record"
+        }
+        cancelText={mode === "details" ? "Close details" : "Cancel"}
         confirmLoading={mode === "record" && busy}
         width={680}
         styles={{
@@ -218,11 +225,13 @@ export default function Services({
         okButtonProps={{
           disabled: busy || (mode === "record" && !confirmed),
           "aria-label":
-            mode === "details" ? "记录报价或预约" : "确认保存服务记录",
+            mode === "details"
+              ? "Record quote or booking"
+              : "Confirm service record",
         }}
         cancelButtonProps={{
           disabled: busy,
-          "aria-label": mode === "details" ? "关闭详情" : "取消",
+          "aria-label": mode === "details" ? "Close details" : "Cancel",
         }}
         closable={!busy}
         mask={{ closable: !busy }}
@@ -232,7 +241,7 @@ export default function Services({
             <span className="living-category">
               {selected.categories
                 .filter((c) => c === "removalist" || c === "cleaner")
-                .map((c) => (c === "removalist" ? "搬运" : "清洁"))
+                .map((c) => (c === "removalist" ? "Moving" : "Cleaning"))
                 .join(" · ")}
             </span>
             <p>{serviceCompanyIntro(selected)}</p>
@@ -241,7 +250,7 @@ export default function Services({
               target="_blank"
               rel="noopener noreferrer"
             >
-              公司网站
+              Company website
             </a>
           </div>
         )}
@@ -253,15 +262,15 @@ export default function Services({
             disabled={busy}
             onValuesChange={() => setConfirmed(false)}
           >
-            <Form.Item name="quote_amount" label="收到的报价（AUD）">
+            <Form.Item name="quote_amount" label="Quote received (AUD)">
               <InputNumber min={0} precision={2} />
             </Form.Item>
-            <Form.Item name="service_date" label="服务日期">
-              <Input type="date" aria-label="服务日期" />
+            <Form.Item name="service_date" label="Service date">
+              <Input type="date" aria-label="Service date" />
             </Form.Item>
             <Form.Item
               name="status"
-              label="服务状态"
+              label="Service status"
               rules={[{ required: true }]}
             >
               <Select
@@ -271,7 +280,7 @@ export default function Services({
                 }))}
               />
             </Form.Item>
-            <Form.Item name="notes" label="服务备注">
+            <Form.Item name="notes" label="Service notes">
               <Input.TextArea rows={3} maxLength={3000} />
             </Form.Item>
           </Form>
@@ -280,10 +289,14 @@ export default function Services({
             disabled={busy}
             onChange={(e) => setConfirmed(e.target.checked)}
           >
-            我确认仅保存记录，不会向服务商提交预约。
+            I confirm this only saves a record and does not submit a booking to
+            the provider.
           </Checkbox>
           {record.version !== version && (
-            <p role="alert">资料已更新，请关闭窗口后重新核对最新记录。</p>
+            <p role="alert">
+              Information has changed. Close this window and check the latest
+              record again.
+            </p>
           )}
         </div>
       </Modal>

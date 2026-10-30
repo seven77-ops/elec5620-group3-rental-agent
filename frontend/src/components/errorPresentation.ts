@@ -1,43 +1,56 @@
 const messages: Record<string, { title: string; message: string }> = {
+  lease_ai_timeout: {
+    title: "Contract extraction timed out",
+    message:
+      "Your source text and completed fields are preserved. Retry or process smaller sections.",
+  },
+  lease_ai_invalid_response: {
+    title: "Some contract fields could not be extracted",
+    message:
+      "Your source text and completed fields are preserved. Please retry.",
+  },
   unconfirmed_profile: {
-    title: "先确认租房需求",
-    message: "请先确认当前租房需求，再选择房源并准备合同。",
+    title: "Confirm your rental needs first",
+    message:
+      "Confirm your current rental needs before choosing a property and preparing a contract.",
   },
   selection_required: {
-    title: "先选择房源",
-    message: "请先保存一套房源候选，再继续。",
+    title: "Choose a property first",
+    message: "Save a property candidate before continuing.",
   },
   real_selection_required: {
-    title: "先选择房源",
-    message: "请先保存一套房源候选，再继续。",
+    title: "Choose a property first",
+    message: "Save a property candidate before continuing.",
   },
   stale_selection: {
-    title: "房源需要更新",
-    message: "租房需求已改变，请重新选择符合当前需求的房源。",
+    title: "Property selection needs updating",
+    message:
+      "Your rental needs have changed. Choose a property that meets your current needs.",
   },
   needs_clarification: {
-    title: "还需要补充资料",
-    message: "请补齐所需资料后再继续。",
+    title: "More information is needed",
+    message: "Complete the required information before continuing.",
   },
   version_conflict: {
-    title: "资料已更新",
-    message: "请读取最新资料，核对当前输入后重新保存。",
+    title: "Information has changed",
+    message: "Load the latest information, check your input, and save again.",
   },
   stale_assistant_input: {
-    title: "对话已更新",
-    message: "请读取最新会话后重新发送。",
+    title: "Conversation has changed",
+    message: "Load the latest conversation before sending again.",
   },
   ai_not_configured: {
-    title: "助手暂时无法连接",
-    message: "请稍后重试，或联系项目管理员检查服务配置。",
+    title: "The assistant is temporarily unavailable",
+    message:
+      "Try again later or ask the project administrator to check the service configuration.",
   },
   ai_invalid_response: {
-    title: "助手暂时未能完成回答",
-    message: "请重试这条消息，已保存的对话会保留。",
+    title: "The assistant could not finish its response",
+    message: "Retry this message. Your saved conversation is preserved.",
   },
   ai_timeout: {
-    title: "回答时间较长",
-    message: "请重试这条消息，已保存的对话会保留。",
+    title: "The response is taking longer than expected",
+    message: "Retry this message. Your saved conversation is preserved.",
   },
 };
 export function userError(
@@ -45,10 +58,14 @@ export function userError(
   message: string,
 ): { title: string; message: string } {
   if (code && Object.hasOwn(messages, code)) return messages[code];
+  const readable = message.trim();
+  const internal = /\b(?:INTERNAL|DEBUG|TRACEBACK|[A-Z][A-Z0-9]*_[A-Z0-9_]+|\w+Error|\w+Exception)\b|\n\s+at\s/;
+  const safeEnglish = readable.length > 0 && readable.length <= 800 &&
+    !/[\u3400-\u9fff\u0000-\u0008\u000b-\u001f]/.test(readable) && !internal.test(readable);
   return {
-    title: "暂时无法完成",
-    message: /[\u3400-\u9fff]/.test(message)
-      ? message
-      : "请稍后重试，或读取最新资料后继续。",
+    title: "Unable to complete this action",
+    message: safeEnglish
+      ? readable
+      : "Try again later or load the latest information to continue.",
   };
 }

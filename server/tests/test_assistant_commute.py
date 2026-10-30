@@ -51,11 +51,11 @@ class AssistantCommuteTests(unittest.TestCase):
     def test_unknown_area_starts_focused_intake_without_requiring_suburb(self):
         r=self.recommend(self.conversation(),{},text='刚来悉尼，不知道住哪，帮我推荐')
         self.assertEqual(r.status_code,200,r.text);c=r.json()
-        self.assertIn('预算',c['messages'][-1]['content']);self.assertNotIn('想住哪个区域',c['messages'][-1]['content'])
+        self.assertIn('budget',c['messages'][-1]['content']);self.assertNotIn('Which suburb would you prefer',c['messages'][-1]['content'])
         self.assertEqual(c['dialogue_mode'],'recommend_areas')
         r=self.recommend(c,{'budget_amount':850,'budget_period':'week','budget_scope':'whole_property','min_bedrooms':2},'next','每周整套850，两卧')
         self.assertEqual(r.status_code,200,r.text);text=r.json()['messages'][-1]['content']
-        self.assertIn('悉大主校区',text);self.assertNotIn('想住哪个区域',text)
+        self.assertIn('USYD main campus',text);self.assertNotIn('Which suburb would you prefer',text)
         self.assertEqual(self.client.get('/api/v1/cases/'+self.case['case_id']).json(),self.case)
 
     def test_transit_mode_reply_continues_without_asking_for_arrival_time(self):
@@ -73,7 +73,7 @@ class AssistantCommuteTests(unittest.TestCase):
                 c=response.json();answer=c['messages'][-1]
                 self.assertNotIn('commute_question',answer)
                 self.assertIn('commute_recommendation',answer)
-                self.assertNotIn('几点',answer['content'])
+                self.assertNotIn('what time',answer['content'])
                 self.assertNotIn('arrival_time',c['rental_brief'])
                 self.assertNotIn('travel_day',c['rental_brief'])
                 self.assertIsNone(pending_question(c))
@@ -85,7 +85,7 @@ class AssistantCommuteTests(unittest.TestCase):
         with patch('server.app.assistant.commute.resolver_for',return_value=resolver),patch('server.app.assistant.commute.plan_routes',return_value=preview) as planner:
             r=self.recommend(c,self.ready_brief())
             self.assertEqual(r.status_code,200,r.text);c=r.json()
-            self.assertIn('外部交通',c['messages'][-1]['content']);planner.assert_not_called()
+            self.assertIn('External transit',c['messages'][-1]['content']);planner.assert_not_called()
             r=self.recommend(c,{},'lookup','继续核对通勤',allow_external_data=True)
             self.assertEqual(r.status_code,200,r.text);c=r.json()
             self.assertFalse(resolver.calls)

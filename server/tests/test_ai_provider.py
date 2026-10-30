@@ -8,6 +8,18 @@ import httpx
 
 
 class ProviderTests(unittest.TestCase):
+    def test_public_summary_deadlines_are_bounded_and_do_not_change_private_default(self):
+        from unittest.mock import patch
+        from server.app.ai.provider import run_transport
+        provider=self.provider(lambda r:httpx.Response(200,json={'choices':[{'message':{'content':'{}'}}]}))
+        for context,expected in (({'task':'rag_answer'},30),
+             ({'task':'rag_answer','transport_timeout_seconds':18},18),
+             ({'task':'rag_grounded_summary','transport_timeout_seconds':15},15),
+             ({'task':'rag_grounded_summary','transport_timeout_seconds':900},30),
+             ({'task':'contract_extract','transport_timeout_seconds':900},12)):
+            with patch('server.app.ai.provider.run_transport',wraps=run_transport) as run:
+                provider.call(context);self.assertEqual(run.call_args.args[1],expected)
+
     def provider(self, handler=None, **changes):
         self.assertTrue(Path('server/app/ai/provider.py').exists(), 'AI provider has not been implemented')
         from server.app.ai.provider import ModelProvider
@@ -195,6 +207,20 @@ class ProviderTests(unittest.TestCase):
         self.assertNotIn('usage',call)
         self.assertNotIn('provider_request_id',call)
         self.assertNotIn('provider_response_id',call)
+
+    def test_lease_extraction_has_its_own_bounded_deadline(self):
+        from unittest.mock import patch
+        from server.app.ai.provider import run_transport
+        provider = self.provider(lambda r: httpx.Response(200, json={'choices': [{'message': {'content': '{"fields":[]}'}}]}))
+        with patch('server.app.ai.provider.run_transport', wraps=run_transport) as transport:
+            provider.call({'task': 'lease_draft_extract'})
+            self.assertEqual(transport.call_args.args[1], 45)
+            provider.call({'task': 'assistant_intent'})
+            self.assertEqual(transport.call_args.args[1], 12)
+        self.assertEqual(self.provider(RENTAL_AI_LEASE_TIMEOUT_SECONDS='999').public_config()['lease_timeout_seconds'], 60)
+        self.assertEqual(self.provider(RENTAL_AI_LEASE_TIMEOUT_SECONDS='20').public_config()['lease_timeout_seconds'], 20)
+        for invalid in ('nan', 'infinity', 'bad'):
+            self.assertEqual(self.provider(RENTAL_AI_LEASE_TIMEOUT_SECONDS=invalid).public_config()['lease_timeout_seconds'], 45)
 
 
 if __name__ == '__main__':

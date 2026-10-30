@@ -1,12 +1,12 @@
 import type { LeaseFields } from "../../api/leaseDraft";
 
 export const leaseDurations = [
-  { value: "6", label: "6个月" },
-  { value: "12", label: "1年" },
-  { value: "24", label: "2年" },
-  { value: "36", label: "3年" },
-  { value: "60", label: "5年" },
-  { value: "custom", label: "自定义日期" },
+  { value: "6", label: "6 months" },
+  { value: "12", label: "1 year" },
+  { value: "24", label: "2 years" },
+  { value: "36", label: "3 years" },
+  { value: "60", label: "5 years" },
+  { value: "custom", label: "Custom dates" },
 ];
 export function addLeaseMonths(
   value: string | null | undefined,

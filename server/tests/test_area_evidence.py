@@ -48,14 +48,14 @@ class AreaEvidenceTests(unittest.TestCase):
         report=self.advice(brief,['Burwood','Rhodes'])
         self.assertEqual([a['matching_count'] for a in report['areas']],[1,0])
         self.assertTrue(report['budget_applied'])
-        self.assertIn('整套每周上限 AUD 800',report['criteria_summary'])
-        self.assertIn('至少2卧',report['criteria_summary'])
+        self.assertIn('whole property weekly limit AUD 800',report['criteria_summary'])
+        self.assertIn('At least 2 bedrooms',report['criteria_summary'])
         self.assertIsNone(report['areas'][1]['min_weekly_rent'])
         brief['budget_scope']='per_person'
         report=self.advice(brief,['Burwood','Rhodes'])
         self.assertFalse(report['budget_applied'])
         self.assertEqual(report['areas'][1]['matching_count'],1)
-        self.assertTrue(any('计价' in n for n in report['limitations']))
+        self.assertTrue(any('scope' in n for n in report['limitations']))
 
     def test_quietness_safety_and_resident_opinions_are_never_guarantees(self):
         report=self.advice({'lifestyle_priorities':['quiet','safety']},['Rhodes'])
@@ -65,7 +65,7 @@ class AreaEvidenceTests(unittest.TestCase):
         opinions=[e for e in area['evidence'] if e['kind']=='resident_opinion']
         self.assertTrue(opinions)
         self.assertTrue(all(e['freshness']=='background' for e in opinions))
-        self.assertIn('具体房源', ' '.join(report['limitations']))
+        self.assertIn('property', ' '.join(report['limitations']))
 
     def test_old_or_lga_evidence_cannot_be_counted_as_suburb_match(self):
         knowledge=AreaKnowledge()

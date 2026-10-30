@@ -1,221 +1,329 @@
-import { useEffect, useState } from "react";
-import { Alert, App, Button, Form, Input, Select, Space } from "antd";
+import { useEffect, useRef, useState } from "react";
+import { Alert, App, Button, Form, Input, Select, Space, Tag } from "antd";
+import { useNavigate } from "react-router-dom";
 import { useCase } from "../app/context";
-import { api, newRequestId, post } from "../api/client";
-import type { AftercareCase, Dict, Review } from "../api/types";
-import {
-  Failure,
-  JsonDetails,
-  PageTitle,
-  Status,
-  text,
-} from "../components/Common";
+import { newRequestId, post } from "../api/client";
+import { getOperatorReviews } from "../api/operator";
+import type { OperatorReview } from "../api/operator";
+import { Failure, money, PageTitle, Status, text } from "../components/Common";
 import { useAction } from "../components/useAction";
+import { sydneyTime } from "./aftercare/presentation";
+
+const decisionNames: Record<string, string> = {
+  annotate: "Comment",
+  return: "Return for more information",
+  hold: "Defer",
+  refer: "Referral recommendation",
+  release: "Checked; draft preparation may continue",
+  approved: "Contract human review complete",
+  returned: "Return contract for more information",
+};
+
 export default function Operator() {
-  const { current, refresh } = useCase();
+  const { refresh } = useCase();
+  const navigate = useNavigate();
   const [key, setKey] = useState("");
-  const [record, setRecord] = useState<AftercareCase | null>(null);
-  const [reviews, setReviews] = useState<Review[]>([]);
+  const [items, setItems] = useState<OperatorReview[] | null>(null);
   const [error, setError] = useState<unknown>(null);
+  const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const action = useAction();
   const { modal, message } = App.useApp();
+  const generation = useRef(0);
+  useEffect(
+    () => () => {
+      generation.current++;
+    },
+    [],
+  );
   const load = async () => {
-    const [rs, m4] = await Promise.all([
-      Promise.all(
-        current.reviews.map((r) =>
-          api<Review>(`/contract-reviews/${r.review_id}`),
-        ),
-      ),
-      current.aftercare_case_id
-        ? api<AftercareCase>(`/aftercare/cases/${current.aftercare_case_id}`)
-        : Promise.resolve(null),
-    ]);
-    setReviews(rs);
-    setRecord(m4);
+    if (!key.trim()) return;
+    const token = ++generation.current;
+    setLoading(true);
+    try {
+      const result = await getOperatorReviews(key);
+      if (token === generation.current) {
+        setItems(result.items);
+        setError(null);
+      }
+    } catch (e) {
+      if (token === generation.current) {
+        setItems(null);
+        setError(e);
+      }
+    } finally {
+      if (token === generation.current) setLoading(false);
+    }
   };
-  useEffect(() => {
-    void load().catch(setError);
-  }, [current.reviews, current.aftercare_case_id]);
-  const decide = (review: Review, decision: string) => {
+  const decide = (item: OperatorReview, contractDecision?: string) => {
     void form
       .validateFields()
       .then((v) => {
+        const decision = contractDecision ?? v.decision;
+        // Freeze the exact request so a retry cannot silently use a new version or subject.
+        const path =
+          item.kind === "contract"
+            ? `/contract-reviews/${item.review_id}/decisions`
+            : "/aftercare/commands";
+        const body =
+          item.kind === "contract"
+            ? { expected_version: item.version, decision, note: v.note }
+            : {
+                case_id: item.case_id,
+                request_id: newRequestId(),
+                expected_version: item.version,
+                operation: "operator_decision",
+                payload: {
+                  review_id: item.review_id,
+                  decision,
+                  note: v.note,
+                  gate_resolved: decision === "release",
+                },
+              };
         modal.confirm({
           title:
-            decision === "approve"
-              ? "确认完成合同人工复核？"
-              : "退回补充合同？",
-          content: "这是本地演示操作员决定，不表示合同合法认证或签约批准。",
-          okText: "记录人工决定",
-          cancelText: "取消",
-          onOk: () =>
-            action.run(async () => {
-              await post(
-                `/contract-reviews/${review.review_id}/decisions`,
-                { expected_version: review.version, decision, note: v.note },
-                key,
-              );
-              await refresh();
-              await load();
-              message.success("人工决定已保存。");
-            }),
-        });
-      })
-      .catch(() => undefined);
-  };
-  const aftercareDecision = (r: Dict) => {
-    void form
-      .validateFields()
-      .then((v) => {
-        const decision = v.decision;
-        const body = {
-          case_id: current.case_id,
-          request_id: newRequestId(),
-          expected_version: record!.version,
-          operation: "operator_decision",
-          payload: {
-            review_id: r.review_id,
-            decision,
-            note: v.note,
-            gate_resolved: decision === "release",
-          },
-        };
-        modal.confirm({
-          title: `记录 ${decision} 决定？`,
+            item.kind === "contract"
+              ? decision === "approve"
+                ? "Complete contract human review?"
+                : "Return contract for more information?"
+              : `Record ${decisionNames[decision]} decision?`,
           content:
-            decision === "release"
-              ? "仅在证据和门禁均已核对后解除该审核门禁，不裁定责任或退款。"
-              : "该决定保留审核门禁。",
-          okText: "确认记录",
-          cancelText: "取消",
+            item.kind === "contract"
+              ? "Record a document review decision. This does not certify the contract or approve signing."
+              : decision === "release"
+                ? "Only removes this system restriction so factual inquiry drafts can continue. It does not decide deductions or refunds, or handle bond funds."
+                : "Save review notes and retain restrictions. Referrals are recorded as recommendations; other organisations are not contacted automatically.",
+          okText:
+            item.kind === "contract"
+              ? "Record human decision"
+              : "Confirm record",
+          cancelText: "Cancel",
           onOk: () =>
             action.run(async () => {
-              await post("/aftercare/commands", body, key);
+              await post(path, body, key);
               await refresh();
               await load();
-              message.success("审核决定已保存。");
+              message.success("Review decision saved. History is preserved.");
             }),
         });
       })
       .catch(() => undefined);
   };
-  const pending = reviews.filter((r) => r.status === "Awaiting Human Review");
-  const m4reviews = ((record?.reviews ?? []) as Dict[]).filter(
-    (r) => r.status === "open",
+  const pending = (items ?? []).filter((item) => item.status === "open");
+  const history = (items ?? []).filter((item) => item.status !== "open");
+  const card = (item: OperatorReview) => (
+    <article
+      className="detail-row operator-review"
+      key={`${item.kind}:${item.case_id}:${item.review_id}`}
+      data-testid="operator-review"
+    >
+      <Space wrap>
+        <Tag>
+          {item.kind === "contract"
+            ? "Contract review"
+            : "Move-out and bond information"}
+        </Tag>
+        {item.status === "open" ? (
+          <Tag color="gold">Awaiting human action</Tag>
+        ) : (
+          <Status value={item.status} />
+        )}
+        <strong>{item.address}</strong>
+      </Space>
+      <p>{item.reason}</p>
+      <p className="small muted">
+        Case: {item.case_id} · Submitted at {sydneyTime(item.created_at)}
+      </p>
+      {item.review?.findings.map((finding, i) => (
+        <div key={i}>
+          <strong>{text(finding.title)}</strong>
+          <p>{text(finding.reason)}</p>
+        </div>
+      ))}
+      {item.claims?.map((claim) => (
+        <p key={String(claim.claim_id)}>
+          Other party claim: {money(Number(claim.amount_cents) / 100)} ·{" "}
+          {text(claim.reason)}
+          {claim.disputed ? " · Disputed by tenant" : ""}
+        </p>
+      ))}
+      {item.history?.map((entry) => (
+        <p className="small" key={String(entry.entry_id)}>
+          {sydneyTime(entry.occurred_at, false)}: {text(entry.text)}
+        </p>
+      ))}
+      {item.kind === "aftercare" && (
+        <p className="small">
+          Registered evidence:
+          {item.evidence?.length
+            ? item.evidence.map((entry) => text(entry.summary)).join("; ")
+            : "None yet. Add information as needed"}
+        </p>
+      )}
+      {item.decisions.map((decision, i) => (
+        <div key={i} className="operator-decision">
+          <strong>
+            {decisionNames[String(decision.decision ?? decision.status)] ??
+              text(decision.decision ?? decision.status)}
+          </strong>
+          <p>{text(decision.note)}</p>
+          <small>{sydneyTime(decision.at ?? decision.decided_at)}</small>
+        </div>
+      ))}
+      <Space wrap>
+        {item.status === "open" &&
+          (item.kind === "contract" ? (
+            <>
+              <Button
+                type="primary"
+                disabled={!key || action.busy || loading}
+                onClick={() => decide(item, "approve")}
+                aria-label="Complete this human review"
+              >
+                Complete this human review
+              </Button>
+              <Button
+                disabled={!key || action.busy || loading}
+                onClick={() => decide(item, "return")}
+              >
+                Return for more information
+              </Button>
+            </>
+          ) : (
+            <Button
+              disabled={!key || action.busy || loading}
+              onClick={() => decide(item)}
+              aria-label="Record selected review decision"
+            >
+              Record selected review decision
+            </Button>
+          ))}
+        <Button
+          onClick={() =>
+            navigate(
+              `/cases/${encodeURIComponent(item.case_id)}/${item.kind === "contract" ? "contract?mode=review" : "aftercare?tab=moveout"}`,
+            )
+          }
+        >
+          {item.kind === "contract"
+            ? "View contract record"
+            : "View aftercare record"}
+        </Button>
+      </Space>
+    </article>
   );
   return (
     <>
       <PageTitle
-        title="本地演示操作员"
-        description="人工决定使用服务器配置的演示身份，不代表生产登录或真实审核授权。"
+        title="Human review"
+        description="View document review submissions and history for cases on this device."
         extra={
-          <Button onClick={() => void load().catch(setError)}>
-            读取最新待办
+          <Button
+            disabled={!key || action.busy}
+            loading={loading}
+            onClick={() => void load()}
+          >
+            Load review records
           </Button>
         }
       />
       <Alert
         showIcon
         type="info"
-        title="需要本机配置的操作员密钥"
-        description="在启动服务时设置 RENTAL_OPERATOR_KEY，再在此处输入。密钥仅保留在当前页面内存中，浏览器角色字段不能取得权限。"
+        title="Review outcomes support document checks and the in-app process"
+        description="They do not approve deductions or refunds, or handle bond funds. The operator key is kept only in this page memory."
       />
-      <Failure error={action.error || error} retry={action.retry} />
+      <Failure
+        error={action.error || error}
+        retry={action.error ? action.retry : () => void load()}
+      />
       <section className="panel">
         <Form
           form={form}
           layout="vertical"
           initialValues={{ decision: "refer" }}
         >
-          <Form.Item label="本地操作员密钥" htmlFor="local-operator-key">
+          <Form.Item label="Local operator key" htmlFor="local-operator-key">
             <Input.Password
               id="local-operator-key"
               value={key}
-              onChange={(e) => setKey(e.target.value)}
               autoComplete="off"
+              disabled={action.busy}
+              onChange={(e) => {
+                generation.current++;
+                setKey(e.target.value);
+                action.clear();
+                setItems(null);
+                setError(null);
+                setLoading(false);
+              }}
             />
           </Form.Item>
           <Form.Item
             name="note"
-            label="人工核对记录"
-            rules={[{ required: true, message: "填写本次决定的依据与说明" }]}
+            label="Human review notes"
+            rules={[
+              {
+                required: true,
+                whitespace: true,
+                message: "Enter the evidence and explanation for this decision",
+              },
+            ]}
           >
-            <Input.TextArea rows={3} />
+            <Input.TextArea rows={3} maxLength={1000} disabled={action.busy} />
           </Form.Item>
-          <Form.Item name="decision" label="押金审核决定">
+          <Form.Item name="decision" label="Aftercare review decision">
             <Select
+              disabled={action.busy}
               options={[
-                { value: "annotate", label: "批注 · 保留门禁" },
-                { value: "return", label: "退回 · 保留门禁" },
-                { value: "hold", label: "暂缓 · 保留门禁" },
-                { value: "refer", label: "转交 · 保留门禁" },
-                { value: "release", label: "已核对并解除门禁" },
+                { value: "annotate", label: "Comment · Retain restrictions" },
+                {
+                  value: "return",
+                  label: "Return for information · Retain restrictions",
+                },
+                { value: "hold", label: "Defer · Retain restrictions" },
+                {
+                  value: "refer",
+                  label: "Referral recommendation · Retain restrictions",
+                },
+                {
+                  value: "release",
+                  label: "Checked · Allow draft preparation",
+                },
               ]}
             />
           </Form.Item>
         </Form>
-      </section>
-      <section className="panel">
-        <h2>合同人工复核</h2>
-        {pending.length === 0 ? (
-          <p className="muted">当前案例没有待人工复核的合同。</p>
-        ) : (
-          pending.map((r) => (
-            <article className="detail-row" key={r.review_id}>
-              <Status value={r.status} />
-              <strong>
-                {r.document.source_name} · v{r.version}
-              </strong>
-              {r.findings.map((f, i) => (
-                <div key={i}>
-                  <h3>{text(f.title)}</h3>
-                  <p>{text(f.reason)}</p>
-                  <JsonDetails value={f.evidence} />
-                </div>
-              ))}
-              <Space wrap>
-                <Button
-                  type="primary"
-                  disabled={!key}
-                  loading={action.busy}
-                  onClick={() => decide(r, "approve")}
-                  aria-label="完成本次人工复核"
-                >
-                  完成本次人工复核
-                </Button>
-                <Button
-                  disabled={!key || action.busy}
-                  onClick={() => decide(r, "return")}
-                >
-                  退回补充
-                </Button>
-              </Space>
-            </article>
-          ))
+        {!items && !error && (
+          <p className="muted">
+            Enter the operator key, then select “Load review records” to view
+            tasks and history.
+          </p>
         )}
       </section>
-      <section className="panel">
-        <h2>押金审核门禁</h2>
-        {m4reviews.length === 0 ? (
-          <p className="muted">当前案例没有未决押金审核事项。</p>
-        ) : (
-          m4reviews.map((r, i) => (
-            <article className="detail-row" key={i}>
-              <strong>{text(r.reason)}</strong>
-              <JsonDetails value={r} />
-              <Button
-                disabled={!key}
-                loading={action.busy}
-                onClick={() => aftercareDecision(r)}
-                aria-label="记录选定的审核决定"
-              >
-                记录选定的审核决定
-              </Button>
-            </article>
-          ))
-        )}
-      </section>
+      {items && (
+        <>
+          <section className="panel" aria-label="Human review queue">
+            <h2>Pending items · {pending.length}</h2>
+            {pending.length ? (
+              pending.map(card)
+            ) : (
+              <p className="muted">No items awaiting human action.</p>
+            )}
+          </section>
+          <section className="panel" aria-label="Review history">
+            <h2>Review history · {history.length}</h2>
+            {history.length ? (
+              history.map(card)
+            ) : (
+              <p className="muted">
+                No completed items yet. Completed records will be preserved
+                here.
+              </p>
+            )}
+          </section>
+        </>
+      )}
     </>
   );
 }

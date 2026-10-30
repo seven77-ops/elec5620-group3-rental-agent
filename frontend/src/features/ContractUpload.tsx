@@ -5,6 +5,7 @@ import { useCase, currentConfirmation } from "../app/context";
 import { api, downloadUrl, newRequestId, post } from "../api/client";
 import type { Review } from "../api/types";
 import { Failure } from "../components/Common";
+import { contractProcessingScope } from "./contracts/contractProcessingScope";
 import { useAction } from "../components/useAction";
 export default function ContractUpload({
   onReview,
@@ -26,10 +27,15 @@ export default function ContractUpload({
   const [loading, setLoading] = useState(true);
   const input = useRef<HTMLInputElement>(null);
   const real = current.selection?.data_mode === "real_listings";
-  const selectionCurrent = Boolean(
-    current.selection &&
-    current.selection.profile_version === currentConfirmation(current)?.version,
+  const {
+    scope,
+    allowed: selectionCurrent,
+    synthetic: syntheticOnly,
+  } = contractProcessingScope(
+    current.selection,
+    currentConfirmation(current)?.version,
   );
+  const actualContract = !syntheticOnly;
   useEffect(() => {
     let valid = true;
     setLoading(true);
@@ -38,13 +44,20 @@ export default function ContractUpload({
         consent_id: string;
         active: boolean;
         selection_current: boolean;
+        scope?: "selection" | "document";
       }[];
     }>(`/cases/${current.case_id}/contract-consents`)
       .then((r) => {
         if (valid) {
           setConsent(
-            r.consents.filter((c) => c.active && c.selection_current).at(-1)
-              ?.consent_id ?? null,
+            r.consents
+              .filter(
+                (c) =>
+                  c.active &&
+                  c.selection_current &&
+                  (c.scope ?? "selection") === scope,
+              )
+              .at(-1)?.consent_id ?? null,
           );
           setLoadError(null);
         }
@@ -58,19 +71,19 @@ export default function ContractUpload({
     return () => {
       valid = false;
     };
-  }, [current.case_id, current.selection, revision]);
+  }, [current.case_id, current.selection, revision, scope]);
   const agree = () =>
     void action.run(async () => {
       const r = await post<{ consent_id: string }>(
         `/cases/${current.case_id}/contract-consents`,
-        { confirmed: true },
+        { confirmed: true, scope },
       );
       setConsent(r.consent_id);
       onConsentChange();
       message.success(
-        real
-          ? "合同处理同意已记录，现在可以选择合同。"
-          : "合同处理同意已记录，现在可以选择合成合同。",
+        actualContract
+          ? "Contract processing consent recorded. You can now select a contract."
+          : "Contract processing consent recorded. You can now select a synthetic contract.",
       );
     });
   const revoke = () => {
@@ -85,7 +98,7 @@ export default function ContractUpload({
       setFile(null);
       if (input.current) input.current.value = "";
       onConsentChange();
-      message.success("已撤销后续合同处理同意。");
+      message.success("Consent for further contract processing revoked.");
     });
   };
   const upload = () => {
@@ -111,44 +124,50 @@ export default function ContractUpload({
       await refresh();
       onConsentChange();
       message.success(
-        r.newly_created ? "合同复核结果已保存。" : "已恢复原请求的复核结果。",
+        r.newly_created
+          ? "Contract review results saved."
+          : "Review results from the original request restored.",
       );
     });
   };
   return (
     <section className="panel upload-panel">
-      <h2>独立同意与合同上传</h2>
+      <h2>Separate consent and contract upload</h2>
       <p className="muted">
-        {real
-          ? "上传后先在本地提取字段，并与当前房源和补充记录比对。"
-          : "仅处理合成合同，上传后先在本地提取字段并核对。"}
-        AI 辅助分析需另行同意。
+        {scope === "document"
+          ? "Upload an existing contract without selecting a property. Key fields, clauses, and items to check are extracted locally first."
+          : real
+            ? "Fields are extracted locally after upload and compared with the current property and supplementary records."
+            : "Only synthetic contracts are processed. Fields are extracted and checked locally after upload."}
+        AI analysis requires separate consent.
       </p>
       <Failure
         error={action.error || loadError}
         retry={loadError ? onConsentChange : action.retry}
       />
       {loading ? (
-        <p role="status">正在核对已保存的同意记录…</p>
+        <p role="status">Checking saved consent records…</p>
       ) : !consent ? (
         <>
           <Checkbox
             checked={consentCheck}
             onChange={(e) => setConsentCheck(e.target.checked)}
           >
-            我同意为本次复核处理此合同，理解此同意独立于选房确认。
+            {scope === "document"
+              ? "I agree to process this uploaded contract independently, without linking it to a property."
+              : "I agree to process this contract for this review and understand this consent is separate from property selection."}
           </Checkbox>
           <div className="consent-actions">
             <Button
               type="primary"
-              aria-label="同意处理此合同"
+              aria-label="Agree to process this contract"
               disabled={
                 !consentCheck || !selectionCurrent || Boolean(loadError)
               }
               loading={action.busy}
               onClick={agree}
             >
-              同意处理此合同
+              Agree to process this contract
             </Button>
           </div>
         </>
@@ -157,10 +176,10 @@ export default function ContractUpload({
           <Alert
             type="success"
             showIcon
-            title="合同处理同意已记录"
+            title="Contract processing consent recorded"
             action={
               <Button size="small" disabled={action.busy} onClick={revoke}>
-                撤销同意
+                Revoke consent
               </Button>
             }
           />
@@ -168,14 +187,16 @@ export default function ContractUpload({
             <input
               ref={input}
               type="file"
-              aria-label={real ? "选择合同" : "选择合成合同"}
+              aria-label={
+                actualContract ? "Select contract" : "Select synthetic contract"
+              }
               accept=".txt,.docx,.pdf"
               disabled={action.busy}
               onChange={(e) => {
                 const chosen = e.target.files?.[0] ?? null;
                 if (chosen && chosen.size > 2_000_000) {
                   message.error(
-                    "文件超过 2,000,000 字节，请提供较小的合同文件。",
+                    "The file exceeds 2,000,000 bytes. Please provide a smaller contract file.",
                   );
                   e.target.value = "";
                   return;
@@ -184,54 +205,63 @@ export default function ContractUpload({
               }}
             />
             <Button
-              aria-label={real ? "选择合同文件" : "选择合成合同文件"}
+              aria-label={
+                actualContract
+                  ? "Choose contract file"
+                  : "Choose synthetic contract file"
+              }
               icon={<UploadOutlined />}
               onClick={() => input.current?.click()}
               disabled={action.busy}
             >
-              {real ? "选择合同" : "选择合成合同"}
+              {actualContract ? "Select contract" : "Select synthetic contract"}
             </Button>
-            <span className="break-word">{file?.name ?? "尚未选择文件"}</span>
+            <span className="break-word">
+              {file?.name ?? "No file selected"}
+            </span>
           </div>
           <Checkbox
             checked={synthetic}
             onChange={(e) => setSynthetic(e.target.checked)}
           >
-            {real
-              ? "我确认有权提交此合同用于本次复核。"
-              : "我确认上传的是合成演示合同。"}
+            {actualContract
+              ? "I confirm I am authorised to submit this contract for review."
+              : "I confirm this is a synthetic demo contract."}
           </Checkbox>
           <div className="consent-actions">
             <Button
               type="primary"
-              aria-label="上传并复核"
+              aria-label="Upload and review"
               disabled={!file || !synthetic || !selectionCurrent}
               onClick={upload}
               loading={action.busy}
             >
-              上传并复核
+              Upload and review
             </Button>
           </div>
         </>
       )}
       <p className="muted small">
-        TXT / DOCX / PDF，最多 2,000,000 字节，文字 PDF 最多 {real ? 30 : 10}{" "}
-        页，扫描 PDF 最多 10 页。扫描文件需要本机 OCR 能力。
+        TXT / DOCX / PDF, up to 2,000,000 bytes. Text PDFs: up to{" "}
+        {real ? 30 : 10} pages; scanned PDFs: up to 10 pages. Scans require
+        local OCR support.
       </p>
-      {!real && (
+      {syntheticOnly && (
         <Space wrap>
-          <span className="muted">下载合成样例：</span>
+          <span className="muted">Download synthetic samples:</span>
           {config.agreement_examples.map((e) => (
             <a key={e.id} href={downloadUrl(`/demo-agreements/${e.id}`)}>
-              {e.id === "normal" ? "正常合同" : "租金冲突合同"}
+              {e.id === "normal"
+                ? "Standard contract"
+                : "Rent conflict contract"}
             </a>
           ))}
         </Space>
       )}
       <p className="muted small">
-        {real
-          ? "以实际复核日期检查规则时效；字段无法可靠提取时，可核对原文后修正或另行使用 AI 分析。"
-          : `合同规则参考日期：${config.clocks.contract}，与房源快照日期独立。`}
+        {actualContract
+          ? "Rule currency is checked against the actual review date. If fields cannot be reliably extracted, check the source and correct them or separately use AI analysis."
+          : `Contract rule reference date: ${config.clocks.contract}, independent of the property snapshot date.`}
       </p>
     </section>
   );

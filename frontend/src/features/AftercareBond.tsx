@@ -4,6 +4,7 @@ import {
   App,
   Button,
   Checkbox,
+  Collapse,
   Form,
   Input,
   InputNumber,
@@ -12,66 +13,147 @@ import {
   Space,
   Timeline,
 } from "antd";
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { useCase } from "../app/context";
+import { post } from "../api/client";
 import type { Dict } from "../api/types";
 import {
   CommandRecovery,
   type CommandRecoveryProps,
   type SendCommand,
 } from "./AftercarePlan";
-import { JsonDetails, money, Status, text } from "../components/Common";
+import { Failure, money, Status, text } from "../components/Common";
+import { useAction } from "../components/useAction";
 import AftercareBondDetails from "./AftercareBondDetails";
+import type { PrefillValue } from "./aftercare/prefill";
+import {
+  reportedEventAt,
+  sydneyTime,
+  sydneyToday,
+} from "./aftercare/presentation";
+
+interface ExtractedClaim {
+  amount: number;
+  amount_cents: number;
+  reason: string;
+  quote: string;
+}
+interface Extraction {
+  claims: ExtractedClaim[];
+  rejected: number;
+  event_date: string | null;
+  event_date_quote: string | null;
+  notice: string;
+}
+
+const draftModes: Record<string, string> = {
+  template: "Fact template",
+  constrained_model: "AI selects points · Each sentence is validated",
+};
+
 export default function AftercareBond({
   bond,
   evidence,
   send,
   busy,
-  clock,
   recovery,
+  bondAmount,
+  clock,
 }: {
   bond: Dict | null;
   evidence: Dict[];
   send: SendCommand;
   busy: boolean;
-  clock: string;
+  clock?: string;
   recovery: CommandRecoveryProps;
+  bondAmount?: PrefillValue;
 }) {
-  const { config } = useCase();
+  const { config, current } = useCase();
   const real = config.mode === "real_listings";
+  const aiEnabled = Boolean((config.capabilities as Dict).external_ai);
   const [bondRef, setBondRef] = useState(real ? "" : "SYNTHETIC-RBO-001");
   const [update, setUpdate] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [form] = Form.useForm();
   const [outcome, setOutcome] = useState("");
-  const { modal } = App.useApp();
+  const [agentMessage, setAgentMessage] = useState("");
+  const [aiConsent, setAiConsent] = useState(false);
+  const [extraction, setExtraction] = useState<Extraction | null>(null);
+  const extract = useAction();
+  const { modal, message } = App.useApp();
   const state = String(bond?.state ?? "");
   const history = (bond?.history ?? []) as Dict[];
   const claims = (bond?.claims ?? []) as Dict[];
   const drafts = (bond?.drafts ?? []) as Dict[];
+  const today = real
+    ? sydneyToday()
+    : sydneyTime(clock ?? config.clocks.aftercare, false);
+  const openUpdate = () => {
+    form.resetFields();
+    form.setFieldsValue({
+      occurred_on: today,
+      claims: [],
+      conflicting_evidence: false,
+    });
+    setExtraction(null);
+    setAgentMessage("");
+    setAiConsent(false);
+    extract.clear();
+    setUpdate(true);
+  };
+  const readDeductions = () =>
+    extract.run(async () => {
+      const result = await post<Extraction>(
+        `/cases/${encodeURIComponent(current.case_id)}/aftercare/deduction-extract`,
+        { allow_external_ai: true, message: agentMessage },
+      );
+      setExtraction(result);
+      const existing = (form.getFieldValue("claims") ?? []) as Dict[];
+      form.setFieldsValue({
+        claims: [
+          ...existing,
+          ...result.claims.map((c) => ({
+            amount: c.amount,
+            reason: c.reason,
+            disputed: false,
+            quote: c.quote,
+          })),
+        ],
+        ...(result.event_date ? { occurred_on: result.event_date } : {}),
+        ...(!form.getFieldValue("text")
+          ? {
+              text: `Received a bond deduction notice from the agent/landlord (${result.claims.length}  claims).`,
+            }
+          : {}),
+      });
+    });
   const submitUpdate = async () => {
     try {
       const v = await form.validateFields();
-      const claim = v.has_claim
-        ? [
-            {
-              claim_id: `claim-${crypto.randomUUID()}`,
-              amount_cents: v.amount_cents,
-              reason: v.reason,
-              evidence_refs: v.evidence_refs ?? [],
-              disputed: Boolean(v.disputed),
-            },
-          ]
-        : [];
+      const entryClaims = ((v.claims ?? []) as Dict[]).map((c) => ({
+        claim_id: `claim-${crypto.randomUUID()}`,
+        amount_cents: Math.round(Number(c.amount) * 100),
+        reason: String(c.reason).trim(),
+        evidence_refs: v.evidence_refs ?? [],
+        disputed: Boolean(c.disputed),
+      }));
+      // Today keeps the current time (a minute back for clock drift); earlier days use midday Sydney.
+      const occurred = reportedEventAt(
+        v.occurred_on,
+        real
+          ? new Date(Date.now() - 60_000).toISOString()
+          : (clock ?? config.clocks.aftercare),
+      );
       const saved = await send(
         state === "Draft" ? "activate_bond" : "bond_update",
         {
           entry: {
             text: v.text,
-            occurred_at: clock,
+            occurred_at: occurred,
             evidence_refs: v.evidence_refs ?? [],
             tenant_confirmed: true,
-            claims: claim,
-            conflicting_evidence: false,
+            claims: entryClaims,
+            conflicting_evidence: Boolean(v.conflicting_evidence),
           },
         },
       );
@@ -80,19 +162,33 @@ export default function AftercareBond({
       /* Inline errors. */
     }
   };
+  const currentDraft = drafts.filter((d) => d.status === "current").at(-1);
   return (
     <section className="panel">
       <div className="section-heading">
-        <h2>押金跟进</h2>
+        <h2>Bond follow-up</h2>
         {bond && <Status value={state} />}
       </div>
       <p className="muted">
-        记录租客报告的事实和扣款主张。记录扣款不表示你已接受，跟进草稿也不会自动发送。
+        Record facts reported by the tenant and deduction claims. Recording a
+        deduction does not mean you accept it. Follow-up drafts are not sent
+        automatically.
       </p>
+      {bondAmount && (
+        <Alert
+          className="aftercare-prefill"
+          type="info"
+          showIcon
+          title={`Bond recorded in the contract: ${money(Number(bondAmount.value))}`}
+          description={`Source: ${bondAmount.label}${bondAmount.quote ? `“${bondAmount.quote}”` : ""}. Check the bond reference and actual amount against Rental Bonds Online records.`}
+        />
+      )}
       {!bond ? (
         <div className="date-actions">
           <label htmlFor="bond-reference">
-            {real ? "押金记录编号（可暂不填写）" : "合成押金记录编号"}
+            {real
+              ? "Bond reference (optional for now)"
+              : "Synthetic bond reference"}
           </label>
           <Input
             id="bond-reference"
@@ -108,22 +204,22 @@ export default function AftercareBond({
                 deposit_evidence_ref: null,
               })
             }
-            aria-label="建立押金跟进"
+            aria-label="Create bond follow-up"
           >
-            建立押金跟进
+            Create bond follow-up
           </Button>
         </div>
       ) : (
         <>
-          <p>押金编号：{text(bond.bond_reference)}</p>
-          <p>押金凭证：{text(bond.deposit_evidence_ref)}</p>
+          <p>Bond reference: {text(bond.bond_reference)}</p>
+          <p>Bond evidence: {text(bond.deposit_evidence_ref)}</p>
           {state === "Draft" && (
             <>
               {!bond.bond_reference && !bond.deposit_evidence_ref && (
                 <Alert
                   type="info"
                   showIcon
-                  title="激活前请补录押金编号，或关联一份押金凭证。"
+                  title="Add a bond reference or link bond evidence before activation."
                 />
               )}
               <Button
@@ -133,7 +229,7 @@ export default function AftercareBond({
                   setDetailsOpen(true);
                 }}
               >
-                补录押金资料
+                Add bond details
               </Button>
             </>
           )}
@@ -141,8 +237,8 @@ export default function AftercareBond({
             <Alert
               type="warning"
               showIcon
-              title="存在争议或审核门禁"
-              description="需要授权操作员处理。租客仍可记录事实或明确确认结果；普通页面不能放行。"
+              title="Dispute or review restriction"
+              description="Referred for human review. Follow-up drafts are paused until release. You can still record new facts or explicitly confirm the outcome."
             />
           )}
           <Space wrap className="section-actions">
@@ -150,19 +246,16 @@ export default function AftercareBond({
               type="primary"
               disabled={["Resolved", "Withdrawn"].includes(state)}
               loading={busy}
-              onClick={() => {
-                form.resetFields();
-                setUpdate(true);
-              }}
+              onClick={openUpdate}
               aria-label={
                 state === "Draft"
-                  ? "确认事实并激活跟进"
-                  : "记录新事实或扣款主张"
+                  ? "Confirm facts and activate follow-up"
+                  : "Record new facts or deduction claims"
               }
             >
               {state === "Draft"
-                ? "确认事实并激活跟进"
-                : "记录新事实或扣款主张"}
+                ? "Confirm facts and activate follow-up"
+                : "Record new facts or deduction claims"}
             </Button>
             <Button
               disabled={state !== "AwaitingOutcome"}
@@ -173,71 +266,142 @@ export default function AftercareBond({
                   allow_external_ai: false,
                 })
               }
-              aria-label="准备跟进草稿"
+              aria-label="Prepare follow-up draft"
             >
-              准备跟进草稿
+              Prepare factual draft
             </Button>
+            {aiEnabled && (
+              <Button
+                disabled={state !== "AwaitingOutcome"}
+                loading={busy}
+                onClick={() =>
+                  modal.confirm({
+                    title: "Use AI to select draft points?",
+                    content:
+                      "The recorded fact sentence catalogue will be sent to the configured AI. AI can only select sentence IDs. Required facts and references are validated; no new facts are generated and no email is sent.",
+                    okText: "Agree and generate",
+                    cancelText: "Cancel",
+                    onOk: () =>
+                      send("request_draft", {
+                        use_model: true,
+                        allow_external_ai: true,
+                      }),
+                  })
+                }
+                aria-label="Prepare draft with AI"
+              >
+                Prepare draft with AI
+              </Button>
+            )}
           </Space>
-          <h3>事实时间线</h3>
+          <h3>Fact timeline</h3>
           {history.length ? (
             <Timeline
               items={history.map((h) => ({
                 content: (
                   <>
-                    <strong>{text(h.occurred_at)}</strong>
+                    <strong>{sydneyTime(h.occurred_at, false)}</strong>
                     <p>{text(h.text)}</p>
                     <small>
-                      证据引用：
+                      Evidence references:
                       {text(
-                        ((h.evidence_refs as string[]) ?? []).join("、") ||
-                          "无",
+                        ((h.evidence_refs as string[]) ?? []).join(", ") ||
+                          "None",
                       )}
+                      {h.conflicting_evidence
+                        ? " · Evidence conflict flagged"
+                        : ""}
+                      {" · Recorded at "}
+                      {sydneyTime(h.recorded_at)}
                     </small>
                   </>
                 ),
               }))}
             />
           ) : (
-            <p className="muted">尚未记录事实。</p>
+            <p className="muted">No facts recorded yet.</p>
           )}
           {claims.length > 0 && (
             <>
-              <h3>报告的扣款主张 · reported_claim</h3>
+              <h3>
+                Reported deduction claims (claims only; deductions are not
+                established)
+              </h3>
               {claims.map((c, i) => (
                 <div key={i} className="detail-row">
                   <strong>{money(Number(c.amount_cents) / 100)}</strong>
                   <p>
                     {text(c.reason)} ·{" "}
-                    {c.disputed ? "租客有争议" : "尚未标记争议"}
+                    {c.disputed ? "Disputed by tenant" : "No dispute flagged"}
                   </p>
                   <small>
-                    证据引用：
+                    Evidence references:
                     {text(
-                      ((c.evidence_refs as string[]) ?? []).join("、") || "无",
+                      ((c.evidence_refs as string[]) ?? []).join(", ") ||
+                        "None",
                     )}
                   </small>
                 </div>
               ))}
             </>
           )}
-          {drafts.length > 0 && (
+          {currentDraft && (
             <>
-              <h3>跟进草稿 · 尚未发送</h3>
-              {drafts.map((d, i) => (
-                <article className="draft-block" key={i}>
-                  <Status value={String(d.status)} />
-                  <p className="source-quote">{text(d.text)}</p>
-                  <small>
-                    依据版本 {text(d.based_on_version)} · 需租客复核
-                  </small>
-                </article>
-              ))}
+              <h3>Follow-up draft · Not sent</h3>
+              <article className="draft-block">
+                <Space wrap>
+                  <Status value={String(currentDraft.status)} />
+                  <span className="muted small">
+                    {draftModes[String(currentDraft.mode)] ??
+                      text(currentDraft.mode)}{" "}
+                    · Based on case version{" "}
+                    {text(currentDraft.based_on_version)} · Tenant review
+                    required
+                  </span>
+                </Space>
+                <p className="source-quote">{text(currentDraft.text)}</p>
+                <Button
+                  size="small"
+                  onClick={() =>
+                    void navigator.clipboard
+                      .writeText(String(currentDraft.text))
+                      .then(() =>
+                        message.success(
+                          "Copied. Paste it into your own email application.",
+                        ),
+                      )
+                  }
+                >
+                  Copy draft
+                </Button>
+              </article>
             </>
+          )}
+          {drafts.length > (currentDraft ? 1 : 0) && (
+            <Collapse
+              ghost
+              items={[
+                {
+                  key: "old",
+                  label: `View earlier or superseded drafts (${drafts.length - (currentDraft ? 1 : 0)})`,
+                  children: drafts
+                    .filter((d) => d !== currentDraft)
+                    .map((d, i) => (
+                      <article className="draft-block" key={i}>
+                        <Status value={String(d.status)} />
+                        <p className="source-quote">{text(d.text)}</p>
+                      </article>
+                    )),
+                },
+              ]}
+            />
           )}
           {!["Resolved", "Withdrawn"].includes(state) && (
             <div className="closure-box">
-              <h3>确认结果或撤回</h3>
-              <label htmlFor="bond-outcome">你确认的结果或撤回原因</label>
+              <h3>Confirm outcome or withdraw</h3>
+              <label htmlFor="bond-outcome">
+                Your confirmed outcome or reason for withdrawal
+              </label>
               <Input.TextArea
                 id="bond-outcome"
                 value={outcome}
@@ -253,10 +417,10 @@ export default function AftercareBond({
                   loading={busy}
                   onClick={() =>
                     modal.confirm({
-                      title: "明确确认押金结果并关闭跟进？",
+                      title: "Confirm the bond outcome and close follow-up?",
                       content: outcome,
-                      okText: "确认结果并关闭",
-                      cancelText: "继续核对",
+                      okText: "Confirm outcome and close",
+                      cancelText: "Continue checking",
                       onOk: () =>
                         send("confirm_outcome", {
                           outcome,
@@ -265,19 +429,19 @@ export default function AftercareBond({
                         }),
                     })
                   }
-                  aria-label="确认结果并关闭跟进"
+                  aria-label="Confirm outcome and close follow-up"
                 >
-                  确认结果并关闭跟进
+                  Confirm outcome and close follow-up
                 </Button>
                 <Button
                   danger
                   disabled={!outcome.trim() || busy}
                   onClick={() =>
                     modal.confirm({
-                      title: "明确撤回押金跟进？",
+                      title: "Withdraw bond follow-up?",
                       content: outcome,
-                      okText: "确认撤回",
-                      cancelText: "返回",
+                      okText: "Confirm withdrawal",
+                      cancelText: "Back",
                       onOk: () =>
                         send("withdraw", {
                           reason: outcome,
@@ -286,12 +450,25 @@ export default function AftercareBond({
                     })
                   }
                 >
-                  撤回跟进
+                  Withdraw follow-up
                 </Button>
               </Space>
             </div>
           )}
-          {bond.outcome && <JsonDetails value={bond.outcome} />}
+          {Boolean(bond.outcome) && (
+            <Alert
+              type={state === "Resolved" ? "success" : "info"}
+              showIcon
+              title={
+                state === "Resolved"
+                  ? "You have confirmed the bond outcome"
+                  : "You have withdrawn follow-up"
+              }
+              description={`${text(
+                (bond.outcome as Dict).outcome ?? (bond.outcome as Dict).reason,
+              )} · Recorded at ${sydneyTime((bond.outcome as Dict).recorded_at)}`}
+            />
+          )}
         </>
       )}
       {detailsOpen && bond && (
@@ -306,9 +483,12 @@ export default function AftercareBond({
       )}
       <Modal
         title={
-          state === "Draft" ? "确认事实并激活跟进" : "记录新事实或扣款主张"
+          state === "Draft"
+            ? "Confirm facts and activate follow-up"
+            : "Record new facts or deduction claims"
         }
         open={update}
+        width={720}
         onCancel={() => {
           if (busy || recovery.refreshing) return;
           if (recovery.error) recovery.abandon();
@@ -316,15 +496,15 @@ export default function AftercareBond({
         }}
         confirmLoading={busy}
         okButtonProps={{
-          "aria-label": "确认并记录",
-          disabled: recovery.refreshing,
+          "aria-label": "Confirm and record",
+          disabled: recovery.refreshing || extract.busy,
         }}
         cancelButtonProps={{ disabled: busy || recovery.refreshing }}
         closable={!busy && !recovery.refreshing}
         mask={{ closable: !busy && !recovery.refreshing }}
         onOk={submitUpdate}
-        okText="确认并记录"
-        cancelText={recovery.error ? "取消本次编辑" : "取消"}
+        okText="Confirm and record"
+        cancelText={recovery.error ? "Cancel this edit" : "Cancel"}
       >
         <CommandRecovery
           {...recovery}
@@ -335,73 +515,182 @@ export default function AftercareBond({
           }}
         />
         <p className="muted small">
-          当前已保存跟进状态：
+          Currently saved follow-up status:
           <Status value={state} />
         </p>
-        <details>
-          <summary>查看当前已保存事实与扣款主张</summary>
-          <JsonDetails value={{ history, claims }} />
-        </details>
+        {aiEnabled ? (
+          <Collapse
+            className="aftercare-ai"
+            items={[
+              {
+                key: "ai",
+                label:
+                  "Optional: Use AI to extract deduction claims from the agent/landlord text",
+                children: (
+                  <>
+                    <Input.TextArea
+                      aria-label="Original agent or landlord text"
+                      rows={4}
+                      maxLength={8000}
+                      value={agentMessage}
+                      placeholder="Paste the original agent or landlord email/message"
+                      onChange={(e) => setAgentMessage(e.target.value)}
+                    />
+                    <Checkbox
+                      checked={aiConsent}
+                      onChange={(e) => setAiConsent(e.target.checked)}
+                    >
+                      I agree to send only this text to the configured AI. It
+                      will not be saved to the case.
+                    </Checkbox>
+                    <div>
+                      <Button
+                        disabled={!aiConsent || !agentMessage.trim()}
+                        loading={extract.busy}
+                        onClick={() => void readDeductions()}
+                      >
+                        Extract deduction claims
+                      </Button>
+                    </div>
+                    <Failure error={extract.error} retry={extract.retry} />
+                    {extraction && (
+                      <Alert
+                        type={extraction.claims.length ? "success" : "warning"}
+                        showIcon
+                        title={
+                          extraction.claims.length
+                            ? `Added ${extraction.claims.length} candidate claims. Check each amount and reason`
+                            : "No verifiable deduction amounts found. Please enter them manually"
+                        }
+                        description={
+                          <>
+                            <p className="small">{extraction.notice}</p>
+                            {extraction.rejected > 0 && (
+                              <p className="small">
+                                Another {extraction.rejected} claims were
+                                discarded because amounts or quotations did not
+                                match the source.
+                              </p>
+                            )}
+                            {extraction.event_date && (
+                              <p className="small">
+                                Fact date taken from the source: “
+                                {extraction.event_date_quote}”
+                              </p>
+                            )}
+                          </>
+                        }
+                      />
+                    )}
+                  </>
+                ),
+              },
+            ]}
+          />
+        ) : (
+          <p className="muted small">
+            Configure AI to extract deduction claims from agent text. Please
+            enter them manually for now.
+          </p>
+        )}
         <Form
           disabled={busy || recovery.refreshing}
           form={form}
           layout="vertical"
           initialValues={{
-            has_claim: false,
-            disputed: true,
-            amount_cents: 18000,
+            occurred_on: today,
+            claims: [],
+            conflicting_evidence: false,
           }}
         >
           <Form.Item
             name="text"
-            label="租客报告的事实"
-            rules={[{ required: true, message: "填写你确认的事实" }]}
+            label="Facts reported by the tenant"
+            rules={[
+              { required: true, message: "Enter facts you have confirmed" },
+            ]}
           >
             <Input.TextArea rows={3} />
           </Form.Item>
-          <Form.Item name="evidence_refs" label="关联证据">
+          <Form.Item
+            name="occurred_on"
+            label="Date of event (Sydney time)"
+            rules={[
+              { required: true, message: "Select date" },
+              {
+                validator: (_, value) =>
+                  !value || value <= today
+                    ? Promise.resolve()
+                    : Promise.reject(new Error("Future dates are not allowed")),
+              },
+            ]}
+          >
+            <Input type="date" max={today} />
+          </Form.Item>
+          <Form.Item name="evidence_refs" label="Linked evidence">
             <Select
               mode="multiple"
               options={evidence.map((e) => ({
                 value: String(e.evidence_id),
-                label: String(e.evidence_id),
+                label: `${e.summary ?? e.evidence_id}`,
               }))}
             />
           </Form.Item>
-          <Form.Item name="has_claim" valuePropName="checked">
-            <Checkbox>包含一项报告的扣款主张</Checkbox>
-          </Form.Item>
-          <Form.Item
-            noStyle
-            shouldUpdate={(a, b) => a.has_claim !== b.has_claim}
-          >
-            {({ getFieldValue }) =>
-              getFieldValue("has_claim") ? (
-                <>
-                  <Form.Item
-                    name="amount_cents"
-                    label="主张金额（AUD 整数分，18000 = AUD 180）"
-                    rules={[{ required: true }]}
-                  >
-                    <InputNumber min={0} precision={0} />
-                  </Form.Item>
-                  <Form.Item
-                    name="reason"
-                    label="报告的扣款原因"
-                    rules={[{ required: true }]}
-                  >
-                    <Input />
-                  </Form.Item>
-                  <Form.Item name="disputed" valuePropName="checked">
-                    <Checkbox>租客对该主张有争议</Checkbox>
-                  </Form.Item>
-                </>
-              ) : null
-            }
+          <h4>Deduction claims reported by the other party</h4>
+          <Form.List name="claims">
+            {(fields, { add, remove }) => (
+              <>
+                {fields.map((f) => (
+                  <div className="list-form-row claim-row" key={f.key}>
+                    <Form.Item
+                      name={[f.name, "amount"]}
+                      label="Amount (AUD)"
+                      rules={[{ required: true, message: "Enter amount" }]}
+                    >
+                      <InputNumber min={0.01} max={100000} precision={2} />
+                    </Form.Item>
+                    <Form.Item
+                      name={[f.name, "reason"]}
+                      label="Reason given by the other party"
+                      rules={[{ required: true, message: "Enter reason" }]}
+                    >
+                      <Input maxLength={300} />
+                    </Form.Item>
+                    <Form.Item
+                      name={[f.name, "disputed"]}
+                      valuePropName="checked"
+                      label="Is this disputed?"
+                    >
+                      <Checkbox>I dispute this</Checkbox>
+                    </Form.Item>
+                    <Button
+                      aria-label="Remove deduction claim"
+                      icon={<MinusCircleOutlined />}
+                      onClick={() => remove(f.name)}
+                    />
+                  </div>
+                ))}
+                <Button
+                  icon={<PlusOutlined aria-hidden="true" />}
+                  onClick={() =>
+                    add({ amount: null, reason: "", disputed: false })
+                  }
+                >
+                  Add deduction claim
+                </Button>
+              </>
+            )}
+          </Form.List>
+          <Form.Item name="conflicting_evidence" valuePropName="checked">
+            <Checkbox>
+              Existing evidence conflicts (for example, the condition report and
+              photos differ) and needs human review
+            </Checkbox>
           </Form.Item>
           <p className="muted small">
-            记录时间由服务器演示时钟处理，事实时间：{clock}
-            。点击确认表示你确认这条报告，不表示接受扣款。
+            Disputed deductions or conflicting evidence are referred for human
+            review. Confirming records this report; it does not accept the
+            deduction.
           </p>
         </Form>
       </Modal>

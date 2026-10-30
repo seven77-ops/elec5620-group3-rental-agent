@@ -1,3 +1,4 @@
+import KnowledgePanel from "../knowledge/KnowledgePanel";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Space, Spin, Tabs } from "antd";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -20,7 +21,6 @@ import ProfileEditor from "./ProfileEditor";
 import Repairs from "./Repairs";
 import Utilities from "./Utilities";
 import Services from "./Services";
-import LivingFiles from "./LivingFiles";
 import TenancySource from "./TenancySource";
 import LivingTodos from "./LivingTodos";
 import "./living.css";
@@ -110,11 +110,11 @@ export default function LivingHub() {
   if (!record || !directory)
     return (
       <section className="living-hub">
-        <h1>租后生活服务</h1>
+        <h1>Living and aftercare services</h1>
         {loading ? (
           <div className="living-loading" role="status">
             <Spin />
-            <span>正在读取生活服务资料…</span>
+            <span>Loading living service information…</span>
           </div>
         ) : (
           <Failure error={error} retry={() => void load()} />
@@ -124,7 +124,7 @@ export default function LivingHub() {
   const tabs = [
     {
       key: "repairs",
-      label: "日常报修",
+      label: "Repairs",
       children: (
         <Repairs
           record={record}
@@ -138,7 +138,7 @@ export default function LivingHub() {
     },
     {
       key: "utilities",
-      label: "水电气网",
+      label: "Utilities",
       children: (
         <Utilities
           record={record}
@@ -150,7 +150,7 @@ export default function LivingHub() {
     },
     {
       key: "services",
-      label: "搬运与清洁",
+      label: "Moving and cleaning",
       children: (
         <Services
           focusedId={tab === "services" ? query.get("booking") : null}
@@ -164,7 +164,7 @@ export default function LivingHub() {
     },
     {
       key: "moveout",
-      label: "退租与押金",
+      label: "Move-out and bond",
       children: (
         <Aftercare
           key={tab === "bond" ? "bond" : "plan"}
@@ -179,7 +179,8 @@ export default function LivingHub() {
     <section className="living-hub">
       <header className="living-heading">
         <div>
-          <h1>租后生活服务</h1>
+          <h1>Living and aftercare services</h1>
+          <KnowledgePanel />
         </div>
         <Button
           disabled={action.busy}
@@ -191,7 +192,7 @@ export default function LivingHub() {
             }
           }}
         >
-          读取最新资料
+          Load latest information
         </Button>
       </header>
       <Failure
@@ -225,44 +226,49 @@ export default function LivingHub() {
         onChange={(key) => setQuery({ tab: key })}
         items={tabs}
       />
-      <LivingFiles caseId={caseId} repairs={record.repairs} />
       {tab !== "moveout" && tab !== "bond" && (
         <div className="living-ai-help">
-          <span>也可以先和租房助手聊聊</span>
+          <span>You can also start with Rental Assistant</span>
           <Space wrap>
             {tab === "repairs" ? (
               <Button
                 onClick={() =>
-                  ask("我想准备一封给中介的报修邮件，请先问我问题详情。")
+                  ask(
+                    "I want to prepare a repair email to my agent. Please ask me about the issue first.",
+                  )
                 }
               >
-                聊聊报修问题
+                Discuss a repair
               </Button>
             ) : tab === "utilities" ? (
               <Button
                 onClick={() =>
                   ask(
-                    "我想整理水电气网供应商，请先根据我确认的资料帮我了解选择。",
+                    "I want to organise my utility providers. Please explain the options using my confirmed information first.",
                   )
                 }
               >
-                聊聊水电气网
+                Discuss utilities
               </Button>
             ) : (
               <>
                 <Button
                   onClick={() =>
-                    ask("我需要搬家服务，请帮我整理需要向搬运公司确认的问题。")
+                    ask(
+                      "I need moving services. Please help me prepare questions to confirm with a removalist.",
+                    )
                   }
                 >
-                  聊聊搬家需求
+                  Discuss moving needs
                 </Button>
                 <Button
                   onClick={() =>
-                    ask("我需要清洁服务，请帮我整理清洁范围和询价问题。")
+                    ask(
+                      "I need cleaning services. Please help me clarify the scope and questions for a quote.",
+                    )
                   }
                 >
-                  聊聊清洁需求
+                  Discuss cleaning needs
                 </Button>
               </>
             )}

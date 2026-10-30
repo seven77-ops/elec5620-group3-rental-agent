@@ -1,21 +1,29 @@
 import { test, expect, type Page } from "@playwright/test";
 
 async function send(page: Page, text: string) {
-  await page.getByRole("textbox", { name: "给租房助手的消息" }).fill(text);
-  await page.getByRole("button", { name: "发送消息", exact: true }).click();
+  await page
+    .getByRole("textbox", { name: "Message to Rental Assistant" })
+    .fill(text);
+  await page.getByRole("button", { name: "Send message", exact: true }).click();
 }
 async function confirmLatest(page: Page) {
   await page
-    .getByRole("button", { name: "确认更新这条报修", exact: true })
+    .getByRole("button", {
+      name: /Confirm\ repair\ update|Save\ to\ Aftercare/,
+      exact: true,
+    })
     .last()
     .click();
   const modal = page.getByRole("dialog", {
-    name: "确认同步到租后服务？",
+    name: "Confirm sync to Aftercare services?",
     exact: true,
   });
   await expect(modal).toBeVisible();
   await modal
-    .getByRole("button", { name: "确认保存租后资料", exact: true })
+    .getByRole("button", {
+      name: "Confirm and save aftercare details",
+      exact: true,
+    })
     .click();
   await expect(modal).not.toBeVisible();
 }
@@ -29,11 +37,14 @@ test("repair dialogue rewrites one pending draft then tracks reply and resolutio
   await page.goto(`/cases/${c.case_id}/assistant`);
   await send(page, "厨房水槽下面一直漏水，帮我写报修邮件");
   await expect(
-    page.getByRole("button", { name: "确认生成报修草稿", exact: true }),
+    page.getByRole("button", { name: "Save to Aftercare", exact: true }),
   ).toBeVisible();
   await send(page, "这封邮件写得客气一点");
   await expect(
-    page.getByRole("button", { name: "已由后续修改替代", exact: true }),
+    page.getByRole("button", {
+      name: "Replaced by a later change",
+      exact: true,
+    }),
   ).toBeDisabled();
   expect((await (await request.get(root)).json()).repairs).toHaveLength(0);
   await confirmLatest(page);
@@ -41,11 +52,13 @@ test("repair dialogue rewrites one pending draft then tracks reply and resolutio
   expect(record.repairs).toHaveLength(1);
   const rid = record.repairs[0].repair_id;
   expect(record.repairs[0].email_tone).toBe("polite");
-  expect(record.repairs[0].email.body).toContain("厨房水槽下面一直漏水");
+  expect(record.repairs[0].email.body).toContain(
+    "The kitchen sink has been leaking continuously.",
+  );
   await page.reload();
   await send(page, "中介回复说明天上午来修");
   await expect(
-    page.getByRole("button", { name: "确认更新这条报修", exact: true }),
+    page.getByRole("button", { name: "Confirm repair update", exact: true }),
   ).toBeVisible();
   record = await (await request.get(root)).json();
   expect(record.repairs[0].status).toBe("prepared");

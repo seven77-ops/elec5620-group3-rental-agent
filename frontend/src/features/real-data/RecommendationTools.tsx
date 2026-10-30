@@ -44,10 +44,14 @@ export default function RecommendationTools() {
           onChange={setTab}
           destroyOnHidden
           items={[
-            { key: "market", label: "租金参考", children: <MarketPanel /> },
+            {
+              key: "market",
+              label: "Rent reference",
+              children: <MarketPanel />,
+            },
             {
               key: "listings",
-              label: "真实房源",
+              label: "Live listing",
               children: (
                 <>
                   <ListingPanel onPoint={onPoint} />
@@ -60,11 +64,13 @@ export default function RecommendationTools() {
             },
             {
               key: "trips",
-              label: "通勤查询",
+              label: "Commute search",
               children: (
                 <TripPanel
                   key={
-                    origin ? `${origin.latitude}:${origin.longitude}` : "manual"
+                    origin
+                      ? `${origin.latitude}: ${origin.longitude}`
+                      : "manual"
                   }
                   config={config.providers.tfnsw}
                   origin={origin}

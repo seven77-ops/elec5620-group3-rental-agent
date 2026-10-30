@@ -19,6 +19,8 @@ from . import commute
 from . import areas
 from . import progress
 from .preferences_progress import guard_monthly
+from .soft_preferences import merge_explicit_priorities,rank_answer
+from ..rag.scope import is_product_question
 
 
 def signature(case):
@@ -42,13 +44,13 @@ class AssistantService:
     def __init__(self,ctx): self.ctx=ctx
 
     def catalog(self):
-        require(self.ctx.settings.catalog is not None,503,'real_catalog_unavailable','真实房源库未加载。')
+        require(self.ctx.settings.catalog is not None,503,'real_catalog_unavailable','The live listing catalogue is unavailable.')
         return self.ctx.settings.catalog
 
     def get(self,db,case_id,conversation_id):
         self.ctx.get(db,'case',case_id)
         value=self.ctx.get(db,'assistant_conversation',conversation_id)
-        require(value['case_id']==case_id,404,'not_found','未找到这个对话。')
+        require(value['case_id']==case_id,404,'not_found','Conversation not found.')
         return value
 
     def list(self,case_id: str):
@@ -69,8 +71,8 @@ class AssistantService:
         with self.ctx.repo.transaction() as db:
             self.ctx.get(db,'case',case_id)
             index=self.ctx.repo.get(db,'assistant_index',case_id) or []
-            require(len(index)<100,409,'conversation_limit','当前案例最多保存100个对话。')
-            c={'conversation_id':uid('chat'),'case_id':case_id,'title':'新对话','revision':0,'messages':[]}
+            require(len(index)<100,409,'conversation_limit','This case can contain at most 100 conversations.')
+            c={'conversation_id':uid('chat'),'case_id':case_id,'title':'New conversation','revision':0,'messages':[]}
             self.save(db,c); return c
 
     def read(self,case_id: str,conversation_id: str):
@@ -80,6 +82,7 @@ class AssistantService:
     def living_status(self,db,conversation):
         result=deepcopy(conversation)
         for entry in result['messages']:
+            self.ctx.contract_knowledge.decorate_entry(db,entry)
             for action in entry.get('actions',[]):
                 if action.get('type')=='apply_living_services':
                     proposal=self.ctx.repo.get(db,'living_proposal',action.get('proposal_id',''))
@@ -91,28 +94,28 @@ class AssistantService:
     def send(self,case_id: str,conversation_id: str,body: dict):
         shape(body,('request_id','expected_revision','message','allow_external_ai'),('listing_ids','allow_external_data'))
         request_id(body['request_id'])
-        require(body['allow_external_ai'] is True,422,'ai_consent_required','请明确同意本次使用外部 AI。')
-        require(type(body.get('allow_external_data',False)) is bool,422,'invalid_input','位置与交通查询同意须为布尔值。')
-        require(integer(body['expected_revision']),422,'invalid_input','请提供当前对话版本。')
-        require(isinstance(body['message'],str) and 0<len(body['message'].strip())<=3000,422,'invalid_input','消息须为1至3000字。')
+        require(body['allow_external_ai'] is True,422,'ai_consent_required','Explicit consent is required to use external AI for this request.')
+        require(type(body.get('allow_external_data',False)) is bool,422,'invalid_input','Location and transit lookup consent must be a boolean.')
+        require(integer(body['expected_revision']),422,'invalid_input','Provide the current conversation version.')
+        require(isinstance(body['message'],str) and 0<len(body['message'].strip())<=3000,422,'invalid_input','Messages must contain 1 to 3000 characters.')
         requested=body.get('listing_ids',[])
-        require(isinstance(requested,list) and len(requested)<=5 and all(isinstance(i,str) for i in requested) and len(requested)==len(set(requested)),422,'invalid_reference','最多选择5套已展示房源。')
+        require(isinstance(requested,list) and len(requested)<=5 and all(isinstance(i,str) for i in requested) and len(requested)==len(set(requested)),422,'invalid_reference','Select at most 5 displayed listings.')
         catalog=self.catalog(); key=case_id+':'+body['request_id']; identity={'conversation_id':conversation_id,**body}
         token=uid('attempt')
         with self.ctx.repo.transaction() as db:
             c=self.get(db,case_id,conversation_id); case=self.ctx.get(db,'case',case_id)
             old=self.ctx.receipt(db,'assistant_turn_receipt',key,identity)
-            if old and 'result' in old: return old['result']
-            require(not old or old.get('status')!='pending' or time()-old['started_at']>60,409,'request_in_progress','本次消息正在处理，请稍后重试。')
-            require(c['revision']==body['expected_revision'],409,'conversation_conflict','对话已更新，请刷新后重试。')
-            require(len(c['messages'])<200,409,'message_limit','这个对话已满，请新建对话。')
+            if old and 'result' in old: return self.living_status(db,old['result'])
+            require(not old or old.get('status')!='pending' or time()-old['started_at']>60,409,'request_in_progress','This message is being processed. Please retry shortly.')
+            require(c['revision']==body['expected_revision'],409,'conversation_conflict','The conversation changed. Refresh and retry.')
+            require(len(c['messages'])<200,409,'message_limit','This conversation is full. Start a new conversation.')
             known=known_listings(c)
-            require(set(requested)<=set(known),422,'invalid_reference','只能引用当前对话已展示的房源。')
+            require(set(requested)<=set(known),422,'invalid_reference','Only listings displayed in this conversation can be referenced.')
             preview=known_listings(c,preview=True)
             cards_context=listing_context(catalog,[i for i in preview if i not in requested]+requested)
             ids=[row['listing_id'] for row in cards_context]
-            require(set(requested)<=set(ids),422,'invalid_reference','只能引用当前对话已展示的房源。')
-            public_snapshot=LeaseChatBridge(self.ctx).hydrate(db,c)
+            require(set(requested)<=set(ids),422,'invalid_reference','Only listings displayed in this conversation can be referenced.')
+            public_snapshot=self.living_status(db,c)
             latest_proposal=next((entry.get('lease_proposal') for entry in reversed(public_snapshot['messages']) if entry.get('lease_proposal')),None)
             lease_pending_summary=({'missing_fields':[q['field'] for q in latest_proposal['questions']]} if latest_proposal and latest_proposal['status']=='pending' else None)
             snapshot=signature(case)
@@ -121,7 +124,7 @@ class AssistantService:
         # The complete external call runs with no SQLite transaction held.
         living_focus=repair_focus(self.ctx,case_id,c,living_snapshot)
         context={'task':'assistant_intent','response_schema':response_schema(),'message':body['message'],
-            'history':history_context(c,ids),
+            'history':history_context(public_snapshot,ids),
             'draft_profile':supplied_profile(case['draft']['profile'],case.get('requirements_contract')!='supplied-only-v1'),
             'confirmed_profile':supplied_profile(case['confirmations'][-1]['profile'],case.get('requirements_contract')!='supplied-only-v1') if (case['confirmations'] and case['confirmations'][-1]['draft_revision']==case['draft']['revision'] and case['confirmations'][-1]['fingerprint']==case['draft']['fingerprint'] and case['agent1']['state']=='Confirmed') else None,
             'displayed_listing_ids':ids,'displayed_listings':cards_context,'selected_listing_ids':requested,
@@ -143,21 +146,42 @@ class AssistantService:
             context['lease_draft']=LeaseChatBridge(self.ctx).context(case_id)
             if lease_pending_summary: context['lease_draft']['pending_proposal']=lease_pending_summary
             calls=[]
-            for attempt in range(2):
+            explicit={'intent':'knowledge'} if is_product_question(body['message']) else progress.explicit_transition(c,body['message'])
+            with self.ctx.repo.transaction() as db:
+                routing_snapshot=self.living_status(db,c)
+            routing=self.ctx.decision_router.prepare(body['message'],routing_snapshot,token,explicit=explicit,
+                pending=progress.pending_question(c),lease_pending=bool(lease_pending_summary),
+                repair_active=bool(living_focus.get('repair_id') or living_focus.get('pending')))
+            full_context=context
+            if routing['allowed_intents']:
+                context={**context,'routing_domain':routing['route'],'response_schema':{
+                    'oneOf':[variant for variant in context['response_schema']['oneOf']
+                             if variant['properties']['intent']['const'] in routing['allowed_intents']]}}
+            uncertain_region=None
+            if routing['direct_intent'] is not None:
+                intent=validate_intent(routing['direct_intent'],catalog,ids)
+            for attempt in range(0 if routing['direct_intent'] is not None else 2):
                 try:
+                    with self.ctx.repo.transaction() as db:
+                        context['history']=history_context(self.living_status(db,c),ids)
+                        full_context['history']=context['history']
                     output,call=self.ctx.ai_provider.call(context)
                     calls.append(call)
-                    explicit=progress.explicit_transition(c,body['message'])
                     uncertain_region,output=progress.partial_region(body['message'],output,catalog) if not explicit else (None,explicit)
                     intent=validate_intent(output,catalog,ids)
+                    require(not routing['allowed_intents'] or intent['intent'] in routing['allowed_intents'],
+                            502,'ai_invalid_response','The extracted fields do not match the routing decision. Reassess the complete intent.')
                     break
                 except (ApiError,ProviderError) as error:
                     if isinstance(error,ProviderError):calls.append(error.call)
                     if error.code!='ai_invalid_response' or attempt:raise
-                    context={**context,'validation_feedback':'The previous response did not match response_schema. Return one strict JSON object using only the exact fields and enum values of its chosen intent. No markdown, prose, or extra fields.'}
-            intent,recovery_calls=progress.repair_route(self.ctx,c,body['message'],intent,catalog) if not uncertain_region else (intent,[])
+                    if routing['allowed_intents']:
+                        routing.update(source='ali',reason='extraction_disagreed',allowed_intents=None)
+                    context={**full_context,'validation_feedback':'The previous response did not match response_schema. Reconsider the request using the full schema. Return one strict JSON object using only the exact fields and enum values of its chosen intent. No markdown, prose, or extra fields.'}
+            intent,recovery_calls=progress.repair_route(self.ctx,c,body['message'],intent,catalog) if not uncertain_region and not is_product_question(body['message']) else (intent,[])
             calls.extend(recovery_calls)
             intent=guard_monthly(c,body['message'],intent)
+            self.ctx.decision_router.observe(routing['audit_id'],intent,routing)
             if intent['intent']=='collect_preferences' and c.get('dialogue_mode')=='recommend_areas':
                 intent['intent']='recommend_areas'
             proposal=None
@@ -174,15 +198,20 @@ class AssistantService:
                         'properties':{'intent':{'const':'collect_preferences'},'brief_patch':BRIEF_SCHEMA}}})
                 calls.append(recovery_call)
                 recovered=validate_intent(recovered,catalog,[])
-                require(recovered['intent']=='collect_preferences',502,'ai_invalid_response','历史需求提取失败，请重试。')
+                require(recovered['intent']=='collect_preferences',502,'ai_invalid_response','Previous requirements could not be extracted. Please retry.')
                 memory={**c,'rental_brief':recovered.get('brief_patch',{})}
-            brief=merge_brief(memory,intent)
+            brief=merge_explicit_priorities(merge_brief(memory,intent),body['message'])
             if intent['intent']=='collect_preferences' and (brief.get('commute_mode') or brief.get('commute_max_minutes')):
                 intent['intent']='recommend_areas'
             question=next_question(brief) if intent['intent']=='collect_preferences' else None
             if uncertain_region:
                 answer={'intent':'collect_preferences','agent':'agent1','listings':[],'actions':[],
-                        'content':f'你说的“{uncertain_region}”是哪个区的简称？请写完整英文区名；预算和房型要求先保留，我不会替你确定区域。'}
+                        'content':f'Which suburb does {uncertain_region} refer to? Please provide its full English name. Your budget and property requirements are retained until you clarify the suburb.'}
+            elif intent['intent']=='contract':
+                answer=self.ctx.contract_knowledge.chat_answer(case_id,body['message'])
+            elif intent['intent']=='knowledge':
+                report=self.ctx.knowledge.answer(body['message'],True,'en')
+                answer={'intent':'knowledge','agent':'assistant','content':report['answer'],'knowledge':report,'listings':[],'actions':[]}
             elif intent['intent']=='area_advice':
                 names=intent.get('areas')
                 if names is None and 'suburb' not in intent.get('brief_patch',{}):names=c.get('area_names')
@@ -193,11 +222,11 @@ class AssistantService:
             elif intent['intent']=='collect_preferences' and question:
                 summary=brief_summary(brief)
                 answer={'intent':'collect_preferences','agent':'agent1',
-                    'content':('记下了：'+summary+'。\n' if summary else '')+question,'listings':[],'actions':[]}
+                    'content':('Noted: '+summary+'.\n' if summary else '')+question,'listings':[],'actions':[]}
             elif intent['intent'] in ('update_preferences','collect_preferences'):
                 patch=brief_profile_patch(brief) if intent['intent']=='collect_preferences' else intent.get('preference_patch',{})
                 try:
-                    require(bool(patch),422,'empty_patch','请补充偏好。')
+                    require(bool(patch),422,'empty_patch','Please add your preferences.')
                     profile=merge_profile(case['draft']['profile'],patch,legacy=case.get('requirements_contract')!='supplied-only-v1')
                     housing=profile.get('housing_preferences',{})
                     catalog.filters({k:v for k,v in housing.items() if k!='budget_match_mode'})
@@ -208,13 +237,13 @@ class AssistantService:
                         'case_signature':snapshot,'conversation_revision':c['revision']+1,'profile':profile,'status':'proposed',
                         'requirements_contract':'supplied-only-v1'}
                     answer={'intent':'update_preferences','agent':'agent1',
-                        'content':'已整理新的租房条件。请核对下方摘要；确认后保存偏好并生成候选。',
-                        'listings':[],'actions':[{'type':'apply_preferences','label':'确认偏好并生成候选','proposal_id':proposal['proposal_id'],'summary':preference_summary(profile)}]}
+                        'content':'Your updated rental requirements are ready. Review the summary below, then confirm to save preferences and generate candidates.',
+                        'listings':[],'actions':[{'type':'apply_preferences','label':'Confirm preferences and generate candidates','proposal_id':proposal['proposal_id'],'summary':preference_summary(profile)}]}
                     if intent['intent']=='collect_preferences':
                         preview=search_answer(catalog,brief_filters(brief),ctx=self.ctx,case_id=case_id)
                         preview['actions'].extend(answer['actions'])
                         answer={**preview,'intent':'collect_preferences','agent':'agent1',
-                            'content':'条件记下了：'+brief_summary(brief)+'。\n'+preview['content']+'\n确认下方条件后，我再保存为你的租房偏好。'}
+                            'content':'Requirements noted: '+brief_summary(brief)+'.\n'+preview['content']+'\nConfirm the requirements below to save your rental preferences.'}
             elif intent['intent']=='draft_contract':
                 prepared=LeaseChatBridge(self.ctx).prepare(case_id,c,body['message'])
                 answer=prepared['answer']; lease_pending=prepared['pending']
@@ -225,27 +254,30 @@ class AssistantService:
                 from .transit_info import answer as transit_answer
                 answer=transit_answer(self.ctx,intent,case,c,requested,body.get('allow_external_data',False))
             else: answer=execute(intent,case,c,catalog,requested,ctx=self.ctx)
+            answer=rank_answer(answer,brief,catalog)
             search_filters=answer.pop('_search_filters',None)
+            repair_call=answer.pop('_repair_call',None)
+            if repair_call:calls.append(repair_call)
             area_names=answer.pop('_area_names',None)
             next_living_focus=answer.pop('_living_focus',None)
             superseded=answer.pop('_supersede_living_proposal',None)
-            if answer['intent']=='clarify' and (intent.get('clarification_reason')=='unknown_fact' or any(word in body['message'].casefold() for word in ('安静','噪音','噪声','隔音','noise','quiet','soundproof','通勤','commute','账单','bills','在租','available'))):
+            if answer['intent']=='clarify' and intent.get('clarification_reason')!='multiple_tasks' and (intent.get('clarification_reason')=='unknown_fact' or any(word in body['message'].casefold() for word in ('安静','噪音','噪声','隔音','noise','quiet','soundproof','通勤','commute','账单','bills','在租','available'))):
                 from .comparison import verification_checklist
-                answer['content']='目前没有已核实的噪音、隔音、通勤、账单和在租数据。我整理了可直接询问中介和看房时检查的问题；也可以先比较已知卧卫、车位和周租。'
+                answer['content']='Verified noise, soundproofing, commute, bills and availability data are currently unavailable. The checklist provides questions for the agent and inspection; you can also compare known bedrooms, bathrooms, parking and weekly rent.'
                 answer['verification_checklist']=verification_checklist()
-            if answer['intent'] in ('other','clarify') and any(word in body['message'].casefold() for word in ('不满意','都不行','不喜欢','都不好','not satisfied','don\'t like')):
-                answer['content']='这些房源主要是哪一点不合适：标示周租、区域、卧卫，还是需要进一步核实的居住感受？选择下方建议后可以继续预览。'
-                answer['actions']=[{'type':'suggestion','label':'先看标价更低的房源','message':'按刚才的区域和卧卫条件，预览标示周租更低的房源。不要修改已保存偏好。'},
-                    {'type':'suggestion','label':'先核实噪音与账单','message':'帮我整理这些房源的噪音、隔音和账单核实问题。'}]
+            if answer['intent'] in ('other','clarify') and intent.get('clarification_reason')!='multiple_tasks' and any(word in body['message'].casefold() for word in ('不满意','都不行','不喜欢','都不好','not satisfied','don\'t like')):
+                answer['content']='What makes these listings unsuitable: advertised weekly rent, location, bedrooms and bathrooms, or living conditions that need checking? Choose a suggestion below to continue previewing.'
+                answer['actions']=[{'type':'suggestion','label':'Preview cheaper listings','message':'Preview listings with lower advertised weekly rent using the previous suburb and bedroom and bathroom requirements. Keep saved preferences unchanged.'},
+                    {'type':'suggestion','label':'Check noise and bills','message':'Prepare questions to verify noise, soundproofing and bills for these listings.'}]
             safe_calls=[{k:v for k,v in entry.items() if k in {'task','provider','model','status','attempted','duration_ms','started_at','usage','error_code','simulated'}} for entry in calls]
             with self.ctx.repo.transaction() as db:
                 current=self.get(db,case_id,conversation_id); current_case=self.ctx.get(db,'case',case_id)
                 receipt=self.ctx.repo.get(db,'assistant_turn_receipt',key)
                 require(receipt.get('token')==token and current['revision']==c['revision'] and signature(current_case)==snapshot,
-                    409,'stale_assistant_input','偏好或对话已更新，请刷新后重新发送。')
+                    409,'stale_assistant_input','Preferences or the conversation changed. Refresh and resend.')
                 if intent['intent']=='living_services':
                     require(read_snapshot(self.ctx,db,case_id)['version']==living_snapshot['version'],
-                        409,'living_context_changed','租后资料在处理期间已变化，请读取最新资料后重试。')
+                        409,'living_context_changed','Aftercare details changed while processing. Reload the latest details and retry.')
                 if superseded:
                     previous=self.ctx.repo.get(db,'living_proposal',superseded)
                     if previous and previous['case_id']==case_id and previous['status']=='pending':
@@ -297,7 +329,10 @@ class AssistantService:
                     # requirement context, including across conversations.
                     self.ctx.repo.put(db,'assistant_commute_activity',case_id,{
                         'conversation_id':conversation_id,'brief':current.get('rental_brief',{})})
-                current['messages'].extend([message('user',body['message']),message('assistant',calls=safe_calls,**answer)])
+                route_summary={key:routing[key] for key in ('mode','source','route','reason')}
+                outgoing=message('assistant',calls=safe_calls,routing=route_summary,**answer)
+                self.ctx.contract_knowledge.decorate_entry(db,outgoing)
+                current['messages'].extend([message('user',body['message']),outgoing])
                 current['revision']+=1
                 if answer.get('commute_recommendation'):
                     self.ctx.repo.put(db,'assistant_commute_report',case_id,{
@@ -309,7 +344,7 @@ class AssistantService:
                         'conversation_id':conversation_id,'brief':brief,'case_signature':snapshot,
                         'catalog_fingerprint':catalog.fingerprint,'area_knowledge_fingerprint':answer['area_advice']['fingerprint'],
                         'created_at':now(),'message':current['messages'][-1]})
-                if current['title']=='新对话': current['title']=body['message'].strip()[:28]
+                if current['title']=='New conversation': current['title']=body['message'].strip()[:28]
                 self.save(db,current)
                 public=self.living_status(db,current)
                 self.ctx.save_receipt(db,'assistant_turn_receipt',key,identity,public)
@@ -320,24 +355,24 @@ class AssistantService:
                 if receipt and receipt.get('token')==token:
                     receipt['status']='failed'; self.ctx.repo.put(db,'assistant_turn_receipt',key,receipt)
             if isinstance(exc,ProviderError):
-                raise ApiError(503,exc.code,'AI 服务暂时不可用，请重试；已保存的对话保留。') from None
+                raise ApiError(503,exc.code,'AI is temporarily unavailable. Please retry; your saved conversation is retained.') from None
             raise
 
     def apply(self,case_id: str,proposal_id: str,body: dict):
         shape(body,('request_id','confirmed')); request_id(body['request_id']); opaque_ref(proposal_id)
-        require(body['confirmed'] is True,422,'confirmation_required','请明确确认应用这项偏好。')
+        require(body['confirmed'] is True,422,'confirmation_required','Explicitly confirm applying these preferences.')
         self.catalog(); key=case_id+':'+body['request_id']; identity={'proposal_id':proposal_id,**body}
         with self.ctx.repo.transaction() as db,self.ctx.preferences.store.join(db):
             self.ctx.get(db,'case',case_id)
             p=self.ctx.get(db,'assistant_proposal',proposal_id)
-            require(p['case_id']==case_id,404,'not_found','未找到这个偏好提案。')
+            require(p['case_id']==case_id,404,'not_found','Preference proposal not found.')
             old=self.ctx.receipt(db,'assistant_apply_receipt',key,identity)
             if old: return old['result']
             c=self.get(db,case_id,p['conversation_id']); case=self.ctx.get(db,'case',case_id)
-            require(p['status']=='proposed',409,'proposal_applied','此偏好提案已应用。')
+            require(p['status']=='proposed',409,'proposal_applied','This preference proposal has already been applied.')
             require(p.get('requirements_contract')=='supplied-only-v1',409,'stale_proposal',
-                    '这份旧摘要包含演示初始条件，请在“我的租房需求”中重新核对并同步。')
-            require(signature(case)==p['case_signature'] and c['revision']==p['conversation_revision'],409,'stale_proposal','偏好或对话已更新，请重新提出修改。')
+                    'This older summary contains demo defaults. Review and sync it again in My rental requirements.')
+            require(signature(case)==p['case_signature'] and c['revision']==p['conversation_revision'],409,'stale_proposal','Preferences or the conversation changed. Submit the changes again.')
             joined=copy(self.ctx); joined.repo=BorrowedRepository(self.ctx.repo,db)
             adapter=RealProfilesAdapter(joined)
             case=adapter.draft(case_id,{'expected_revision':case['draft']['revision'],'profile':p['profile']})
@@ -355,7 +390,7 @@ class AssistantService:
             fields = ('listing_id', 'address', 'weekly_rent', 'bedrooms', 'bathrooms', 'car_spaces', 'captured_at')
             def facts(rows): return {r['listing_id']: tuple(r.get(k) for k in fields) for r in rows}
             if previous is None or effective(previous_filters) != effective(run['report']['filters']) or facts(previous['listings']) != facts(cards):
-                c['messages'].append(message('assistant',f"找房条件已保存，筛选出 {len(cards)} 套房源。",
+                c['messages'].append(message('assistant',f"Rental requirements saved; found {len(cards)} matching listings.",
                     'agent2',intent='search',listings=cards))
             for item in c['messages']:
                 for action in item['actions']:

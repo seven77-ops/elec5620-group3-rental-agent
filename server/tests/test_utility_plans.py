@@ -43,15 +43,15 @@ class UtilityPlanTests(unittest.TestCase):
     def test_budget_uses_ongoing_price_not_temporary_promotion(self):
         result=advise(self.catalog,'网络每月80以内，50Mbps',category='internet',on='2026-10-28')
         self.assertEqual([p['id'] for p in result['plans']],['cheap-ongoing'])
-        self.assertIn('恢复原价',result['content'])
+        self.assertIn('ongoing',result['content'])
         p=result['plans'][0];self.assertEqual(p['first_year_base_cost_aud'],840)
-        self.assertIn('路由器',result['content'])
+        self.assertIn('router',result['content'])
         self.assertEqual(result['availability'],'address_unconfirmed')
 
     def test_internet_budget_shorthand_is_treated_as_monthly_with_explicit_copy(self):
         result=advise(self.catalog,'推荐宽带，预算80以内',category='internet',on='2026-10-28')
         self.assertEqual(result['criteria']['max_monthly_aud'],80)
-        self.assertIn('月预算',result['content'])
+        self.assertIn('monthly budget',result['content'])
 
     def test_explicit_nbn_request_never_substitutes_a_5g_plan(self):
         wireless=internet('wireless',60,30);wireless['pricing']['technology']=['5G']
@@ -101,8 +101,8 @@ class UtilityPlanTests(unittest.TestCase):
     def test_water_is_not_switchable_and_does_not_pass_fixed_charges_to_tenant(self):
         real=UtilityPlanCatalog(self.root/'real.sqlite3')
         answer=advise(real,'水费怎么计价',category='water',on='2026-10-28')
-        self.assertIn('不能自由更换',answer['content']);self.assertIn('独立水表',answer['content'])
-        self.assertIn('房东',answer['content']);self.assertIn('3.41',answer['content'])
+        self.assertIn('cannot be freely selected',answer['content']);self.assertIn('separate metering',answer['content'])
+        self.assertIn('landlord',answer['content']);self.assertIn('3.41',answer['content'])
         self.assertTrue(answer['plans'][0]['pricing']['tenancy_source_url'].startswith('https://www.nsw.gov.au/'))
 
 
@@ -119,7 +119,7 @@ class UtilityChatTests(unittest.TestCase):
             response=client.post(base+'/assistant/conversations/'+convo['conversation_id']+'/messages',json={
                 'request_id':'internet','expected_revision':0,'message':'推荐每月80以内的网络套餐','allow_external_ai':True})
             self.assertEqual(response.status_code,200,response.text);answer=response.json()['messages'][-1]
-            self.assertIn('套餐',answer['content']);self.assertNotIn('目录没有实时费率',answer['content'])
+            self.assertIn('plans',answer['content']);self.assertNotIn('no live rates',answer['content'])
             cards=answer['providers'];self.assertTrue(cards)
             self.assertTrue(all(p['category']=='internet' and p['pricing']['monthly_aud']<=80 for c in cards for p in c['plans']))
             self.assertEqual(client.get(base+'/living-services').json()['version'],0)

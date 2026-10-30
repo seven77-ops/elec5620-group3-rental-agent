@@ -22,10 +22,10 @@ const comparisonFacts: {
   label: string;
   render: (row: HousingAd) => string | number;
 }[] = [
-  { label: "周租", render: (row) => `AUD ${row.weekly_rent}/周` },
-  { label: "卧室", render: (row) => row.bedroom_label || row.bedrooms },
-  { label: "浴室", render: (row) => row.bathrooms },
-  { label: "车位", render: (row) => row.car_spaces },
+  { label: "Weekly rent", render: (row) => `AUD ${row.weekly_rent}/week` },
+  { label: "Bedrooms", render: (row) => row.bedroom_label || row.bedrooms },
+  { label: "Bathrooms", render: (row) => row.bathrooms },
+  { label: "Car spaces", render: (row) => row.car_spaces },
 ];
 
 export default function FavoritesDrawer({
@@ -53,16 +53,16 @@ export default function FavoritesDrawer({
     <>
       <Button
         icon={<HeartOutlined />}
-        aria-label={`我的收藏（${favorites.items.length}）`}
+        aria-label={`My favorites (${favorites.items.length})`}
         onClick={() => {
           favorites.reload();
           setOpen(true);
         }}
       >
-        我的收藏（{favorites.items.length}）
+        My favorites ({favorites.items.length})
       </Button>
       <Drawer
-        title="我的收藏"
+        title="My favorites"
         open={open}
         onClose={() => {
           setOpen(false);
@@ -72,36 +72,44 @@ export default function FavoritesDrawer({
         rootClassName="favorites-drawer"
       >
         <p className="muted">
-          收藏多套，慢慢比较；确定房源后，点击“选定并跟进”准备看房和合同。
+          Save several listings and compare them. When ready, choose “Select and
+          follow up” to prepare inspections and contracts.
         </p>
         {favorites.error && (
           <Alert
             type="error"
             title={favorites.error}
-            action={<Button onClick={favorites.reload}>重新读取收藏</Button>}
+            action={
+              <Button onClick={favorites.reload}>Reload favorites</Button>
+            }
           />
         )}
         <Input.Search
-          aria-label="筛选收藏房源"
-          placeholder="按地址或区域筛选收藏"
+          aria-label="Filter saved listings"
+          placeholder="Filter favorites by address or area"
           value={filter}
           allowClear
           onChange={(e) => setFilter(e.target.value)}
         />
-        <p className="muted small">勾选 2–4 套房源，即可并排比较。</p>
+        <p className="muted small">
+          Select 2–4 listings to compare side by side.
+        </p>
         {compare.length >= 2 && (
-          <section className="favorites-compare" aria-label="比较已收藏房源">
+          <section
+            className="favorites-compare"
+            aria-label="Compare saved listings"
+          >
             <div className="favorites-compare-heading">
-              <h3>已选 {compare.length} 套，比较房源</h3>
+              <h3>Compare {compare.length} selected listings</h3>
               <Button size="small" onClick={() => setSelected([])}>
-                清空比较
+                Clear comparison
               </Button>
             </div>
             <div className="favorites-table-scroll">
-              <table aria-label="收藏房源比较">
+              <table aria-label="Saved listing comparison">
                 <thead>
                   <tr>
-                    <th>条件</th>
+                    <th>Criteria</th>
                     {compare.map(({ listing }) => (
                       <th key={listing.listing_id}>{listing.address}</th>
                     ))}
@@ -117,7 +125,7 @@ export default function FavoritesDrawer({
                     </tr>
                   ))}
                   <tr>
-                    <th>到悉大</th>
+                    <th>To USYD</th>
                     {compare.map(({ listing }) => (
                       <td key={listing.listing_id}>
                         <UsydCommuteMini listing={listing} mode={commuteMode} />
@@ -135,8 +143,8 @@ export default function FavoritesDrawer({
           <Empty
             description={
               query
-                ? "没有匹配的收藏房源"
-                : "还没有收藏房源，看到喜欢的房源可以先收藏。"
+                ? "No matching saved listings"
+                : "No saved listings yet. Save a listing when you find one you like."
             }
           />
         ) : (
@@ -148,7 +156,7 @@ export default function FavoritesDrawer({
                 data-testid="favorite-home"
               >
                 <Checkbox
-                  aria-label={`比较收藏 ${listing.address}`}
+                  aria-label={`Compare favorites ${listing.address}`}
                   checked={selected.includes(listing.listing_id)}
                   disabled={
                     compare.length >= 4 &&
@@ -162,14 +170,14 @@ export default function FavoritesDrawer({
                     )
                   }
                 >
-                  比较
+                  Compare
                 </Checkbox>
                 <h3>{listing.address}</h3>
                 <p className="muted">
-                  {listing.suburb} · {listing.bedroom_label} 卧 ·{" "}
-                  {listing.bathrooms} 卫 · {listing.car_spaces} 车位
+                  {listing.suburb} · {listing.bedroom_label} bed ·{" "}
+                  {listing.bathrooms} bath · {listing.car_spaces} car spaces
                 </p>
-                <strong>AUD {listing.weekly_rent.toLocaleString()}/周</strong>
+                <strong>AUD {listing.weekly_rent.toLocaleString()}/week</strong>
                 <Space wrap className="favorite-home-actions">
                   <Button
                     size="small"
@@ -180,7 +188,7 @@ export default function FavoritesDrawer({
                       })
                     }
                   >
-                    房源详情
+                    Listing details
                   </Button>
                   <ListingActions
                     listing={listing}
@@ -195,7 +203,8 @@ export default function FavoritesDrawer({
                 </Space>
                 {!in_catalog && (
                   <p className="muted small">
-                    此房源已不在当前房源库，收藏记录保留。
+                    This property is no longer in the current catalogue. Its
+                    saved record is retained.
                   </p>
                 )}
               </article>
@@ -204,7 +213,7 @@ export default function FavoritesDrawer({
         )}
       </Drawer>
       <Drawer
-        title="真实房源详情"
+        title="Real listing details"
         open={Boolean(detail)}
         onClose={() => setDetail(null)}
         size={1000}

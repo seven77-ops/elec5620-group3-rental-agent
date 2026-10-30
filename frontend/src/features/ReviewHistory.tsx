@@ -47,28 +47,28 @@ export default function ReviewHistory({
   }, [reviewId, open]);
   const snapshot = history.find((h) => h.snapshot_id === chosen)?.review;
   return (
-    <EvidenceDrawer title="历史复核版本" open={open} onClose={onClose}>
+    <EvidenceDrawer title="Review history" open={open} onClose={onClose}>
       <Alert
         type="info"
-        title="历史快照只读"
-        description="字段修正、人工决定和问题生成的保存结果分别保留。历史问题不会作为当前有效问题。"
+        title="Historical snapshots are read-only"
+        description="Saved field corrections, human decisions, and generated questions are preserved separately. Historical questions are no longer current."
       />
       <Failure error={error} />
       <Select
         className="full-width"
-        aria-label="选择复核历史快照"
+        aria-label="Select review snapshot"
         value={chosen}
         onChange={setChosen}
         options={history.map((h, i) => ({
           value: h.snapshot_id,
-          label: `记录 ${i + 1} · 字段版本 v${h.review.version} · ${h.review.status}`,
+          label: `Record ${i + 1} · Field version v${h.review.version} · ${h.review.status}`,
         }))}
       />
       {snapshot && (
         <>
           <h3>
             <Status value={snapshot.status} />
-            字段版本 v{snapshot.version}
+            Field version v{snapshot.version}
           </h3>
           <Descriptions
             column={1}
@@ -78,14 +78,14 @@ export default function ReviewHistory({
               children: text(f.value),
             }))}
           />
-          <h3>当时的发现与问题</h3>
+          <h3>Findings and questions at the time</h3>
           <JsonDetails
             value={{
               findings: snapshot.findings,
               questions: snapshot.questions,
             }}
           />
-          <h3>版本依据</h3>
+          <h3>Version evidence</h3>
           <JsonDetails
             value={{
               snapshot_id: chosen,

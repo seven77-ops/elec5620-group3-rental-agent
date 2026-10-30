@@ -20,17 +20,17 @@ class MarketData:
 
     def lookup(self, postcode, bedrooms, rent_scope, weekly_rent=None):
         require(isinstance(postcode, str) and len(postcode) == 4 and postcode.isascii() and postcode.isdigit(),
-                422, 'invalid_input', '邮编须为四位数字。')
-        require(type(bedrooms) is int and 0 <= bedrooms <= 20, 422, 'invalid_input', '卧室数须为整数。')
-        require(rent_scope in ('whole_property', 'per_room', 'per_person'), 422, 'invalid_input', '请选择计价对象。')
-        require(weekly_rent is None or numeric(weekly_rent, 0, 100_000), 422, 'invalid_input', '周租须为有效非负金额。')
+                422, 'invalid_input', 'Postcode must contain four digits.')
+        require(type(bedrooms) is int and 0 <= bedrooms <= 20, 422, 'invalid_input', 'Bedrooms must be an integer.')
+        require(rent_scope in ('whole_property', 'per_room', 'per_person'), 422, 'invalid_input', 'Choose the rent scope.')
+        require(weekly_rent is None or numeric(weekly_rent, 0, 100_000), 422, 'invalid_input', 'Weekly rent must be a valid nonnegative amount.')
         result = {'status': 'unavailable', 'postcode': postcode, 'bedrooms': bedrooms,
                   'rent_scope': rent_scope, 'weekly_rent': weekly_rent, 'dwelling_type': 'flat_unit',
                   'benchmarks': [], 'coverage': self.coverage(),
-                  'limitations': ['仅供历史租金参考，不是单套房产估值或签约建议。',
-                                  '按邮区和一卧/两卧公寓分类，不适用于合租单间或按人报价。',
-                                  '未控制面积、家具、楼层和账单；登记月份不是入住月份。',
-                                  '两个期间的样本和方法不同，不能直接据此判断租金涨跌。']}
+                  'limitations': ['Historical rent reference only; not an individual property valuation or signing recommendation.',
+                                  'Grouped by postcode and one- or two-bedroom apartments; not applicable to shared rooms or per-person prices.',
+                                  'Does not control for size, furnishings, floor or bills. Registration month is not move-in month.',
+                                  'The two periods use different samples and methods; they cannot directly establish rent changes.']}
         if rent_scope != 'whole_property':
             result['status'] = 'scope_mismatch'
             return result

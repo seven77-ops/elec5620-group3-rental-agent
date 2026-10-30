@@ -73,15 +73,15 @@ export interface TripResult {
   limitations: string[];
 }
 export const postcodeOptions = [
-  { value: "2050", label: "2050 · Camperdown 周边" },
-  { value: "2042", label: "2042 · Newtown / Enmore 周边" },
-  { value: "2008", label: "2008 · Chippendale / Darlington 周边" },
-  { value: "2037", label: "2037 · Glebe / Forest Lodge 周边" },
+  { value: "2050", label: "2050 · Around Camperdown" },
+  { value: "2042", label: "2042 · Around Newtown / Enmore" },
+  { value: "2008", label: "2008 · Around Chippendale / Darlington" },
+  { value: "2037", label: "2037 · Around Glebe / Forest Lodge" },
 ];
 export const scopeOptions = [
-  { value: "whole_property", label: "整套" },
-  { value: "per_room", label: "单间" },
-  { value: "per_person", label: "按人" },
+  { value: "whole_property", label: "Whole property" },
+  { value: "per_room", label: "Room" },
+  { value: "per_person", label: "Per person" },
 ];
 export const mapUrl = (point: Point) =>
   `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${point.latitude},${point.longitude}`)}`;

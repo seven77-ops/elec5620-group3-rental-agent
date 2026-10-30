@@ -19,22 +19,24 @@ test("stored plans show promotional and ongoing fees with official sources", asy
   await expect(telstra).not.toContainText("AUD");
   await telstra.click();
   const telstraDetails = page.getByRole("dialog", {
-    name: "Telstra · 供应商详情",
+    name: "Telstra · Provider details",
     exact: true,
   });
-  await expect(telstraDetails).toContainText("AUD 89/月");
+  await expect(telstraDetails).toContainText("AUD 89/month");
   await expect(telstraDetails).toContainText(
-    "前6个月 AUD 69/月；之后 AUD 99/月",
+    "First 6 months AUD 69/month; then AUD 99/month",
   );
   const plan = telstraDetails.locator('[data-plan-id="telstra-essential"]');
-  await plan.getByText("计价详情与适用条件", { exact: true }).click();
+  await plan
+    .getByText("Pricing details and eligibility", { exact: true })
+    .click();
   await expect(plan).toContainText("2026-11-02");
   await expect(plan).toContainText("AUD360");
   await expect(
-    plan.getByRole("link", { name: "官方套餐与费率 ↗" }),
+    plan.getByRole("link", { name: "Official plans and rates ↗" }),
   ).toHaveAttribute("href", "https://www.telstra.com.au/internet/plans");
   await telstraDetails
-    .getByRole("button", { name: "关闭详情", exact: true })
+    .getByRole("button", { name: "Close details", exact: true })
     .click();
   await expect(telstraDetails).toHaveCount(0);
   const water = page.locator(
@@ -42,14 +44,18 @@ test("stored plans show promotional and ongoing fees with official sources", asy
   );
   await water.click();
   const waterDetails = page.getByRole("dialog", {
-    name: "Sydney Water · 供应商详情",
+    name: "Sydney Water · Provider details",
     exact: true,
   });
   await expect(waterDetails).toContainText("AUD 3.41/kL");
-  await expect(waterDetails).toContainText("房东固定费用");
-  await waterDetails.getByText("计价详情与适用条件", { exact: true }).click();
+  await expect(waterDetails).toContainText("Landlord fixed-charge reference");
+  await waterDetails
+    .getByText("Pricing details and eligibility", { exact: true })
+    .click();
   await expect(
-    waterDetails.getByRole("link", { name: "NSW费用责任说明 ↗" }),
+    waterDetails.getByRole("link", {
+      name: "NSW utility cost responsibilities ↗",
+    }),
   ).toHaveAttribute("href", /www.nsw.gov.au/);
   await page.screenshot({
     path: "/tmp/utility-plans-desktop.png",
@@ -65,12 +71,12 @@ test("chat recommendations use ongoing budget and do not save a supplier", async
   const c = await (await request.post("/api/v1/cases", { data: {} })).json();
   await page.goto(`/cases/${c.case_id}/assistant`);
   await page
-    .getByRole("textbox", { name: "给租房助手的消息" })
+    .getByRole("textbox", { name: "Message to Rental Assistant" })
     .fill("推荐每月80以内的网络套餐");
-  await page.getByRole("button", { name: "发送消息", exact: true }).click();
+  await page.getByRole("button", { name: "Send message", exact: true }).click();
   await expect(
     page.locator(".assistant-message-assistant .assistant-bubble").last(),
-  ).toContainText("按恢复原价后的月租筛选");
+  ).toContainText("ongoing monthly fee after promotions");
   await expect(page.locator(".assistant-listing .utility-plan")).toHaveCount(2);
   const data = await (
     await request.get(`/api/v1/cases/${c.case_id}/assistant/conversations`)
@@ -110,7 +116,7 @@ test("tariff and eligibility cards fit mobile", async ({ page, request }) => {
   const energy = page.locator('.living-provider-card[data-provider-id="agl"]');
   await energy.click();
   const details = page.getByRole("dialog", {
-    name: "AGL · 供应商详情",
+    name: "AGL · Provider details",
     exact: true,
   });
   await details.locator(".utility-plan-details > summary").first().click();
@@ -119,7 +125,9 @@ test("tariff and eligibility cards fit mobile", async ({ page, request }) => {
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
-  await expect(details).toContainText("优惠前基准费率");
+  await expect(details).toContainText(
+    "baseline rates below include GST, before discounts",
+  );
   await page.screenshot({
     path: "/tmp/utility-plans-mobile.png",
     animations: "disabled",

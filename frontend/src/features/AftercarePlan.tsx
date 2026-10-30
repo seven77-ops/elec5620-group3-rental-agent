@@ -3,6 +3,7 @@ import {
   Alert,
   App,
   Button,
+  Checkbox,
   Form,
   Input,
   Modal,
@@ -11,8 +12,14 @@ import {
   Table,
 } from "antd";
 import type { Dict } from "../api/types";
-import { JsonDetails, Status, text } from "../components/Common";
+import { Status, text } from "../components/Common";
 import AftercareFailure from "./aftercare/AftercareFailure";
+import {
+  planNotes,
+  sydneyTime,
+  sydneyToday,
+  taskTitle,
+} from "./aftercare/presentation";
 export type SendCommand = (
   operation: string,
   payload: Dict,
@@ -38,24 +45,25 @@ export function CommandRecovery({
       <AftercareFailure error={error} />
       <Space wrap>
         <Button
-          aria-label="重试原操作"
+          aria-label="Retry original action"
           loading={busy}
           disabled={refreshing}
           onClick={() => void retry()}
         >
-          重试原操作
+          Retry original action
         </Button>
         <Button
-          aria-label="读取最新状态并保留输入"
+          aria-label="Load latest state and preserve input"
           loading={refreshing}
           disabled={busy}
           onClick={() => void refreshCurrent()}
         >
-          读取最新状态并保留输入
+          Load latest state and preserve input
         </Button>
       </Space>
       <p className="muted small">
-        重试会使用原请求。读取最新状态后，当前输入保留；请核对后重新保存。
+        Retry uses the original request. Loading the latest state preserves your
+        input. Check it before saving again.
       </p>
     </>
   );
@@ -83,15 +91,22 @@ export default function AftercarePlan({
   const [editing, setEditing] = useState<Dict | null>(null);
   const [form] = Form.useForm();
   const { modal } = App.useApp();
-  const tasks = (plan?.tasks ?? []) as Dict[];
+  // Show tasks in the order they fall due; IDs keep their original positions in the plan.
+  const tasks = [...((plan?.tasks ?? []) as Dict[])].sort((a, b) =>
+    String(a.due_at).localeCompare(String(b.due_at)),
+  );
   const save = async () => {
     try {
       const v = await form.validateFields();
       const saved = await send("edit_task", {
         task_id: editing!.task_id,
         status: v.status,
-        title: v.title,
+        // Keep the generated title unless the tenant actually rewrote it.
+        ...(v.title !== taskTitle(editing!.title) ? { title: v.title } : {}),
         evidence_refs: v.evidence_refs ?? [],
+        ...(v.flag_review && v.review_reason?.trim()
+          ? { review_reason: v.review_reason.trim() }
+          : {}),
         ...(!plan?.pending_schedule &&
         v.due_date &&
         v.due_date !== String(editing!.due_at).slice(0, 10)
@@ -104,35 +119,37 @@ export default function AftercarePlan({
     }
   };
   return (
-    <section className="panel" aria-label="退租计划">
+    <section className="panel" aria-label="Move-out plan">
       <div className="section-heading">
-        <h2>退租计划</h2>
+        <h2>Move-out plan</h2>
         {plan && <Status value={String(plan.state)} />}
       </div>
       <p className="muted">
-        计划日期是实用安排，不是法定期限。任务完成情况与证据由你维护。
+        Plan dates are practical arrangements, not legal deadlines. You maintain
+        task completion and evidence.
       </p>
       {!plan && missingDetails.length > 0 && (
         <Alert
           className="aftercare-plan-guidance"
           type="info"
           showIcon
-          title="先补齐房屋资料"
+          title="Complete property details first"
           description={
             <>
-              还需要：{missingDetails.join("、")}
-              。补齐后，就能安排清洁、物品整理和钥匙交还。
+              Still needed: {missingDetails.join(", ")}. Once complete, plan
+              cleaning, packing, and key return.
             </>
           }
         />
       )}
       <div className="date-actions">
         <label htmlFor="move-out-date">
-          {plan ? "提议新的退租日期" : "计划退租日期"}
+          {plan ? "Propose a new move-out date" : "Planned move-out date"}
         </label>
         <Input
           id="move-out-date"
           type="date"
+          min={sydneyToday()}
           value={date}
           onChange={(e) => setDate(e.target.value)}
         />
@@ -148,12 +165,14 @@ export default function AftercarePlan({
               return;
             }
             modal.confirm({
-              title: plan ? "提交改期提案" : "确认生成退租计划",
+              title: plan
+                ? "Submit date change proposal"
+                : "Confirm move-out plan generation",
               content: plan
-                ? "提案确认前保留原计划、完成状态和证据。"
-                : `按 ${date} 生成并确认实际安排。`,
-              okText: plan ? "提交提案" : "确认计划",
-              cancelText: "取消",
+                ? "The original plan, completion status, and evidence remain until the proposal is confirmed."
+                : `Use ${date}  to generate and confirm practical arrangements.`,
+              okText: plan ? "Submit proposal" : "Confirm plan",
+              cancelText: "Cancel",
               onOk: () =>
                 send(
                   plan ? "propose_date" : "create_plan",
@@ -165,54 +184,78 @@ export default function AftercarePlan({
           }}
           aria-label={
             plan
-              ? "提交改期提案"
+              ? "Submit date change proposal"
               : missingDetails.length
-                ? "补齐资料后生成计划"
-                : "生成并确认计划"
+                ? "Complete details before generating a plan"
+                : "Generate and confirm plan"
           }
         >
           {plan
-            ? "提交改期提案"
+            ? "Submit date change proposal"
             : missingDetails.length
-              ? "补齐资料后生成计划"
-              : "生成并确认计划"}
+              ? "Complete details before generating a plan"
+              : "Generate and confirm plan"}
         </Button>
       </div>
       {plan && (
         <>
           <p>
-            当前退租日期：<strong>{text(plan.move_out_date)}</strong>
+            Current move-out date:<strong>{text(plan.move_out_date)}</strong>
+            <span className="muted small">
+              {" "}
+              · All times are Sydney local time (AEST/AEDT)
+            </span>
           </p>
           {plan.pending_schedule && (
             <Alert
               showIcon
               type="warning"
-              title="有待确认的日期变更"
+              title="A date change awaits confirmation"
               description={
                 <>
-                  <JsonDetails value={plan.pending_schedule} />
+                  <p>
+                    Proposed date:
+                    <strong>
+                      {text((plan.pending_schedule as Dict).move_out_date)}
+                    </strong>
+                    . Confirming will update these task times:
+                  </p>
+                  <ul className="plain-list">
+                    {(
+                      ((plan.pending_schedule as Dict).changes as
+                        Dict[] | undefined) ?? []
+                    ).map((c) => {
+                      const task = tasks.find((t) => t.task_id === c.task_id);
+                      return (
+                        <li key={String(c.task_id)}>
+                          {taskTitle(task?.title)}: {sydneyTime(c.old_due_at)} →{" "}
+                          {sydneyTime(c.new_due_at)}
+                        </li>
+                      );
+                    })}
+                  </ul>
                   <Space>
                     <Button
                       loading={busy}
                       onClick={() =>
                         modal.confirm({
-                          title: "确认采用新日期？",
+                          title: "Use the new date?",
                           content:
-                            "将按原模块规则更新任务日期并保留完成与证据记录。",
-                          okText: "确认改期",
-                          cancelText: "取消",
+                            "Task dates will update under the existing rules. Completion and evidence records are preserved.",
+                          okText: "Confirm date change",
+                          cancelText: "Cancel",
                           onOk: () => send("confirm_date", { accepted: true }),
                         })
                       }
-                      aria-label="确认改期"
+                      aria-label="Confirm date change"
                     >
-                      确认改期
+                      Confirm date change
                     </Button>
                     <Button
                       disabled={busy}
                       onClick={() => send("confirm_date", { accepted: false })}
                     >
-                      保留原日期
+                      Keep original date
                     </Button>
                   </Space>
                 </>
@@ -226,59 +269,59 @@ export default function AftercarePlan({
             scroll={{ x: 650 }}
             columns={[
               {
-                title: "任务",
+                title: "Task",
                 dataIndex: "title",
-                render: (v) => <span>{text(v)}</span>,
+                render: (v) => <span>{taskTitle(v)}</span>,
               },
               {
-                title: "计划时间",
+                title: "Planned time",
                 dataIndex: "due_at",
-                render: (v) => <span className="small">{text(v)}</span>,
+                render: (v) => <span className="small">{sydneyTime(v)}</span>,
               },
               {
-                title: "状态",
+                title: "Status",
                 dataIndex: "status",
                 render: (v) => <Status value={String(v)} />,
               },
               {
-                title: "证据",
+                title: "Evidence",
                 dataIndex: "evidence_refs",
-                render: (v) => text((v as string[]).join("、") || "尚未附加"),
+                render: (v) =>
+                  text((v as string[]).join(", ") || "Not attached"),
               },
               {
-                title: "操作",
+                title: "Action",
                 render: (_, row) => (
                   <Button
                     size="small"
                     disabled={busy}
                     onClick={() => {
                       setEditing(row);
+                      form.resetFields();
                       form.setFieldsValue({
-                        title: row.title,
+                        title: taskTitle(row.title),
                         status: row.status,
                         evidence_refs: row.evidence_refs,
                         due_date: String(row.due_at).slice(0, 10),
                       });
                     }}
                   >
-                    编辑任务
+                    Edit task
                   </Button>
                 ),
               },
             ]}
           />
-          {((plan.clarification_requests as unknown[])?.length > 0 ||
-            (plan.evidence_gaps as unknown[])?.length > 0) && (
+          {planNotes(plan).length > 0 && (
             <Alert
               type="warning"
-              title="还有资料需要核对"
+              title="More information needs checking"
               description={
-                <JsonDetails
-                  value={{
-                    clarification_requests: plan.clarification_requests,
-                    evidence_gaps: plan.evidence_gaps,
-                  }}
-                />
+                <ul className="plain-list">
+                  {planNotes(plan).map((note) => (
+                    <li key={note}>{note}</li>
+                  ))}
+                </ul>
               }
             />
           )}
@@ -288,25 +331,27 @@ export default function AftercarePlan({
               disabled={busy}
               onClick={() =>
                 modal.confirm({
-                  title: "确认取消退租计划？",
-                  content: "计划将按现有业务规则取消，历史记录保留。",
-                  okText: "确认取消",
-                  cancelText: "返回",
+                  title: "Cancel the move-out plan?",
+                  content:
+                    "The plan will be cancelled under existing rules. History is preserved.",
+                  okText: "Confirm cancellation",
+                  cancelText: "Back",
                   onOk: () =>
                     send("cancel_plan", {
                       tenant_confirmed: true,
-                      reason: "租客在本地演示界面明确取消计划",
+                      reason:
+                        "Tenant explicitly cancelled the plan in the local demo",
                     }),
                 })
               }
             >
-              取消退租计划
+              Cancel move-out plan
             </Button>
           </div>
         </>
       )}
       <Modal
-        title="编辑任务与证据"
+        title="Edit task and evidence"
         open={Boolean(editing)}
         onCancel={() => {
           if (busy || recovery.refreshing) return;
@@ -315,15 +360,15 @@ export default function AftercarePlan({
         }}
         confirmLoading={busy}
         okButtonProps={{
-          "aria-label": "保存任务",
+          "aria-label": "Save task",
           disabled: recovery.refreshing,
         }}
         cancelButtonProps={{ disabled: busy || recovery.refreshing }}
         closable={!busy && !recovery.refreshing}
         mask={{ closable: !busy && !recovery.refreshing }}
         onOk={save}
-        okText="保存任务"
-        cancelText={recovery.error ? "取消本次编辑" : "取消"}
+        okText="Save task"
+        cancelText={recovery.error ? "Cancel this edit" : "Cancel"}
       >
         <CommandRecovery
           {...recovery}
@@ -333,48 +378,77 @@ export default function AftercarePlan({
             return saved;
           }}
         />
-        <details>
-          <summary>查看当前已保存任务</summary>
-          <JsonDetails
-            value={tasks.find((task) => task.task_id === editing?.task_id)}
-          />
-        </details>
+        {editing && (
+          <p className="muted small">
+            Currently saved: {taskTitle(editing.title)} ·{" "}
+            {sydneyTime(editing.due_at)}
+          </p>
+        )}
         <Form
           form={form}
           layout="vertical"
           disabled={busy || recovery.refreshing}
         >
-          <Form.Item name="title" label="任务内容" rules={[{ required: true }]}>
+          <Form.Item
+            name="title"
+            label="Task details"
+            rules={[{ required: true }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name="status" label="任务状态">
+          <Form.Item name="status" label="Task status">
             <Select
               options={[
-                { value: "todo", label: "待完成" },
-                { value: "done", label: "已完成" },
-                { value: "cancelled", label: "已取消" },
+                { value: "todo", label: "To do" },
+                { value: "done", label: "Completed" },
+                { value: "cancelled", label: "Cancelled" },
               ]}
             />
           </Form.Item>
           <Form.Item
             name="due_date"
-            label="计划日期"
+            label="Planned date"
             extra={
               plan?.pending_schedule
-                ? "改期提案确认前不能修改任务日期，仍可编辑状态与证据。"
+                ? "Task dates cannot be edited until the date proposal is confirmed. Status and evidence can still be edited."
                 : undefined
             }
           >
             <Input type="date" disabled={Boolean(plan?.pending_schedule)} />
           </Form.Item>
-          <Form.Item name="evidence_refs" label="证据引用">
+          <Form.Item name="evidence_refs" label="Evidence references">
             <Select
               mode="multiple"
               options={evidence.map((e) => ({
                 value: String(e.evidence_id),
-                label: `${e.evidence_id} · ${e.kind}`,
+                label: `${e.summary ?? e.evidence_id} · ${e.kind}`,
               }))}
             />
+          </Form.Item>
+          <Form.Item name="flag_review" valuePropName="checked">
+            <Checkbox>
+              Human review needed (for example, pre-existing damage or a
+              mismatch with the move-in record)
+            </Checkbox>
+          </Form.Item>
+          <Form.Item
+            noStyle
+            shouldUpdate={(a, b) => a.flag_review !== b.flag_review}
+          >
+            {({ getFieldValue }) =>
+              getFieldValue("flag_review") ? (
+                <Form.Item
+                  name="review_reason"
+                  label="Reason for review"
+                  extra="Submission refers this to human review. Bond follow-up drafts are paused until release."
+                  rules={[
+                    { required: true, message: "Describe what needs checking" },
+                  ]}
+                >
+                  <Input.TextArea rows={2} maxLength={2000} />
+                </Form.Item>
+              ) : null
+            }
           </Form.Item>
         </Form>
       </Modal>

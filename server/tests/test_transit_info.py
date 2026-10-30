@@ -40,13 +40,13 @@ class TransitInfoTests(unittest.TestCase):
         from server.app.assistant.transit_info import answer
         self.chat['messages'][0]['listings'].append(self.catalog.get('domain:18258009'))
         result=answer(self.ctx,{'intent':'transit_info','transit_topic':'nearby'},self.case,self.chat,[],True)
-        self.assertIn('哪一套',result['content']);self.assertEqual(self.calls,[])
+        self.assertIn('Which property',result['content']);self.assertEqual(self.calls,[])
         result=answer(self.ctx,{'intent':'transit_info','transit_topic':'nearby','listing_ids':[self.home['listing_id']]},self.case,self.chat,[],False)
         self.assertEqual(self.calls,[])
         unknown=next(r for r in self.catalog.matching({}) if not r['usyd_commute']['origin'])
         self.chat={'messages':[{'listings':[unknown]}]}
         result=answer(self.ctx,{'intent':'transit_info','transit_topic':'nearby'},self.case,self.chat,[],True)
-        self.assertIn('位置',result['content']);self.assertEqual(self.calls,[])
+        self.assertIn('location',result['content']);self.assertEqual(self.calls,[])
 
     def test_model_boundary_disallows_arbitrary_coordinates_and_unknown_property_ids(self):
         from server.app.assistant.intents import validate_intent,response_schema

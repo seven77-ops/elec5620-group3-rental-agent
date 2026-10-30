@@ -1,12 +1,12 @@
 export const lifestyleTopics = {
-  parks: "公园与户外",
-  food: "餐饮",
-  shopping: "购物",
-  library: "图书馆",
-  community: "社区设施",
-  walkability: "散步步道",
-  quiet: "安静",
-  safety: "安全",
+  parks: "Parks and outdoors",
+  food: "Food and dining",
+  shopping: "Shopping",
+  library: "Libraries",
+  community: "Community facilities",
+  walkability: "Walking paths",
+  quiet: "Quiet",
+  safety: "Safety",
 };
 export type LifestyleTopic = keyof typeof lifestyleTopics;
 export interface AreaEvidence {

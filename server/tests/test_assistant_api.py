@@ -23,6 +23,11 @@ class IntentProvider:
         if self.on_call: self.on_call()
         meta = {'task':context['task'],'provider':'test','model':'test','status':'succeeded','attempted':True}
         if self.fail: raise ProviderError('ai_timeout', {**meta,'status':'failed'})
+        if context['task']=='repair_email_polish' and context['task'] not in self.by_task:
+            descriptions={'厨房水槽下面一直漏水':'Water is continuously leaking beneath the kitchen sink.'}
+            issue=descriptions.get(context['draft'],context['draft'])
+            return {'subject':'Repair request',
+                    'body':'Dear Property Manager,\n\n'+issue+'\n\nPlease arrange an inspection. Thank you.'},meta
         return deepcopy(self.by_task.get(context['task'],self.result)), meta
 
 
@@ -75,7 +80,7 @@ class AssistantTests(unittest.TestCase):
         self.assertEqual(response.status_code,200,response.text)
         answer=response.json()['messages'][-1]
         self.assertEqual([r['listing_id'] for r in answer['listings']],[r['listing_id'] for r in expected])
-        for text in ('先给你看','在租状态','账单','计价对象','待核实','仍需核实'):
+        for text in ('showing you','在租状态','账单','Pricing basis','待核实','仍需核实'):
             self.assertNotIn(text,answer['content'])
 
     def rhodes_budget_alternatives(self):
@@ -84,15 +89,15 @@ class AssistantTests(unittest.TestCase):
         rows = [r for r in RealCatalog().matching({}) if r['bedrooms'] >= 2 and r['bathrooms'] >= 2]
         lowest = min(r['weekly_rent'] for r in rows if r['suburb'] == 'Rhodes')
         elsewhere = sum(r['weekly_rent'] <= 800 for r in rows)
-        return f'AUD {lowest:g}', f'AUD {lowest - 800:g}', f'有 {elsewhere} 条'
+        return f'AUD {lowest:g}', f'AUD {lowest - 800:g}', f'gives {elsewhere} listings'
 
     def test_intake_remembers_explicit_conditions_and_only_asks_missing_budget_units(self):
         c=self.conversation()
         self.provider.result={'intent':'collect_preferences','brief_patch':{}}
-        r=self.send(c,message='我想租房，帮我整理预算、区域和房屋条件。')
+        r=self.send(c,message='I want to rent a home. Help me work through my budget, area and housing needs.')
         self.assertEqual(r.status_code,200,r.text)
         c=r.json(); self.assertEqual(c['messages'][-1]['agent'],'agent1')
-        self.assertIn('区域',c['messages'][-1]['content'])
+        self.assertIn('Which suburb',c['messages'][-1]['content'])
         self.provider.result={'intent':'collect_preferences','brief_patch':{
             'suburb':'Rhodes','budget_amount':800,'occupants':1,
             'min_bedrooms':2,'min_bathrooms':2,'min_car_spaces':0}}
@@ -102,8 +107,8 @@ class AssistantTests(unittest.TestCase):
         self.assertEqual(c['rental_brief']['budget_amount'],800)
         answer=c['messages'][-1]
         self.assertEqual(answer['intent'],'collect_preferences')
-        self.assertIn('整套每周',answer['content']); self.assertIn('每人每周',answer['content'])
-        self.assertNotIn('请补充区域',answer['content']); self.assertFalse(answer['actions'])
+        self.assertIn('per week for the whole property',answer['content']); self.assertIn('per person',answer['content'])
+        self.assertNotIn('Add your suburb',answer['content']); self.assertFalse(answer['actions'])
         self.provider.result={'intent':'collect_preferences','brief_patch':{
             'budget_period':'week','budget_scope':'whole_property','rental_mode':'whole_property'}}
         r=self.send(c,'units','整套，每周')
@@ -114,7 +119,7 @@ class AssistantTests(unittest.TestCase):
         self.assertNotIn('展示前 0',text)
         actions=c['messages'][-1]['actions']
         proposal=next(a for a in actions if a['type']=='apply_preferences')
-        self.assertIn('整套',' '.join(proposal['summary']))
+        self.assertIn('whole property',' '.join(proposal['summary']))
         self.assertEqual(self.client.get('/api/v1/cases/'+self.case['case_id']).json(),self.case)
         # Confirming, rather than merely discussing, is the only durable profile edit.
         applied=self.apply(proposal['proposal_id'])
@@ -134,7 +139,7 @@ class AssistantTests(unittest.TestCase):
         self.provider.result={'intent':'collect_preferences','brief_patch':{}}
         c=self.send(c,'collect-again','把刚才这套条件整理好给我确认').json()
         action=next(a for a in c['messages'][-1]['actions'] if a['type']=='apply_preferences')
-        self.assertIn('上限 900',' '.join(action['summary']))
+        self.assertIn('maximum 900',' '.join(action['summary']))
         self.assertEqual(self.client.get('/api/v1/cases/'+self.case['case_id']).json(),self.case)
 
     def test_no_results_alternatives_are_catalogue_backed_and_do_not_relax_conditions(self):
@@ -148,7 +153,7 @@ class AssistantTests(unittest.TestCase):
         suggestions=[a for a in answer['actions'] if a['type']=='suggestion']
         self.assertEqual(len(suggestions),2)
         self.assertIn(self.rhodes_budget_alternatives()[0].removeprefix('AUD '),suggestions[0]['message'])
-        self.assertIn('800',suggestions[1]['message']); self.assertIn('不限区域',suggestions[1]['message'])
+        self.assertIn('800',suggestions[1]['message']); self.assertIn('Any suburb',suggestions[1]['message'])
         self.assertEqual(r.json()['last_search_filters']['max_weekly_rent'],800)
         self.assertEqual(self.client.get('/api/v1/cases/'+self.case['case_id']).json(),self.case)
 
@@ -180,7 +185,7 @@ class AssistantTests(unittest.TestCase):
             'occupants':1,'min_bedrooms':2,'min_bathrooms':2,'min_car_spaces':0}}
         r=self.send(self.conversation()); self.assertEqual(r.status_code,200,r.text)
         c=r.json(); answer=c['messages'][-1]
-        self.assertIn('月预算',answer['content']); self.assertIn('每周最高',answer['content'])
+        self.assertIn('monthly budget',answer['content']); self.assertIn('maximum weekly budget',answer['content'])
         self.assertFalse(answer['listings']); self.assertFalse(answer['actions'])
         self.assertNotIn('last_search_filters',c)
 
@@ -254,8 +259,8 @@ class AssistantTests(unittest.TestCase):
         r=self.send(c); self.assertEqual(r.status_code,200,r.text)
         summary=r.json()['messages'][-1]['actions'][0]['summary']
         text=' '.join(summary)
-        self.assertIn('2 人',text)
-        for invented in ('550','450','按人','含账单','2027-02-01','40','12','demo-usyd'):
+        self.assertIn('2 occupants',text)
+        for invented in ('550','450','Per person','Bills included','2027-02-01','40','12','demo-usyd'):
             self.assertNotIn(invented,text)
 
     def test_history_is_bounded_and_pending_identity_is_exclusive(self):
@@ -304,8 +309,9 @@ class AssistantTests(unittest.TestCase):
         c=self.conversation(); self.provider.result={'intent':'clarify','clarification':'请提供隔音分数。'}
         r=self.send(c,message='哪套房隔音好噪音小？')
         self.assertEqual(r.status_code,200,r.text)
-        self.assertIn('没有已核实的噪音',r.json()['messages'][-1]['content'])
+        self.assertIn('Verified noise, soundproofing, commute, bills and availability data are currently unavailable',r.json()['messages'][-1]['content'])
         self.assertNotIn('提供隔音分数',r.json()['messages'][-1]['content'])
+        self.assertNotIn('provide a soundproofing score',r.json()['messages'][-1]['content'])
 
     def test_explicit_card_selection_overrides_other_valid_model_references(self):
         c=self.send(self.conversation()).json()
@@ -324,8 +330,9 @@ class AssistantTests(unittest.TestCase):
         r=self.send(c,message='请继续')
         self.assertEqual(r.status_code,200,r.text)
         text=r.json()['messages'][-1]['content']
-        self.assertNotIn('免账单',text); self.assertNotIn('10分钟',text); self.assertNotIn('直接签约',text)
-        self.assertIn('请',text)
+        for unsupported in ('免账单','bills included','10分钟','10 minutes','直接签约','sign immediately'):
+            self.assertNotIn(unsupported,text)
+        self.assertIn('Confirm',text)
 
     def test_model_card_context_uses_catalogue_facts_and_retains_display_positions(self):
         c=self.send(self.conversation()).json(); original=c['messages'][-1]['listings']
@@ -357,7 +364,7 @@ class AssistantTests(unittest.TestCase):
         with repo.transaction() as db:
             saved=repo.get(db,'assistant_conversation',c['conversation_id'])
             for index in range(0,105,5):
-                saved['messages'].append({'message_id':f'card-{index}','role':'assistant','content':'广告',
+                saved['messages'].append({'message_id':f'card-{index}','role':'assistant','content':'Listing',
                     'agent':'agent2','created_at':'2026-10-22T00:00:00Z','listings':rows[index:index+5],'actions':[]})
             repo.put(db,'assistant_conversation',c['conversation_id'],saved)
         self.provider.result={'intent':'other'}
@@ -382,21 +389,22 @@ class AssistantTests(unittest.TestCase):
         answer=r.json()['messages'][-1]; text=' '.join(answer['actions'][0]['summary'])
         for raw in ('private_bedroom','public_transport','walk','demo-usyd','furnished','amenities',"{'",': 0.6'):
             self.assertNotIn(raw,text)
-        for label in ('独立卧室','公共交通','步行','家具','费用','设施'):
+        for label in ('Private bedroom','Public transport','Walking','Furniture','Cost','Amenities'):
             self.assertNotIn(label,text)
-        self.assertIn('未提供的信息留空',text)
-        self.assertEqual(answer['content'],'已整理新的租房条件。请核对下方摘要；确认后保存偏好并生成候选。')
+        self.assertIn('Unspecified details are left blank',text)
+        self.assertEqual(answer['content'],'Your updated rental requirements are ready. Review the summary below, then confirm to save preferences and generate candidates.')
 
     def test_structured_clarification_reason_handles_unknowns_without_keyword_guessing(self):
         c=self.conversation()
         self.provider.result={'intent':'clarify','clarification_reason':'unknown_fact','clarification':'该房源最安静且离学校最近。'}
         r=self.send(c,message='最安静、去学校最近的是哪套？')
         self.assertEqual(r.status_code,200,r.text)
-        self.assertIn('没有已核实的噪音',r.json()['messages'][-1]['content'])
+        self.assertIn('Verified noise, soundproofing, commute, bills and availability data are currently unavailable',r.json()['messages'][-1]['content'])
         self.assertNotIn('该房源最安静',r.json()['messages'][-1]['content'])
+        self.assertNotIn('the quietest listing',r.json()['messages'][-1]['content'])
         c=r.json(); self.provider.result={'intent':'clarify','clarification_reason':'reference'}
         r=self.send(c,'reference'); self.assertEqual(r.status_code,200,r.text)
-        self.assertIn('房源编号',r.json()['messages'][-1]['content'])
+        self.assertIn('listing ID',r.json()['messages'][-1]['content'])
         self.provider.result={'intent':'clarify','clarification_reason':'invented'}
         self.assertEqual(self.send(r.json(),'invalid-reason').status_code,502)
 
@@ -454,7 +462,7 @@ class AssistantTests(unittest.TestCase):
         self.assertEqual(context['task'],'assistant_intent')
         self.assertEqual(len(context['history']),2)
         self.assertIn('draft_profile',context); self.assertIn('confirmed_profile',context)
-        self.assertNotIn('计价',r.json()['messages'][-1]['content'])
+        self.assertNotIn('rent scope',r.json()['messages'][-1]['content'])
         self.assertIn(c['messages'][-1]['listings'][0]['address'],r.json()['messages'][-1]['content'])
 
     def test_comparison_scoped_references_and_market_coverage(self):
@@ -466,7 +474,7 @@ class AssistantTests(unittest.TestCase):
         r=self.send(c,'bad-reference'); self.assertEqual(r.status_code,502)
         self.provider.result={'intent':'market','market':{'postcode':'9999','bedrooms':2,'rent_scope':'whole_property'}}
         r=self.send(c,'market'); self.assertEqual(r.status_code,200,r.text)
-        self.assertIn('覆盖',r.json()['messages'][-1]['content'])
+        self.assertIn('Coverage',r.json()['messages'][-1]['content'])
 
     def test_clarification_is_targeted_and_stale_confirmation_is_not_current_context(self):
         c=self.conversation()
@@ -476,7 +484,7 @@ class AssistantTests(unittest.TestCase):
         self.client.post('/api/v1/cases/'+self.case['case_id']+'/profile-drafts',json={'expected_revision':1,'profile':p})
         self.provider.result={'intent':'clarify','clarification':'你说的500是每周还是每月？'}
         r=self.send(c); self.assertEqual(r.status_code,200,r.text)
-        self.assertIn('每周还是每月',r.json()['messages'][-1]['content'])
+        self.assertIn('weekly or monthly',r.json()['messages'][-1]['content'])
         self.assertIsNone(self.provider.inputs[-1]['confirmed_profile'])
 
     def test_search_reports_filters_and_rejects_malformed_market_container(self):
@@ -492,7 +500,7 @@ class AssistantTests(unittest.TestCase):
         c=self.conversation(); self.provider.result={'intent':'followup'}
         r=self.send(c,message='选好之后该问中介什么？')
         self.assertEqual(r.status_code,200,r.text)
-        self.assertIn('先保存',r.json()['messages'][-1]['content'])
+        self.assertIn('Save a listing candidate',r.json()['messages'][-1]['content'])
         case=self.case
         root='/api/v1/cases/'+case['case_id']
         self.client.post(root+'/profile-confirmations',json={'draft_revision':case['draft']['revision'],
@@ -505,7 +513,7 @@ class AssistantTests(unittest.TestCase):
         self.assertEqual(r.status_code,200,r.text)
         turn=r.json()['messages'][-1]
         self.assertIn(row['address'],turn['content'])
-        self.assertIn('账单',turn['content'])
+        self.assertIn('bills',turn['content'])
         self.assertEqual(turn['actions'][0]['page'],'recommendations?followup=1')
         self.assertEqual(self.provider.inputs[-1]['saved_candidate']['listing_id'],row['listing_id'])
         self.assertEqual(self.client.get(root).json()['selection'],selected)

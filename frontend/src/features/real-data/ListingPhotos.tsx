@@ -9,11 +9,22 @@ function observedPhotos(listing: HousingAd): HousingPhoto[] {
     try {
       const url = new URL(photo.url);
       const source = new URL(photo.photo_source_url ?? photo.source_url);
-      const sourceAllowed = source.protocol === "https:" &&
-        ["www.domain.com.au", "www.property.com.au", "www.realestate.com.au"].includes(source.hostname) &&
-        !source.username && !source.password && !source.port && !source.search && !source.hash;
-      const imageHost = source.hostname === "www.domain.com.au"
-        ? "rimh2.domainstatic.com.au" : "i2.au.reastatic.net";
+      const sourceAllowed =
+        source.protocol === "https:" &&
+        [
+          "www.domain.com.au",
+          "www.property.com.au",
+          "www.realestate.com.au",
+        ].includes(source.hostname) &&
+        !source.username &&
+        !source.password &&
+        !source.port &&
+        !source.search &&
+        !source.hash;
+      const imageHost =
+        source.hostname === "www.domain.com.au"
+          ? "rimh2.domainstatic.com.au"
+          : "i2.au.reastatic.net";
       return (
         sourceAllowed &&
         url.protocol === "https:" &&
@@ -28,7 +39,7 @@ function observedPhotos(listing: HousingAd): HousingPhoto[] {
     }
   });
 }
-const noPhoto = <span className="listing-photo-empty">暂无照片</span>;
+const noPhoto = <span className="listing-photo-empty">No photos</span>;
 export function ListingThumbnail({
   listing,
   onOpen,
@@ -42,14 +53,14 @@ export function ListingThumbnail({
     <button
       className="listing-photo-thumb"
       type="button"
-      aria-label={`查看 ${listing.address} 照片与详情`}
+      aria-label={`View ${listing.address} Photos and details`}
       onClick={onOpen}
     >
       {photo && !failed ? (
         <img
           key={photo.url}
           src={photo.url}
-          alt={`${listing.address} 缩略图`}
+          alt={`${listing.address} Thumbnail`}
           loading="lazy"
           decoding="async"
           referrerPolicy="no-referrer"
@@ -70,11 +81,14 @@ export function ListingGallery({ listing }: { listing: HousingAd }) {
   if (!photos.length)
     return <div className="listing-photo-gallery-empty">{noPhoto}</div>;
   return (
-    <section className="listing-photo-gallery" aria-label="原始房源房源照片">
+    <section
+      className="listing-photo-gallery"
+      aria-label="Original listing photos"
+    >
       <Image.PreviewGroup
         items={available.map((photo, index) => ({
           src: photo.url,
-          alt: `${listing.address} 房源照片 ${index + 1}`,
+          alt: `${listing.address} Listing photos ${index + 1}`,
           referrerPolicy: "no-referrer",
         }))}
         preview={{
@@ -97,12 +111,12 @@ export function ListingGallery({ listing }: { listing: HousingAd }) {
                 <button
                   type="button"
                   className="listing-photo-preview-button"
-                  aria-label={`预览 ${listing.address} 照片 ${index + 1}`}
+                  aria-label={`Preview ${listing.address} Photo ${index + 1}`}
                   onClick={() => setPreview(photo.url)}
                 >
                   <img
                     src={photo.url}
-                    alt={`${listing.address} 房源照片 ${index + 1}`}
+                    alt={`${listing.address} Listing photos ${index + 1}`}
                     loading="lazy"
                     decoding="async"
                     referrerPolicy="no-referrer"
@@ -110,7 +124,7 @@ export function ListingGallery({ listing }: { listing: HousingAd }) {
                       setFailed((previous) => new Set([...previous, photo.url]))
                     }
                   />
-                  <span>放大查看</span>
+                  <span>Enlarge</span>
                 </button>
               )}
             </figure>
@@ -123,12 +137,15 @@ export function ListingGallery({ listing }: { listing: HousingAd }) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          照片来源
+          Photo source
         </a>
         <span>
-          {photos.length} 张 · 照片采集于 {displayDate(photos[0].captured_at)}
-          {photos[0].photo_source_kind === "same_property_history" || photos[0].photo_source_kind === "same_property_reference"
-            ? " · 同址资料照片" : ""}
+          {photos.length} photos · Collected{" "}
+          {displayDate(photos[0].captured_at)}
+          {photos[0].photo_source_kind === "same_property_history" ||
+          photos[0].photo_source_kind === "same_property_reference"
+            ? " · Same-address reference photos"
+            : ""}
         </span>
       </div>
     </section>

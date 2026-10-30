@@ -52,24 +52,32 @@ test("thirteen matching homes are all displayed without availability or billing 
 }) => {
   const { listings } = await fixture(page, request, 13);
   await expect(page.locator(".assistant-listing")).toHaveCount(13);
-  await expect(page.getByRole("log", { name: "租房对话" })).not.toContainText(
-    "先给你看",
-  );
-  for (const text of ["在租状态", "账单", "计价对象", "待核实", "仍需核实"])
-    await expect(page.getByRole("log", { name: "租房对话" })).not.toContainText(
-      text,
-    );
+  await expect(
+    page.getByRole("log", { name: "Rental conversation" }),
+  ).not.toContainText("showing you");
+  for (const text of [
+    "在租状态",
+    "账单",
+    "Pricing basis",
+    "待核实",
+    "仍需核实",
+  ])
+    await expect(
+      page.getByRole("log", { name: "Rental conversation" }),
+    ).not.toContainText(text);
   await page
     .locator(".assistant-listing")
     .last()
-    .getByRole("button", { name: "房源详情", exact: true })
+    .getByRole("button", { name: "Listing details", exact: true })
     .click();
   await expect(page.getByRole("dialog")).toContainText(listings[12].address);
   await page.keyboard.press("Escape");
-  await page.getByRole("button", { name: "收起房源", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Collapse listings", exact: true })
+    .click();
   await expect(page.locator(".assistant-listing")).toHaveCount(0);
   await page
-    .getByRole("button", { name: "查看全部13套房源", exact: true })
+    .getByRole("button", { name: "View all 13 listings", exact: true })
     .click();
   await expect(page.locator(".assistant-listing")).toHaveCount(13);
 });
@@ -81,11 +89,11 @@ test("large results expand from a compact all-homes button and every page remain
   const { listings } = await fixture(page, request, 41);
   await expect(page.locator(".assistant-listing")).toHaveCount(0);
   await page
-    .getByRole("button", { name: "查看全部41套房源", exact: true })
+    .getByRole("button", { name: "View all 41 listings", exact: true })
     .click();
   await expect(page.locator(".assistant-listing")).toHaveCount(20);
   await page
-    .getByRole("navigation", { name: "已筛选房源分页" })
+    .getByRole("navigation", { name: "Filtered listing pages" })
     .getByTitle("3", { exact: true })
     .click();
   await expect(page.locator(".assistant-listing")).toHaveCount(1);

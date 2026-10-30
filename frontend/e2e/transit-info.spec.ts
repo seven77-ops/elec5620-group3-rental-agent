@@ -122,12 +122,18 @@ test("traffic answers show named stops, safe alert links and concise average com
   await page.goto(`/cases/${c.case_id}/assistant`);
   // Sections use an accessible aria label and remain compact inside the chat.
   await expect(page.locator(".transit-information")).toHaveCount(2);
-  await expect(page.getByText("直线约 49 米", { exact: true })).toBeVisible();
   await expect(
-    page.getByRole("link", { name: "查看详情 ↗", exact: true }),
+    page.getByText("Approx. straight-line distance 49 metres", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "View details ↗", exact: true }),
   ).toHaveAttribute("href", "https://transportnsw.info/alerts");
-  await expect(page.getByText("查看行程分段", { exact: true })).toHaveCount(0);
-  await expect(page.locator(".commute-homes")).toContainText("公共交通");
+  await expect(
+    page.getByText("View trip segments", { exact: true }),
+  ).toHaveCount(0);
+  await expect(page.locator(".commute-homes")).toContainText(
+    "Public transport",
+  );
   await page.setViewportSize({ width: 390, height: 844 });
   expect(
     await page.evaluate(

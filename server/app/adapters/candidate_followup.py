@@ -15,8 +15,8 @@ ENUMS = {'stage':{'research','viewing','application'}, 'availability':{'unknown'
     'rent_period':{'unknown','week','fortnight','month'},
     'rent_scope':{'unknown','per_person','per_room','whole_property'},
     'bills':{'unknown','included','excluded'}}
-PERIODS = {'unknown':'待确认','week':'周','fortnight':'两周','month':'月'}
-SCOPES = {'unknown':'待确认','whole_property':'整套','per_room':'每间','per_person':'每人'}
+PERIODS = {'unknown':'Unconfirmed','week':'week','fortnight':'fortnight','month':'month'}
+SCOPES = {'unknown':'Unconfirmed','whole_property':'whole property','per_room':'per room','per_person':'per person'}
 
 
 def selection_signature(selection):
@@ -25,7 +25,7 @@ def selection_signature(selection):
 
 def followup_value(ctx, db, case):
     selection = case.get('selection')
-    require(selection and selection.get('data_mode')=='real_listings',409,'selection_required','请先保存一套真实房源候选。')
+    require(selection and selection.get('data_mode')=='real_listings',409,'selection_required','Save a live listing candidate first.')
     signature = selection_signature(selection)
     value = ctx.repo.get(db,'candidate_followup',case['case_id']+':'+signature)
     return value or {'case_id':case['case_id'], 'listing_id':selection['listing_id'],
@@ -36,34 +36,34 @@ def followup_value(ctx, db, case):
 def validate_facts(facts):
     shape(facts,tuple(DEFAULT_FACTS))
     for key,values in ENUMS.items():
-        require(isinstance(facts[key],str) and facts[key] in values,422,'invalid_facts','请使用有效的跟进状态和计价单位。')
+        require(isinstance(facts[key],str) and facts[key] in values,422,'invalid_facts','Use valid follow-up statuses and rent units.')
     for key in ('rent_amount','bond'):
         v=facts[key]
         require(v is None or (type(v) in (int,float) and math.isfinite(v) and 0<v<1000000),
-                422,'invalid_facts','租金和押金须为正数，未知时留空。')
+                422,'invalid_facts','Rent and bond must be positive amounts; leave blank if unknown.')
     for key in ('start_date','end_date'):
         v=facts[key]
         if v is not None:
-            require(isinstance(v,str),422,'invalid_facts','日期须为 YYYY-MM-DD。')
+            require(isinstance(v,str),422,'invalid_facts','Dates must use YYYY-MM-DD.')
             try: valid=date.fromisoformat(v).isoformat()==v
             except ValueError: valid=False
-            require(valid,422,'invalid_facts','日期须为 YYYY-MM-DD。')
+            require(valid,422,'invalid_facts','Dates must use YYYY-MM-DD.')
     require(not(facts['start_date'] and facts['end_date']) or facts['end_date']>facts['start_date'],
-            422,'invalid_facts','结束日期须晚于起租日期。')
+            422,'invalid_facts','The end date must be after the start date.')
     for key,limit in (('landlord',200),('viewing_note',500),('source_note',500),('notes',2000)):
-        require(isinstance(facts[key],str) and len(facts[key])<=limit,422,'invalid_facts','文字内容超过允许长度。')
-    require(bool(facts['source_note'].strip()),422,'source_required','请记录信息来源，例如中介邮件、看房记录或本人备注。')
+        require(isinstance(facts[key],str) and len(facts[key])<=limit,422,'invalid_facts','The text exceeds the permitted length.')
+    require(bool(facts['source_note'].strip()),422,'source_required','Record the source, such as an agent email, inspection record or your own note.')
     return {k:v.strip() if isinstance(v,str) else v for k,v in facts.items()}
 
 
 def enquiry_questions(selection, facts):
     address=selection['listing_snapshot']['address']
-    return [f'请问 {address} 目前是否仍可租，何时可以看房？',
-        '请确认实际租金金额、付款周期，以及是整套、每间还是每人计价。',
-        '租金包含哪些账单？还有哪些固定费用？',
-        '最早起租日期、租期和押金金额分别是多少？',
-        '广告中的卧室、浴室和车位是否均包含在本次出租范围内？',
-        '申请需要哪些材料？能否提供拟签合同及出租方或代理信息供核对？']
+    return [f'Is {address} still available, and when can I inspect it?',
+        'Please confirm the actual rent, payment period and whether it is for the whole property, per room or per person.',
+        'Which bills are included, and what other fixed charges apply?',
+        'What are the earliest start date, lease term and bond amount?',
+        'Are all advertised bedrooms, bathrooms and parking spaces included in this rental?',
+        'What documents are needed to apply? Can you provide the proposed agreement and landlord or agent details for review?']
 
 
 class CandidateFollowupAdapter:
@@ -76,17 +76,17 @@ class CandidateFollowupAdapter:
     def save(self,case_id: str,body: dict):
         shape(body,('request_id','expected_version','selection_signature','confirmed','facts'))
         key=case_id+':'+request_id(body['request_id'])
-        require(body['confirmed'] is True,403,'confirmation_required','请确认保存这些跟进信息。')
-        require(integer(body['expected_version']),422,'invalid_input','请提供当前跟进版本。')
+        require(body['confirmed'] is True,403,'confirmation_required','Confirm saving these follow-up details.')
+        require(integer(body['expected_version']),422,'invalid_input','Provide the current follow-up version.')
         facts=validate_facts(body['facts'])
         with self.ctx.repo.transaction() as db:
             case=self.ctx.get(db,'case',case_id)
             self.ctx.contract_selection(case)
             current=followup_value(self.ctx,db,case)
-            require(body['selection_signature']==current['selection_signature'],409,'stale_selection','候选已变化，请重新打开当前房源跟进。')
+            require(body['selection_signature']==current['selection_signature'],409,'stale_selection','The candidate changed. Reopen follow-up for the current listing.')
             old=self.ctx.receipt(db,'candidate_followup_receipt',key,body)
             if old: return old['result']
-            require(current['version']==body['expected_version'],409,'version_conflict','跟进记录已更新，请重新读取后保存。')
+            require(current['version']==body['expected_version'],409,'version_conflict','The follow-up record changed. Reload before saving.')
             value={**current,'facts':facts,'version':current['version']+1,'updated_at':now()}
             identifier=case_id+':'+current['selection_signature']
             self.ctx.repo.put(db,'candidate_followup',identifier,value)
@@ -99,13 +99,13 @@ class CandidateFollowupAdapter:
             case=self.ctx.get(db,'case',case_id)
             value=followup_value(self.ctx,db,case)
             selection=case['selection']; facts=value['facts']
-            lines=['# 看房与询问清单','',selection['listing_snapshot']['address'],
-                '原广告：'+selection['listing_snapshot']['source_url'],'',
-                '以下为待询问事项；保存候选不代表已联系、申请或核实。','']
+            lines=['# Inspection and enquiry checklist','',selection['listing_snapshot']['address'],
+                'Original advertisement: '+selection['listing_snapshot']['source_url'],'',
+                'These questions remain to be asked. Saving a candidate does not establish contact, an application or verification.','']
             lines += [f'{i}. {q}' for i,q in enumerate(enquiry_questions(selection,facts),1)]
             if value['version']:
-                lines+=['','## 用户记录（未经平台独立核实）','信息来源：'+facts['source_note'],
-                    f"租金：{facts['rent_amount'] if facts['rent_amount'] is not None else '待确认'} AUD / {PERIODS[facts['rent_period']]} / {SCOPES[facts['rent_scope']]}",
-                    '看房安排：'+(facts['viewing_note'] or '待安排'),'备注：'+(facts['notes'] or '无')]
+                lines+=['','## User records (not independently verified)','Source: '+facts['source_note'],
+                    f"Rent: {facts['rent_amount'] if facts['rent_amount'] is not None else 'Unconfirmed'} AUD / {PERIODS[facts['rent_period']]} / {SCOPES[facts['rent_scope']]}",
+                    'Inspection arrangements: '+(facts['viewing_note'] or 'To be arranged'),'Notes: '+(facts['notes'] or 'None')]
             return Response('\n'.join(lines)+'\n',media_type='text/markdown',
                 headers={'Content-Disposition':'attachment; filename="rental-enquiries.md"'})

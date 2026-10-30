@@ -10,37 +10,37 @@ import "./leaseAutofill.css";
 
 export const addressGroups = {
   tenant_agent_notice_address: {
-    prefix: "租客代理",
+    prefix: "Tenant agent",
     suburb: "tenant_agent_notice_suburb",
     state: "tenant_agent_notice_state",
     postcode: "tenant_agent_notice_postcode",
   },
   corporation_address: {
-    prefix: "出租公司",
+    prefix: "Landlord company",
     suburb: "corporation_suburb",
     state: "corporation_state",
     postcode: "corporation_postcode",
   },
   address: {
-    prefix: "房屋",
+    prefix: "Property",
     suburb: "suburb",
     state: "state",
     postcode: "postcode",
   },
   landlord_notice_address: {
-    prefix: "出租方",
+    prefix: "Landlord",
     suburb: "landlord_notice_suburb",
     state: "landlord_notice_state",
     postcode: "landlord_notice_postcode",
   },
   tenant_notice_address: {
-    prefix: "租客",
+    prefix: "Tenant",
     suburb: "tenant_notice_suburb",
     state: "tenant_notice_state",
     postcode: "tenant_notice_postcode",
   },
   agent_notice_address: {
-    prefix: "出租方中介",
+    prefix: "Landlord agent",
     suburb: "agent_notice_suburb",
     state: "agent_notice_state",
     postcode: "agent_notice_postcode",
@@ -146,12 +146,14 @@ function PropertyAddressFields({
               >
                 <strong>
                   {item.kind === "locality"
-                    ? `${item.suburb} · 选择区域`
+                    ? `${item.suburb} · Select suburb`
                     : item.address}
                 </strong>
                 <small>
                   {item.suburb} · {item.state} {item.postcode}
-                  {item.kind === "locality" ? " · 继续填写街道门牌" : ""}
+                  {item.kind === "locality"
+                    ? " · Continue with street address"
+                    : ""}
                 </small>
               </div>
             ),
@@ -171,24 +173,24 @@ function PropertyAddressFields({
           notFoundContent={
             query.length >= 2
               ? searching
-                ? "正在检索…"
+                ? "Searching…"
                 : failed
-                  ? "检索暂不可用，可手动填写"
-                  : "暂无匹配，可手动填写"
+                  ? "Search unavailable; enter details manually"
+                  : "No matches; enter details manually"
               : null
           }
         >
           <Input
             maxLength={200}
             aria-label={leaseLabels[name]}
-            placeholder="输入区域、街道或邮编，如 Redfern"
+            placeholder="Enter a suburb, street, or postcode, such as Redfern"
           />
         </AutoComplete>
       </Form.Item>
       <div className="lease-address-parts">
         <Form.Item
           name={group.suburb}
-          label={`${group.prefix}区域（Suburb）`}
+          label={`${group.prefix} suburb`}
           required={requiredFields?.includes(group.suburb)}
         >
           <Input maxLength={80} />
@@ -205,8 +207,10 @@ function PropertyAddressFields({
         <Form.Item
           name={group.postcode}
           required={requiredFields?.includes(group.postcode)}
-          label={`${group.prefix}邮编`}
-          rules={[{ pattern: /^\d{4}$/, message: "邮编须为4位数字。" }]}
+          label={`${group.prefix} postcode`}
+          rules={[
+            { pattern: /^\d{4}$/, message: "Postcode must contain 4 digits." },
+          ]}
         >
           <Input maxLength={4} inputMode="numeric" />
         </Form.Item>

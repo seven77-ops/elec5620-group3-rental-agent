@@ -8,12 +8,12 @@ import type { LivingProvider, ProviderCategory } from "../../api/living";
 import UtilityPlanBrowser from "./UtilityPlanBrowser";
 
 const categoryLabels: Record<ProviderCategory, string> = {
-  electricity: "电力",
-  gas: "燃气",
-  internet: "网络",
-  water: "供水",
-  removalist: "搬运",
-  cleaner: "清洁",
+  electricity: "Electricity",
+  gas: "Gas",
+  internet: "Internet",
+  water: "Water",
+  removalist: "Moving",
+  cleaner: "Cleaning",
 };
 export const providerCategories = (provider: LivingProvider) =>
   provider.categories.map((category) => categoryLabels[category]).join(" · ");
@@ -27,7 +27,9 @@ export default function UtilityProviderDetails({
 }) {
   return (
     <Modal
-      title={provider ? `${provider.name} · 供应商详情` : "供应商详情"}
+      title={
+        provider ? `${provider.name} · Provider details` : "Provider details"
+      }
       open={!!provider}
       className="utility-provider-modal"
       onCancel={onClose}
@@ -40,7 +42,7 @@ export default function UtilityProviderDetails({
           overflowWrap: "anywhere",
         },
       }}
-      footer={<Button onClick={onClose}>关闭详情</Button>}
+      footer={<Button onClick={onClose}>Close details</Button>}
     >
       {provider && (
         <div className="living-provider-details" key={provider.id}>
@@ -56,19 +58,19 @@ export default function UtilityProviderDetails({
             <Space wrap className="provider-contact-actions">
               <Button
                 href={provider.website}
-                aria-label="官方网站"
+                aria-label="Official website"
                 target="_blank"
                 rel="noopener noreferrer"
                 icon={<GlobalOutlined />}
               >
-                官方网站
+                Official website
               </Button>
               <Button
                 href={provider.contact_url}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                联系页面
+                Contact page
               </Button>
               {provider.phone && (
                 <Button
@@ -82,24 +84,29 @@ export default function UtilityProviderDetails({
             </Space>
           </div>
           <div className="provider-facts-note">
-            {provider.notes || "服务范围请按实际地址向供应商确认。"}
+            {provider.notes ||
+              "Confirm service coverage for your actual address with the provider."}
           </div>
           {provider.plans?.length ? (
             <UtilityPlanBrowser plans={provider.plans} />
           ) : (
-            <p className="muted">可通过上方官网或联系页面查看服务。</p>
+            <p className="muted">
+              View services through the official website or contact page above.
+            </p>
           )}
           <p className="muted living-provider-source">
-            {provider.plans?.length ? "联系信息来源：" : "来源："}
+            {provider.plans?.length ? "Contact information source:" : "Source:"}
             <a
               href={provider.source_url}
               target="_blank"
               rel="noopener noreferrer"
             >
-              官方页面
+              Official page
             </a>
             {" · "}
-            {provider.plans?.length ? "联系信息核对日期" : "核对日期"}{" "}
+            {provider.plans?.length
+              ? "Contact information checked on"
+              : "Checked on"}{" "}
             {provider.checked_on}
           </p>
         </div>

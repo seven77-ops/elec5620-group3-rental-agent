@@ -101,7 +101,7 @@ class LivingServiceTests(unittest.TestCase):
         self.assertEqual(entry['email']['delivery_status'],'prepared_not_sent')
         self.assertIn('1 Main Street',entry['email']['body'])
         self.assertIn('Kitchen tap drips continuously.',entry['email']['body'])
-        self.assertNotIn('lease',entry['email']['body'].lower())
+        self.assertNotRegex(entry['email']['body'].lower(),r'\blease\b')
         self.assertEqual(self.service.repair(self.cid,body),saved)
         blank = self.service.repair(self.other,self.envelope(self.repair_values()))['repairs'][0]
         self.assertEqual(blank['email']['to'],'')
@@ -172,7 +172,7 @@ class LivingServiceTests(unittest.TestCase):
 
     def test_partial_utility_proposal_preserves_other_choices_and_has_reviewable_summary(self):
         proposal=self.service.prepare_proposal(self.cid,'profile',{'utilities':{'electricity':'power'}},'Choose power')
-        self.assertTrue(any('Power' in line and '电力' in line for line in proposal['summary']))
+        self.assertTrue(any('Power' in line and 'Electricity' in line for line in proposal['summary']))
         saved=self.service.apply(self.cid,proposal['proposal_id'],{'request_id':'apply','expected_version':0,'confirmed':True})
         self.assertEqual(saved['profile']['utilities'],{'electricity':'power','gas':None,'internet':None,'water':None})
 

@@ -9,9 +9,9 @@ import type {
 import RepairFollowup from "./RepairFollowup";
 import RepairComposer from "./RepairComposer";
 const statusLabels: Record<RepairStatus, string> = {
-  prepared: "草稿已准备",
-  contacted: "已自行联系",
-  resolved: "问题已解决",
+  prepared: "Draft prepared",
+  contacted: "Contacted independently",
+  resolved: "Issue resolved",
 };
 export default function Repairs({
   record,
@@ -42,7 +42,7 @@ export default function Repairs({
     <section className="living-section">
       <div className="living-section-heading">
         <div>
-          <h2>日常报修</h2>
+          <h2>Repairs</h2>
         </div>
       </div>
       <RepairComposer
@@ -51,8 +51,10 @@ export default function Repairs({
         busy={busy}
         save={save}
       />
-      <h3 className="living-list-title">报修记录</h3>
-      {!record.repairs.length && <p className="muted">还没有报修记录。</p>}
+      <h3 className="living-list-title">Repair record</h3>
+      {!record.repairs.length && (
+        <p className="muted">No repairs recorded yet.</p>
+      )}
       <div className="living-record-list">
         {[...record.repairs].reverse().map((repair) => (
           <article
@@ -69,22 +71,22 @@ export default function Repairs({
               </Tag>
             </div>
             <p className="muted">
-              {repair.location || "位置未注明"} ·{" "}
-              {repair.priority === "urgent" ? "紧急" : "普通"}
+              {repair.location || "Location not specified"} ·{" "}
+              {repair.priority === "urgent" ? "Urgent" : "Normal"}
             </p>
             <details open>
-              <summary>邮件预览</summary>
+              <summary>Email preview</summary>
               <p className="living-email-meta">
-                收件人：{recipient(repair) || "未填写"}
+                Recipient: {recipient(repair) || "Not entered"}
                 {!repair.email.to && record.profile.agent_email
-                  ? "（使用当前联系人邮箱）"
+                  ? "(using the current contact email)"
                   : ""}
                 <br />
-                主题：{repair.email.subject}
+                Subject: {repair.email.subject}
               </p>
               <pre className="living-email-body">{repair.email.body}</pre>
             </details>
-            <p className="living-unsent">草稿已准备 · 尚未发送</p>
+            <p className="living-unsent">Draft prepared · Not sent</p>
             <Space wrap>
               <Button
                 loading={copying === repair.repair_id}
@@ -95,28 +97,30 @@ export default function Repairs({
                     await navigator.clipboard.writeText(
                       `To: ${recipient(repair)}\nSubject: ${repair.email.subject}\n\n${repair.email.body}`,
                     );
-                    message.success("邮件草稿已复制。");
+                    message.success("Email draft copied.");
                   } catch {
-                    message.error("无法访问剪贴板，可从邮件预览中手动复制。");
+                    message.error(
+                      "Clipboard unavailable. Copy the text manually from the email preview.",
+                    );
                   } finally {
                     setCopying(null);
                   }
                 }}
               >
-                复制邮件草稿
+                Copy email draft
               </Button>
               {recipient(repair) && (
                 <a
                   href={`mailto:${encodeURIComponent(recipient(repair))}?subject=${encodeURIComponent(repair.email.subject)}&body=${encodeURIComponent(repair.email.body)}`}
                 >
-                  在邮箱中打开
+                  Open in email app
                 </a>
               )}
               {record.profile.agent_phone && (
-                <a href={`tel:${record.profile.agent_phone}`}>拨打联系人电话</a>
+                <a href={`tel:${record.profile.agent_phone}`}>Call contact</a>
               )}
               <Select
-                aria-label={`更新报修状态 ${repair.title}`}
+                aria-label={`Update repair status ${repair.title}`}
                 value={repair.status}
                 disabled={busy}
                 options={Object.entries(statusLabels).map(([value, label]) => ({
@@ -125,10 +129,10 @@ export default function Repairs({
                 }))}
                 onChange={(status) => {
                   modal.confirm({
-                    title: "确认更新报修状态？",
-                    content: `将「${repair.title}」记录为「${statusLabels[status as RepairStatus]}」。这不会发送邮件或联系维修人员。`,
-                    okText: "确认更新状态",
-                    cancelText: "取消",
+                    title: "Update repair status?",
+                    content: `Record “${repair.title}” as “${statusLabels[status as RepairStatus]}”. This does not send an email or contact repair staff.`,
+                    okText: "Confirm status update",
+                    cancelText: "Cancel",
                     onOk: () =>
                       save(
                         `/repairs/${encodeURIComponent(repair.repair_id)}`,
@@ -150,23 +154,23 @@ export default function Repairs({
                 disabled={busy}
                 onClick={() =>
                   onChat(
-                    `继续跟进报修 ${repair.repair_id}「${repair.title}」。请基于这条已保存的问题和我的后续说明处理，不要重复新建报修。`,
+                    `Continue following up repair ${repair.repair_id}“${repair.title}”. Use this saved issue and my follow-up notes; do not create a duplicate repair.`,
                   )
                 }
               >
-                继续聊这条报修
+                Discuss this repair
               </Button>
             </div>
             {Boolean(repair.updates?.length) && (
               <div className="living-repair-updates">
-                <h4>我记录的后续</h4>
+                <h4>My follow-up notes</h4>
                 {repair.updates!.map((update, index) => (
                   <div key={`${update.at}-${index}`}>
                     <p className="living-prewrap">
                       {update.note || statusLabels[update.status]}
                     </p>
                     <small>
-                      {new Date(update.at).toLocaleString("zh-CN")} ·{" "}
+                      {new Date(update.at).toLocaleString("en-AU")} ·{" "}
                       {statusLabels[update.status]}
                     </small>
                   </div>
@@ -174,7 +178,7 @@ export default function Repairs({
               </div>
             )}
             <small className="muted">
-              准备时间：{new Date(repair.created_at).toLocaleString("zh-CN")}
+              Prepared at: {new Date(repair.created_at).toLocaleString("en-AU")}
             </small>
           </article>
         ))}

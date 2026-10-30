@@ -28,37 +28,37 @@ export default function LeaseProposalCard({
   return (
     <section
       className="task-result-card task-lease-proposal"
-      aria-label="合同字段提案"
+      aria-label="Lease field proposal"
     >
       <div className="task-result-heading">
         <h3>
           {pending
-            ? "合同信息待确认"
+            ? "Lease details need confirmation"
             : proposal.status === "applied"
-              ? "已同步到合同助手"
-              : "合同资料已有更新"}
+              ? "Synced to Contract assistant"
+              : "Lease details have changed"}
         </h3>
         <Tag color={pending ? "blue" : "default"}>
           {pending
-            ? "待核对"
+            ? "Needs review"
             : proposal.status === "applied"
-              ? "已保存"
-              : "需重新整理"}
+              ? "Saved"
+              : "Needs updating"}
         </Tag>
       </div>
       {pending ? (
         <>
           <p className="muted small">
             {proposal.base_version
-              ? `基于当前草稿 v${proposal.base_version} 整理修改。`
-              : "准备一份新的未签署草稿。"}
-            核对后再保存。
+              ? `Changes based on draft v${proposal.base_version}.`
+              : "Prepare a new unsigned draft."}
+            Review before saving.
           </p>
           <Descriptions column={1} size="small" items={changes.slice(0, 5)} />
           <p className="muted small">
             {proposal.questions.length
-              ? `还有 ${proposal.questions.length} 项信息待补充，可先保留空白。`
-              : "已有信息已整理好，请核对完整内容。"}
+              ? `There are ${proposal.questions.length} details missing; these can stay blank for now.`
+              : "The available details are ready. Please review the full draft."}
           </p>
           <Button
             type="primary"
@@ -68,27 +68,27 @@ export default function LeaseProposalCard({
               setOpen(true);
             }}
           >
-            核对合同字段
+            Review lease fields
           </Button>
         </>
       ) : (
         <p className="muted small">
           {proposal.status === "applied"
-            ? "聊天和合同助手使用同一份已保存草稿。"
-            : "请基于最新草稿重新说明需要修改的字段。"}
+            ? "Chat and Contract assistant share the same saved draft."
+            : "Please describe the fields to change using the latest draft."}
         </p>
       )}
       <Button type="link" onClick={onOpenContract} disabled={disabled}>
-        查看合同助手
+        Open Contract assistant
       </Button>
       <Modal
-        title="核对并同步合同草稿"
+        title="Review and sync lease draft"
         open={open && pending}
         onCancel={() => {
           if (!saving) setOpen(false);
         }}
-        okText="确认保存并同步合同"
-        cancelText="继续修改"
+        okText="Confirm, save and sync draft"
+        cancelText="Keep editing"
         confirmLoading={saving}
         okButtonProps={{ disabled: disabled || !applicable }}
         cancelButtonProps={{ disabled: saving }}
@@ -103,14 +103,17 @@ export default function LeaseProposalCard({
           }
         }}
       >
-        <p>下面的信息将保存到合同助手，作为未签署草稿。</p>
-        <h4>本次整理的字段</h4>
+        <p>
+          The details below will be saved to Contract assistant as an unsigned
+          draft.
+        </p>
+        <h4>Fields prepared this time</h4>
         <Descriptions column={1} size="small" items={changes} />
         {proposal.questions.length > 0 && (
           <Alert
             type="info"
             showIcon
-            title="仍需补充的信息"
+            title="Details still needed"
             description={
               <ul className="task-missing-fields">
                 {proposal.questions.map((q) => (
@@ -121,7 +124,7 @@ export default function LeaseProposalCard({
           />
         )}
         <details className="task-lease-details">
-          <summary>查看完整草稿字段</summary>
+          <summary>View all draft fields</summary>
           <Descriptions
             column={1}
             size="small"
@@ -137,7 +140,8 @@ export default function LeaseProposalCard({
           disabled={saving}
           onChange={(e) => setApplicable(e.target.checked)}
         >
-          我确认适用于新州普通整租住宅，并已核对以上信息。
+          I confirm this is an ordinary whole-property residential tenancy in
+          NSW and have checked the details above.
         </Checkbox>
       </Modal>
     </section>

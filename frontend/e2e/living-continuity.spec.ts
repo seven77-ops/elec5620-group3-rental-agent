@@ -65,34 +65,44 @@ test("lease source preview is read only, selected import needs actual-tenancy co
     await route.fulfill({ json: record });
   });
   await page.goto(`/cases/${c.case_id}/aftercare`);
-  await page.getByRole("button", { name: "查看租约来源", exact: true }).click();
+  await page
+    .getByRole("button", { name: "View lease source", exact: true })
+    .click();
   const preview = page.getByRole("dialog", {
-    name: "核对租约来源",
+    name: "Check lease source",
     exact: true,
   });
   await expect(preview).toContainText("23 Test Road, Sydney NSW");
   await expect(preview).toContainText("v2");
   await expect(
-    preview.getByRole("button", { name: "接入所选资料", exact: true }),
+    preview.getByRole("button", {
+      name: "Import selected details",
+      exact: true,
+    }),
   ).toBeDisabled();
-  await preview.getByRole("button", { name: "取消", exact: true }).click();
+  await preview.getByRole("button", { name: "Cancel", exact: true }).click();
   expect(imports).toHaveLength(0);
-  await page.getByRole("button", { name: "查看租约来源", exact: true }).click();
+  await page
+    .getByRole("button", { name: "View lease source", exact: true })
+    .click();
   await preview
-    .getByRole("checkbox", { name: "接入 中介或房东姓名", exact: true })
+    .getByRole("checkbox", {
+      name: "Import Agent or landlord name",
+      exact: true,
+    })
     .uncheck();
   await preview
     .getByRole("checkbox", {
-      name: "我确认这些资料对应我的实际租约。",
+      name: "I confirm these details correspond to my actual lease.",
       exact: true,
     })
     .check();
   await preview
-    .getByRole("button", { name: "接入所选资料", exact: true })
+    .getByRole("button", { name: "Import selected details", exact: true })
     .click();
   expect(imports).toHaveLength(0);
   await page
-    .getByRole("button", { name: "确认接入租约资料", exact: true })
+    .getByRole("button", { name: "Confirm lease import", exact: true })
     .click();
   await expect(preview).toHaveCount(0);
   expect(imports).toHaveLength(1);
@@ -112,12 +122,12 @@ test("lease source preview is read only, selected import needs actual-tenancy co
   await page.reload();
   await expect(page.getByText(values.address, { exact: true })).toBeVisible();
   await page
-    .getByRole("button", { name: "编辑住处与联系人", exact: true })
+    .getByRole("button", { name: "Edit home and contacts", exact: true })
     .click();
-  await expect(page.getByLabel("租约开始日期", { exact: true })).toHaveValue(
-    values.lease_start_date,
-  );
-  await expect(page.getByLabel("租约结束日期", { exact: true })).toHaveValue(
+  await expect(
+    page.getByLabel("Lease start date", { exact: true }),
+  ).toHaveValue(values.lease_start_date);
+  await expect(page.getByLabel("Lease end date", { exact: true })).toHaveValue(
     values.lease_end_date,
   );
 });
@@ -136,7 +146,7 @@ test("todo focuses a saved repair, manual followup updates it and contextual cha
         values: {
           title: "厨房滴水",
           description: "水龙头关闭后仍滴水",
-          location: "厨房",
+          location: "Kitchen",
           priority: "normal",
         },
       },
@@ -144,28 +154,36 @@ test("todo focuses a saved repair, manual followup updates it and contextual cha
   ).json();
   const repair = created.repairs[0];
   await page.goto(`/cases/${c.case_id}/aftercare?tab=utilities`);
-  const todos = page.getByRole("region", { name: "待办事项", exact: true });
+  const todos = page.getByRole("region", { name: "To-do items", exact: true });
   await todos
-    .getByRole("button", { name: `处理报修：${repair.title}`, exact: true })
+    .getByRole("button", {
+      name: `Handle repair: ${repair.title}`,
+      exact: true,
+    })
     .click();
   await expect(page).toHaveURL(
     new RegExp(`tab=repairs&repair=${repair.repair_id}`),
   );
   const card = page.locator(`[data-repair-id="${repair.repair_id}"]`);
   await expect(card).toBeFocused();
-  await card.getByRole("button", { name: "记录后续", exact: true }).click();
-  const modal = page.getByRole("dialog", { name: "记录报修后续", exact: true });
+  await card
+    .getByRole("button", { name: "Record follow-up", exact: true })
+    .click();
+  const modal = page.getByRole("dialog", {
+    name: "Record repair follow-up",
+    exact: true,
+  });
   await modal
-    .getByRole("textbox", { name: "对方回复或我的记录", exact: true })
+    .getByRole("textbox", { name: "Reply or my notes", exact: true })
     .fill("中介说会安排师傅，时间尚未确定。");
   await modal
-    .getByRole("button", { name: "核对并保存后续", exact: true })
+    .getByRole("button", { name: "Check and save follow-up", exact: true })
     .click();
   expect((await (await request.get(root)).json()).version).toBe(
     created.version,
   );
   await page
-    .getByRole("button", { name: "确认保存报修后续", exact: true })
+    .getByRole("button", { name: "Confirm repair follow-up", exact: true })
     .click();
   await expect(
     card.getByText("中介说会安排师傅，时间尚未确定。", { exact: true }),
@@ -176,17 +194,19 @@ test("todo focuses a saved repair, manual followup updates it and contextual cha
     "中介说会安排师傅，时间尚未确定。",
   );
   const originalEmail = saved.repairs[0].email;
-  await card.getByRole("button", { name: "调整邮件语气", exact: true }).click();
-  await modal.getByLabel("邮件语气", { exact: true }).click();
+  await card
+    .getByRole("button", { name: "Adjust email tone", exact: true })
+    .click();
+  await modal.getByLabel("Email tone", { exact: true }).click();
   await page
     .locator(".ant-select-dropdown .ant-select-item-option-content")
-    .getByText("更礼貌", { exact: true })
+    .getByText("More polite", { exact: true })
     .click();
   await modal
-    .getByRole("button", { name: "核对并保存后续", exact: true })
+    .getByRole("button", { name: "Check and save follow-up", exact: true })
     .click();
   await page
-    .getByRole("button", { name: "确认保存报修后续", exact: true })
+    .getByRole("button", { name: "Confirm repair follow-up", exact: true })
     .click();
   await expect(modal).toHaveCount(0);
   const rewritten = await (await request.get(root)).json();
@@ -196,11 +216,11 @@ test("todo focuses a saved repair, manual followup updates it and contextual cha
   expect(rewritten.repairs[0].description).toBe(repair.description);
   expect(rewritten.repairs[0].email.body).not.toBe(originalEmail.body);
   await card
-    .getByRole("button", { name: "继续聊这条报修", exact: true })
+    .getByRole("button", { name: "Discuss this repair", exact: true })
     .click();
   await expect(page).toHaveURL(/\/assistant\?message=/);
   const input = page.getByRole("textbox", {
-    name: "给租房助手的消息",
+    name: "Message to Rental Assistant",
     exact: true,
   });
   await expect(input).toHaveValue(new RegExp(repair.repair_id));
@@ -223,7 +243,7 @@ test("mobile todo list is bounded and links to a specific service record", async
   const base = {
     title: "滴水",
     description: "水龙头滴水",
-    location: "厨房",
+    location: "Kitchen",
     priority: "normal",
     status: "prepared",
     created_at: "2026-10-22T00:00:00Z",
@@ -252,18 +272,21 @@ test("mobile todo list is bounded and links to a specific service record", async
     route.fulfill({ json: { ...record, repairs, bookings: [booking] } }),
   );
   await page.goto(`/cases/${c.case_id}/aftercare`);
-  const todos = page.getByRole("region", { name: "待办事项", exact: true });
+  const todos = page.getByRole("region", { name: "To-do items", exact: true });
   await expect(todos.locator("li")).toHaveCount(5);
   await todos
-    .getByRole("button", { name: "查看全部待办", exact: true })
+    .getByRole("button", { name: "View all to-do items", exact: true })
     .click();
   await todos
-    .getByRole("button", { name: `处理服务：${provider.name}`, exact: true })
+    .getByRole("button", {
+      name: `Handle service: ${provider.name}`,
+      exact: true,
+    })
     .click();
   const card = page.locator('[data-booking-id="booking-test"]');
   await expect(card).toBeFocused();
   await expect(
-    card.getByRole("button", { name: "更新服务记录", exact: true }),
+    card.getByRole("button", { name: "Update service record", exact: true }),
   ).toBeVisible();
   expect(
     await page.evaluate(
@@ -327,19 +350,24 @@ test("confirmed aftercare source imports through real endpoints without changing
   expect((await (await request.get(root)).json()).version).toBe(before.version);
   await page.setViewportSize({ width: 360, height: 800 });
   await page.goto(`/cases/${c.case_id}/aftercare`);
-  await page.getByRole("button", { name: "查看租约来源", exact: true }).click();
-  const modal = page.getByRole("dialog", { name: "核对租约来源", exact: true });
+  await page
+    .getByRole("button", { name: "View lease source", exact: true })
+    .click();
+  const modal = page.getByRole("dialog", {
+    name: "Check lease source",
+    exact: true,
+  });
   await modal
     .getByRole("checkbox", {
-      name: "我确认这些资料对应我的实际租约。",
+      name: "I confirm these details correspond to my actual lease.",
       exact: true,
     })
     .check();
   await modal
-    .getByRole("button", { name: "接入所选资料", exact: true })
+    .getByRole("button", { name: "Import selected details", exact: true })
     .click();
   await page
-    .getByRole("button", { name: "确认接入租约资料", exact: true })
+    .getByRole("button", { name: "Confirm lease import", exact: true })
     .click();
   await expect(modal).toHaveCount(0);
   const saved = await (await request.get(root)).json();
@@ -400,58 +428,93 @@ test("failed stale import preserves choices and a refreshed stale source cannot 
     });
   });
   await page.goto(`/cases/${c.case_id}/aftercare`);
-  await page.getByRole("button", { name: "查看租约来源", exact: true }).click();
-  const modal = page.getByRole("dialog", { name: "核对租约来源", exact: true });
+  await page
+    .getByRole("button", { name: "View lease source", exact: true })
+    .click();
+  const modal = page.getByRole("dialog", {
+    name: "Check lease source",
+    exact: true,
+  });
   const field = modal.getByRole("checkbox", {
-    name: "接入 居住地址",
+    name: "Import Home address",
     exact: true,
   });
   await modal
     .getByRole("checkbox", {
-      name: "我确认这些资料对应我的实际租约。",
+      name: "I confirm these details correspond to my actual lease.",
       exact: true,
     })
     .check();
   await modal
-    .getByRole("button", { name: "接入所选资料", exact: true })
+    .getByRole("button", { name: "Import selected details", exact: true })
     .click();
   await page
-    .getByRole("button", { name: "确认接入租约资料", exact: true })
+    .getByRole("button", { name: "Confirm lease import", exact: true })
     .click();
   await expect(
-    modal.getByText("资料已更新", { exact: true }),
+    modal.getByText("Information has changed", { exact: true }),
   ).toBeVisible();
   await expect(field).toBeChecked();
   expect(imports).toBe(1);
   expect((await (await request.get(root)).json()).version).toBe(record.version);
   current = false;
-  await modal.getByRole("button", { name: "重新预览", exact: true }).click();
+  await modal
+    .getByRole("button", { name: "Preview again", exact: true })
+    .click();
   await expect(
-    modal.getByText("来源已过期，请先核对当前租约或房源资料。", {
-      exact: true,
-    }),
+    modal.getByText(
+      "The source is outdated. Check the current lease or property details first.",
+      {
+        exact: true,
+      },
+    ),
   ).toBeVisible();
   await expect(
     modal.getByRole("checkbox", {
-      name: "我确认这些资料对应我的实际租约。",
+      name: "I confirm these details correspond to my actual lease.",
       exact: true,
     }),
   ).toBeDisabled();
   await expect(
-    modal.getByRole("button", { name: "接入所选资料", exact: true }),
+    modal.getByRole("button", { name: "Import selected details", exact: true }),
   ).toBeDisabled();
   expect(imports).toBe(1);
 });
 
-test('composite tenancy labels preserve the actual aftercare and supplementary draft versions',async({page,request})=>{
-  const {c,root,record}=await isolatedCase(request);
-  const label='已确认租后租约资料 v1 + 同地址租约草稿 v2';
-  const source={kind:'aftercare',id:'aftercare-label-test',version:1,label,token:'label-token',current:true,warning:'请核对实际资料。'};
-  await page.route(`**${root}`,route=>route.fulfill({json:{...record,tenancy_source:source}}));
-  await page.route(`**${root}/tenancy-source`,route=>route.fulfill({json:{expected_version:record.version,source,
-    values:{address:'Example Address'},previous:{address:''},linked_source:source,changed:true}}));
+test("composite tenancy labels preserve the actual aftercare and supplementary draft versions", async ({
+  page,
+  request,
+}) => {
+  const { c, root, record } = await isolatedCase(request);
+  const label = "已确认租后租约资料 v1 + 同地址租约草稿 v2";
+  const source = {
+    kind: "aftercare",
+    id: "aftercare-label-test",
+    version: 1,
+    label,
+    token: "label-token",
+    current: true,
+    warning: "请核对实际资料。",
+  };
+  await page.route(`**${root}`, (route) =>
+    route.fulfill({ json: { ...record, tenancy_source: source } }),
+  );
+  await page.route(`**${root}/tenancy-source`, (route) =>
+    route.fulfill({
+      json: {
+        expected_version: record.version,
+        source,
+        values: { address: "Example Address" },
+        previous: { address: "" },
+        linked_source: source,
+        changed: true,
+      },
+    }),
+  );
   await page.goto(`/cases/${c.case_id}/aftercare`);
-  await expect(page.locator('.living-source-bar')).toContainText(label);
-  await page.getByRole('button',{name:'查看租约来源',exact:true}).click();
-  await expect(page.locator('.living-source-label')).toHaveText(label);
+  await expect(page.locator(".living-source-bar")).toContainText(label);
+  await page
+    .getByRole("button", { name: "View lease source", exact: true })
+    .click();
+  await expect(page.locator(".living-source-label")).toHaveText(label);
 });

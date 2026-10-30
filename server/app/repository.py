@@ -18,8 +18,8 @@ class Repository:
             db.execute('CREATE TABLE IF NOT EXISTS objects (kind TEXT, id TEXT, body TEXT NOT NULL, PRIMARY KEY(kind,id))')
 
     @contextmanager
-    def transaction(self):
-        db = sqlite3.connect(self.database, timeout=30)
+    def transaction(self, *, timeout=30):
+        db = sqlite3.connect(self.database, timeout=timeout)
         try:
             db.execute('BEGIN IMMEDIATE')
             yield db

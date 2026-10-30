@@ -76,7 +76,10 @@ export default function FavoritesProvider({
         }
       })
       .catch((e) => {
-        if (valid) setError(e instanceof Error ? e.message : "收藏读取失败。");
+        if (valid)
+          setError(
+            e instanceof Error ? e.message : "Could not load favorites.",
+          );
       })
       .finally(() => {
         if (valid) setLoading(false);
@@ -102,10 +105,16 @@ export default function FavoritesProvider({
       if (!mounted.current) return;
       setItems(value.items);
       setError(null);
-      message.success(saved ? "已加入收藏。" : "已取消收藏。");
+      message.success(
+        saved ? "Added to favorites." : "Removed from favorites.",
+      );
     } catch (e) {
       if (mounted.current)
-        message.error(e instanceof Error ? e.message : "收藏未完成，请重试。");
+        message.error(
+          e instanceof Error
+            ? e.message
+            : "Could not save favorite. Please try again.",
+        );
     } finally {
       active.current = false;
       if (mounted.current) setBusy(false);
@@ -151,7 +160,9 @@ export default function FavoritesProvider({
             if (!mounted.current) return;
             selection.onSaved?.(value);
             setSelection(null);
-            message.success("已选定房源，可准备看房、记录回复或生成租约草稿。");
+            message.success(
+              "Property selected. Prepare an inspection or generate a lease draft.",
+            );
           }}
         />
       )}

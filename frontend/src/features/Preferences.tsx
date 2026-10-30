@@ -28,104 +28,115 @@ const facilities = [
 ];
 function Summary({ profile }: { profile: Profile }) {
   return (
-    <dl className="summary-list" tabIndex={0} aria-label="完整偏好摘要">
+    <dl
+      className="summary-list"
+      tabIndex={0}
+      aria-label="Full preference summary"
+    >
       <div>
-        <dt>周预算</dt>
+        <dt>Weekly budget</dt>
         <dd>
           {profile.budget?.preferred != null
-            ? `期望 ${money(profile.budget.preferred)}，`
+            ? `Preferred ${money(profile.budget.preferred)}, `
             : ""}
-          最高 {money(profile.budget?.maximum)} /{" "}
+          Maximum {money(profile.budget?.maximum)} /{" "}
           {label(profile.budget?.scope ?? "")}
           <small>
             {profile.budget?.includes_bills == null
-              ? "账单要求未填写"
+              ? "Bills requirement not entered"
               : profile.budget.includes_bills
-                ? "包含账单"
-                : "账单另核对"}{" "}
+                ? "Bills included"
+                : "Check bills separately"}{" "}
             ·{" "}
             {profile.budget?.hard_limit == null
               ? ""
               : profile.budget.hard_limit
-                ? "最高预算为硬条件"
-                : "最高预算为软限制"}
+                ? "Maximum budget is a hard requirement"
+                : "Maximum budget is a soft limit"}
           </small>
         </dd>
       </div>
       <div>
-        <dt>居住</dt>
+        <dt>Living arrangements</dt>
         <dd>
-          {profile.occupants == null ? "人数未填写" : `${profile.occupants} 人`}{" "}
+          {profile.occupants == null
+            ? "Occupant count not entered"
+            : `${profile.occupants} occupants`}{" "}
           ·{" "}
-          {profile.rental_mode ? label(profile.rental_mode) : "租赁方式未填写"}
+          {profile.rental_mode
+            ? label(profile.rental_mode)
+            : "Rental type not entered"}
         </dd>
       </div>
       {profile.housing_preferences && (
         <div>
-          <dt>房屋条件</dt>
+          <dt>Housing criteria</dt>
           <dd>
-            {profile.housing_preferences.suburb || "不限区域"}
+            {profile.housing_preferences.suburb || "Any area"}
             <small>
-              至少 {profile.housing_preferences.min_bedrooms ?? "不限"} 卧 ·{" "}
-              {profile.housing_preferences.min_bathrooms ?? "不限"} 浴室 ·{" "}
-              {profile.housing_preferences.min_car_spaces ?? "不限"} 车位
+              At least {profile.housing_preferences.min_bedrooms ?? "Any"} bed ·{" "}
+              {profile.housing_preferences.min_bathrooms ?? "Any"} bathrooms ·{" "}
+              {profile.housing_preferences.min_car_spaces ?? "Any"} car spaces
             </small>
             <small>
               {profile.housing_preferences.budget_match_mode ===
               "matching_scope"
-                ? "仅同计价对象筛预算"
-                : "按金额粗筛周租，计价待核实"}
+                ? "Filter budget only for matching pricing basis"
+                : "Filter advertised weekly rent by amount; pricing basis needs checking"}
             </small>
           </dd>
         </div>
       )}
       {(profile.commute || profile.destination_id) && (
         <div>
-          <dt>通勤</dt>
+          <dt>Commute</dt>
           <dd>
-            期望 {profile.commute?.preferred_minutes} 分钟，最长{" "}
-            {profile.commute?.maximum_minutes} 分钟
+            Preferred {profile.commute?.preferred_minutes} minutes; maximum{" "}
+            {profile.commute?.maximum_minutes} minutes
             <small>
-              {profile.destination_id} · {profile.arrival_time} 到达 ·{" "}
+              {profile.destination_id} · {profile.arrival_time} arrival ·{" "}
               {profile.timezone ?? "Australia/Sydney"}
               <br />
-              {profile.commute?.modes?.map(label).join("、")} ·{" "}
+              {profile.commute?.modes?.map(label).join(", ")} ·{" "}
               {profile.commute?.hard_limit
-                ? "最长通勤为硬条件"
-                : "最长通勤为软限制"}
+                ? "Maximum commute is a hard requirement"
+                : "Maximum commute is a soft limit"}
             </small>
           </dd>
         </div>
       )}
       {(profile.move_in_window || profile.lease_months) && (
         <div>
-          <dt>租期</dt>
+          <dt>Lease term</dt>
           <dd>
-            {profile.move_in_window?.from} 至 {profile.move_in_window?.to} 入住
-            <small>{profile.lease_months} 个月</small>
+            {profile.move_in_window?.from} to {profile.move_in_window?.to}{" "}
+            move-in
+            <small>{profile.lease_months} months</small>
           </dd>
         </div>
       )}
       <div>
-        <dt>必须满足</dt>
+        <dt>Must-haves</dt>
         <dd>
-          {profile.hard_requirements?.map(label).join("、") ||
-            (profile.hard_requirements ? "无额外设施硬要求" : "未填写")}
+          {profile.hard_requirements?.map(label).join(", ") ||
+            (profile.hard_requirements
+              ? "No additional facility requirements"
+              : "Not entered")}
         </dd>
       </div>
       <div>
-        <dt>软设施偏好</dt>
+        <dt>Facility preferences</dt>
         <dd>
           {Object.entries(profile.soft_preferences ?? {})
             .filter(
               ([k, v]) => v > 0 && !profile.hard_requirements?.includes(k),
             )
             .map(([k, v]) => `${label(k)} ${v}`)
-            .join("、") || "未指定"}
+            .join(", ") || "Not specified"}
         </dd>
       </div>
       <div>
-        <dt>四维相对权重</dt>
+        <dt>Relative weights across four dimensions</dt>
         <dd>
           {Object.entries(profile.weights ?? {})
             .map(([k, v]) => `${label(k)} ${v}`)
@@ -150,13 +161,17 @@ function Agent1Warnings({
     <Alert
       type="warning"
       showIcon
-      title={real ? "费用、在租状态与租期仍需核实" : "确认前请核对服务限制"}
+      title={
+        real
+          ? "Costs, availability and lease term still need verification"
+          : "Check service limits before confirming"
+      }
       description={
         additional.length
-          ? additional.join("；")
+          ? additional.join("; ")
           : real
             ? undefined
-            : "演示房源不检查可容纳人数。"
+            : "Demo listings do not check occupant capacity."
       }
     />
   );
@@ -180,7 +195,12 @@ export default function Preferences() {
         Object.values(value.weights ?? {}).every((v) => v === 0)
       ) {
         form.setFields([
-          { name: ["weights", "commute"], errors: ["四维权重至少一项大于零"] },
+          {
+            name: ["weights", "commute"],
+            errors: [
+              "At least one of the four weights must be greater than zero",
+            ],
+          },
         ]);
         return;
       }
@@ -218,7 +238,9 @@ export default function Preferences() {
         });
         await refresh();
         setDirty(false);
-        message.success("草稿已保存，请确认当前偏好后再生成推荐。");
+        message.success(
+          "Draft saved. Confirm current preferences before generating recommendations.",
+        );
       });
     } catch {
       /* Form renders field errors. */
@@ -226,10 +248,12 @@ export default function Preferences() {
   };
   const confirm = () =>
     modal.confirm({
-      title: "确认当前偏好",
+      title: "Confirm current preferences",
       content: (
         <>
-          <p>你将批准当前保存的草稿修订 {current.draft.revision}。</p>
+          <p>
+            You are approving saved draft revision {current.draft.revision}.
+          </p>
           <Agent1Warnings
             warnings={current.agent1?.warnings ?? []}
             real={config.mode === "real_listings"}
@@ -237,8 +261,8 @@ export default function Preferences() {
           <Summary profile={savedProfile} />
         </>
       ),
-      okText: "确认这些条件",
-      cancelText: "返回检查",
+      okText: "Confirm these criteria",
+      cancelText: "Back to review",
       onOk: () =>
         action.run(async () => {
           await post(`/cases/${current.case_id}/profile-confirmations`, {
@@ -247,7 +271,7 @@ export default function Preferences() {
             review_token: current.agent1?.review_token,
           });
           await refresh();
-          message.success("当前偏好已确认。");
+          message.success("Current preferences confirmed.");
         }),
     });
   const evaluate = () => {
@@ -264,15 +288,17 @@ export default function Preferences() {
   return (
     <>
       <PageTitle
-        title="租房偏好"
-        description="先把需要的条件说清楚，再确认用于推荐的版本。"
+        title="Rental preferences"
+        description="Describe your needs, then confirm the version to use for recommendations."
         extra={
           <Space>
             {config.mode === "real_listings" && (
-              <Button onClick={() => go("assistant")}>用对话填写</Button>
+              <Button onClick={() => go("assistant")}>
+                Fill in through chat
+              </Button>
             )}
             <span className="revision-label">
-              草稿修订 {current.draft.revision}
+              Draft revision {current.draft.revision}
             </span>
           </Space>
         }
@@ -281,11 +307,13 @@ export default function Preferences() {
         <Alert
           type="info"
           showIcon
-          title="旧版偏好记录只读"
-          description="历史资料已保留，请新建案例填写需求。"
+          title="Previous preference records are read-only"
+          description="Historical records are retained. Create a new case to enter your needs."
         />
       ) : config.mode !== "real_listings" && !current.confirmations.length ? (
-        <p className="muted small">初始条件仅为示例，请保存并确认你的需求。</p>
+        <p className="muted small">
+          The initial criteria are examples. Save and confirm your own needs.
+        </p>
       ) : null}
       <Failure error={action.error} retry={action.retry} />
       <div className="preference-layout">
@@ -300,39 +328,43 @@ export default function Preferences() {
           key={current.draft.revision}
         >
           <section className="panel">
-            <h2>预算与居住方式</h2>
+            <h2>Budget and living arrangements</h2>
             <div className="form-grid">
               <Form.Item
-                label="期望周预算（AUD）"
+                label="Preferred weekly budget (AUD)"
                 name={["budget", "preferred"]}
                 rules={[
                   {
                     required: config.mode !== "real_listings",
-                    message: "填写期望周预算",
+                    message: "Enter preferred weekly budget",
                   },
                 ]}
               >
                 <InputNumber min={0} />
               </Form.Item>
               <Form.Item
-                label="最高周预算（AUD）"
+                label="Maximum weekly budget (AUD)"
                 name={["budget", "maximum"]}
                 rules={[
-                  { required: true, message: "填写最高周预算" },
+                  { required: true, message: "Enter maximum weekly budget" },
                   {
                     validator: (_, v) =>
                       v == null ||
                       form.getFieldValue(["budget", "preferred"]) == null ||
                       v >= form.getFieldValue(["budget", "preferred"])
                         ? Promise.resolve()
-                        : Promise.reject(new Error("最高预算不能低于期望预算")),
+                        : Promise.reject(
+                            new Error(
+                              "Maximum budget cannot be below the preferred budget",
+                            ),
+                          ),
                   },
                 ]}
               >
                 <InputNumber min={0} />
               </Form.Item>
               <Form.Item
-                label="计价对象"
+                label="Pricing basis"
                 name={["budget", "scope"]}
                 rules={[{ required: config.mode !== "real_listings" }]}
               >
@@ -342,7 +374,7 @@ export default function Preferences() {
                   )}
                 />
               </Form.Item>
-              <Form.Item label="租赁方式" name="rental_mode">
+              <Form.Item label="Rental type" name="rental_mode">
                 <Select
                   options={[
                     "private_room",
@@ -353,7 +385,7 @@ export default function Preferences() {
                 />
               </Form.Item>
               <Form.Item
-                label="居住人数"
+                label="Number of occupants"
                 name="occupants"
                 rules={[{ required: config.mode !== "real_listings" }]}
               >
@@ -361,14 +393,14 @@ export default function Preferences() {
               </Form.Item>
               <div className="switch-group">
                 <Form.Item
-                  label="预算包含账单"
+                  label="Budget includes bills"
                   name={["budget", "includes_bills"]}
                   valuePropName="checked"
                 >
                   <Switch />
                 </Form.Item>
                 <Form.Item
-                  label="最高预算为硬条件"
+                  label="Maximum budget is a hard requirement"
                   name={["budget", "hard_limit"]}
                   valuePropName="checked"
                 >
@@ -379,20 +411,21 @@ export default function Preferences() {
           </section>
           {config.mode === "real_listings" && (
             <section className="panel">
-              <h2>房屋条件</h2>
+              <h2>Housing criteria</h2>
               <p className="muted">
-                保存并确认后，以下条件会自动带入房源推荐。未填写的条件不限制。
+                After saving and confirming, these criteria carry into housing
+                recommendations. Empty fields do not restrict results.
               </p>
               <div className="form-grid">
                 <Form.Item
-                  label="区域"
+                  label="Area"
                   name={["housing_preferences", "suburb"]}
                 >
                   <Select
-                    aria-label="偏好区域"
+                    aria-label="Preferred area"
                     showSearch
                     allowClear
-                    placeholder="不限区域"
+                    placeholder="Any area"
                     options={
                       config.catalog?.suburbs.map((value) => ({
                         value,
@@ -402,40 +435,40 @@ export default function Preferences() {
                   />
                 </Form.Item>
                 <Form.Item
-                  label="至少卧室数"
+                  label="Minimum bedrooms"
                   name={["housing_preferences", "min_bedrooms"]}
                 >
                   <InputNumber
-                    aria-label="偏好至少卧室数"
+                    aria-label="Preferred minimum bedrooms"
                     min={0}
                     max={100}
                     precision={0}
                   />
                 </Form.Item>
                 <Form.Item
-                  label="至少浴室数"
+                  label="Minimum bathrooms"
                   name={["housing_preferences", "min_bathrooms"]}
                 >
                   <InputNumber
-                    aria-label="偏好至少浴室数"
+                    aria-label="Preferred minimum bathrooms"
                     min={0}
                     max={100}
                     precision={0}
                   />
                 </Form.Item>
                 <Form.Item
-                  label="至少车位数"
+                  label="Minimum car spaces"
                   name={["housing_preferences", "min_car_spaces"]}
                 >
                   <InputNumber
-                    aria-label="偏好至少车位数"
+                    aria-label="Preferred minimum car spaces"
                     min={0}
                     max={100}
                     precision={0}
                   />
                 </Form.Item>
                 <Form.Item
-                  label="预算筛选方式"
+                  label="Budget filtering method"
                   name={["housing_preferences", "budget_match_mode"]}
                   initialValue="advertised_amount"
                 >
@@ -443,53 +476,55 @@ export default function Preferences() {
                     options={[
                       {
                         value: "advertised_amount",
-                        label: "按预算金额粗筛周租",
+                        label: "Filter weekly rent by budget amount",
                       },
                       {
                         value: "matching_scope",
-                        label: "仅在计价对象一致时筛预算",
+                        label: "Filter budget only when pricing basis matches",
                       },
                     ]}
                   />
                 </Form.Item>
               </div>
               <p className="muted">
-                按金额粗筛不代表房源已满足每人或含账单预算。0卧 Studio
-                按1个开放式睡眠空间计算，独立卧室仍待核实。
+                Filtering by amount does not establish that a listing meets a
+                per-person or bills-included budget. A 0-bedroom studio counts
+                as one open-plan sleeping area; separate bedrooms still need
+                verification.
               </p>
             </section>
           )}
           <section className="panel">
-            <h2>通勤安排</h2>
+            <h2>Commute arrangements</h2>
             <div className="form-grid">
               <Form.Item
-                label="目的地标识"
+                label="Destination ID"
                 name="destination_id"
                 rules={[{ required: config.mode !== "real_listings" }]}
                 extra={
                   config.mode === "real_listings"
                     ? undefined
-                    : "演示目的地：demo-usyd"
+                    : "Demo destination: demo-usyd"
                 }
               >
                 <Input />
               </Form.Item>
               <Form.Item
-                label="到达时间（悉尼）"
+                label="Arrival time (Sydney)"
                 name="arrival_time"
                 rules={[{ required: config.mode !== "real_listings" }]}
               >
                 <Input type="time" />
               </Form.Item>
               <Form.Item
-                label="期望通勤（分钟）"
+                label="Preferred commute (minutes)"
                 name={["commute", "preferred_minutes"]}
                 rules={[{ required: config.mode !== "real_listings" }]}
               >
                 <InputNumber min={0} />
               </Form.Item>
               <Form.Item
-                label="最长通勤（分钟）"
+                label="Maximum commute (minutes)"
                 name={["commute", "maximum_minutes"]}
                 rules={[
                   { required: config.mode !== "real_listings" },
@@ -500,7 +535,11 @@ export default function Preferences() {
                         null ||
                       v >= form.getFieldValue(["commute", "preferred_minutes"])
                         ? Promise.resolve()
-                        : Promise.reject(new Error("最长通勤不能小于期望通勤")),
+                        : Promise.reject(
+                            new Error(
+                              "Maximum commute cannot be shorter than the preferred commute",
+                            ),
+                          ),
                   },
                 ]}
               >
@@ -508,14 +547,14 @@ export default function Preferences() {
               </Form.Item>
             </div>
             <Form.Item
-              label="交通方式"
+              label="Travel mode"
               name={["commute", "modes"]}
               rules={[
                 {
                   required: config.mode !== "real_listings",
                   type: "array",
                   min: 1,
-                  message: "至少选择一种交通方式",
+                  message: "Select at least one travel mode",
                 },
               ]}
             >
@@ -526,7 +565,7 @@ export default function Preferences() {
               />
             </Form.Item>
             <Form.Item
-              label="最长通勤为硬条件"
+              label="Maximum commute is a hard requirement"
               name={["commute", "hard_limit"]}
               valuePropName="checked"
             >
@@ -534,17 +573,17 @@ export default function Preferences() {
             </Form.Item>
           </section>
           <section className="panel">
-            <h2>入住与租期</h2>
+            <h2>Move-in and lease term</h2>
             <div className="form-grid">
               <Form.Item
-                label="最早入住"
+                label="Earliest move-in"
                 name={["move_in_window", "from"]}
                 rules={[{ required: config.mode !== "real_listings" }]}
               >
                 <Input type="date" />
               </Form.Item>
               <Form.Item
-                label="最晚入住"
+                label="Latest move-in"
                 name={["move_in_window", "to"]}
                 rules={[
                   { required: config.mode !== "real_listings" },
@@ -555,14 +594,18 @@ export default function Preferences() {
                       !form.getFieldValue(["move_in_window", "from"]) ||
                       v >= form.getFieldValue(["move_in_window", "from"])
                         ? Promise.resolve()
-                        : Promise.reject(new Error("最晚入住不能早于最早入住")),
+                        : Promise.reject(
+                            new Error(
+                              "Latest move-in cannot be before earliest move-in",
+                            ),
+                          ),
                   },
                 ]}
               >
                 <Input type="date" />
               </Form.Item>
               <Form.Item
-                label="租期（月）"
+                label="Lease term (months)"
                 name="lease_months"
                 rules={[{ required: config.mode !== "real_listings" }]}
               >
@@ -571,8 +614,8 @@ export default function Preferences() {
             </div>
           </section>
           <section className="panel">
-            <h2>硬要求与偏好</h2>
-            <Form.Item label="必须满足的设施" name="hard_requirements">
+            <h2>Requirements and preferences</h2>
+            <Form.Item label="Required facilities" name="hard_requirements">
               <Checkbox.Group
                 options={facilities.map((value) => ({
                   value,
@@ -581,14 +624,15 @@ export default function Preferences() {
               />
             </Form.Item>
             <p className="muted">
-              软偏好权重为 0 表示未指定；硬要求设施不重复参与软偏好计分。
+              A preference weight of 0 means unspecified. Required facilities
+              are not counted again in preference scoring.
             </p>
             <div className="form-grid">
               {facilities.map((key) => (
                 <Form.Item
                   key={key}
                   name={["soft_preferences", key]}
-                  label={`${label(key)} · 软偏好`}
+                  label={`${label(key)} · Preferences`}
                 >
                   <InputNumber
                     disabled={
@@ -602,15 +646,16 @@ export default function Preferences() {
             </div>
             {config.mode !== "real_listings" && (
               <>
-                <h3>你更看重什么？</h3>
+                <h3>What matters most to you?</h3>
                 <p className="muted">
-                  四维权重至少一项大于零。后端统一归一化后计算。
+                  At least one of the four weights must exceed zero. Weights are
+                  normalised on the server.
                 </p>
                 {dimensions.map((key) => (
                   <Form.Item
                     key={key}
                     name={["weights", key]}
-                    label={`${label(key)}权重`}
+                    label={`${label(key)} Weight`}
                     dependencies={dimensions
                       .filter((other) => other !== key)
                       .map((other) => ["weights", other])}
@@ -620,7 +665,7 @@ export default function Preferences() {
                         type: "number",
                         min: 0,
                         max: 1,
-                        message: "权重须介于 0 和 1 之间",
+                        message: "Weight must be between 0 and 1",
                       },
                       {
                         validator: () =>
@@ -633,7 +678,9 @@ export default function Preferences() {
                           )
                             ? Promise.resolve()
                             : Promise.reject(
-                                new Error("四维权重至少一项大于零"),
+                                new Error(
+                                  "At least one of the four weights must be greater than zero",
+                                ),
                               ),
                       },
                     ]}
@@ -647,7 +694,7 @@ export default function Preferences() {
         </Form>
         <aside className="preference-summary">
           <section className="panel">
-            <h2>你的偏好摘要</h2>
+            <h2>Your preference summary</h2>
             <Agent1Warnings
               warnings={current.agent1?.warnings ?? []}
               real={config.mode === "real_listings"}
@@ -655,10 +702,10 @@ export default function Preferences() {
             <Summary profile={profile} />
             <div className="summary-state">
               {dirty
-                ? "有未保存修改"
+                ? "Unsaved changes"
                 : confirmation
-                  ? `当前草稿已确认 · v${confirmation.version}`
-                  : "当前草稿尚未确认"}
+                  ? `Current draft confirmed · v${confirmation.version}`
+                  : "Current draft is not confirmed"}
             </div>
             <Space orientation="vertical" className="full-width">
               <Button
@@ -666,9 +713,9 @@ export default function Preferences() {
                 onClick={save}
                 disabled={legacy}
                 loading={action.busy}
-                aria-label="保存草稿"
+                aria-label="Save draft"
               >
-                保存草稿
+                Save draft
               </Button>
               <Button
                 block
@@ -680,9 +727,9 @@ export default function Preferences() {
                 }
                 onClick={confirm}
                 loading={action.busy}
-                aria-label="确认当前偏好"
+                aria-label="Confirm current preferences"
               >
-                确认当前偏好
+                Confirm current preferences
               </Button>
               <Button
                 block
@@ -690,13 +737,14 @@ export default function Preferences() {
                 disabled={legacy || dirty || !confirmation}
                 onClick={evaluate}
                 loading={action.busy}
-                aria-label="生成推荐"
+                aria-label="Generate recommendations"
               >
-                生成推荐
+                Generate recommendations
               </Button>
             </Space>
             <p className="muted small">
-              修改后需先保存草稿，再重新确认。旧确认版本及旧报告会保留。
+              After editing, save the draft and confirm again. Previous
+              confirmed versions and reports are retained.
             </p>
           </section>
         </aside>

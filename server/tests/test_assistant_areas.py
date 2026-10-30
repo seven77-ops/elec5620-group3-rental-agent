@@ -38,7 +38,7 @@ class AssistantAreaTests(unittest.TestCase):
         self.assertEqual(c['rental_brief']['lifestyle_priorities'],[])
 
     def test_unsupported_facts_and_uncovered_area_have_visible_gaps(self):
-        r=self.ask(self.conversation(),{'lifestyle_priorities':['quiet','safety']},['Carlton','Rhodes'])
+        r=self.ask(self.conversation(),{'lifestyle_priorities':['quiet','safety']},['Carlton','Rhodes'],text='比较 Carlton 和 Rhodes 的安静和安全，缺少证据请说明。')
         self.assertEqual(r.status_code,200,r.text)
         areas=r.json()['messages'][-1]['area_advice']['areas']
         self.assertFalse(areas[0]['evidence'])
@@ -61,7 +61,7 @@ class AssistantAreaTests(unittest.TestCase):
         with patch('server.app.assistant.areas.AreaKnowledge') as cls:
             cls.return_value.fingerprint='new-version'
             shared=self.client.get(self.base+'/area-advice').json()
-            self.assertTrue(shared['stale']); self.assertTrue(any('区域资料' in s for s in shared['stale_reasons']))
+            self.assertTrue(shared['stale']); self.assertTrue(any('Area information' in s for s in shared['stale_reasons']))
         self.provider.result={'intent':'collect_preferences','brief_patch':{'budget_amount':700}}
         changed=self.send(c,'budget','预算上限改成700')
         self.assertEqual(changed.status_code,200,changed.text)
@@ -110,7 +110,7 @@ class AssistantAreaTests(unittest.TestCase):
         with patch('server.app.areas.evidence.sydney_today',return_value=date(2030,1,1)):
             result=self.client.get(self.base+'/area-advice').json()
             self.assertTrue(result['stale'])
-            self.assertTrue(any('重新核对' in s for s in result['stale_reasons']))
+            self.assertTrue(any('due for review' in s for s in result['stale_reasons']))
 
     def test_new_general_intake_with_lifestyle_change_invalidates_shared_area_report(self):
         self.ask(self.conversation(),{'lifestyle_priorities':['parks']},['Rhodes'])

@@ -42,31 +42,33 @@ test("聊天短句将步行10分钟改为公共交通20分钟，并保留预算�
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(`/cases/${c.case_id}/assistant`);
   const input = page.getByRole("textbox", {
-    name: "给租房助手的消息",
+    name: "Message to Rental Assistant",
     exact: true,
   });
   const controls = page.getByRole("region", {
-    name: "本次找房条件",
+    name: "Current housing criteria",
     exact: true,
   });
   await input.fill("我想步行十分钟到达的房子·");
   await input.press("Enter");
-  await expect(controls).toContainText("步行 ≤10分钟");
-  await expect(controls).toContainText("已筛选 0 套");
+  await expect(controls).toContainText("Walking ≤10 minutes");
+  await expect(controls).toContainText("Filtered 0 properties");
   await input.fill("公共交通20分钟");
   await input.press("Enter");
-  await expect(controls).toContainText("公共交通 ≤20分钟");
+  await expect(controls).toContainText("Public transport ≤20 minutes");
   const reference = await (
     await request.get(
       "/api/v1/listings?max_weekly_rent=900&min_bedrooms=2&min_bathrooms=1&min_car_spaces=0&usyd_mode=public_transport&usyd_max_minutes=20",
     )
   ).json();
   expect(reference.total).toBeGreaterThan(0);
-  await expect(controls).toContainText(`已筛选 ${reference.total} 套`);
+  await expect(controls).toContainText(
+    `Filtered ${reference.total} properties`,
+  );
   const result = page.locator(".commute-results").last();
   await expect(
-    result.getByRole("list", { name: "推荐理由" }).first(),
-  ).toContainText("公共交通");
+    result.getByRole("list", { name: "Recommendation reasons" }).first(),
+  ).toContainText("Public transport");
   const updated = await (await request.get(chat)).json();
   expect(updated.rental_brief).toMatchObject({
     budget_amount: 900,
@@ -81,7 +83,7 @@ test("聊天短句将步行10分钟改为公共交通20分钟，并保留预算�
   await page.screenshot({ path, animations: "disabled" });
   await info.attach("聊天通勤修改已生效", { path, contentType: "image/png" });
   await page.reload();
-  await expect(controls).toContainText("公共交通 ≤20分钟");
+  await expect(controls).toContainText("Public transport ≤20 minutes");
   expect((await (await request.get(root)).json()).draft.fingerprint).toBe(
     c.draft.fingerprint,
   );

@@ -1,5 +1,4 @@
 import { api, post } from "./client";
-import { aiPost } from "./ai";
 import type { Json } from "./types";
 export interface LeaseFields {
   tenant_agent_name?: string;
@@ -151,6 +150,7 @@ export interface LeaseProposal {
   patch: Partial<LeaseFields>;
   questions: LeaseQuestion[];
   call: { model?: string; simulated?: boolean };
+  warnings?: { field: string; label: string; message: string }[];
 }
 export const leaseRoot = (id: string) =>
   `/cases/${encodeURIComponent(id)}/lease-drafts`;
@@ -183,4 +183,13 @@ export const proposeLeaseFields = (
     current_fields: LeaseFields;
     allow_external_ai: true;
   },
-) => aiPost<LeaseProposal>(leaseRoot(id) + "/proposals", body);
+) =>
+  api<LeaseProposal>(
+    leaseRoot(id) + "/proposals",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    },
+    { timeoutMs: 75_000 },
+  );

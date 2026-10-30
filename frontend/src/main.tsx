@@ -1,14 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { App as AntApp, ConfigProvider } from "antd";
-import zhCN from "antd/locale/zh_CN";
+import enGB from "antd/locale/en_GB";
+import dayjs from "dayjs";
+import "dayjs/locale/en-au";
 import { BrowserRouter } from "react-router-dom";
 import App from "./app/App";
 import "./styles/app.css";
+dayjs.locale("en-au");
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ConfigProvider
-      locale={zhCN}
+      locale={enGB}
       theme={{
         token: {
           colorPrimary: "#174EA6",
@@ -19,8 +23,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           colorBorder: "#DCE4EE",
           borderRadius: 8,
           fontSize: 14,
-          fontFamily:
-            '-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif',
+          fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif',
           controlHeight: 40,
         },
         components: {

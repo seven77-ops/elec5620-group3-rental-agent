@@ -21,15 +21,15 @@ def validate_real_profile(profile):
                               ('move_in_window','from','to')):
         values = profile.get(group, {})
         if low in values and high in values and values[low] > values[high]:
-            raise ValueError(f'{group}.{high}: 不能小于 {low}')
+            raise ValueError(f'{group}.{high}: cannot be less than {low}')
     student=profile.get('student_commute')
     if student is not None and not {'mode','maximum_minutes'}<=set(student):
-        raise ValueError('请补全到悉大主校区的通勤方式和分钟上限')
+        raise ValueError('Complete the travel mode and minute limit to the USYD main campus')
     hard = profile.get('hard_requirements', [])
     if set(hard) & set(profile.get('soft_preferences', {})):
-        raise ValueError('同一设施不能同时作为硬要求和软偏好')
+        raise ValueError('The same feature cannot be both required and preferred')
     if profile.get('rental_mode') == 'shared_room' and 'private_bedroom' in hard:
-        raise ValueError('共享房间与独立卧室要求冲突')
+        raise ValueError('Shared-room mode conflicts with a private-bedroom requirement')
 
 
 def real_assess(draft, search_id, version):

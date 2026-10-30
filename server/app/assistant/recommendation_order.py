@@ -35,5 +35,5 @@ def arrange(answer,conversation,brief,refresh=False):
         'max_weekly_rent':max(r['weekly_rent'] for r in group)} for suburb,group in grouped.items()]
     report['matching_count']=len(ordered)
     if refresh and ordered:
-        answer['content']+= ' 已保留全部筛选条件，优先展示之前较少出现的房源。'
+        answer['content']+= '  All filters are retained, prioritising listings shown less often.'
     return answer

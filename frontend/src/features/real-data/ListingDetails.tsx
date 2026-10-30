@@ -17,12 +17,19 @@ export default function ListingDetails({ listing }: { listing: HousingAd }) {
     // of coordinates. Keep historical housing facts and personalised trips.
     api<HousingAd>(`/listings/${encodeURIComponent(listing.listing_id)}`)
       .then((fresh) => {
-        if (!active || fresh.listing_id !== listing.listing_id ||
-            fresh.source_url !== listing.source_url) return;
+        if (
+          !active ||
+          fresh.listing_id !== listing.listing_id ||
+          fresh.source_url !== listing.source_url
+        )
+          return;
         setCurrent({
           ...listing,
           photos: fresh.photos ?? listing.photos,
-          usyd_commute: refreshedCommute(listing.usyd_commute, fresh.usyd_commute),
+          usyd_commute: refreshedCommute(
+            listing.usyd_commute,
+            fresh.usyd_commute,
+          ),
         });
       })
       .catch(() => {});
@@ -51,7 +58,7 @@ function ListingDetailsBody({ listing }: { listing: HousingAd }) {
             data-testid="listing-detail-rent"
           >
             <span>AUD</span> {listing.weekly_rent.toLocaleString("en-AU")}
-            <small>/ 周</small>
+            <small>/ week</small>
           </div>
         </div>
       </header>
@@ -61,52 +68,54 @@ function ListingDetailsBody({ listing }: { listing: HousingAd }) {
         data-testid="listing-detail-summary"
       >
         <div>
-          <dt>卧室</dt>
+          <dt>Bedrooms</dt>
           <dd>
             {listing.bedrooms}
             <small>
               {listing.bedroom_count_basis === "open_plan_as_one"
-                ? "开放式"
-                : "间"}
+                ? "Studio"
+                : " rooms"}
             </small>
           </dd>
         </div>
         <div>
-          <dt>浴室</dt>
+          <dt>Bathrooms</dt>
           <dd>
             {listing.bathrooms}
-            <small>间</small>
+            <small> rooms</small>
           </dd>
         </div>
         <div>
-          <dt>车位</dt>
+          <dt>Car spaces</dt>
           <dd>
             {listing.car_spaces}
-            <small>个</small>
+            <small> spaces</small>
           </dd>
         </div>
       </dl>
       {listing.bedroom_count_basis === "open_plan_as_one" && (
         <p className="listing-detail-studio">
-          Studio · 来源标注为 0 卧，按 1 个开放式睡眠空间展示，并非独立卧室。
+          The source lists 0 bedrooms. Shown as one open-plan sleeping area,
+          rather than a separate bedroom.
         </p>
       )}
       {listing.property_type === "studio" &&
         listing.bedroom_count_basis !== "open_plan_as_one" && (
           <p className="listing-detail-studio">
-            Studio 为开放式户型，独立卧室情况请看房确认。
+            This is an open-plan studio. Confirm separate bedrooms at
+            inspection.
           </p>
         )}
       <UsydCommute listing={listing} />
       <footer className="listing-detail-source">
         <Button
-          aria-label="查看 Domain 房源"
+          aria-label="View Domain listing"
           href={listing.source_url}
           target="_blank"
           rel="noopener noreferrer"
           icon={<ExportOutlined />}
         >
-          查看 Domain 房源
+          View Domain listing
         </Button>
       </footer>
     </article>

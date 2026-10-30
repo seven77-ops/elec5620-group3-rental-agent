@@ -19,10 +19,12 @@ INTENT_PROPERTIES = {
     'provider_category':{'enum':list(CATEGORIES)}, 'profile_patch':PROFILE_SCHEMA,
     'repair_id':{'type':'string','maxLength':160},
     'repair_update':{'type':'object','additionalProperties':False,'properties':{
-        'status':{'enum':['prepared','contacted','resolved']},'email_tone':{'enum':['standard','polite','concise']}}},
+        'status':{'enum':['prepared','contacted','resolved']},'email_tone':{'enum':['standard','polite','concise']},
+        'email_language':{'enum':['en','zh']}}},
     'repair':{'type':'object','additionalProperties':False,'required':['title','description','location','priority'],
         'properties':{'title':{'type':'string','maxLength':200},'description':{'type':'string','maxLength':3000},
-                      'location':{'type':'string','maxLength':500},'priority':{'enum':['normal','urgent']}}}}
+                      'location':{'type':'string','maxLength':500},'priority':{'enum':['normal','urgent']},
+                      'email_language':{'enum':['en','zh']},'email_tone':{'enum':['standard','polite','concise']}}}}
 LIVING_INTENT_SCHEMA = {'type':'object','required':['intent','topic','service_action'],'additionalProperties':False,
                        'properties':{'intent':{'const':'living_services'},**INTENT_PROPERTIES}}
 ALIASES = {'origin':('origin','origin energy'), 'energyaustralia':('energyaustralia','energy australia'),
@@ -75,23 +77,23 @@ def grounded_patch(patch, source, directory):
 
 def answer_living(ctx, intent, case_id, conversation, user_message, expected_version, focus=None):
     service=LivingService(ctx); record=service.read(case_id); directory=service.directory()
-    require(record['version']==expected_version,409,'living_context_changed','租后资料已变化，请读取最新资料后重试。')
+    require(record['version']==expected_version,409,'living_context_changed','Aftercare details changed. Reload the latest details and retry.')
     topic=intent.get('topic','overview'); operation=intent.get('service_action','view')
     nav={'repairs':'repairs','utilities':'utilities','moving':'services','cleaning':'services','overview':'repairs'}[topic]
     answer={'intent':'living_services','agent':'agent4','listings':[],'providers':[],
-            'content':'可以在租后服务里记录报修、水电气网、搬运和清洁安排。',
-            'actions':[{'type':'navigate','label':'查看对应租后服务','page':'aftercare?tab='+nav}]}
+            'content':'You can record repairs, utilities, moving and cleaning arrangements in Aftercare.',
+            'actions':[{'type':'navigate','label':'View aftercare service','page':'aftercare?tab='+nav}]}
     # Only explicitly stated latest-turn profile values are proposed. Existing
     # stored contacts are never reinterpreted as newly supplied information.
     if operation=='update_profile':
         patch=grounded_patch(intent.get('profile_patch',{}),user_message,directory)
         if patch:
             proposal=service.prepare_proposal(case_id,'profile',patch,user_message)
-            answer['actions'].insert(0,{'type':'apply_living_services','label':'确认同步租后资料',
+            answer['actions'].insert(0,{'type':'apply_living_services','label':'Confirm and sync aftercare details',
                 'proposal_id':proposal['proposal_id'],'expected_version':proposal['expected_version'],
                 'summary':proposal['summary']})
-            answer['content']='已整理成下面的租后资料建议。核对并确认后，会同步到租后服务页面；其他已保存信息保持原值。'
-        else: answer['content']='还没有提取到能从你这条消息核对的资料。请明确说出当前使用的公司或联系信息，我再整理给你确认。'
+            answer['content']='Review the proposed aftercare details below. Confirm to sync them to Aftercare; other saved details are retained.'
+        else: answer['content']='No verifiable details were extracted from this message. Specify your current provider or contact details so I can prepare them for confirmation.'
     elif operation=='update_repair':
         from .repair_dialogue import propose_update
         answer.update(propose_update(ctx,intent,case_id,record,focus or {},user_message))
@@ -101,23 +103,27 @@ def answer_living(ctx, intent, case_id, conversation, user_message, expected_ver
         description=repair.get('description','')
         if not description or not any(description in s for s in user_sources): description=user_message
         title=repair.get('title','')
-        if not title or not any(title in s for s in user_sources): title='房屋报修'
+        if not title or not any(title in s for s in user_sources): title='Property repair'
         location=repair.get('location','')
         if not any(location in s for s in user_sources): location=''
         values={'title':title[:200],'description':description,'location':location[:500],
-                'priority':'urgent' if repair.get('priority')=='urgent' else 'normal'}
+                'priority':'urgent' if repair.get('priority')=='urgent' else 'normal',
+                **{key:repair[key] for key in ('email_language','email_tone') if key in repair}}
+        from .repair_drafts import generate_draft, preview
+        values, call = generate_draft(ctx,case_id,values,record,user_message)
         proposal=service.prepare_proposal(case_id,'repair',values,user_message)
-        answer['actions'].insert(0,{'type':'apply_living_services','label':'确认生成报修草稿',
+        answer['actions'].insert(0,{'type':'apply_living_services','label':'Save to Aftercare',
             'proposal_id':proposal['proposal_id'],'expected_version':proposal['expected_version'],'summary':proposal['summary']})
+        answer['repair_email']=preview(values,record['profile']['agent_email'],proposal)
+        answer['_repair_call']=call
         answer['_living_focus']={'proposal_id':proposal['proposal_id']}
-        answer['content']='我会按你描述的情况准备报修记录和邮件草稿。确认后可在日常报修里核对、复制，或用自己的邮件客户端打开。尚未发送邮件。'
-        if not record['profile']['agent_email']: answer['content']+=' 请先在租后资料中补充中介邮箱；没有邮箱时也可以复制文字或拨打已记录的电话。'
-        if values['priority']=='urgent': answer['content']+=' 紧急维修应立即联系中介或租约中的紧急维修联系人，不要只等待邮件回复。'
+        answer['content']='Here is an email draft based on your description. Copy it or ask for changes. Confirm to save the same draft in Aftercare. The email has not been sent.'
+        if values['priority']=='urgent': answer['content']+=' For urgent repairs, contact your agent or the emergency repair contact in your lease immediately; do not rely only on an email response.'
     elif topic=='utilities':
         providers={p['id']:p for p in directory['providers']}
-        labels={'electricity':'电力','gas':'燃气','internet':'网络','water':'供水'}
+        labels={'electricity':'Electricity','gas':'Gas','internet':'Internet','water':'Water'}
         selected=[labels[k]+'：'+providers[v]['name'] for k,v in record['profile']['utilities'].items() if v in providers]
-        answer['content']=('已保存的公司：'+'；'.join(selected)+'。\n' if selected else '目前还没有保存水电气网公司。\n')
+        answer['content']=('Saved providers: '+'；'.join(selected)+'。\n' if selected else 'No utility providers are saved yet.\n')
         from ..living.utility_advice import advise
         result=advise(ctx.utility_plans,user_message,category=intent.get('provider_category'),profile=record['profile'])
         answer['content']+=result['content']
@@ -131,12 +137,12 @@ def answer_living(ctx, intent, case_id, conversation, user_message, expected_ver
     elif topic in ('moving','cleaning'):
         category='removalist' if topic=='moving' else 'cleaner'
         answer['providers']=[p for p in directory['providers'] if category in p['categories']]
-        answer['content']=('可先向下面的搬家公司询价。请准备搬出和搬入区域、楼层/电梯、家具清单及日期；只处理自己的物品，房东家具另行核对。' if topic=='moving' else
-            '可先向下面的清洁公司核对服务范围。询价时说明卧卫数、地毯、阳台及是否为空房，并确认烤箱、窗户、返工条件等。也可以自行清洁，不会自动创建预约。')
-        answer['content']+=' 页面可记录实际报价和预约日期；这里没有实时档期，也未联系商家。'
+        answer['content']=('Ask the moving companies below for quotes. Prepare pickup and delivery suburbs, floor and lift details, an inventory and dates. Confirm arrangements for landlord-owned furniture separately.' if topic=='moving' else
+            'Check the cleaning companies below for service coverage. Mention bedrooms, bathrooms, carpets, balconies and whether the property is empty; confirm ovens, windows and any re-clean conditions. You can also clean it yourself. No booking is created automatically.')
+        answer['content']+=' Record actual quotes and booking dates on the service page. Live availability is unavailable and no provider has been contacted.'
     elif topic=='repairs':
-        labels={'prepared':'草稿待联系','contacted':'已联系（用户记录）','resolved':'已解决（用户记录）'}
-        answer['content']='\n'.join(r['title']+'：'+labels[r['status']] for r in record['repairs'][-5:]) or '目前没有已保存的报修。告诉我哪里出现了什么问题，我可以整理成待确认的维修邮件草稿。'
+        labels={'prepared':'Draft; contact pending','contacted':'Contacted (user recorded)','resolved':'Resolved (user recorded)'}
+        answer['content']='\n'.join(r['title']+'：'+labels[r['status']] for r in record['repairs'][-5:]) or 'No repairs are saved yet. Describe the issue and its location to prepare a repair email draft for review.'
     # Proposals retain their exact base version. The caller also rejects changed
     # living records before committing the assistant turn.
     return answer

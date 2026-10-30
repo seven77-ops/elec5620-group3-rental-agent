@@ -37,51 +37,60 @@ test("official lease draft requires confirmation, saves versions, reloads and do
   const { c, root, row } = await seed(request);
   await page.goto(`/cases/${c.case_id}/contract?mode=draft`);
   await expect(
-    page.getByRole("heading", { name: "合同助手", exact: true }),
-  ).toBeVisible();
-  await expect(page.getByLabel("房屋地址", { exact: true })).toHaveValue(
-    row.address,
-  );
-  await expect(page.getByLabel("拟定租金（AUD）", { exact: true })).toHaveValue(
-    "",
-  );
-  await expect(
-    page.getByRole("heading", { name: "直接填写合同信息", exact: true }),
+    page.getByRole("heading", { name: "Contract assistant", exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: "租赁双方", exact: true }),
+    page.getByLabel("Property address", { exact: true }),
+  ).toHaveValue(row.address);
+  await expect(
+    page.getByLabel("Proposed rent (AUD)", { exact: true }),
+  ).toHaveValue("");
+  await expect(
+    page.getByRole("heading", {
+      name: "Enter contract details directly",
+      exact: true,
+    }),
   ).toBeVisible();
   await expect(
-    page.getByRole("textbox", { name: "合同要点描述", exact: true }),
+    page.getByRole("heading", { name: "Parties", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("textbox", {
+      name: "Contract details description",
+      exact: true,
+    }),
   ).not.toBeVisible();
-  await page.getByLabel("租约适用范围", { exact: true }).click();
+  await page.getByLabel("Lease scope", { exact: true }).click();
   await page
-    .getByRole("option", { name: "新州普通整租住宅", exact: true })
+    .getByRole("option", {
+      name: "Standard NSW whole-property residential tenancy",
+      exact: true,
+    })
     .click();
   for (const [label, value] of [
-    ["出租方姓名", "Example Owner"],
-    ["出租方联系方式", "owner@example.com"],
-    ["出租方送达地址", "1 Example Road, Sydney NSW 2000"],
-    ["租客姓名（每行一名）", "张三"],
-    ["租客联系方式", "tenant@example.com"],
-    ["起租日期", "2026-11-01"],
-    ["结束日期", "2027-11-01"],
-    ["拟定租金（AUD）", "600"],
-    ["拟定押金（AUD）", "2400"],
-    ["约定最多居住人数", "2"],
-    ["首期租金付款日期", "2026-11-01"],
-    ["租金付款日", "每周一"],
+    ["Landlord name", "Example Owner"],
+    ["Landlord contact details", "owner@example.com"],
+    ["Landlord notice address", "1 Example Road, Sydney NSW 2000"],
+    ["Tenant names (one per line)", "张三"],
+    ["Tenant contact details", "tenant@example.com"],
+    ["Lease start date", "2026-11-01"],
+    ["End date", "2027-11-01"],
+    ["Proposed rent (AUD)", "600"],
+    ["Proposed bond (AUD)", "2400"],
+    ["Maximum agreed occupants", "2"],
+    ["First rent payment date", "2026-11-01"],
+    ["Rent due day", "每周一"],
   ])
     await page.getByLabel(label, { exact: true }).fill(value);
-  await page.getByLabel("租期类型", { exact: true }).click();
-  await page.getByRole("option", { name: "固定租期", exact: true }).click();
-  await page.getByLabel("租金周期", { exact: true }).click();
-  await page.getByRole("option", { name: "每周", exact: true }).click();
+  await page.getByLabel("Lease type", { exact: true }).click();
+  await page.getByRole("option", { name: "Fixed term", exact: true }).click();
+  await page.getByLabel("Rent period", { exact: true }).click();
+  await page.getByRole("option", { name: "Weekly", exact: true }).click();
   await page
-    .getByRole("button", { name: "核对并填入合同", exact: true })
+    .getByRole("button", { name: "Check and fill contract", exact: true })
     .click();
   const modal = page.getByRole("dialog", {
-    name: "确认保存租约草稿",
+    name: "Confirm lease draft save",
     exact: true,
   });
   await expect(modal).toContainText("张三");
@@ -89,26 +98,37 @@ test("official lease draft requires confirmation, saves versions, reloads and do
     (await (await request.get(root + "/lease-drafts")).json()).items,
   ).toHaveLength(0);
   await expect(
-    modal.getByRole("button", { name: "确认保存未签署草稿", exact: true }),
+    modal.getByRole("button", {
+      name: "Confirm and save unsigned draft",
+      exact: true,
+    }),
   ).toBeDisabled();
   await modal.getByRole("checkbox").check();
   await modal
-    .getByRole("button", { name: "确认保存未签署草稿", exact: true })
+    .getByRole("button", {
+      name: "Confirm and save unsigned draft",
+      exact: true,
+    })
     .click();
   const preview = page.getByRole("dialog", {
-    name: "合同预览 · v1",
+    name: "Contract preview · v1",
     exact: true,
   });
   await expect(preview).toBeVisible();
   await expect(
-    preview.locator('iframe[title="已填写的合同草稿 v1"]'),
+    preview.locator('iframe[title="Completed contract draft v1"]'),
   ).toHaveAttribute("src", /^blob:/);
   await expect(
-    preview.getByRole("link", { name: "下载此版本 PDF", exact: true }),
+    preview.getByRole("link", {
+      name: "Download this PDF version",
+      exact: true,
+    }),
   ).toHaveAttribute("href", /\/pdf\?version=1$/);
-  await preview.getByRole("button", { name: "返回填写", exact: true }).click();
+  await preview
+    .getByRole("button", { name: "Return to form", exact: true })
+    .click();
   const link = page.getByRole("link", {
-    name: "下载已保存 v1 PDF",
+    name: "Download saved v1 PDF",
     exact: true,
   });
   await expect(link).toBeVisible();
@@ -122,44 +142,52 @@ test("official lease draft requires confirmation, saves versions, reloads and do
   expect(state.selection.contract_ready).toBe(false);
   expect(state.reviews).toHaveLength(0);
   await page.reload();
-  await expect(page.getByLabel("拟定租金（AUD）", { exact: true })).toHaveValue(
-    /^600(?:\.00)?$/,
-  );
-  await page.getByLabel("拟定租金（AUD）", { exact: true }).fill("610");
   await expect(
-    page.getByText("表单有未保存修改，预览和下载仍为已保存的 v1。", {
-      exact: true,
-    }),
+    page.getByLabel("Proposed rent (AUD)", { exact: true }),
+  ).toHaveValue(/^600(?:\.00)?$/);
+  await page.getByLabel("Proposed rent (AUD)", { exact: true }).fill("610");
+  await expect(
+    page.getByText(
+      "The form has unsaved changes. Preview and download still use saved v1.",
+      {
+        exact: true,
+      },
+    ),
   ).toBeVisible();
   await page
-    .getByRole("button", { name: "预览已保存 v1 合同", exact: true })
+    .getByRole("button", { name: "Preview saved v1 contract", exact: true })
     .click();
   await expect(
-    preview.locator('iframe[title="已填写的合同草稿 v1"]'),
+    preview.locator('iframe[title="Completed contract draft v1"]'),
   ).toHaveAttribute("src", /^blob:/);
   expect(
     (await (await request.get(root + "/lease-drafts")).json()).items[0].version,
   ).toBe(1);
-  await preview.getByRole("button", { name: "返回填写", exact: true }).click();
+  await preview
+    .getByRole("button", { name: "Return to form", exact: true })
+    .click();
   await page
-    .getByRole("button", { name: "核对并填入合同", exact: true })
+    .getByRole("button", { name: "Check and fill contract", exact: true })
     .click();
   await modal.getByRole("checkbox").check();
   await modal
-    .getByRole("button", { name: "确认保存未签署草稿", exact: true })
+    .getByRole("button", {
+      name: "Confirm and save unsigned draft",
+      exact: true,
+    })
     .click();
   const v2Preview = page.getByRole("dialog", {
-    name: "合同预览 · v2",
+    name: "Contract preview · v2",
     exact: true,
   });
   await expect(
-    v2Preview.locator('iframe[title="已填写的合同草稿 v2"]'),
+    v2Preview.locator('iframe[title="Completed contract draft v2"]'),
   ).toHaveAttribute("src", /^blob:/);
   await v2Preview
-    .getByRole("button", { name: "返回填写", exact: true })
+    .getByRole("button", { name: "Return to form", exact: true })
     .click();
   await expect(
-    page.getByRole("link", { name: "下载已保存 v2 PDF", exact: true }),
+    page.getByRole("link", { name: "Download saved v2 PDF", exact: true }),
   ).toBeVisible();
   let releaseVersion!: () => void;
   const versionGate = new Promise<void>((resolve) => {
@@ -177,37 +205,47 @@ test("official lease draft requires confirmation, saves versions, reloads and do
       await route.continue();
     },
   );
-  await page.getByRole("combobox", { name: "草稿版本", exact: true }).click();
-  await page.getByRole("option", { name: "草稿 1 · v1", exact: true }).click();
+  await page
+    .getByRole("combobox", { name: "Draft version", exact: true })
+    .click();
+  await page.getByRole("option", { name: "Draft 1 · v1", exact: true }).click();
   await requested;
   try {
     await expect(
-      page.getByRole("button", { name: "新建当前候选草稿", exact: true }),
+      page.getByRole("button", {
+        name: "New draft for current candidate",
+        exact: true,
+      }),
     ).toBeDisabled();
     await expect(
-      page.getByLabel("拟定租金（AUD）", { exact: true }),
+      page.getByLabel("Proposed rent (AUD)", { exact: true }),
     ).toBeDisabled();
   } finally {
     releaseVersion();
   }
   await expect(
-    page.getByText("正在查看历史版本", { exact: true }),
+    page.getByText("Viewing a historical version", { exact: true }),
   ).toBeVisible();
-  await expect(page.getByLabel("拟定租金（AUD）", { exact: true })).toHaveValue(
-    /^600(?:\.00)?$/,
-  );
-  await page
-    .getByRole("button", { name: "新建当前候选草稿", exact: true })
-    .click();
-  await expect(page.getByLabel("房屋地址", { exact: true })).toHaveValue(
-    row.address,
-  );
-  await expect(page.getByLabel("拟定租金（AUD）", { exact: true })).toHaveValue(
-    "",
-  );
-  await page.getByRole("tab", { name: "上传合同复核", exact: true }).click();
   await expect(
-    page.getByText("可以直接复核已有合同", { exact: true }),
+    page.getByLabel("Proposed rent (AUD)", { exact: true }),
+  ).toHaveValue(/^600(?:\.00)?$/);
+  await page
+    .getByRole("button", {
+      name: "New draft for current candidate",
+      exact: true,
+    })
+    .click();
+  await expect(
+    page.getByLabel("Property address", { exact: true }),
+  ).toHaveValue(row.address);
+  await expect(
+    page.getByLabel("Proposed rent (AUD)", { exact: true }),
+  ).toHaveValue("");
+  await page
+    .getByRole("tab", { name: "Upload contract for review", exact: true })
+    .click();
+  await expect(
+    page.getByText("Review an existing contract directly", { exact: true }),
   ).toBeVisible();
 });
 
@@ -218,39 +256,48 @@ test("AI only fills the form after review and never creates a draft automaticall
   const { c, root } = await seed(request);
   await page.goto(`/cases/${c.case_id}/contract?mode=draft`);
   await page
-    .getByRole("button", { name: "AI 辅助填写（可选）", exact: true })
+    .getByRole("button", { name: "AI-assisted entry (optional)", exact: true })
     .click();
   await page
-    .getByRole("textbox", { name: "合同要点描述", exact: true })
+    .getByRole("textbox", { name: "Contract details description", exact: true })
     .fill("整租，每周600，押金2400，租客 Zhang San");
   await expect(
-    page.getByRole("button", { name: "AI 整理合同要点", exact: true }),
+    page.getByRole("button", {
+      name: "Extract contract details with AI",
+      exact: true,
+    }),
   ).toBeDisabled();
   await page
     .getByRole("checkbox", {
-      name: "同意将这段文字发送至配置的外部 AI，用于本次字段提取。",
+      name: "I agree to send this text to the configured external AI for this field extraction.",
       exact: true,
     })
     .check();
   await page
-    .getByRole("button", { name: "AI 整理合同要点", exact: true })
+    .getByRole("button", {
+      name: "Extract contract details with AI",
+      exact: true,
+    })
     .click();
   const modal = page.getByRole("dialog", {
-    name: "核对 AI 整理的字段",
+    name: "Check AI-extracted fields",
     exact: true,
   });
   await expect(modal).toContainText("Zhang San");
-  await expect(page.getByLabel("拟定租金（AUD）", { exact: true })).toHaveValue(
-    "",
-  );
-  await modal
-    .getByRole("button", { name: "将这些字段填入表单", exact: true })
-    .click();
-  await expect(page.getByLabel("拟定租金（AUD）", { exact: true })).toHaveValue(
-    /^600(?:\.00)?$/,
-  );
   await expect(
-    page.getByLabel("租客姓名（每行一名）", { exact: true }),
+    page.getByLabel("Proposed rent (AUD)", { exact: true }),
+  ).toHaveValue("");
+  await modal
+    .getByRole("button", {
+      name: "Fill these fields into the form",
+      exact: true,
+    })
+    .click();
+  await expect(
+    page.getByLabel("Proposed rent (AUD)", { exact: true }),
+  ).toHaveValue(/^600(?:\.00)?$/);
+  await expect(
+    page.getByLabel("Tenant names (one per line)", { exact: true }),
   ).toHaveValue("Zhang San");
   expect(
     (await (await request.get(root + "/lease-drafts")).json()).items,
@@ -296,19 +343,19 @@ test("saved PDF preview can retry a failed load on mobile without saving another
     } else await route.continue();
   });
   await page
-    .getByRole("button", { name: "预览已保存 v1 合同", exact: true })
+    .getByRole("button", { name: "Preview saved v1 contract", exact: true })
     .click();
   const preview = page.getByRole("dialog", {
-    name: "合同预览 · v1",
+    name: "Contract preview · v1",
     exact: true,
   });
   await expect(preview).toContainText("PDF 暂时无法读取");
   allowPdf = true;
   await preview
-    .getByRole("button", { name: "重新加载预览", exact: true })
+    .getByRole("button", { name: "Reload preview", exact: true })
     .click();
   await expect(
-    preview.locator('iframe[title="已填写的合同草稿 v1"]'),
+    preview.locator('iframe[title="Completed contract draft v1"]'),
   ).toHaveAttribute("src", /^blob:/);
   expect(
     await page.evaluate(
@@ -322,9 +369,11 @@ test("saved PDF preview can retry a failed load on mobile without saving another
       ).json()
     ).version,
   ).toBe(1);
-  await preview.getByRole("button", { name: "返回填写", exact: true }).click();
+  await preview
+    .getByRole("button", { name: "Return to form", exact: true })
+    .click();
   await expect(
-    page.getByLabel("租客姓名（每行一名）", { exact: true }),
+    page.getByLabel("Tenant names (one per line)", { exact: true }),
   ).toHaveValue("Preview Tenant");
 });
 
@@ -336,7 +385,7 @@ test("mobile contract assistant fits and missing candidate has a useful next ste
   await page.setViewportSize({ width: 360, height: 800 });
   await page.goto(`/cases/${c.case_id}/contract?mode=draft`);
   await expect(
-    page.getByRole("button", { name: "我的租房需求", exact: true }),
+    page.getByRole("button", { name: "My rental needs", exact: true }),
   ).toBeVisible();
   expect(
     await page.evaluate(
@@ -345,14 +394,119 @@ test("mobile contract assistant fits and missing candidate has a useful next ste
   ).toBe(true);
   const seeded = await seed(request);
   await page.goto(`/cases/${seeded.c.case_id}/contract?mode=draft`);
-  await expect(page.getByLabel("房屋地址", { exact: true })).toBeEnabled();
+  await expect(
+    page.getByLabel("Property address", { exact: true }),
+  ).toBeEnabled();
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
-  await page.getByRole("button", { name: "打开导航", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Open navigation", exact: true })
+    .click();
   await expect(
-    page.getByRole("menuitem", { name: "合同助手", exact: true }),
+    page.getByRole("menuitem", { name: "Contract assistant", exact: true }),
   ).toBeVisible();
+});
+
+test("AI extraction timeout preserves text and manual fields, retries once and never saves automatically", async ({
+  page,
+  request,
+}) => {
+  const { c, root } = await seed(request);
+  await page.goto(`/cases/${c.case_id}/contract?mode=draft`);
+  await page.getByLabel("Landlord name", { exact: true }).fill("Manual Owner");
+  await page
+    .getByRole("button", { name: "AI-assisted entry (optional)", exact: true })
+    .click();
+  const text = "整租，每周600，押金2400，租客 Zhang San";
+  await page
+    .getByRole("textbox", { name: "Contract details description", exact: true })
+    .fill(text);
+  await page
+    .getByRole("checkbox", {
+      name: "I agree to send this text to the configured external AI for this field extraction.",
+      exact: true,
+    })
+    .check();
+  const ids: string[] = [];
+  await page.route("**/lease-drafts/proposals", async (route) => {
+    ids.push(route.request().postDataJSON().request_id);
+    if (ids.length === 1)
+      await route.fulfill({
+        status: 504,
+        json: {
+          error: {
+            code: "lease_ai_timeout",
+            message:
+              "Lease extraction timed out. Your original text and completed fields are retained. Retry or process smaller sections.",
+          },
+        },
+      });
+    else {
+      const response = await route.fetch();
+      const result = await response.json();
+      await route.fulfill({
+        response,
+        json: {
+          ...result,
+          warnings: [
+            {
+              field: "rent_due_day",
+              label: "Rent due day",
+              message:
+                "Source or field-role checks failed. Complete this field manually.",
+            },
+          ],
+        },
+      });
+    }
+  });
+  await page
+    .getByRole("button", {
+      name: "Extract contract details with AI",
+      exact: true,
+    })
+    .click();
+  await expect(page.getByRole("alert")).toContainText(
+    "Contract extraction timed out",
+  );
+  await expect(
+    page.getByRole("textbox", {
+      name: "Contract details description",
+      exact: true,
+    }),
+  ).toHaveValue(text);
+  await expect(page.getByLabel("Landlord name", { exact: true })).toHaveValue(
+    "Manual Owner",
+  );
+  await page
+    .getByRole("button", { name: "Retry original action", exact: true })
+    .click();
+  const modal = page.getByRole("dialog", {
+    name: "Check AI-extracted fields",
+    exact: true,
+  });
+  await expect(modal).toContainText("Zhang San");
+  await expect(modal.getByRole("alert")).toContainText(
+    "These fields were not filled automatically: Rent due day",
+  );
+  expect(ids).toHaveLength(2);
+  expect(ids[0]).toBe(ids[1]);
+  expect(
+    (await (await request.get(root + "/lease-drafts")).json()).items,
+  ).toHaveLength(0);
+  await modal
+    .getByRole("button", {
+      name: "Fill these fields into the form",
+      exact: true,
+    })
+    .click();
+  await expect(page.getByLabel("Landlord name", { exact: true })).toHaveValue(
+    "Manual Owner",
+  );
+  await expect(
+    page.getByLabel("Proposed rent (AUD)", { exact: true }),
+  ).toHaveValue(/^600(?:\.00)?$/);
 });

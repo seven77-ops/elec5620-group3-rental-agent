@@ -257,10 +257,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "仅限符合条件的新开户或搬家客户。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Available only to eligible new customers or customers moving home."
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -639,11 +639,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "仅限符合条件的新开户或搬家客户。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Available only to eligible new customers or customers moving home.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -1006,11 +1006,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "仅限符合条件的新开户或搬家客户。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Available only to eligible new customers or customers moving home.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -1373,10 +1373,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "仅限符合条件的新开户或搬家客户。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Available only to eligible new customers or customers moving home."
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -1679,9 +1679,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -1973,10 +1973,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -2404,10 +2404,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -2945,9 +2945,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -3346,9 +3346,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -3716,10 +3716,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -4071,10 +4071,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -4426,9 +4426,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -4796,9 +4796,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -5276,9 +5276,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -5787,10 +5787,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "仅限符合条件的新开户或搬家客户。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Available only to eligible new customers or customers moving home."
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -6118,11 +6118,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "仅限符合条件的新开户或搬家客户。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Available only to eligible new customers or customers moving home.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -6933,11 +6933,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "仅限符合条件的新开户或搬家客户。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Available only to eligible new customers or customers moving home.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -7728,10 +7728,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "仅限符合条件的新开户或搬家客户。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Available only to eligible new customers or customers moving home."
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -8406,10 +8406,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "仅限符合条件的新开户或搬家客户。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Available only to eligible new customers or customers moving home."
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -9160,9 +9160,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -10119,9 +10119,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -10724,10 +10724,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -11744,10 +11744,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -12410,9 +12410,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -13208,10 +13208,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "仅限符合条件的新开户或搬家客户。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Available only to eligible new customers or customers moving home."
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -13942,10 +13942,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -14669,9 +14669,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -15335,10 +15335,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -16138,10 +16138,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -16997,9 +16997,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -17719,9 +17719,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -18461,10 +18461,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -19249,10 +19249,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -19599,9 +19599,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -19959,10 +19959,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -20380,10 +20380,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -20772,9 +20772,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -21061,10 +21061,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -21382,10 +21382,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -21850,9 +21850,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -22227,10 +22227,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -22619,10 +22619,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -23643,10 +23643,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -24696,9 +24696,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -25688,10 +25688,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -26641,10 +26641,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -26944,11 +26944,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -27379,10 +27379,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -27682,11 +27682,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -28088,11 +28088,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -28570,10 +28570,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -28957,11 +28957,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -29321,11 +29321,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -29727,11 +29727,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -30133,10 +30133,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -31139,11 +31139,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -32177,11 +32177,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -33215,11 +33215,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -34282,11 +34282,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率固定，但仍须核对固定期及例外条款。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are fixed, but the fixed-term duration and any exceptions must still be confirmed.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -34684,11 +34684,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率固定，但仍须核对固定期及例外条款。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are fixed, but the fixed-term duration and any exceptions must still be confirmed.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -35718,11 +35718,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率固定，但仍须核对固定期及例外条款。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are fixed, but the fixed-term duration and any exceptions must still be confirmed.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -36752,10 +36752,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率固定，但仍须核对固定期及例外条款。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are fixed, but the fixed-term duration and any exceptions must still be confirmed.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -37051,11 +37051,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率固定，但仍须核对固定期及例外条款。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are fixed, but the fixed-term duration and any exceptions must still be confirmed.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -37453,11 +37453,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率固定，但仍须核对固定期及例外条款。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are fixed, but the fixed-term duration and any exceptions must still be confirmed.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -38516,11 +38516,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率固定，但仍须核对固定期及例外条款。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are fixed, but the fixed-term duration and any exceptions must still be confirmed.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -38994,10 +38994,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率固定，但仍须核对固定期及例外条款。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are fixed, but the fixed-term duration and any exceptions must still be confirmed.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -39310,11 +39310,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率固定，但仍须核对固定期及例外条款。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are fixed, but the fixed-term duration and any exceptions must still be confirmed.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -39641,10 +39641,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率固定，但仍须核对固定期及例外条款。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are fixed, but the fixed-term duration and any exceptions must still be confirmed.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -40011,10 +40011,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率固定，但仍须核对固定期及例外条款。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are fixed, but the fixed-term duration and any exceptions must still be confirmed.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -40942,11 +40942,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率固定，但仍须核对固定期及例外条款。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are fixed, but the fixed-term duration and any exceptions must still be confirmed.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -41373,11 +41373,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率固定，但仍须核对固定期及例外条款。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are fixed, but the fixed-term duration and any exceptions must still be confirmed.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -41733,10 +41733,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -42494,10 +42494,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -43208,11 +43208,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -43983,11 +43983,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -44729,11 +44729,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -45475,10 +45475,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -46207,9 +46207,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -46907,10 +46907,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -47639,10 +47639,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率固定，但仍须核对固定期及例外条款。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are fixed, but the fixed-term duration and any exceptions must still be confirmed.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -48349,11 +48349,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率固定，但仍须核对固定期及例外条款。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are fixed, but the fixed-term duration and any exceptions must still be confirmed.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -49091,11 +49091,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率固定，但仍须核对固定期及例外条款。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are fixed, but the fixed-term duration and any exceptions must still be confirmed.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -49862,11 +49862,11 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率固定，但仍须核对固定期及例外条款。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。",
-        "优惠期：1 Year"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are fixed, but the fixed-term duration and any exceptions must still be confirmed.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone.",
+        "Promotional period: 1 year"
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -50604,9 +50604,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -50895,10 +50895,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -51289,10 +51289,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -51712,10 +51712,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -52035,10 +52035,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -52429,9 +52429,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -52720,10 +52720,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -53143,10 +53143,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -53652,9 +53652,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -54135,9 +54135,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -54432,10 +54432,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -54826,10 +54826,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -55178,10 +55178,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -55501,10 +55501,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -55853,9 +55853,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -56215,10 +56215,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -56609,10 +56609,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "SINGLE_RATE_CONT_LOAD",
@@ -57003,9 +57003,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "SINGLE_RATE",
@@ -57365,9 +57365,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -58164,10 +58164,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -58995,10 +58995,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -59826,10 +59826,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -60686,9 +60686,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -61485,10 +61485,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -62345,10 +62345,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -63176,10 +63176,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -63936,10 +63936,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -64685,10 +64685,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -65405,9 +65405,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -66093,10 +66093,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -66813,10 +66813,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -67533,9 +67533,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -68221,10 +68221,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -68941,10 +68941,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -69690,9 +69690,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -70173,10 +70173,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -70717,10 +70717,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -71161,10 +71161,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -71605,10 +71605,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -72120,10 +72120,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -72564,10 +72564,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -73108,9 +73108,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -73520,9 +73520,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -73973,10 +73973,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -74487,10 +74487,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -74901,10 +74901,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -75315,10 +75315,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -75800,10 +75800,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -76214,10 +76214,10 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。",
-        "含受控负荷费率，热水等专用电路另计；不能只按普通用电单价估总额。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms.",
+        "Includes controlled load rates; dedicated circuits (e.g., for hot water) are charged separately; total cost cannot be estimated using standard electricity unit rates alone."
       ],
       "pricing": {
         "model": "TIME_OF_USE_CONT_LOAD",
@@ -76728,9 +76728,9 @@
         ]
       },
       "conditions": [
-        "NSW住宅；邮区匹配不等于楼栋或电表已核实，需确认配网、电表及网络费率。",
-        "展示用量与每日固定费已加10% GST；基准费率尚未扣除折扣、返现及补贴。",
-        "费率可变，供应商可按条款通知调整。"
+        "Residential properties across NSW; matching postcode does not confirm building or meter verification — network connection, meter details and energy tariff must be confirmed.",
+        "Display usage and daily fixed fees include 10% GST; base rates do not reflect discounts, cashback, or subsidies.",
+        "Rates are subject to change; the provider may adjust them with notice as per the terms."
       ],
       "pricing": {
         "model": "TIME_OF_USE",
@@ -76944,9 +76944,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "优惠仅限新服务，价格可变。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Offer applies to new services only; prices are subject to change."
       ],
       "pricing": {
         "monthly_aud": 89,
@@ -76965,7 +76965,7 @@
           "FTTN",
           "FTTB"
         ],
-        "hardware_notes": "Internet Only不含路由器，Telstra Smart Modem官网另售AUD360；可自备兼容设备。",
+        "hardware_notes": "Internet Only plan does not include a router; the Telstra Smart Modem is sold separately on the Telstra website for AUD360; you may supply your own compatible device.",
         "promo_code": null
       }
     },
@@ -76980,9 +76980,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "优惠仅限新服务，价格可变。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Offer applies to new services only; prices are subject to change."
       ],
       "pricing": {
         "monthly_aud": 99,
@@ -77001,7 +77001,7 @@
           "FTTN",
           "FTTB"
         ],
-        "hardware_notes": "Internet Only不含路由器，Telstra Smart Modem官网另售AUD360；可自备兼容设备。",
+        "hardware_notes": "Internet Only plan does not include a router; the Telstra Smart Modem is sold separately on the Telstra website for AUD360; you may supply your own compatible device.",
         "promo_code": null
       }
     },
@@ -77016,9 +77016,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "优惠仅限新服务，价格可变。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Offer applies to new services only; prices are subject to change."
       ],
       "pricing": {
         "monthly_aud": 99,
@@ -77034,7 +77034,7 @@
           "FTTP",
           "HFC"
         ],
-        "hardware_notes": "Internet Only不含路由器，Telstra Smart Modem官网另售AUD360；可自备兼容设备。",
+        "hardware_notes": "Internet Only plan does not include a router; the Telstra Smart Modem is sold separately on the Telstra website for AUD360; you may supply your own compatible device.",
         "promo_code": null
       }
     },
@@ -77049,9 +77049,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "优惠仅限新服务，价格可变。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Offer applies to new services only; prices are subject to change."
       ],
       "pricing": {
         "monthly_aud": 119,
@@ -77067,7 +77067,7 @@
           "FTTP",
           "HFC"
         ],
-        "hardware_notes": "Internet Only不含路由器，Telstra Smart Modem官网另售AUD360；可自备兼容设备。",
+        "hardware_notes": "Internet Only plan does not include a router; the Telstra Smart Modem is sold separately on the Telstra website for AUD360; you may supply your own compatible device.",
         "promo_code": null
       }
     },
@@ -77082,9 +77082,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "优惠仅限新服务，价格可变。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Offer applies to new services only; prices are subject to change."
       ],
       "pricing": {
         "monthly_aud": 129,
@@ -77100,7 +77100,7 @@
           "FTTP",
           "HFC"
         ],
-        "hardware_notes": "Internet Only不含路由器，Telstra Smart Modem官网另售AUD360；可自备兼容设备。",
+        "hardware_notes": "Internet Only plan does not include a router; the Telstra Smart Modem is sold separately on the Telstra website for AUD360; you may supply your own compatible device.",
         "promo_code": null
       }
     },
@@ -77115,9 +77115,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "需符合新服务资格并用信用卡或借记卡自动付款。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Eligibility for the offer requires a new service and automatic payment via credit or debit card."
       ],
       "pricing": {
         "monthly_aud": 83,
@@ -77136,7 +77136,7 @@
           "FTTN",
           "FTTB"
         ],
-        "hardware_notes": "WiFi6路由器留网24个月免设备费；提前离网须结清设备余款，详见条款。",
+        "hardware_notes": "WiFi6 router remains on the network for 24 months with no device fee; early disconnection requires full payment of the remaining device balance—see terms for details.",
         "promo_code": null
       }
     },
@@ -77151,9 +77151,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "需符合新服务资格并用信用卡或借记卡自动付款。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Eligibility for the offer requires a new service and automatic payment via credit or debit card."
       ],
       "pricing": {
         "monthly_aud": 97,
@@ -77172,7 +77172,7 @@
           "FTTN",
           "FTTB"
         ],
-        "hardware_notes": "WiFi6路由器留网24个月免设备费；提前离网须结清设备余款，详见条款。",
+        "hardware_notes": "WiFi6 router remains on the network for 24 months with no device fee; early disconnection requires full payment of the remaining device balance—see terms for details.",
         "promo_code": null
       }
     },
@@ -77187,9 +77187,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "需符合新服务资格并用信用卡或借记卡自动付款。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Eligibility for the offer requires a new service and automatic payment via credit or debit card."
       ],
       "pricing": {
         "monthly_aud": 99,
@@ -77205,7 +77205,7 @@
           "FTTP",
           "HFC"
         ],
-        "hardware_notes": "WiFi6路由器留网24个月免设备费；提前离网须结清设备余款，详见条款。",
+        "hardware_notes": "WiFi6 router remains on the network for 24 months with no device fee; early disconnection requires full payment of the remaining device balance—see terms for details.",
         "promo_code": null
       }
     },
@@ -77220,9 +77220,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "需符合新服务资格并用信用卡或借记卡自动付款。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Eligibility for the offer requires a new service and automatic payment via credit or debit card."
       ],
       "pricing": {
         "monthly_aud": 109,
@@ -77238,7 +77238,7 @@
           "FTTP",
           "HFC"
         ],
-        "hardware_notes": "WiFi6路由器留网24个月免设备费；提前离网须结清设备余款，详见条款。",
+        "hardware_notes": "WiFi6 router remains on the network for 24 months with no device fee; early disconnection requires full payment of the remaining device balance—see terms for details.",
         "promo_code": null
       }
     },
@@ -77253,9 +77253,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "需符合新服务资格并用信用卡或借记卡自动付款。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Eligibility for the offer requires a new service and automatic payment via credit or debit card."
       ],
       "pricing": {
         "monthly_aud": 129,
@@ -77271,7 +77271,7 @@
           "FTTP",
           "HFC"
         ],
-        "hardware_notes": "WiFi6路由器留网24个月免设备费；提前离网须结清设备余款，详见条款。",
+        "hardware_notes": "WiFi6 router remains on the network for 24 months with no device fee; early disconnection requires full payment of the remaining device balance—see terms for details.",
         "promo_code": null
       }
     },
@@ -77286,9 +77286,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "优惠资格须官网确认。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Eligibility for the offer must be confirmed on the official website."
       ],
       "pricing": {
         "monthly_aud": 79.99,
@@ -77307,7 +77307,7 @@
           "FTTN",
           "FTTB"
         ],
-        "hardware_notes": "可自备设备；赠送路由器须遵守24个月设备条件，提前离网归还或付费，运费另计。",
+        "hardware_notes": "You may supply your own equipment; any complimentary router is subject to a 24-month device condition—early disconnection requires return or payment, plus shipping fees.",
         "promo_code": null
       }
     },
@@ -77322,9 +77322,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "优惠资格须官网确认。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Eligibility for the offer must be confirmed on the official website."
       ],
       "pricing": {
         "monthly_aud": 89.99,
@@ -77343,7 +77343,7 @@
           "FTTN",
           "FTTB"
         ],
-        "hardware_notes": "可自备设备；赠送路由器须遵守24个月设备条件，提前离网归还或付费，运费另计。",
+        "hardware_notes": "You may supply your own equipment; any complimentary router is subject to a 24-month device condition—early disconnection requires return or payment, plus shipping fees.",
         "promo_code": null
       }
     },
@@ -77358,9 +77358,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "优惠资格须官网确认。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Eligibility for the offer must be confirmed on the official website."
       ],
       "pricing": {
         "monthly_aud": 94.99,
@@ -77379,7 +77379,7 @@
           "FTTN",
           "FTTB"
         ],
-        "hardware_notes": "可自备设备；赠送路由器须遵守24个月设备条件，提前离网归还或付费，运费另计。",
+        "hardware_notes": "You may supply your own equipment; any complimentary router is subject to a 24-month device condition—early disconnection requires return or payment, plus shipping fees.",
         "promo_code": null
       }
     },
@@ -77394,9 +77394,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "优惠限符合条件的新连接；500档12个月锁定优惠价，之后恢复原价。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Offer applies only to eligible new connections; the 500 plan locks in the promotional price for 12 months, after which the standard rate applies."
       ],
       "pricing": {
         "monthly_aud": 94.99,
@@ -77412,7 +77412,7 @@
           "FTTP",
           "HFC"
         ],
-        "hardware_notes": "可自备设备；赠送路由器须遵守24个月设备条件，提前离网归还或付费，运费另计。",
+        "hardware_notes": "You may supply your own equipment; any complimentary router is subject to a 24-month device condition—early disconnection requires return or payment, plus shipping fees.",
         "promo_code": null
       }
     },
@@ -77427,9 +77427,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "优惠资格须官网确认。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Eligibility for the offer must be confirmed on the official website."
       ],
       "pricing": {
         "monthly_aud": 104.99,
@@ -77445,7 +77445,7 @@
           "FTTP",
           "HFC"
         ],
-        "hardware_notes": "可自备设备；赠送路由器须遵守24个月设备条件，提前离网归还或付费，运费另计。",
+        "hardware_notes": "You may supply your own equipment; any complimentary router is subject to a 24-month device condition—early disconnection requires return or payment, plus shipping fees.",
         "promo_code": null
       }
     },
@@ -77460,9 +77460,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "优惠资格须官网确认。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Eligibility for the offer must be confirmed on the official website."
       ],
       "pricing": {
         "monthly_aud": 114.99,
@@ -77478,7 +77478,7 @@
           "FTTP",
           "HFC"
         ],
-        "hardware_notes": "可自备设备；赠送路由器须遵守24个月设备条件，提前离网归还或付费，运费另计。",
+        "hardware_notes": "You may supply your own equipment; any complimentary router is subject to a 24-month device condition—early disconnection requires return or payment, plus shipping fees.",
         "promo_code": null
       }
     },
@@ -77493,10 +77493,10 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "新住宅nbn客户；离网须提前30天通知，可能有按比例费用。",
-        "可选AUD25锁定标价两年；不是默认包含。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "New residential nbn customer; 30 days’ notice required to disconnect, with possible pro-rata charges.",
+        "Optional AUD 25 fee to lock in the advertised price for two years; not included by default."
       ],
       "pricing": {
         "monthly_aud": 78,
@@ -77515,7 +77515,7 @@
           "FTTN",
           "FTTB"
         ],
-        "hardware_notes": "部分套餐留网24个月可免路由器费用；是否适用及提前离网设备余款须核对。",
+        "hardware_notes": "Router fees may be waived for select plans if you stay connected for 24 months; eligibility and any remaining device balance for early disconnection must be confirmed.",
         "promo_code": null
       }
     },
@@ -77530,10 +77530,10 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "新住宅nbn客户；离网须提前30天通知，可能有按比例费用。",
-        "可选AUD25锁定标价两年；不是默认包含。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "New residential nbn customer; 30 days’ notice required to disconnect, with possible pro-rata charges.",
+        "Optional AUD 25 fee to lock in the advertised price for two years; not included by default."
       ],
       "pricing": {
         "monthly_aud": 89,
@@ -77552,7 +77552,7 @@
           "FTTN",
           "FTTB"
         ],
-        "hardware_notes": "部分套餐留网24个月可免路由器费用；是否适用及提前离网设备余款须核对。",
+        "hardware_notes": "Router fees may be waived for select plans if you stay connected for 24 months; eligibility and any remaining device balance for early disconnection must be confirmed.",
         "promo_code": null
       }
     },
@@ -77567,10 +77567,10 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "新住宅nbn客户；离网须提前30天通知，可能有按比例费用。",
-        "可选AUD25锁定标价两年；不是默认包含。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "New residential nbn customer; 30 days’ notice required to disconnect, with possible pro-rata charges.",
+        "Optional AUD 25 fee to lock in the advertised price for two years; not included by default."
       ],
       "pricing": {
         "monthly_aud": 102,
@@ -77586,7 +77586,7 @@
           "FTTP",
           "HFC"
         ],
-        "hardware_notes": "部分套餐留网24个月可免路由器费用；是否适用及提前离网设备余款须核对。",
+        "hardware_notes": "Router fees may be waived for select plans if you stay connected for 24 months; eligibility and any remaining device balance for early disconnection must be confirmed.",
         "promo_code": null
       }
     },
@@ -77601,10 +77601,10 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "新住宅nbn客户；离网须提前30天通知，可能有按比例费用。",
-        "可选AUD25锁定标价两年；不是默认包含。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "New residential nbn customer; 30 days’ notice required to disconnect, with possible pro-rata charges.",
+        "Optional AUD 25 fee to lock in the advertised price for two years; not included by default."
       ],
       "pricing": {
         "monthly_aud": 95,
@@ -77620,7 +77620,7 @@
           "FTTP",
           "HFC"
         ],
-        "hardware_notes": "部分套餐留网24个月可免路由器费用；是否适用及提前离网设备余款须核对。",
+        "hardware_notes": "Router fees may be waived for select plans if you stay connected for 24 months; eligibility and any remaining device balance for early disconnection must be confirmed.",
         "promo_code": null
       }
     },
@@ -77635,10 +77635,10 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "新住宅nbn客户；离网须提前30天通知，可能有按比例费用。",
-        "可选AUD25锁定标价两年；不是默认包含。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "New residential nbn customer; 30 days’ notice required to disconnect, with possible pro-rata charges.",
+        "Optional AUD 25 fee to lock in the advertised price for two years; not included by default."
       ],
       "pricing": {
         "monthly_aud": 104,
@@ -77654,7 +77654,7 @@
           "FTTP",
           "HFC"
         ],
-        "hardware_notes": "部分套餐留网24个月可免路由器费用；是否适用及提前离网设备余款须核对。",
+        "hardware_notes": "Router fees may be waived for select plans if you stay connected for 24 months; eligibility and any remaining device balance for early disconnection must be confirmed.",
         "promo_code": null
       }
     },
@@ -77669,10 +77669,10 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "新住宅nbn客户；离网须提前30天通知，可能有按比例费用。",
-        "可选AUD25锁定标价两年；不是默认包含。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "New residential nbn customer; 30 days’ notice required to disconnect, with possible pro-rata charges.",
+        "Optional AUD 25 fee to lock in the advertised price for two years; not included by default."
       ],
       "pricing": {
         "monthly_aud": 114,
@@ -77688,7 +77688,7 @@
           "FTTP",
           "HFC"
         ],
-        "hardware_notes": "部分套餐留网24个月可免路由器费用；是否适用及提前离网设备余款须核对。",
+        "hardware_notes": "Router fees may be waived for select plans if you stay connected for 24 months; eligibility and any remaining device balance for early disconnection must be confirmed.",
         "promo_code": null
       }
     },
@@ -77703,10 +77703,10 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "新住宅nbn客户；离网须提前30天通知，可能有按比例费用。",
-        "可选AUD25锁定标价两年；不是默认包含。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "New residential nbn customer; 30 days’ notice required to disconnect, with possible pro-rata charges.",
+        "Optional AUD 25 fee to lock in the advertised price for two years; not included by default."
       ],
       "pricing": {
         "monthly_aud": 168,
@@ -77722,7 +77722,7 @@
           "FTTP",
           "HFC"
         ],
-        "hardware_notes": "部分套餐留网24个月可免路由器费用；是否适用及提前离网设备余款须核对。",
+        "hardware_notes": "Router fees may be waived for select plans if you stay connected for 24 months; eligibility and any remaining device balance for early disconnection must be confirmed.",
         "promo_code": null
       }
     },
@@ -77737,9 +77737,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "仅限有5G家庭宽带覆盖的地址；无线速度随信号及拥塞变化，先确认住址和设备摆放。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Available only at addresses covered by 5G home broadband; wireless speeds vary with signal strength and network congestion—confirm coverage for your address and optimal router placement first."
       ],
       "pricing": {
         "monthly_aud": 59.99,
@@ -77754,7 +77754,7 @@
         "technology": [
           "5G"
         ],
-        "hardware_notes": "供应商设备的归还或付费条件以官网条款为准；不能因月租较低就认定设备免费。",
+        "hardware_notes": "Terms for returning or paying for supplier-provided equipment are set by the provider’s official website; lower monthly fees do not mean the equipment is free.",
         "promo_code": null
       }
     },
@@ -77769,9 +77769,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "仅限有5G家庭宽带覆盖的地址；无线速度随信号及拥塞变化，先确认住址和设备摆放。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Available only at addresses covered by 5G home broadband; wireless speeds vary with signal strength and network congestion—confirm coverage for your address and optimal router placement first."
       ],
       "pricing": {
         "monthly_aud": 69.99,
@@ -77786,7 +77786,7 @@
         "technology": [
           "5G"
         ],
-        "hardware_notes": "供应商设备的归还或付费条件以官网条款为准；不能因月租较低就认定设备免费。",
+        "hardware_notes": "Terms for returning or paying for supplier-provided equipment are set by the provider’s official website; lower monthly fees do not mean the equipment is free.",
         "promo_code": null
       }
     },
@@ -77801,9 +77801,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "优惠限新客户及符合条件的升级客户；无固定合约。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Offer available to new customers and eligible upgrade customers only; no fixed-term contract applies."
       ],
       "pricing": {
         "monthly_aud": 83,
@@ -77822,7 +77822,7 @@
           "FTTN",
           "FTTB"
         ],
-        "hardware_notes": "自备兼容设备，或购买路由器；设备运费至少AUD15，特殊安装另计。",
+        "hardware_notes": "Use your own compatible device, or purchase a router; standard delivery costs at least AUD 15, with special installation charged separately.",
         "promo_code": "SPRING25"
       }
     },
@@ -77837,9 +77837,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "优惠限新客户及符合条件的升级客户；无固定合约。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Offer available to new customers and eligible upgrade customers only; no fixed-term contract applies."
       ],
       "pricing": {
         "monthly_aud": 95,
@@ -77858,7 +77858,7 @@
           "FTTN",
           "FTTB"
         ],
-        "hardware_notes": "自备兼容设备，或购买路由器；设备运费至少AUD15，特殊安装另计。",
+        "hardware_notes": "Use your own compatible device, or purchase a router; standard delivery costs at least AUD 15, with special installation charged separately.",
         "promo_code": "SPRING25"
       }
     },
@@ -77873,9 +77873,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "优惠限新客户及符合条件的升级客户；无固定合约。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Offer available to new customers and eligible upgrade customers only; no fixed-term contract applies."
       ],
       "pricing": {
         "monthly_aud": 99,
@@ -77892,7 +77892,7 @@
           "FTTB",
           "FTTC"
         ],
-        "hardware_notes": "自备兼容设备，或购买路由器；设备运费至少AUD15，特殊安装另计。",
+        "hardware_notes": "Use your own compatible device, or purchase a router; standard delivery costs at least AUD 15, with special installation charged separately.",
         "promo_code": "SPRING20"
       }
     },
@@ -77907,9 +77907,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "优惠限新客户及符合条件的升级客户；无固定合约。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Offer available to new customers and eligible upgrade customers only; no fixed-term contract applies."
       ],
       "pricing": {
         "monthly_aud": 99,
@@ -77925,7 +77925,7 @@
           "FTTP",
           "HFC"
         ],
-        "hardware_notes": "自备兼容设备，或购买路由器；设备运费至少AUD15，特殊安装另计。",
+        "hardware_notes": "Use your own compatible device, or purchase a router; standard delivery costs at least AUD 15, with special installation charged separately.",
         "promo_code": "SPRING20"
       }
     },
@@ -77940,9 +77940,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "优惠限新客户及符合条件的升级客户；无固定合约。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Offer available to new customers and eligible upgrade customers only; no fixed-term contract applies."
       ],
       "pricing": {
         "monthly_aud": 129,
@@ -77958,7 +77958,7 @@
           "FTTP",
           "HFC"
         ],
-        "hardware_notes": "自备兼容设备，或购买路由器；设备运费至少AUD15，特殊安装另计。",
+        "hardware_notes": "Use your own compatible device, or purchase a router; standard delivery costs at least AUD 15, with special installation charged separately.",
         "promo_code": null
       }
     },
@@ -77973,9 +77973,9 @@
       "valid_from": null,
       "valid_to": null,
       "conditions": [
-        "按具体地址确认接入技术与速度；典型晚高峰速度不是最低保证。",
-        "按月服务；开户、安装、设备及离网费用须另核。",
-        "优惠限新客户及符合条件的升级客户；无固定合约。"
+        "Connection technology and speed depend on the specific address; typical evening peak speeds are not guaranteed minimums.",
+        "Monthly service; confirm any connection, installation, equipment and disconnection fees separately.",
+        "Offer available to new customers and eligible upgrade customers only; no fixed-term contract applies."
       ],
       "pricing": {
         "monthly_aud": 189,
@@ -77990,7 +77990,7 @@
         "technology": [
           "FTTP"
         ],
-        "hardware_notes": "自备兼容设备，或购买路由器；设备运费至少AUD15，特殊安装另计。",
+        "hardware_notes": "Use your own compatible device, or purchase a router; standard delivery costs at least AUD 15, with special installation charged separately.",
         "promo_code": null
       }
     },
@@ -77998,16 +77998,16 @@
       "id": "sydney-water-2026-27",
       "provider_id": "sydney-water",
       "category": "water",
-      "name": "Sydney Water住宅用水 2026–27",
+      "name": "Sydney Water residential water charges 2026–27",
       "source_url": "https://www.sydneywater.com.au/accounts-billing/paying-your-bill/our-prices/residential-pricing.html",
       "observed_at": "2026-10-28T13:44:14.573760+11:00",
       "valid_from": "2026-07-01",
       "valid_to": "2027-06-30",
       "currency": "AUD",
       "conditions": [
-        "供水机构依地址决定，不能自由更换。",
-        "租客通常没有Sydney Water账户；固定供水、污水等产权费用由房东承担。",
-        "普通私人租赁的用水费转付需独立水表、满足节水要求、账单证据与法定通知等条件；公屋等特殊规则另核。"
+        "Your water provider is determined by your address and cannot be changed freely.",
+        "Tenants typically do not hold a Sydney Water account; fixed water and sewerage charges related to property ownership are the landlord’s responsibility.",
+        "Passing on water usage charges to tenants under standard private rental arrangements requires an individual water meter, compliance with water efficiency requirements, supporting billing evidence, and formal statutory notice; different rules apply for public housing and other special tenancies."
       ],
       "pricing": {
         "model": "regulated_usage_and_fixed",
@@ -78019,7 +78019,7 @@
         "stormwater_house_aud_per_quarter": 30.26,
         "stormwater_unit_aud_per_quarter": 9.67,
         "fixed_charge_period": "92-day maximum quarter; fixed charges calculated daily",
-        "drought_condition": "库容低于60%触发旱情价，回升至70%以上解除；此处未判断当前旱情状态。",
+        "drought_condition": "Drought pricing applies when dam levels fall below 60% and ends when they rise above 70%; current drought status is not assessed here.",
         "tenancy_source_url": "https://www.nsw.gov.au/housing-and-construction/rules/connection-and-supply-of-water-to-rental-properties",
         "renting_source_url": "https://www.sydneywater.com.au/your-home/moving-renovating-building/renting.html"
       }

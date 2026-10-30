@@ -31,7 +31,7 @@ class RepairEmailAITests(unittest.TestCase):
         self.ai = RepairEmailAI(self.ctx)
         self.body = {'request_id':'polish-1','allow_external_ai':True,
             'draft':'厨房水龙头漏水，请安排维修。','recipient_name':'Alex',
-            'language':'en','tone':'polite','title':'','location':'厨房','priority':'normal'}
+            'language':'en','tone':'polite','title':'','location':'Kitchen','priority':'normal'}
 
     def test_polish_is_read_only_and_retry_replays(self):
         before = self.service.read(self.cid)

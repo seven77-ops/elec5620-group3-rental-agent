@@ -24,7 +24,7 @@ class McpClient:
 
     def call_tool(self,name,arguments):
         if name not in TOOLS or not isinstance(arguments,dict):
-            raise ApiError(422,'mcp_tool_not_allowed','不支持这项交通查询。')
+            raise ApiError(422,'mcp_tool_not_allowed','This transit query is unsupported.')
         async def work():
             async with asyncio.timeout(self.timeout):
                 headers={'X-API-Key':self._key,'Accept':'application/json, text/event-stream','Content-Type':'application/json'}
@@ -42,9 +42,9 @@ class McpClient:
                     return payload
         try:return run_transport(work(),self.timeout+.5)
         except (TimeoutError,httpx.TimeoutException):
-            raise ApiError(504,'mcp_timeout','交通工具暂时响应较慢。') from None
+            raise ApiError(504,'mcp_timeout','The transit service response timed out.') from None
         except (httpx.HTTPError,ValueError,KeyError,TypeError,UnicodeError):
-            raise ApiError(502,'mcp_unavailable','交通工具暂时无法完成查询。') from None
+            raise ApiError(502,'mcp_unavailable','The transit service cannot currently complete this query.') from None
 
     async def _rpc(self,http,method,params,notification=False):
         identifier=uuid.uuid4().hex

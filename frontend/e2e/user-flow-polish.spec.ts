@@ -6,14 +6,14 @@ test("recommendations header contains only the requested title and actions", asy
   const c = await (await request.post("/api/v1/cases", { data: {} })).json();
   await page.goto(`/cases/${c.case_id}/recommendations`);
   await expect(page.locator(".page-heading")).toHaveText(
-    "真实房源推荐用对话找房我的租房需求",
+    "Housing recommendationsMy favorites (0)Find a home through chatMy rental needs",
   );
   await expect(page.locator(".case-caption")).toHaveCount(0);
   await expect(
     page.locator(".real-catalog-notes,.real-catalog-status,.demo-label"),
   ).toHaveCount(0);
   await expect(
-    page.getByRole("button", { name: "应用筛选", exact: true }),
+    page.getByRole("button", { name: "Apply filters", exact: true }),
   ).toBeVisible();
 });
 test("a chat turn sends directly and a whole-property reply advances the question", async ({
@@ -23,23 +23,27 @@ test("a chat turn sends directly and a whole-property reply advances the questio
   const c = await (await request.post("/api/v1/cases", { data: {} })).json();
   await page.goto(`/cases/${c.case_id}/assistant`);
   await expect(
-    page.getByRole("checkbox", { name: /同意本次使用外部/ }),
+    page.getByRole("checkbox", { name: /Allow this request to use external/i }),
   ).toHaveCount(0);
-  const input = page.getByPlaceholder("描述你的租房需求，或问一个问题…");
+  const input = page.getByPlaceholder(
+    "Describe your rental needs or ask a question…",
+  );
   await input.fill("我想住Burwood预算1200每周");
   const first = page.waitForRequest(
     (r) => r.url().endsWith("/messages") && r.method() === "POST",
   );
-  await page.getByRole("button", { name: "发送消息", exact: true }).click();
+  await page.getByRole("button", { name: "Send message", exact: true }).click();
   expect((await first).postDataJSON()).toMatchObject({
     allow_external_ai: true,
   });
   const replies = page.locator(".assistant-message-assistant");
-  await expect(replies.last()).toContainText("整套、每个房间");
-  await input.fill("整套");
+  await expect(replies.last()).toContainText("whole property, per room");
+  await input.fill("Whole property");
   await input.press("Enter");
-  await expect(replies.last()).toContainText("卧室");
-  await expect(replies.last()).not.toContainText("是整套、每个房间");
+  await expect(replies.last()).toContainText("bedrooms");
+  await expect(replies.last()).not.toContainText(
+    "for the whole property, per room",
+  );
   const list = await (
     await request.get(`/api/v1/cases/${c.case_id}/assistant/conversations`)
   ).json();
@@ -62,7 +66,9 @@ test("contract entry explains the next step without requesting an invalid source
     await route.continue();
   });
   await page.goto(`/cases/${c.case_id}/contract`);
-  await expect(page.getByText("先确认租房需求", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Confirm your rental needs first", { exact: true }),
+  ).toBeVisible();
   await expect(page.locator(".case-caption")).toHaveCount(0);
   await expect(
     page.getByText("Confirm the exact current saved draft before continuing", {
@@ -73,7 +79,9 @@ test("contract entry explains the next step without requesting an invalid source
     page.getByText("unconfirmed_profile", { exact: false }),
   ).toHaveCount(0);
   expect(contexts).toBe(0);
-  await page.getByRole("button", { name: "我的租房需求", exact: true }).click();
+  await page
+    .getByRole("button", { name: "My rental needs", exact: true })
+    .click();
   await expect(page).toHaveURL(/assistant\?needs=1$/);
 });
 test("aftercare keeps the heading and actions without decorative captions", async ({
@@ -83,14 +91,16 @@ test("aftercare keeps the heading and actions without decorative captions", asyn
   const c = await (await request.post("/api/v1/cases", { data: {} })).json();
   await page.goto(`/cases/${c.case_id}/aftercare`);
   await expect(page.locator(".living-heading")).toHaveText(
-    "租后生活服务读取最新资料",
+    "Living and aftercare servicesAsk rental knowledgeUser guideReload latest details",
   );
   await expect(page.locator(".case-caption,.living-eyebrow")).toHaveCount(0);
   await expect(
-    page.getByText("照顾好日常，也为下一步做好准备。", { exact: true }),
+    page.getByText("Take care of daily life and prepare for what comes next.", {
+      exact: true,
+    }),
   ).toHaveCount(0);
   await expect(
-    page.getByRole("button", { name: "编辑住处与联系人", exact: true }),
+    page.getByRole("button", { name: "Edit home and contacts", exact: true }),
   ).toBeVisible();
 });
 test("technical error text is hidden until diagnostics are requested", async ({
@@ -118,7 +128,7 @@ test("technical error text is hidden until diagnostics are requested", async ({
   await expect(
     page.getByText("error-test-internal", { exact: false }),
   ).toHaveCount(0);
-  await page.getByRole("button", { name: "查看详情", exact: true }).click();
+  await page.getByRole("button", { name: "View details", exact: true }).click();
   await expect(
     page.getByText("INTERNAL_BACKEND_DEBUG_MESSAGE", { exact: false }),
   ).toBeVisible();
@@ -142,12 +152,14 @@ test("aftercare initial load failure does not expose the backend message", async
     }),
   );
   await page.goto(`/cases/${c.case_id}/aftercare`);
-  await expect(page.getByText("暂时无法完成", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Unable to complete this action", { exact: true }),
+  ).toBeVisible();
   await expect(
     page.getByText("INITIAL_LIVING_BACKEND_MESSAGE", { exact: false }),
   ).toHaveCount(0);
   await expect(
-    page.getByRole("button", { name: "重试原操作", exact: true }),
+    page.getByRole("button", { name: "Retry original action", exact: true }),
   ).toBeVisible();
 });
 
@@ -172,9 +184,11 @@ for (const source of ["attachments", "tenancy-source"] as const) {
     await page.goto(`/cases/${c.case_id}/aftercare`);
     if (source === "tenancy-source")
       await page
-        .getByRole("button", { name: "查看租约来源", exact: true })
+        .getByRole("button", { name: "View lease source", exact: true })
         .click();
-    await expect(page.getByText("暂时无法完成", { exact: true })).toBeVisible();
+    await expect(
+      page.getByText("Unable to complete this action", { exact: true }),
+    ).toBeVisible();
     await expect(
       page.getByText("RAW_LIVING_SERVICE_INTERNAL_ERROR", { exact: false }),
     ).toHaveCount(0);

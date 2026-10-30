@@ -100,26 +100,24 @@ test("commute cards use selected transport mode and suburb buttons filter houses
   );
   await page.goto(`/cases/${c.case_id}/assistant`);
   const results = page.getByRole("region", {
-    name: "通勤与区域建议",
+    name: "Commute and area suggestions",
     exact: true,
   });
   await expect(results.locator(".commute-attribution")).toHaveCount(0);
   await expect(results).not.toContainText("TfNSW");
-  const card = results
-    .locator(".commute-home")
-    .filter({
-      has: page.getByRole("heading", { name: home.address, exact: true }),
-    });
-  await expect(card).toContainText("公共交通约 13 分钟");
+  const card = results.locator(".commute-home").filter({
+    has: page.getByRole("heading", { name: home.address, exact: true }),
+  });
+  await expect(card).toContainText("Public transport Approx. 13 minutes");
   await expect(
-    card.getByRole("link", { name: "Google 地图 ↗", exact: true }),
+    card.getByRole("link", { name: "Google Maps ↗", exact: true }),
   ).toHaveAttribute("href", /google.com\/maps\/dir/);
   for (const text of [
     "依据与取舍",
     "房屋候选",
     "已核对路线",
     "区域资料尚未整理",
-    "查看来源与适用范围",
+    "View sources and scope",
     "步行接驳",
     "换乘 0 次",
     "09:46",
@@ -127,20 +125,24 @@ test("commute cards use selected transport mode and suburb buttons filter houses
     "查看行程分段",
   ])
     await expect(results).not.toContainText(text);
-  const suburbs = results.getByRole("group", { name: "按区域查看房源" });
+  const suburbs = results.getByRole("group", {
+    name: "Browse listings by area",
+  });
   await suburbs.getByRole("button", { name: "Newtown", exact: true }).click();
   await expect(results.locator(".commute-homes .commute-home")).toHaveCount(1);
   await expect(results.locator(".commute-homes")).toContainText(other.address);
   await expect(results.locator(".commute-homes")).toContainText(
-    "公共交通约 13 分钟",
+    "Public transport Approx. 13 minutes",
   );
-  await results.getByRole("button", { name: "房源详情", exact: true }).click();
+  await results
+    .getByRole("button", { name: "Listing details", exact: true })
+    .click();
   const farDetails = page.getByTestId("usyd-commute");
-  await expect(farDetails).toContainText("公共交通约 13 分钟");
-  await expect(farDetails.getByText("步行", { exact: true })).toHaveCount(0);
+  await expect(farDetails).toContainText("Public transport Approx. 13 minutes");
+  await expect(farDetails.getByText("Walking", { exact: true })).toHaveCount(0);
   await expect(
     farDetails.getByRole("link", {
-      name: "在 Google 地图查看步行",
+      name: "View walking route in Google Maps",
       exact: true,
     }),
   ).toHaveCount(0);
@@ -150,16 +152,18 @@ test("commute cards use selected transport mode and suburb buttons filter houses
     .click();
   await expect(card).toBeVisible();
   await expect(results.locator(".commute-homes .commute-home")).toHaveCount(1);
-  await suburbs.getByRole("button", { name: "全部", exact: true }).click();
+  await suburbs.getByRole("button", { name: "All", exact: true }).click();
   await expect(results.locator(".commute-homes .commute-home")).toHaveCount(2);
   await page.screenshot({ path: "/tmp/commute-summary-desktop.png" });
-  await card.getByRole("button", { name: "房源详情", exact: true }).click();
+  await card
+    .getByRole("button", { name: "Listing details", exact: true })
+    .click();
   const details = page.getByTestId("usyd-commute");
-  await expect(details).toContainText("公共交通约 13 分钟");
+  await expect(details).toContainText("Public transport Approx. 13 minutes");
   for (const text of ["房屋资料", "房屋类型", "待确认事项"])
     await expect(page.getByRole("dialog")).not.toContainText(text);
   await expect(details.locator(".usyd-mode-grid > div")).toHaveCount(5);
-  for (const mode of ["火车", "地铁"])
+  for (const mode of ["Train", "Metro"])
     await expect(details.getByText(mode, { exact: true })).toHaveCount(0);
   for (const text of [
     "待核实",
@@ -168,11 +172,11 @@ test("commute cards use selected transport mode and suburb buttons filter houses
     "公共交通基准",
     "计划时刻",
     "接驳",
-    "换乘",
+    "Transfers",
   ])
     await expect(details).not.toContainText(text);
   await expect(
-    details.getByRole("link", { name: /在 Google 地图查看/ }),
+    details.getByRole("link", { name: /View .+ route in Google Maps/ }),
   ).toHaveCount(5);
   await details.scrollIntoViewIfNeeded();
   await page.screenshot({ path: "/tmp/commute-summary-detail.png" });

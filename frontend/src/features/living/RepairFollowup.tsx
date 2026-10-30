@@ -8,14 +8,14 @@ import type {
   RepairUpdateValues,
 } from "../../api/living";
 const statuses: Record<RepairStatus, string> = {
-  prepared: "草稿已准备",
-  contacted: "已自行联系",
-  resolved: "问题已解决",
+  prepared: "Draft prepared",
+  contacted: "Contacted independently",
+  resolved: "Issue resolved",
 };
 const tones: Record<RepairTone, string> = {
-  standard: "标准",
-  polite: "更礼貌",
-  concise: "更简洁",
+  standard: "Standard",
+  polite: "More polite",
+  concise: "More concise",
 };
 export default function RepairFollowup({
   repair,
@@ -56,22 +56,27 @@ export default function RepairFollowup({
       if (input.email_tone !== (snapshot.repair.email_tone || "standard"))
         values.email_tone = input.email_tone;
       if (!Object.keys(values).length) {
-        message.info("请填写后续记录、修改状态或选择不同语气。");
+        message.info(
+          "Enter a follow-up note, change the status, or select a different tone.",
+        );
         return;
       }
       modal.confirm({
-        title: "确认保存这条报修的后续？",
+        title: "Save follow-up for this repair?",
         content: (
           <>
             <p>{snapshot.repair.title}</p>
             {values.note && <p className="living-prewrap">{values.note}</p>}
-            {values.status && <p>状态：{statuses[values.status]}</p>}
-            {values.email_tone && <p>草稿语气：{tones[values.email_tone]}</p>}
-            <p>只更新这一条报修，不新建问题或发送邮件。</p>
+            {values.status && <p>Status: {statuses[values.status]}</p>}
+            {values.email_tone && <p>Draft tone: {tones[values.email_tone]}</p>}
+            <p>
+              Only this repair is updated. No new issue is created and no email
+              is sent.
+            </p>
           </>
         ),
-        okText: "确认保存报修后续",
-        cancelText: "继续编辑",
+        okText: "Confirm repair follow-up",
+        cancelText: "Continue editing",
         onOk: async () => {
           const saved = await save(
             `/repairs/${encodeURIComponent(snapshot.repair.repair_id)}`,
@@ -90,24 +95,24 @@ export default function RepairFollowup({
     <>
       <Space wrap>
         <Button disabled={busy} onClick={start}>
-          记录后续
+          Record follow-up
         </Button>
         {!repair.email_draft && (
           <Button disabled={busy} onClick={start}>
-            调整邮件语气
+            Adjust email tone
           </Button>
         )}
       </Space>
       <Modal
         forceRender
-        title="记录报修后续"
+        title="Record repair follow-up"
         open={open}
         onCancel={() => !busy && setOpen(false)}
         onOk={() => void confirm()}
-        okText="核对并保存后续"
-        cancelText="取消"
+        okText="Check and save follow-up"
+        cancelText="Cancel"
         confirmLoading={busy}
-        okButtonProps={{ "aria-label": "核对并保存后续" }}
+        okButtonProps={{ "aria-label": "Check and save follow-up" }}
         cancelButtonProps={{ disabled: busy }}
         closable={!busy}
         mask={{ closable: !busy }}
@@ -118,7 +123,7 @@ export default function RepairFollowup({
         {failed && (
           <Alert
             type="error"
-            title="尚未保存。输入已保留；请关闭窗口查看页面错误，必要时读取最新资料后重新核对。"
+            title="Not saved yet. Your input is preserved. Close this window to check the page error. Load the latest information and check again if needed."
           />
         )}
         <Form
@@ -127,14 +132,14 @@ export default function RepairFollowup({
           layout="vertical"
           disabled={busy}
         >
-          <Form.Item name="note" label="对方回复或我的记录">
+          <Form.Item name="note" label="Reply or my notes">
             <Input.TextArea
-              aria-label="对方回复或我的记录"
+              aria-label="Reply or my notes"
               rows={3}
               maxLength={3000}
             />
           </Form.Item>
-          <Form.Item name="status" label="报修状态">
+          <Form.Item name="status" label="Repair status">
             <Select
               options={Object.entries(statuses).map(([value, label]) => ({
                 value,
@@ -143,7 +148,7 @@ export default function RepairFollowup({
             />
           </Form.Item>
           {!snapshot.repair.email_draft && (
-            <Form.Item name="email_tone" label="邮件语气">
+            <Form.Item name="email_tone" label="Email tone">
               <Select
                 options={Object.entries(tones).map(([value, label]) => ({
                   value,
@@ -155,8 +160,8 @@ export default function RepairFollowup({
         </Form>
         <p className="living-note">
           {snapshot.repair.email_draft
-            ? "记录处理进展会保留你已核对的邮件原文。"
-            : "只调整邮件草稿措辞，原始问题和收件人保持不变。没有确定的预约时间请直接注明尚未确定。"}
+            ? "Recording progress preserves the email text you have checked."
+            : "Only the email wording changes. The original issue and recipient remain. State explicitly when an appointment time is not confirmed."}
         </p>
       </Modal>
     </>

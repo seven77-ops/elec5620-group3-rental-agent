@@ -24,9 +24,9 @@ test("reasons use actual rent difference, selected mode and supplied room condit
     min_bedrooms: 2,
   });
   assert.deepEqual(reasons, [
-    "比预算低 AUD 80/周",
-    "公共交通约 28 分钟",
-    "2卧，符合房型要求",
+    "Below budget by AUD 80/week",
+    "Public transport Approx. 28 minutes",
+    "2 bed, meets your layout needs",
   ]);
 });
 test("personal budgets, absent modes and unmet floors never become claimed advantages", () => {
@@ -41,6 +41,6 @@ test("personal budgets, absent modes and unmet floors never become claimed advan
     [],
   );
   assert.deepEqual(listingReasons(listing, {}, { max_weekly_rent: 900 }), [
-    "比周租上限低 AUD 80/周",
+    "Below weekly rent limit by AUD 80/week",
   ]);
 });

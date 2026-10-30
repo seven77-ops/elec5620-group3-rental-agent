@@ -2,12 +2,12 @@
   "schema_version": "1.1",
   "scoring_version": "rules-1.0",
   "search_id": "demo-search-001",
-  "recommendation_run_id": "rr-941e2d2f307844a0874ee2fe05fbae66ba87104fb0e0bd9c88a9d56827dbad1d",
+  "recommendation_run_id": "rr-683302d10dc5c0c5930be505de4d9f01589a2f26bca50f29a8b1e6429b32aae7",
   "profile_fingerprint": "9a79d995fbf449804c5867839df9e84782d33e4db28a61208973a1bf970e603b",
   "profile_version": 2,
   "data_mode": "synthetic_demo",
   "as_of": "2026-09-17T09:00:00+10:00",
-  "dataset_fingerprint": "32c38e031a258ef5e973d9e25bc8a59e0296cf91f9d402bdc7bfca3fa57acc20",
+  "dataset_fingerprint": "499210ec46bfb2220ca40ac67aea6f07054bb82ab829073814374176cb76f2bb",
   "profile": {
     "schema_version": "1.0",
     "search_id": "demo-search-001",
@@ -85,43 +85,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 480,
@@ -130,15 +130,15 @@
       "transfers": 0,
       "supermarket_distance_m": 200,
       "reasons": [
-        "可比周费用 AUD 480.00（per_person；含账单）",
-        "模拟到校通勤 30 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 200 米，不是步行时长",
-        "满足软偏好 furnished",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 480.00 (per_person; bills included)",
+        "Synthetic campus commute 30 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 200 metres; not a walking duration",
+        "Meets soft preference furnished",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 30.00/周",
-        "比期望通勤多 5 分钟"
+        "AUD 30.00/week above the preferred budget",
+        "5 minutes above the preferred commute"
       ],
       "issues": [],
       "evidence_refs": {
@@ -256,43 +256,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 500,
@@ -301,14 +301,14 @@
       "transfers": 0,
       "supermarket_distance_m": 400,
       "reasons": [
-        "可比周费用 AUD 500.00（per_person；含账单）",
-        "模拟到校通勤 25 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 400 米，不是步行时长",
-        "满足软偏好 furnished",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 500.00 (per_person; bills included)",
+        "Synthetic campus commute 25 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 400 metres; not a walking duration",
+        "Meets soft preference furnished",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 50.00/周"
+        "AUD 50.00/week above the preferred budget"
       ],
       "issues": [],
       "evidence_refs": {
@@ -426,43 +426,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 460,
@@ -471,15 +471,15 @@
       "transfers": 0,
       "supermarket_distance_m": 780,
       "reasons": [
-        "可比周费用 AUD 460.00（per_person；含账单）",
-        "模拟到校通勤 36 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 780 米，不是步行时长",
-        "满足软偏好 furnished",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 460.00 (per_person; bills included)",
+        "Synthetic campus commute 36 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 780 metres; not a walking duration",
+        "Meets soft preference furnished",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 10.00/周",
-        "比期望通勤多 11 分钟"
+        "AUD 10.00/week above the preferred budget",
+        "11 minutes above the preferred commute"
       ],
       "issues": [],
       "evidence_refs": {
@@ -597,43 +597,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 455,
@@ -642,15 +642,15 @@
       "transfers": 0,
       "supermarket_distance_m": 450,
       "reasons": [
-        "可比周费用 AUD 455.00（per_person；含账单）",
-        "模拟到校通勤 34 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 450 米，不是步行时长",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 455.00 (per_person; bills included)",
+        "Synthetic campus commute 34 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 450 metres; not a walking duration",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 5.00/周",
-        "比期望通勤多 9 分钟",
-        "不满足软偏好 furnished"
+        "AUD 5.00/week above the preferred budget",
+        "9 minutes above the preferred commute",
+        "Does not meet soft preference furnished"
       ],
       "issues": [],
       "evidence_refs": {
@@ -768,43 +768,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 440,
@@ -813,14 +813,14 @@
       "transfers": 0,
       "supermarket_distance_m": 800,
       "reasons": [
-        "可比周费用 AUD 440.00（per_person；含账单）",
-        "模拟到校通勤 37 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 800 米，不是步行时长",
-        "满足软偏好 furnished"
+        "Comparable weekly cost AUD 440.00 (per_person; bills included)",
+        "Synthetic campus commute 37 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 800 metres; not a walking duration",
+        "Meets soft preference furnished"
       ],
       "tradeoffs": [
-        "比期望通勤多 12 分钟",
-        "不满足软偏好 private_bathroom"
+        "12 minutes above the preferred commute",
+        "Does not meet soft preference private_bathroom"
       ],
       "issues": [],
       "evidence_refs": {
@@ -940,43 +940,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 480,
@@ -985,15 +985,15 @@
       "transfers": 0,
       "supermarket_distance_m": 200,
       "reasons": [
-        "可比周费用 AUD 480.00（per_person；含账单）",
-        "模拟到校通勤 30 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 200 米，不是步行时长",
-        "满足软偏好 furnished",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 480.00 (per_person; bills included)",
+        "Synthetic campus commute 30 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 200 metres; not a walking duration",
+        "Meets soft preference furnished",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 30.00/周",
-        "比期望通勤多 5 分钟"
+        "AUD 30.00/week above the preferred budget",
+        "5 minutes above the preferred commute"
       ],
       "issues": [],
       "evidence_refs": {
@@ -1111,43 +1111,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 500,
@@ -1156,14 +1156,14 @@
       "transfers": 0,
       "supermarket_distance_m": 400,
       "reasons": [
-        "可比周费用 AUD 500.00（per_person；含账单）",
-        "模拟到校通勤 25 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 400 米，不是步行时长",
-        "满足软偏好 furnished",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 500.00 (per_person; bills included)",
+        "Synthetic campus commute 25 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 400 metres; not a walking duration",
+        "Meets soft preference furnished",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 50.00/周"
+        "AUD 50.00/week above the preferred budget"
       ],
       "issues": [],
       "evidence_refs": {
@@ -1281,43 +1281,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 460,
@@ -1326,15 +1326,15 @@
       "transfers": 0,
       "supermarket_distance_m": 780,
       "reasons": [
-        "可比周费用 AUD 460.00（per_person；含账单）",
-        "模拟到校通勤 36 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 780 米，不是步行时长",
-        "满足软偏好 furnished",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 460.00 (per_person; bills included)",
+        "Synthetic campus commute 36 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 780 metres; not a walking duration",
+        "Meets soft preference furnished",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 10.00/周",
-        "比期望通勤多 11 分钟"
+        "AUD 10.00/week above the preferred budget",
+        "11 minutes above the preferred commute"
       ],
       "issues": [],
       "evidence_refs": {
@@ -1452,43 +1452,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 455,
@@ -1497,15 +1497,15 @@
       "transfers": 0,
       "supermarket_distance_m": 450,
       "reasons": [
-        "可比周费用 AUD 455.00（per_person；含账单）",
-        "模拟到校通勤 34 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 450 米，不是步行时长",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 455.00 (per_person; bills included)",
+        "Synthetic campus commute 34 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 450 metres; not a walking duration",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 5.00/周",
-        "比期望通勤多 9 分钟",
-        "不满足软偏好 furnished"
+        "AUD 5.00/week above the preferred budget",
+        "9 minutes above the preferred commute",
+        "Does not meet soft preference furnished"
       ],
       "issues": [],
       "evidence_refs": {
@@ -1623,43 +1623,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 440,
@@ -1668,14 +1668,14 @@
       "transfers": 0,
       "supermarket_distance_m": 800,
       "reasons": [
-        "可比周费用 AUD 440.00（per_person；含账单）",
-        "模拟到校通勤 37 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 800 米，不是步行时长",
-        "满足软偏好 furnished"
+        "Comparable weekly cost AUD 440.00 (per_person; bills included)",
+        "Synthetic campus commute 37 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 800 metres; not a walking duration",
+        "Meets soft preference furnished"
       ],
       "tradeoffs": [
-        "比期望通勤多 12 分钟",
-        "不满足软偏好 private_bathroom"
+        "12 minutes above the preferred commute",
+        "Does not meet soft preference private_bathroom"
       ],
       "issues": [],
       "evidence_refs": {
@@ -1793,43 +1793,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 470,
@@ -1838,15 +1838,15 @@
       "transfers": 0,
       "supermarket_distance_m": 600,
       "reasons": [
-        "可比周费用 AUD 470.00（per_person；含账单）",
-        "模拟到校通勤 32 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 600 米，不是步行时长",
-        "满足软偏好 furnished"
+        "Comparable weekly cost AUD 470.00 (per_person; bills included)",
+        "Synthetic campus commute 32 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 600 metres; not a walking duration",
+        "Meets soft preference furnished"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 20.00/周",
-        "比期望通勤多 7 分钟",
-        "不满足软偏好 private_bathroom"
+        "AUD 20.00/week above the preferred budget",
+        "7 minutes above the preferred commute",
+        "Does not meet soft preference private_bathroom"
       ],
       "issues": [],
       "evidence_refs": {
@@ -1964,43 +1964,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 450,
@@ -2009,14 +2009,14 @@
       "transfers": 0,
       "supermarket_distance_m": 900,
       "reasons": [
-        "可比周费用 AUD 450.00（per_person；含账单）",
-        "模拟到校通勤 38 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 900 米，不是步行时长",
-        "满足软偏好 furnished"
+        "Comparable weekly cost AUD 450.00 (per_person; bills included)",
+        "Synthetic campus commute 38 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 900 metres; not a walking duration",
+        "Meets soft preference furnished"
       ],
       "tradeoffs": [
-        "比期望通勤多 13 分钟",
-        "不满足软偏好 private_bathroom"
+        "13 minutes above the preferred commute",
+        "Does not meet soft preference private_bathroom"
       ],
       "issues": [],
       "evidence_refs": {
@@ -2134,43 +2134,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 520,
@@ -2179,14 +2179,14 @@
       "transfers": 0,
       "supermarket_distance_m": 540,
       "reasons": [
-        "可比周费用 AUD 520.00（per_person；含账单）",
-        "模拟到校通勤 22 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 540 米，不是步行时长",
-        "满足软偏好 furnished",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 520.00 (per_person; bills included)",
+        "Synthetic campus commute 22 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 540 metres; not a walking duration",
+        "Meets soft preference furnished",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 70.00/周"
+        "AUD 70.00/week above the preferred budget"
       ],
       "issues": [],
       "evidence_refs": {
@@ -2304,43 +2304,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 540,
@@ -2349,14 +2349,14 @@
       "transfers": 0,
       "supermarket_distance_m": 250,
       "reasons": [
-        "可比周费用 AUD 540.00（per_person；含账单）",
-        "模拟到校通勤 18 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 250 米，不是步行时长",
-        "满足软偏好 furnished",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 540.00 (per_person; bills included)",
+        "Synthetic campus commute 18 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 250 metres; not a walking duration",
+        "Meets soft preference furnished",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 90.00/周"
+        "AUD 90.00/week above the preferred budget"
       ],
       "issues": [],
       "evidence_refs": {
@@ -2474,43 +2474,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 530,
@@ -2519,14 +2519,14 @@
       "transfers": 0,
       "supermarket_distance_m": 700,
       "reasons": [
-        "可比周费用 AUD 530.00（per_person；含账单）",
-        "模拟到校通勤 20 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 700 米，不是步行时长",
-        "满足软偏好 furnished",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 530.00 (per_person; bills included)",
+        "Synthetic campus commute 20 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 700 metres; not a walking duration",
+        "Meets soft preference furnished",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 80.00/周"
+        "AUD 80.00/week above the preferred budget"
       ],
       "issues": [],
       "evidence_refs": {
@@ -2644,43 +2644,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 490,
@@ -2689,15 +2689,15 @@
       "transfers": 0,
       "supermarket_distance_m": 500,
       "reasons": [
-        "可比周费用 AUD 490.00（per_person；含账单）",
-        "模拟到校通勤 29 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 500 米，不是步行时长",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 490.00 (per_person; bills included)",
+        "Synthetic campus commute 29 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 500 metres; not a walking duration",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 40.00/周",
-        "比期望通勤多 4 分钟",
-        "不满足软偏好 furnished"
+        "AUD 40.00/week above the preferred budget",
+        "4 minutes above the preferred commute",
+        "Does not meet soft preference furnished"
       ],
       "issues": [],
       "evidence_refs": {
@@ -2815,43 +2815,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 430,
@@ -2860,14 +2860,14 @@
       "transfers": 0,
       "supermarket_distance_m": 1000,
       "reasons": [
-        "可比周费用 AUD 430.00（per_person；含账单）",
-        "模拟到校通勤 39 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 1000 米，不是步行时长",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 430.00 (per_person; bills included)",
+        "Synthetic campus commute 39 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 1000 metres; not a walking duration",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比期望通勤多 14 分钟",
-        "不满足软偏好 furnished"
+        "14 minutes above the preferred commute",
+        "Does not meet soft preference furnished"
       ],
       "issues": [],
       "evidence_refs": {
@@ -2985,43 +2985,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 510,
@@ -3030,14 +3030,14 @@
       "transfers": 0,
       "supermarket_distance_m": 650,
       "reasons": [
-        "可比周费用 AUD 510.00（per_person；含账单）",
-        "模拟到校通勤 23 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 650 米，不是步行时长",
-        "满足软偏好 furnished"
+        "Comparable weekly cost AUD 510.00 (per_person; bills included)",
+        "Synthetic campus commute 23 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 650 metres; not a walking duration",
+        "Meets soft preference furnished"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 60.00/周",
-        "不满足软偏好 private_bathroom"
+        "AUD 60.00/week above the preferred budget",
+        "Does not meet soft preference private_bathroom"
       ],
       "issues": [],
       "evidence_refs": {
@@ -3155,43 +3155,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 525,
@@ -3200,14 +3200,14 @@
       "transfers": 0,
       "supermarket_distance_m": 950,
       "reasons": [
-        "可比周费用 AUD 525.00（per_person；含账单）",
-        "模拟到校通勤 21 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 950 米，不是步行时长",
-        "满足软偏好 furnished",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 525.00 (per_person; bills included)",
+        "Synthetic campus commute 21 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 950 metres; not a walking duration",
+        "Meets soft preference furnished",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 75.00/周"
+        "AUD 75.00/week above the preferred budget"
       ],
       "issues": [],
       "evidence_refs": {
@@ -3325,43 +3325,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 550,
@@ -3370,14 +3370,14 @@
       "transfers": 0,
       "supermarket_distance_m": 300,
       "reasons": [
-        "可比周费用 AUD 550.00（per_person；含账单）",
-        "模拟到校通勤 16 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 300 米，不是步行时长",
-        "满足软偏好 furnished",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 550.00 (per_person; bills included)",
+        "Synthetic campus commute 16 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 300 metres; not a walking duration",
+        "Meets soft preference furnished",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 100.00/周"
+        "AUD 100.00/week above the preferred budget"
       ],
       "issues": [],
       "evidence_refs": {
@@ -3500,43 +3500,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "unknown",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": null,
@@ -3545,14 +3545,14 @@
       "transfers": 0,
       "supermarket_distance_m": 400,
       "reasons": [
-        "模拟到校通勤 25 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 400 米，不是步行时长",
-        "满足软偏好 furnished",
-        "满足软偏好 private_bathroom"
+        "Synthetic campus commute 25 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 400 metres; not a walking duration",
+        "Meets soft preference furnished",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [],
       "issues": [
-        "bills_included：信息缺失"
+        "bills_included: Missing information"
       ],
       "evidence_refs": {
         "listing_status": {
@@ -3667,43 +3667,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "unknown",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 430,
@@ -3712,17 +3712,17 @@
       "transfers": 0,
       "supermarket_distance_m": 1000,
       "reasons": [
-        "可比周费用 AUD 430.00（per_person；含账单）",
-        "模拟到校通勤 39 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 1000 米，不是步行时长",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 430.00 (per_person; bills included)",
+        "Synthetic campus commute 39 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 1000 metres; not a walking duration",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比期望通勤多 14 分钟",
-        "不满足软偏好 furnished"
+        "14 minutes above the preferred commute",
+        "Does not meet soft preference furnished"
       ],
       "issues": [
-        "latest_start_date：信息缺失"
+        "latest_start_date: Missing information"
       ],
       "evidence_refs": {
         "listing_status": {
@@ -3837,43 +3837,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "unknown",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 530,
@@ -3882,16 +3882,16 @@
       "transfers": null,
       "supermarket_distance_m": 700,
       "reasons": [
-        "可比周费用 AUD 530.00（per_person；含账单）",
-        "模拟最近超市直线距离 700 米，不是步行时长",
-        "满足软偏好 furnished",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 530.00 (per_person; bills included)",
+        "Synthetic straight-line distance to the nearest supermarket: 700 metres; not a walking duration",
+        "Meets soft preference furnished",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 80.00/周"
+        "AUD 80.00/week above the preferred budget"
       ],
       "issues": [
-        "commute：信息缺失"
+        "commute: Missing information"
       ],
       "evidence_refs": {
         "listing_status": {
@@ -4006,43 +4006,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 490,
@@ -4051,17 +4051,17 @@
       "transfers": 0,
       "supermarket_distance_m": null,
       "reasons": [
-        "可比周费用 AUD 490.00（per_person；含账单）",
-        "模拟到校通勤 29 分钟；目的地 demo-usyd",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 490.00 (per_person; bills included)",
+        "Synthetic campus commute 29 minutes; destination demo-usyd",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 40.00/周",
-        "比期望通勤多 4 分钟",
-        "不满足软偏好 furnished"
+        "AUD 40.00/week above the preferred budget",
+        "4 minutes above the preferred commute",
+        "Does not meet soft preference furnished"
       ],
       "issues": [
-        "supermarket_distance_m：信息缺失"
+        "supermarket_distance_m: Missing information"
       ],
       "evidence_refs": {
         "listing_status": {
@@ -4176,43 +4176,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "unknown",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 440,
@@ -4221,17 +4221,17 @@
       "transfers": 0,
       "supermarket_distance_m": 800,
       "reasons": [
-        "可比周费用 AUD 440.00（per_person；含账单）",
-        "模拟到校通勤 37 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 800 米，不是步行时长",
-        "满足软偏好 furnished"
+        "Comparable weekly cost AUD 440.00 (per_person; bills included)",
+        "Synthetic campus commute 37 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 800 metres; not a walking duration",
+        "Meets soft preference furnished"
       ],
       "tradeoffs": [
-        "比期望通勤多 12 分钟",
-        "不满足软偏好 private_bathroom"
+        "12 minutes above the preferred commute",
+        "Does not meet soft preference private_bathroom"
       ],
       "issues": [
-        "private_bedroom：信息缺失"
+        "private_bedroom: Missing information"
       ],
       "evidence_refs": {
         "listing_status": {
@@ -4346,43 +4346,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "unknown",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 550,
@@ -4391,14 +4391,14 @@
       "transfers": 0,
       "supermarket_distance_m": 300,
       "reasons": [
-        "可比周费用 AUD 550.00（per_person；含账单）",
-        "模拟到校通勤 16 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 300 米，不是步行时长",
-        "满足软偏好 furnished",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 550.00 (per_person; bills included)",
+        "Synthetic campus commute 16 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 300 metres; not a walking duration",
+        "Meets soft preference furnished",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 100.00/周"
+        "AUD 100.00/week above the preferred budget"
       ],
       "issues": [],
       "evidence_refs": {
@@ -4519,43 +4519,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "unknown",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "unknown",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": null,
@@ -4564,16 +4564,16 @@
       "transfers": 0,
       "supermarket_distance_m": 200,
       "reasons": [
-        "模拟到校通勤 30 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 200 米，不是步行时长",
-        "满足软偏好 furnished",
-        "满足软偏好 private_bathroom"
+        "Synthetic campus commute 30 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 200 metres; not a walking duration",
+        "Meets soft preference furnished",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比期望通勤多 5 分钟"
+        "5 minutes above the preferred commute"
       ],
       "issues": [
-        "rent_amount：来源信息冲突"
+        "rent_amount: Conflicting source information"
       ],
       "evidence_refs": {
         "listing_status": {
@@ -4683,43 +4683,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "unknown",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 455,
@@ -4728,18 +4728,18 @@
       "transfers": 0,
       "supermarket_distance_m": 450,
       "reasons": [
-        "可比周费用 AUD 455.00（per_person；含账单）",
-        "模拟到校通勤 34 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 450 米，不是步行时长",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 455.00 (per_person; bills included)",
+        "Synthetic campus commute 34 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 450 metres; not a walking duration",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 5.00/周",
-        "比期望通勤多 9 分钟",
-        "不满足软偏好 furnished"
+        "AUD 5.00/week above the preferred budget",
+        "9 minutes above the preferred commute",
+        "Does not meet soft preference furnished"
       ],
       "issues": [
-        "source_permission：信息缺失"
+        "source_permission: Missing information"
       ],
       "evidence_refs": {
         "listing_status": {
@@ -4854,43 +4854,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "unknown",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 525,
@@ -4899,16 +4899,16 @@
       "transfers": null,
       "supermarket_distance_m": 950,
       "reasons": [
-        "可比周费用 AUD 525.00（per_person；含账单）",
-        "模拟最近超市直线距离 950 米，不是步行时长",
-        "满足软偏好 furnished",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 525.00 (per_person; bills included)",
+        "Synthetic straight-line distance to the nearest supermarket: 950 metres; not a walking duration",
+        "Meets soft preference furnished",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 75.00/周"
+        "AUD 75.00/week above the preferred budget"
       ],
       "issues": [
-        "commute：目的地、时段、交通模式、位置精度或查询时效不匹配"
+        "commute: Destination, time, transport mode, location precision or query freshness does not match"
       ],
       "evidence_refs": {
         "listing_status": {
@@ -5027,43 +5027,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "fail",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 650,
@@ -5072,14 +5072,14 @@
       "transfers": 0,
       "supermarket_distance_m": 540,
       "reasons": [
-        "可比周费用 AUD 650.00（per_person；含账单）",
-        "模拟到校通勤 22 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 540 米，不是步行时长",
-        "满足软偏好 furnished",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 650.00 (per_person; bills included)",
+        "Synthetic campus commute 22 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 540 metres; not a walking duration",
+        "Meets soft preference furnished",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 200.00/周"
+        "AUD 200.00/week above the preferred budget"
       ],
       "issues": [],
       "evidence_refs": {
@@ -5197,43 +5197,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "fail",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 460,
@@ -5242,15 +5242,15 @@
       "transfers": 0,
       "supermarket_distance_m": 780,
       "reasons": [
-        "可比周费用 AUD 460.00（per_person；含账单）",
-        "模拟到校通勤 55 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 780 米，不是步行时长",
-        "满足软偏好 furnished",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 460.00 (per_person; bills included)",
+        "Synthetic campus commute 55 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 780 metres; not a walking duration",
+        "Meets soft preference furnished",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 10.00/周",
-        "比期望通勤多 30 分钟"
+        "AUD 10.00/week above the preferred budget",
+        "30 minutes above the preferred commute"
       ],
       "issues": [],
       "evidence_refs": {
@@ -5368,43 +5368,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "fail",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 450,
@@ -5413,14 +5413,14 @@
       "transfers": 0,
       "supermarket_distance_m": 900,
       "reasons": [
-        "可比周费用 AUD 450.00（per_person；含账单）",
-        "模拟到校通勤 38 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 900 米，不是步行时长",
-        "满足软偏好 furnished"
+        "Comparable weekly cost AUD 450.00 (per_person; bills included)",
+        "Synthetic campus commute 38 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 900 metres; not a walking duration",
+        "Meets soft preference furnished"
       ],
       "tradeoffs": [
-        "比期望通勤多 13 分钟",
-        "不满足软偏好 private_bathroom"
+        "13 minutes above the preferred commute",
+        "Does not meet soft preference private_bathroom"
       ],
       "issues": [],
       "evidence_refs": {
@@ -5538,43 +5538,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "fail",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "pass",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 540,
@@ -5583,14 +5583,14 @@
       "transfers": 0,
       "supermarket_distance_m": 250,
       "reasons": [
-        "可比周费用 AUD 540.00（per_person；含账单）",
-        "模拟到校通勤 18 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 250 米，不是步行时长",
-        "满足软偏好 furnished",
-        "满足软偏好 private_bathroom"
+        "Comparable weekly cost AUD 540.00 (per_person; bills included)",
+        "Synthetic campus commute 18 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 250 metres; not a walking duration",
+        "Meets soft preference furnished",
+        "Meets soft preference private_bathroom"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 90.00/周"
+        "AUD 90.00/week above the preferred budget"
       ],
       "issues": [],
       "evidence_refs": {
@@ -5708,43 +5708,43 @@
       "hard_checks": {
         "availability": {
           "status": "pass",
-          "reason": "房源须为 active（仅模拟状态）"
+          "reason": "The listing must be active (synthetic status only)"
         },
         "freshness": {
           "status": "pass",
-          "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+          "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
         },
         "permission": {
           "status": "pass",
-          "reason": "数据使用权限须明确"
+          "reason": "Data-use permission must be explicit"
         },
         "conflicts": {
           "status": "pass",
-          "reason": "字段或同来源重复记录冲突须先核对"
+          "reason": "Conflicting fields or duplicate records from the same source must be checked first"
         },
         "rental_mode": {
           "status": "pass",
-          "reason": "租赁方式须为 private_room"
+          "reason": "Rental mode must be private_room"
         },
         "move_in": {
           "status": "pass",
-          "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+          "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
         },
         "lease": {
           "status": "pass",
-          "reason": "须接受 12 个月租期"
+          "reason": "A 12-month lease must be accepted"
         },
         "private_bedroom": {
           "status": "fail",
-          "reason": "必须满足 private_bedroom"
+          "reason": "Must satisfy private_bedroom"
         },
         "budget": {
           "status": "pass",
-          "reason": "周费用须不超过 AUD 550（per_person）"
+          "reason": "Weekly cost must not exceed AUD 550 (per_person)"
         },
         "commute": {
           "status": "pass",
-          "reason": "模拟到校时间须不超过 40 分钟"
+          "reason": "Synthetic campus travel time must not exceed 40 minutes"
         }
       },
       "weekly_cost": 470,
@@ -5753,15 +5753,15 @@
       "transfers": 0,
       "supermarket_distance_m": 600,
       "reasons": [
-        "可比周费用 AUD 470.00（per_person；含账单）",
-        "模拟到校通勤 32 分钟；目的地 demo-usyd",
-        "模拟最近超市直线距离 600 米，不是步行时长",
-        "满足软偏好 furnished"
+        "Comparable weekly cost AUD 470.00 (per_person; bills included)",
+        "Synthetic campus commute 32 minutes; destination demo-usyd",
+        "Synthetic straight-line distance to the nearest supermarket: 600 metres; not a walking duration",
+        "Meets soft preference furnished"
       ],
       "tradeoffs": [
-        "比舒适预算高 AUD 20.00/周",
-        "比期望通勤多 7 分钟",
-        "不满足软偏好 private_bathroom"
+        "AUD 20.00/week above the preferred budget",
+        "7 minutes above the preferred commute",
+        "Does not meet soft preference private_bathroom"
       ],
       "issues": [],
       "evidence_refs": {
@@ -5868,23 +5868,23 @@
     {
       "listing_id": "DEMO-028",
       "duplicate_of": "DEMO-001",
-      "reason": "同来源 ID 且事实相同，仅评估一条"
+      "reason": "Same source ID and identical facts; evaluated once only"
     }
   ],
   "clarification_requests": [
-    "请逐项确认待确认清单中的未知、过期或冲突字段，再重新评估。"
+    "Confirm each unknown, expired or conflicting field in the pending list, then re-evaluate."
   ],
   "data_limitations": [
-    "全部房源、路线、设施和证据均为模拟数据，不可用于真实租房决策。",
-    "本原型仅为 Agent 2 的确定性工具核心，未接入 LLM、房源平台或 TfNSW。",
-    "as_of 是输入快照时点，不代表今天仍可租；分数是偏好匹配，不是房屋安全或签约保证。",
-    "不支持自动换汇、按人数分摊、真实市场租金估值或未来班次保证。"
+    "All listings, routes, facilities and evidence are synthetic and cannot support real rental decisions.",
+    "This prototype is the deterministic Agent 2 tool core, without an LLM, listing platform or TfNSW connection.",
+    "as_of is the input snapshot time and does not establish current availability. Scores indicate preference fit, not property safety or approval to sign.",
+    "Automatic currency conversion, per-person cost division, live market valuations and future service guarantees are unsupported."
   ],
   "comparison": {
     "before_profile_version": 1,
     "after_profile_version": 2,
-    "before_run_id": "rr-416489817d8ef341c02f1a80bc564939f2e105a587dcabcf445dacf411d785be",
-    "after_run_id": "rr-941e2d2f307844a0874ee2fe05fbae66ba87104fb0e0bd9c88a9d56827dbad1d",
+    "before_run_id": "rr-af6b18506b289408fbb153d03e3fc635570ab7da2637142f87d0f31bbd30e809",
+    "after_run_id": "rr-683302d10dc5c0c5930be505de4d9f01589a2f26bca50f29a8b1e6429b32aae7",
     "before_weights": {
       "commute": 0.35,
       "cost": 0.3,
@@ -5936,12 +5936,12 @@
         "after_score": 81.2,
         "score_change": -7.4,
         "change_reasons": [
-          "资格：合格 → 合格。",
-          "通勤：分项 100.00 → 100.00；有效权重 35.0% → 15.0%；加权贡献 35.00 → 15.00（变化 -20.0000）。",
-          "费用：分项 72.00 → 72.00；有效权重 30.0% → 60.0%；加权贡献 21.60 → 43.20（变化 +21.6000）。",
-          "居住：分项 100.00 → 100.00；有效权重 20.0% → 15.0%；加权贡献 20.00 → 15.00（变化 -5.0000）。",
-          "便利：分项 80.00 → 80.00；有效权重 15.0% → 10.0%；加权贡献 12.00 → 8.00（变化 -4.0000）。",
-          "名次 4 → 8；排名由全部合格候选的相对得分及 ID 决定。"
+          "Eligibility: Eligible → Eligible.",
+          "Commute: component 100.00 → 100.00; effective weight 35.0% → 15.0%; weighted contribution 35.00 → 15.00 (change -20.0000).",
+          "Cost: component 72.00 → 72.00; effective weight 30.0% → 60.0%; weighted contribution 21.60 → 43.20 (change +21.6000).",
+          "Housing: component 100.00 → 100.00; effective weight 20.0% → 15.0%; weighted contribution 20.00 → 15.00 (change -5.0000).",
+          "Amenities: component 80.00 → 80.00; effective weight 15.0% → 10.0%; weighted contribution 12.00 → 8.00 (change -4.0000).",
+          "Rank 4 → 8; ranking depends on relative scores and IDs across all eligible candidates."
         ],
         "score_contributions": {
           "commute": {
@@ -5977,12 +5977,12 @@
         "after_score": 87.0,
         "score_change": 9.6,
         "change_reasons": [
-          "资格：合格 → 合格。",
-          "通勤：分项 56.00 → 56.00；有效权重 35.0% → 15.0%；加权贡献 19.60 → 8.40（变化 -11.2000）。",
-          "费用：分项 96.00 → 96.00；有效权重 30.0% → 60.0%；加权贡献 28.80 → 57.60（变化 +28.8000）。",
-          "居住：分项 100.00 → 100.00；有效权重 20.0% → 15.0%；加权贡献 20.00 → 15.00（变化 -5.0000）。",
-          "便利：分项 60.00 → 60.00；有效权重 15.0% → 10.0%；加权贡献 9.00 → 6.00（变化 -3.0000）。",
-          "名次 9 → 3；排名由全部合格候选的相对得分及 ID 决定。"
+          "Eligibility: Eligible → Eligible.",
+          "Commute: component 56.00 → 56.00; effective weight 35.0% → 15.0%; weighted contribution 19.60 → 8.40 (change -11.2000).",
+          "Cost: component 96.00 → 96.00; effective weight 30.0% → 60.0%; weighted contribution 28.80 → 57.60 (change +28.8000).",
+          "Housing: component 100.00 → 100.00; effective weight 20.0% → 15.0%; weighted contribution 20.00 → 15.00 (change -5.0000).",
+          "Amenities: component 60.00 → 60.00; effective weight 15.0% → 10.0%; weighted contribution 9.00 → 6.00 (change -3.0000).",
+          "Rank 9 → 3; ranking depends on relative scores and IDs across all eligible candidates."
         ],
         "score_contributions": {
           "commute": {
@@ -6018,12 +6018,12 @@
         "after_score": 81.2,
         "score_change": 14.9,
         "change_reasons": [
-          "资格：合格 → 合格。",
-          "通勤：分项 48.00 → 48.00；有效权重 35.0% → 15.0%；加权贡献 16.80 → 7.20（变化 -9.6000）。",
-          "费用：分项 100.00 → 100.00；有效权重 30.0% → 60.0%；加权贡献 30.00 → 60.00（变化 +30.0000）。",
-          "居住：分项 60.00 → 60.00；有效权重 20.0% → 15.0%；加权贡献 12.00 → 9.00（变化 -3.0000）。",
-          "便利：分项 50.00 → 50.00；有效权重 15.0% → 10.0%；加权贡献 7.50 → 5.00（变化 -2.5000）。",
-          "名次 14 → 7；排名由全部合格候选的相对得分及 ID 决定。"
+          "Eligibility: Eligible → Eligible.",
+          "Commute: component 48.00 → 48.00; effective weight 35.0% → 15.0%; weighted contribution 16.80 → 7.20 (change -9.6000).",
+          "Cost: component 100.00 → 100.00; effective weight 30.0% → 60.0%; weighted contribution 30.00 → 60.00 (change +30.0000).",
+          "Housing: component 60.00 → 60.00; effective weight 20.0% → 15.0%; weighted contribution 12.00 → 9.00 (change -3.0000).",
+          "Amenities: component 50.00 → 50.00; effective weight 15.0% → 10.0%; weighted contribution 7.50 → 5.00 (change -2.5000).",
+          "Rank 14 → 7; ranking depends on relative scores and IDs across all eligible candidates."
         ],
         "score_contributions": {
           "commute": {
@@ -6059,12 +6059,12 @@
         "after_score": 78.4,
         "score_change": -10.8,
         "change_reasons": [
-          "资格：合格 → 合格。",
-          "通勤：分项 100.00 → 100.00；有效权重 35.0% → 15.0%；加权贡献 35.00 → 15.00（变化 -20.0000）。",
-          "费用：分项 64.00 → 64.00；有效权重 30.0% → 60.0%；加权贡献 19.20 → 38.40（变化 +19.2000）。",
-          "居住：分项 100.00 → 100.00；有效权重 20.0% → 15.0%；加权贡献 20.00 → 15.00（变化 -5.0000）。",
-          "便利：分项 100.00 → 100.00；有效权重 15.0% → 10.0%；加权贡献 15.00 → 10.00（变化 -5.0000）。",
-          "名次 3 → 9；排名由全部合格候选的相对得分及 ID 决定。"
+          "Eligibility: Eligible → Eligible.",
+          "Commute: component 100.00 → 100.00; effective weight 35.0% → 15.0%; weighted contribution 35.00 → 15.00 (change -20.0000).",
+          "Cost: component 64.00 → 64.00; effective weight 30.0% → 60.0%; weighted contribution 19.20 → 38.40 (change +19.2000).",
+          "Housing: component 100.00 → 100.00; effective weight 20.0% → 15.0%; weighted contribution 20.00 → 15.00 (change -5.0000).",
+          "Amenities: component 100.00 → 100.00; effective weight 15.0% → 10.0%; weighted contribution 15.00 → 10.00 (change -5.0000).",
+          "Rank 3 → 9; ranking depends on relative scores and IDs across all eligible candidates."
         ],
         "score_contributions": {
           "commute": {
@@ -6100,12 +6100,12 @@
         "after_score": 82.5,
         "score_change": 6.45,
         "change_reasons": [
-          "资格：合格 → 合格。",
-          "通勤：分项 72.00 → 72.00；有效权重 35.0% → 15.0%；加权贡献 25.20 → 10.80（变化 -14.4000）。",
-          "费用：分项 92.00 → 92.00；有效权重 30.0% → 60.0%；加权贡献 27.60 → 55.20（变化 +27.6000）。",
-          "居住：分项 60.00 → 60.00；有效权重 20.0% → 15.0%；加权贡献 12.00 → 9.00（变化 -3.0000）。",
-          "便利：分项 75.00 → 75.00；有效权重 15.0% → 10.0%；加权贡献 11.25 → 7.50（变化 -3.7500）。",
-          "名次 10 → 6；排名由全部合格候选的相对得分及 ID 决定。"
+          "Eligibility: Eligible → Eligible.",
+          "Commute: component 72.00 → 72.00; effective weight 35.0% → 15.0%; weighted contribution 25.20 → 10.80 (change -14.4000).",
+          "Cost: component 92.00 → 92.00; effective weight 30.0% → 60.0%; weighted contribution 27.60 → 55.20 (change +27.6000).",
+          "Housing: component 60.00 → 60.00; effective weight 20.0% → 15.0%; weighted contribution 12.00 → 9.00 (change -3.0000).",
+          "Amenities: component 75.00 → 75.00; effective weight 15.0% → 10.0%; weighted contribution 11.25 → 7.50 (change -3.7500).",
+          "Rank 10 → 6; ranking depends on relative scores and IDs across all eligible candidates."
         ],
         "score_contributions": {
           "commute": {
@@ -6141,12 +6141,12 @@
         "after_score": 87.1667,
         "score_change": -5.5833,
         "change_reasons": [
-          "资格：合格 → 合格。",
-          "通勤：分项 100.00 → 100.00；有效权重 35.0% → 15.0%；加权贡献 35.00 → 15.00（变化 -20.0000）。",
-          "费用：分项 80.00 → 80.00；有效权重 30.0% → 60.0%；加权贡献 24.00 → 48.00（变化 +24.0000）。",
-          "居住：分项 100.00 → 100.00；有效权重 20.0% → 15.0%；加权贡献 20.00 → 15.00（变化 -5.0000）。",
-          "便利：分项 91.67 → 91.67；有效权重 15.0% → 10.0%；加权贡献 13.75 → 9.17（变化 -4.5833）。",
-          "名次 1 → 2；排名由全部合格候选的相对得分及 ID 决定。"
+          "Eligibility: Eligible → Eligible.",
+          "Commute: component 100.00 → 100.00; effective weight 35.0% → 15.0%; weighted contribution 35.00 → 15.00 (change -20.0000).",
+          "Cost: component 80.00 → 80.00; effective weight 30.0% → 60.0%; weighted contribution 24.00 → 48.00 (change +24.0000).",
+          "Housing: component 100.00 → 100.00; effective weight 20.0% → 15.0%; weighted contribution 20.00 → 15.00 (change -5.0000).",
+          "Amenities: component 91.67 → 91.67; effective weight 15.0% → 10.0%; weighted contribution 13.75 → 9.17 (change -4.5833).",
+          "Rank 1 → 2; ranking depends on relative scores and IDs across all eligible candidates."
         ],
         "score_contributions": {
           "commute": {
@@ -6182,12 +6182,12 @@
         "after_score": 76.7667,
         "score_change": 17.1167,
         "change_reasons": [
-          "资格：合格 → 合格。",
-          "通勤：分项 44.00 → 44.00；有效权重 35.0% → 15.0%；加权贡献 15.40 → 6.60（变化 -8.8000）。",
-          "费用：分项 100.00 → 100.00；有效权重 30.0% → 60.0%；加权贡献 30.00 → 60.00（变化 +30.0000）。",
-          "居住：分项 40.00 → 40.00；有效权重 20.0% → 15.0%；加权贡献 8.00 → 6.00（变化 -2.0000）。",
-          "便利：分项 41.67 → 41.67；有效权重 15.0% → 10.0%；加权贡献 6.25 → 4.17（变化 -2.0833）。",
-          "名次 15 → 12；排名由全部合格候选的相对得分及 ID 决定。"
+          "Eligibility: Eligible → Eligible.",
+          "Commute: component 44.00 → 44.00; effective weight 35.0% → 15.0%; weighted contribution 15.40 → 6.60 (change -8.8000).",
+          "Cost: component 100.00 → 100.00; effective weight 30.0% → 60.0%; weighted contribution 30.00 → 60.00 (change +30.0000).",
+          "Housing: component 40.00 → 40.00; effective weight 20.0% → 15.0%; weighted contribution 8.00 → 6.00 (change -2.0000).",
+          "Amenities: component 41.67 → 41.67; effective weight 15.0% → 10.0%; weighted contribution 6.25 → 4.17 (change -2.0833).",
+          "Rank 15 → 12; ranking depends on relative scores and IDs across all eligible candidates."
         ],
         "score_contributions": {
           "commute": {
@@ -6223,12 +6223,12 @@
         "after_score": 77.4667,
         "score_change": -7.9333,
         "change_reasons": [
-          "资格：合格 → 合格。",
-          "通勤：分项 100.00 → 100.00；有效权重 35.0% → 15.0%；加权贡献 35.00 → 15.00（变化 -20.0000）。",
-          "费用：分项 68.00 → 68.00；有效权重 30.0% → 60.0%；加权贡献 20.40 → 40.80（变化 +20.4000）。",
-          "居住：分项 100.00 → 100.00；有效权重 20.0% → 15.0%；加权贡献 20.00 → 15.00（变化 -5.0000）。",
-          "便利：分项 66.67 → 66.67；有效权重 15.0% → 10.0%；加权贡献 10.00 → 6.67（变化 -3.3333）。",
-          "名次 6 → 10；排名由全部合格候选的相对得分及 ID 决定。"
+          "Eligibility: Eligible → Eligible.",
+          "Commute: component 100.00 → 100.00; effective weight 35.0% → 15.0%; weighted contribution 35.00 → 15.00 (change -20.0000).",
+          "Cost: component 68.00 → 68.00; effective weight 30.0% → 60.0%; weighted contribution 20.40 → 40.80 (change +20.4000).",
+          "Housing: component 100.00 → 100.00; effective weight 20.0% → 15.0%; weighted contribution 20.00 → 15.00 (change -5.0000).",
+          "Amenities: component 66.67 → 66.67; effective weight 15.0% → 10.0%; weighted contribution 10.00 → 6.67 (change -3.3333).",
+          "Rank 6 → 10; ranking depends on relative scores and IDs across all eligible candidates."
         ],
         "score_contributions": {
           "commute": {
@@ -6264,12 +6264,12 @@
         "after_score": 77.3333,
         "score_change": 2.2333,
         "change_reasons": [
-          "资格：合格 → 合格。",
-          "通勤：分项 84.00 → 84.00；有效权重 35.0% → 15.0%；加权贡献 29.40 → 12.60（变化 -16.8000）。",
-          "费用：分项 84.00 → 84.00；有效权重 30.0% → 60.0%；加权贡献 25.20 → 50.40（变化 +25.2000）。",
-          "居住：分项 40.00 → 40.00；有效权重 20.0% → 15.0%；加权贡献 8.00 → 6.00（变化 -2.0000）。",
-          "便利：分项 83.33 → 83.33；有效权重 15.0% → 10.0%；加权贡献 12.50 → 8.33（变化 -4.1667）。",
-          "名次不变；总分变化不必然导致名次变化。"
+          "Eligibility: Eligible → Eligible.",
+          "Commute: component 84.00 → 84.00; effective weight 35.0% → 15.0%; weighted contribution 29.40 → 12.60 (change -16.8000).",
+          "Cost: component 84.00 → 84.00; effective weight 30.0% → 60.0%; weighted contribution 25.20 → 50.40 (change +25.2000).",
+          "Housing: component 40.00 → 40.00; effective weight 20.0% → 15.0%; weighted contribution 8.00 → 6.00 (change -2.0000).",
+          "Amenities: component 83.33 → 83.33; effective weight 15.0% → 10.0%; weighted contribution 12.50 → 8.33 (change -4.1667).",
+          "Rank unchanged; a total-score change does not necessarily change rank."
         ],
         "score_contributions": {
           "commute": {
@@ -6305,12 +6305,12 @@
         "after_score": 82.6333,
         "score_change": 13.6833,
         "change_reasons": [
-          "资格：合格 → 合格。",
-          "通勤：分项 52.00 → 52.00；有效权重 35.0% → 15.0%；加权贡献 18.20 → 7.80（变化 -10.4000）。",
-          "费用：分项 100.00 → 100.00；有效权重 30.0% → 60.0%；加权贡献 30.00 → 60.00（变化 +30.0000）。",
-          "居住：分项 60.00 → 60.00；有效权重 20.0% → 15.0%；加权贡献 12.00 → 9.00（变化 -3.0000）。",
-          "便利：分项 58.33 → 58.33；有效权重 15.0% → 10.0%；加权贡献 8.75 → 5.83（变化 -2.9167）。",
-          "名次 13 → 5；排名由全部合格候选的相对得分及 ID 决定。"
+          "Eligibility: Eligible → Eligible.",
+          "Commute: component 52.00 → 52.00; effective weight 35.0% → 15.0%; weighted contribution 18.20 → 7.80 (change -10.4000).",
+          "Cost: component 100.00 → 100.00; effective weight 30.0% → 60.0%; weighted contribution 30.00 → 60.00 (change +30.0000).",
+          "Housing: component 60.00 → 60.00; effective weight 20.0% → 15.0%; weighted contribution 12.00 → 9.00 (change -3.0000).",
+          "Amenities: component 58.33 → 58.33; effective weight 15.0% → 10.0%; weighted contribution 8.75 → 5.83 (change -2.9167).",
+          "Rank 13 → 5; ranking depends on relative scores and IDs across all eligible candidates."
         ],
         "score_contributions": {
           "commute": {
@@ -6346,12 +6346,12 @@
         "after_score": 76.0,
         "score_change": -12.0,
         "change_reasons": [
-          "资格：合格 → 合格。",
-          "通勤：分项 100.00 → 100.00；有效权重 35.0% → 15.0%；加权贡献 35.00 → 15.00（变化 -20.0000）。",
-          "费用：分项 60.00 → 60.00；有效权重 30.0% → 60.0%；加权贡献 18.00 → 36.00（变化 +18.0000）。",
-          "居住：分项 100.00 → 100.00；有效权重 20.0% → 15.0%；加权贡献 20.00 → 15.00（变化 -5.0000）。",
-          "便利：分项 100.00 → 100.00；有效权重 15.0% → 10.0%；加权贡献 15.00 → 10.00（变化 -5.0000）。",
-          "名次 5 → 15；排名由全部合格候选的相对得分及 ID 决定。"
+          "Eligibility: Eligible → Eligible.",
+          "Commute: component 100.00 → 100.00; effective weight 35.0% → 15.0%; weighted contribution 35.00 → 15.00 (change -20.0000).",
+          "Cost: component 60.00 → 60.00; effective weight 30.0% → 60.0%; weighted contribution 18.00 → 36.00 (change +18.0000).",
+          "Housing: component 100.00 → 100.00; effective weight 20.0% → 15.0%; weighted contribution 20.00 → 15.00 (change -5.0000).",
+          "Amenities: component 100.00 → 100.00; effective weight 15.0% → 10.0%; weighted contribution 15.00 → 10.00 (change -5.0000).",
+          "Rank 5 → 15; ranking depends on relative scores and IDs across all eligible candidates."
         ],
         "score_contributions": {
           "commute": {
@@ -6387,12 +6387,12 @@
         "after_score": 89.8,
         "score_change": 0.4,
         "change_reasons": [
-          "资格：合格 → 合格。",
-          "通勤：分项 80.00 → 80.00；有效权重 35.0% → 15.0%；加权贡献 28.00 → 12.00（变化 -16.0000）。",
-          "费用：分项 88.00 → 88.00；有效权重 30.0% → 60.0%；加权贡献 26.40 → 52.80（变化 +26.4000）。",
-          "居住：分项 100.00 → 100.00；有效权重 20.0% → 15.0%；加权贡献 20.00 → 15.00（变化 -5.0000）。",
-          "便利：分项 100.00 → 100.00；有效权重 15.0% → 10.0%；加权贡献 15.00 → 10.00（变化 -5.0000）。",
-          "名次 2 → 1；排名由全部合格候选的相对得分及 ID 决定。"
+          "Eligibility: Eligible → Eligible.",
+          "Commute: component 80.00 → 80.00; effective weight 35.0% → 15.0%; weighted contribution 28.00 → 12.00 (change -16.0000).",
+          "Cost: component 88.00 → 88.00; effective weight 30.0% → 60.0%; weighted contribution 26.40 → 52.80 (change +26.4000).",
+          "Housing: component 100.00 → 100.00; effective weight 20.0% → 15.0%; weighted contribution 20.00 → 15.00 (change -5.0000).",
+          "Amenities: component 100.00 → 100.00; effective weight 15.0% → 10.0%; weighted contribution 15.00 → 10.00 (change -5.0000).",
+          "Rank 2 → 1; ranking depends on relative scores and IDs across all eligible candidates."
         ],
         "score_contributions": {
           "commute": {
@@ -6428,12 +6428,12 @@
         "after_score": 76.6833,
         "score_change": -3.7417,
         "change_reasons": [
-          "资格：合格 → 合格。",
-          "通勤：分项 100.00 → 100.00；有效权重 35.0% → 15.0%；加权贡献 35.00 → 15.00（变化 -20.0000）。",
-          "费用：分项 76.00 → 76.00；有效权重 30.0% → 60.0%；加权贡献 22.80 → 45.60（变化 +22.8000）。",
-          "居住：分项 60.00 → 60.00；有效权重 20.0% → 15.0%；加权贡献 12.00 → 9.00（变化 -3.0000）。",
-          "便利：分项 70.83 → 70.83；有效权重 15.0% → 10.0%；加权贡献 10.62 → 7.08（变化 -3.5417）。",
-          "名次 8 → 13；排名由全部合格候选的相对得分及 ID 决定。"
+          "Eligibility: Eligible → Eligible.",
+          "Commute: component 100.00 → 100.00; effective weight 35.0% → 15.0%; weighted contribution 35.00 → 15.00 (change -20.0000).",
+          "Cost: component 76.00 → 76.00; effective weight 30.0% → 60.0%; weighted contribution 22.80 → 45.60 (change +22.8000).",
+          "Housing: component 60.00 → 60.00; effective weight 20.0% → 15.0%; weighted contribution 12.00 → 9.00 (change -3.0000).",
+          "Amenities: component 70.83 → 70.83; effective weight 15.0% → 10.0%; weighted contribution 10.62 → 7.08 (change -3.5417).",
+          "Rank 8 → 13; ranking depends on relative scores and IDs across all eligible candidates."
         ],
         "score_contributions": {
           "commute": {
@@ -6469,12 +6469,12 @@
         "after_score": 83.15,
         "score_change": 10.225,
         "change_reasons": [
-          "资格：合格 → 合格。",
-          "通勤：分项 64.00 → 64.00；有效权重 35.0% → 15.0%；加权贡献 22.40 → 9.60（变化 -12.8000）。",
-          "费用：分项 98.00 → 98.00；有效权重 30.0% → 60.0%；加权贡献 29.40 → 58.80（变化 +29.4000）。",
-          "居住：分项 40.00 → 40.00；有效权重 20.0% → 15.0%；加权贡献 8.00 → 6.00（变化 -2.0000）。",
-          "便利：分项 87.50 → 87.50；有效权重 15.0% → 10.0%；加权贡献 13.12 → 8.75（变化 -4.3750）。",
-          "名次 12 → 4；排名由全部合格候选的相对得分及 ID 决定。"
+          "Eligibility: Eligible → Eligible.",
+          "Commute: component 64.00 → 64.00; effective weight 35.0% → 15.0%; weighted contribution 22.40 → 9.60 (change -12.8000).",
+          "Cost: component 98.00 → 98.00; effective weight 30.0% → 60.0%; weighted contribution 29.40 → 58.80 (change +29.4000).",
+          "Housing: component 40.00 → 40.00; effective weight 20.0% → 15.0%; weighted contribution 8.00 → 6.00 (change -2.0000).",
+          "Amenities: component 87.50 → 87.50; effective weight 15.0% → 10.0%; weighted contribution 13.12 → 8.75 (change -4.3750).",
+          "Rank 12 → 4; ranking depends on relative scores and IDs across all eligible candidates."
         ],
         "score_contributions": {
           "commute": {
@@ -6510,12 +6510,12 @@
         "after_score": 76.5833,
         "score_change": -6.2917,
         "change_reasons": [
-          "资格：合格 → 合格。",
-          "通勤：分项 100.00 → 100.00；有效权重 35.0% → 15.0%；加权贡献 35.00 → 15.00（变化 -20.0000）。",
-          "费用：分项 70.00 → 70.00；有效权重 30.0% → 60.0%；加权贡献 21.00 → 42.00（变化 +21.0000）。",
-          "居住：分项 100.00 → 100.00；有效权重 20.0% → 15.0%；加权贡献 20.00 → 15.00（变化 -5.0000）。",
-          "便利：分项 45.83 → 45.83；有效权重 15.0% → 10.0%；加权贡献 6.88 → 4.58（变化 -2.2917）。",
-          "名次 7 → 14；排名由全部合格候选的相对得分及 ID 决定。"
+          "Eligibility: Eligible → Eligible.",
+          "Commute: component 100.00 → 100.00; effective weight 35.0% → 15.0%; weighted contribution 35.00 → 15.00 (change -20.0000).",
+          "Cost: component 70.00 → 70.00; effective weight 30.0% → 60.0%; weighted contribution 21.00 → 42.00 (change +21.0000).",
+          "Housing: component 100.00 → 100.00; effective weight 20.0% → 15.0%; weighted contribution 20.00 → 15.00 (change -5.0000).",
+          "Amenities: component 45.83 → 45.83; effective weight 15.0% → 10.0%; weighted contribution 6.88 → 4.58 (change -2.2917).",
+          "Rank 7 → 14; ranking depends on relative scores and IDs across all eligible candidates."
         ],
         "score_contributions": {
           "commute": {
@@ -6551,13 +6551,13 @@
         "after_score": null,
         "score_change": null,
         "change_reasons": [
-          "资格：排除 → 排除。",
-          "通勤：分项 100.00 → 100.00；有效权重 35.0% → 15.0%；加权贡献 35.00 → 15.00（变化 -20.0000）。",
-          "费用：分项 20.00 → 20.00；有效权重 30.0% → 60.0%；加权贡献 6.00 → 12.00（变化 +6.0000）。",
-          "居住：分项 100.00 → 100.00；有效权重 20.0% → 15.0%；加权贡献 20.00 → 15.00（变化 -5.0000）。",
-          "便利：分项 80.00 → 80.00；有效权重 15.0% → 10.0%；加权贡献 12.00 → 8.00（变化 -4.0000）。",
-          "当前未排名依据：budget：周费用须不超过 AUD 550（per_person）。",
-          "当前没有正式总分和排名；已知分项贡献不能代替完整评分。"
+          "Eligibility: Excluded → Excluded.",
+          "Commute: component 100.00 → 100.00; effective weight 35.0% → 15.0%; weighted contribution 35.00 → 15.00 (change -20.0000).",
+          "Cost: component 20.00 → 20.00; effective weight 30.0% → 60.0%; weighted contribution 6.00 → 12.00 (change +6.0000).",
+          "Housing: component 100.00 → 100.00; effective weight 20.0% → 15.0%; weighted contribution 20.00 → 15.00 (change -5.0000).",
+          "Amenities: component 80.00 → 80.00; effective weight 15.0% → 10.0%; weighted contribution 12.00 → 8.00 (change -4.0000).",
+          "Reasons for no current rank: budget: Weekly cost must not exceed AUD 550 (per_person).",
+          "No formal total score or rank is available. Known component contributions cannot replace a complete score."
         ],
         "score_contributions": {
           "commute": {
@@ -6593,13 +6593,13 @@
         "after_score": null,
         "score_change": null,
         "change_reasons": [
-          "资格：排除 → 排除。",
-          "通勤：分项 0.00 → 0.00；有效权重 35.0% → 15.0%；加权贡献 0.00 → 0.00（变化 +0.0000）。",
-          "费用：分项 96.00 → 96.00；有效权重 30.0% → 60.0%；加权贡献 28.80 → 57.60（变化 +28.8000）。",
-          "居住：分项 100.00 → 100.00；有效权重 20.0% → 15.0%；加权贡献 20.00 → 15.00（变化 -5.0000）。",
-          "便利：分项 60.00 → 60.00；有效权重 15.0% → 10.0%；加权贡献 9.00 → 6.00（变化 -3.0000）。",
-          "当前未排名依据：commute：模拟到校时间须不超过 40 分钟。",
-          "当前没有正式总分和排名；已知分项贡献不能代替完整评分。"
+          "Eligibility: Excluded → Excluded.",
+          "Commute: component 0.00 → 0.00; effective weight 35.0% → 15.0%; weighted contribution 0.00 → 0.00 (change +0.0000).",
+          "Cost: component 96.00 → 96.00; effective weight 30.0% → 60.0%; weighted contribution 28.80 → 57.60 (change +28.8000).",
+          "Housing: component 100.00 → 100.00; effective weight 20.0% → 15.0%; weighted contribution 20.00 → 15.00 (change -5.0000).",
+          "Amenities: component 60.00 → 60.00; effective weight 15.0% → 10.0%; weighted contribution 9.00 → 6.00 (change -3.0000).",
+          "Reasons for no current rank: commute: Synthetic campus travel time must not exceed 40 minutes.",
+          "No formal total score or rank is available. Known component contributions cannot replace a complete score."
         ],
         "score_contributions": {
           "commute": {
@@ -6635,13 +6635,13 @@
         "after_score": null,
         "score_change": null,
         "change_reasons": [
-          "资格：排除 → 排除。",
-          "通勤：分项 48.00 → 48.00；有效权重 35.0% → 15.0%；加权贡献 16.80 → 7.20（变化 -9.6000）。",
-          "费用：分项 100.00 → 100.00；有效权重 30.0% → 60.0%；加权贡献 30.00 → 60.00（变化 +30.0000）。",
-          "居住：分项 60.00 → 60.00；有效权重 20.0% → 15.0%；加权贡献 12.00 → 9.00（变化 -3.0000）。",
-          "便利：分项 50.00 → 50.00；有效权重 15.0% → 10.0%；加权贡献 7.50 → 5.00（变化 -2.5000）。",
-          "当前未排名依据：rental_mode：租赁方式须为 private_room。",
-          "当前没有正式总分和排名；已知分项贡献不能代替完整评分。"
+          "Eligibility: Excluded → Excluded.",
+          "Commute: component 48.00 → 48.00; effective weight 35.0% → 15.0%; weighted contribution 16.80 → 7.20 (change -9.6000).",
+          "Cost: component 100.00 → 100.00; effective weight 30.0% → 60.0%; weighted contribution 30.00 → 60.00 (change +30.0000).",
+          "Housing: component 60.00 → 60.00; effective weight 20.0% → 15.0%; weighted contribution 12.00 → 9.00 (change -3.0000).",
+          "Amenities: component 50.00 → 50.00; effective weight 15.0% → 10.0%; weighted contribution 7.50 → 5.00 (change -2.5000).",
+          "Reasons for no current rank: rental_mode: Rental mode must be private_room.",
+          "No formal total score or rank is available. Known component contributions cannot replace a complete score."
         ],
         "score_contributions": {
           "commute": {
@@ -6677,13 +6677,13 @@
         "after_score": null,
         "score_change": null,
         "change_reasons": [
-          "资格：排除 → 排除。",
-          "通勤：分项 100.00 → 100.00；有效权重 35.0% → 15.0%；加权贡献 35.00 → 15.00（变化 -20.0000）。",
-          "费用：分项 64.00 → 64.00；有效权重 30.0% → 60.0%；加权贡献 19.20 → 38.40（变化 +19.2000）。",
-          "居住：分项 100.00 → 100.00；有效权重 20.0% → 15.0%；加权贡献 20.00 → 15.00（变化 -5.0000）。",
-          "便利：分项 100.00 → 100.00；有效权重 15.0% → 10.0%；加权贡献 15.00 → 10.00（变化 -5.0000）。",
-          "当前未排名依据：move_in：供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交。",
-          "当前没有正式总分和排名；已知分项贡献不能代替完整评分。"
+          "Eligibility: Excluded → Excluded.",
+          "Commute: component 100.00 → 100.00; effective weight 35.0% → 15.0%; weighted contribution 35.00 → 15.00 (change -20.0000).",
+          "Cost: component 64.00 → 64.00; effective weight 30.0% → 60.0%; weighted contribution 19.20 → 38.40 (change +19.2000).",
+          "Housing: component 100.00 → 100.00; effective weight 20.0% → 15.0%; weighted contribution 20.00 → 15.00 (change -5.0000).",
+          "Amenities: component 100.00 → 100.00; effective weight 15.0% → 10.0%; weighted contribution 15.00 → 10.00 (change -5.0000).",
+          "Reasons for no current rank: move_in: The provider start-date range must overlap 2027-02-01 to 2027-02-07.",
+          "No formal total score or rank is available. Known component contributions cannot replace a complete score."
         ],
         "score_contributions": {
           "commute": {
@@ -6719,13 +6719,13 @@
         "after_score": null,
         "score_change": null,
         "change_reasons": [
-          "资格：排除 → 排除。",
-          "通勤：分项 72.00 → 72.00；有效权重 35.0% → 15.0%；加权贡献 25.20 → 10.80（变化 -14.4000）。",
-          "费用：分项 92.00 → 92.00；有效权重 30.0% → 60.0%；加权贡献 27.60 → 55.20（变化 +27.6000）。",
-          "居住：分项 60.00 → 60.00；有效权重 20.0% → 15.0%；加权贡献 12.00 → 9.00（变化 -3.0000）。",
-          "便利：分项 75.00 → 75.00；有效权重 15.0% → 10.0%；加权贡献 11.25 → 7.50（变化 -3.7500）。",
-          "当前未排名依据：private_bedroom：必须满足 private_bedroom。",
-          "当前没有正式总分和排名；已知分项贡献不能代替完整评分。"
+          "Eligibility: Excluded → Excluded.",
+          "Commute: component 72.00 → 72.00; effective weight 35.0% → 15.0%; weighted contribution 25.20 → 10.80 (change -14.4000).",
+          "Cost: component 92.00 → 92.00; effective weight 30.0% → 60.0%; weighted contribution 27.60 → 55.20 (change +27.6000).",
+          "Housing: component 60.00 → 60.00; effective weight 20.0% → 15.0%; weighted contribution 12.00 → 9.00 (change -3.0000).",
+          "Amenities: component 75.00 → 75.00; effective weight 15.0% → 10.0%; weighted contribution 11.25 → 7.50 (change -3.7500).",
+          "Reasons for no current rank: private_bedroom: Must satisfy private_bedroom.",
+          "No formal total score or rank is available. Known component contributions cannot replace a complete score."
         ],
         "score_contributions": {
           "commute": {
@@ -6761,13 +6761,13 @@
         "after_score": null,
         "score_change": null,
         "change_reasons": [
-          "资格：待确认 → 待确认。",
-          "通勤：分项 100.00 → 100.00；有效权重 35.0% → 15.0%；加权贡献 35.00 → 15.00（变化 -20.0000）。",
-          "费用：分项 未知 → 未知；有效权重 30.0% → 60.0%；加权贡献 未知 → 未知（变化 不可比较）。",
-          "居住：分项 100.00 → 100.00；有效权重 20.0% → 15.0%；加权贡献 20.00 → 15.00（变化 -5.0000）。",
-          "便利：分项 91.67 → 91.67；有效权重 15.0% → 10.0%；加权贡献 13.75 → 9.17（变化 -4.5833）。",
-          "当前未排名依据：budget：周费用须不超过 AUD 550（per_person）；bills_included：信息缺失。",
-          "当前没有正式总分和排名；已知分项贡献不能代替完整评分。"
+          "Eligibility: Pending confirmation → Pending confirmation.",
+          "Commute: component 100.00 → 100.00; effective weight 35.0% → 15.0%; weighted contribution 35.00 → 15.00 (change -20.0000).",
+          "Cost: component Unknown → Unknown; effective weight 30.0% → 60.0%; weighted contribution Unknown → Unknown (change Not comparable).",
+          "Housing: component 100.00 → 100.00; effective weight 20.0% → 15.0%; weighted contribution 20.00 → 15.00 (change -5.0000).",
+          "Amenities: component 91.67 → 91.67; effective weight 15.0% → 10.0%; weighted contribution 13.75 → 9.17 (change -4.5833).",
+          "Reasons for no current rank: budget: Weekly cost must not exceed AUD 550 (per_person); bills_included: Missing information.",
+          "No formal total score or rank is available. Known component contributions cannot replace a complete score."
         ],
         "score_contributions": {
           "commute": {
@@ -6803,13 +6803,13 @@
         "after_score": null,
         "score_change": null,
         "change_reasons": [
-          "资格：待确认 → 待确认。",
-          "通勤：分项 44.00 → 44.00；有效权重 35.0% → 15.0%；加权贡献 15.40 → 6.60（变化 -8.8000）。",
-          "费用：分项 100.00 → 100.00；有效权重 30.0% → 60.0%；加权贡献 30.00 → 60.00（变化 +30.0000）。",
-          "居住：分项 40.00 → 40.00；有效权重 20.0% → 15.0%；加权贡献 8.00 → 6.00（变化 -2.0000）。",
-          "便利：分项 41.67 → 41.67；有效权重 15.0% → 10.0%；加权贡献 6.25 → 4.17（变化 -2.0833）。",
-          "当前未排名依据：move_in：供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交；latest_start_date：信息缺失。",
-          "当前没有正式总分和排名；已知分项贡献不能代替完整评分。"
+          "Eligibility: Pending confirmation → Pending confirmation.",
+          "Commute: component 44.00 → 44.00; effective weight 35.0% → 15.0%; weighted contribution 15.40 → 6.60 (change -8.8000).",
+          "Cost: component 100.00 → 100.00; effective weight 30.0% → 60.0%; weighted contribution 30.00 → 60.00 (change +30.0000).",
+          "Housing: component 40.00 → 40.00; effective weight 20.0% → 15.0%; weighted contribution 8.00 → 6.00 (change -2.0000).",
+          "Amenities: component 41.67 → 41.67; effective weight 15.0% → 10.0%; weighted contribution 6.25 → 4.17 (change -2.0833).",
+          "Reasons for no current rank: move_in: The provider start-date range must overlap 2027-02-01 to 2027-02-07; latest_start_date: Missing information.",
+          "No formal total score or rank is available. Known component contributions cannot replace a complete score."
         ],
         "score_contributions": {
           "commute": {
@@ -6845,13 +6845,13 @@
         "after_score": null,
         "score_change": null,
         "change_reasons": [
-          "资格：待确认 → 待确认。",
-          "通勤：分项 未知 → 未知；有效权重 35.0% → 15.0%；加权贡献 未知 → 未知（变化 不可比较）。",
-          "费用：分项 68.00 → 68.00；有效权重 30.0% → 60.0%；加权贡献 20.40 → 40.80（变化 +20.4000）。",
-          "居住：分项 100.00 → 100.00；有效权重 20.0% → 15.0%；加权贡献 20.00 → 15.00（变化 -5.0000）。",
-          "便利：分项 66.67 → 66.67；有效权重 15.0% → 10.0%；加权贡献 10.00 → 6.67（变化 -3.3333）。",
-          "当前未排名依据：commute：模拟到校时间须不超过 40 分钟；commute：信息缺失。",
-          "当前没有正式总分和排名；已知分项贡献不能代替完整评分。"
+          "Eligibility: Pending confirmation → Pending confirmation.",
+          "Commute: component Unknown → Unknown; effective weight 35.0% → 15.0%; weighted contribution Unknown → Unknown (change Not comparable).",
+          "Cost: component 68.00 → 68.00; effective weight 30.0% → 60.0%; weighted contribution 20.40 → 40.80 (change +20.4000).",
+          "Housing: component 100.00 → 100.00; effective weight 20.0% → 15.0%; weighted contribution 20.00 → 15.00 (change -5.0000).",
+          "Amenities: component 66.67 → 66.67; effective weight 15.0% → 10.0%; weighted contribution 10.00 → 6.67 (change -3.3333).",
+          "Reasons for no current rank: commute: Synthetic campus travel time must not exceed 40 minutes; commute: Missing information.",
+          "No formal total score or rank is available. Known component contributions cannot replace a complete score."
         ],
         "score_contributions": {
           "commute": {
@@ -6887,13 +6887,13 @@
         "after_score": null,
         "score_change": null,
         "change_reasons": [
-          "资格：待确认 → 待确认。",
-          "通勤：分项 84.00 → 84.00；有效权重 35.0% → 15.0%；加权贡献 29.40 → 12.60（变化 -16.8000）。",
-          "费用：分项 84.00 → 84.00；有效权重 30.0% → 60.0%；加权贡献 25.20 → 50.40（变化 +25.2000）。",
-          "居住：分项 40.00 → 40.00；有效权重 20.0% → 15.0%；加权贡献 8.00 → 6.00（变化 -2.0000）。",
-          "便利：分项 未知 → 未知；有效权重 15.0% → 10.0%；加权贡献 未知 → 未知（变化 不可比较）。",
-          "当前未排名依据：supermarket_distance_m：信息缺失。",
-          "当前没有正式总分和排名；已知分项贡献不能代替完整评分。"
+          "Eligibility: Pending confirmation → Pending confirmation.",
+          "Commute: component 84.00 → 84.00; effective weight 35.0% → 15.0%; weighted contribution 29.40 → 12.60 (change -16.8000).",
+          "Cost: component 84.00 → 84.00; effective weight 30.0% → 60.0%; weighted contribution 25.20 → 50.40 (change +25.2000).",
+          "Housing: component 40.00 → 40.00; effective weight 20.0% → 15.0%; weighted contribution 8.00 → 6.00 (change -2.0000).",
+          "Amenities: component Unknown → Unknown; effective weight 15.0% → 10.0%; weighted contribution Unknown → Unknown (change Not comparable).",
+          "Reasons for no current rank: supermarket_distance_m: Missing information.",
+          "No formal total score or rank is available. Known component contributions cannot replace a complete score."
         ],
         "score_contributions": {
           "commute": {
@@ -6929,13 +6929,13 @@
         "after_score": null,
         "score_change": null,
         "change_reasons": [
-          "资格：待确认 → 待确认。",
-          "通勤：分项 52.00 → 52.00；有效权重 35.0% → 15.0%；加权贡献 18.20 → 7.80（变化 -10.4000）。",
-          "费用：分项 100.00 → 100.00；有效权重 30.0% → 60.0%；加权贡献 30.00 → 60.00（变化 +30.0000）。",
-          "居住：分项 60.00 → 60.00；有效权重 20.0% → 15.0%；加权贡献 12.00 → 9.00（变化 -3.0000）。",
-          "便利：分项 58.33 → 58.33；有效权重 15.0% → 10.0%；加权贡献 8.75 → 5.83（变化 -2.9167）。",
-          "当前未排名依据：private_bedroom：必须满足 private_bedroom；private_bedroom：信息缺失。",
-          "当前没有正式总分和排名；已知分项贡献不能代替完整评分。"
+          "Eligibility: Pending confirmation → Pending confirmation.",
+          "Commute: component 52.00 → 52.00; effective weight 35.0% → 15.0%; weighted contribution 18.20 → 7.80 (change -10.4000).",
+          "Cost: component 100.00 → 100.00; effective weight 30.0% → 60.0%; weighted contribution 30.00 → 60.00 (change +30.0000).",
+          "Housing: component 60.00 → 60.00; effective weight 20.0% → 15.0%; weighted contribution 12.00 → 9.00 (change -3.0000).",
+          "Amenities: component 58.33 → 58.33; effective weight 15.0% → 10.0%; weighted contribution 8.75 → 5.83 (change -2.9167).",
+          "Reasons for no current rank: private_bedroom: Must satisfy private_bedroom; private_bedroom: Missing information.",
+          "No formal total score or rank is available. Known component contributions cannot replace a complete score."
         ],
         "score_contributions": {
           "commute": {
@@ -6971,13 +6971,13 @@
         "after_score": null,
         "score_change": null,
         "change_reasons": [
-          "资格：待确认 → 待确认。",
-          "通勤：分项 100.00 → 100.00；有效权重 35.0% → 15.0%；加权贡献 35.00 → 15.00（变化 -20.0000）。",
-          "费用：分项 60.00 → 60.00；有效权重 30.0% → 60.0%；加权贡献 18.00 → 36.00（变化 +18.0000）。",
-          "居住：分项 100.00 → 100.00；有效权重 20.0% → 15.0%；加权贡献 20.00 → 15.00（变化 -5.0000）。",
-          "便利：分项 100.00 → 100.00；有效权重 15.0% → 10.0%；加权贡献 15.00 → 10.00（变化 -5.0000）。",
-          "当前未排名依据：freshness：快照核对时间须不晚于评估时点且不超过24小时。",
-          "当前没有正式总分和排名；已知分项贡献不能代替完整评分。"
+          "Eligibility: Pending confirmation → Pending confirmation.",
+          "Commute: component 100.00 → 100.00; effective weight 35.0% → 15.0%; weighted contribution 35.00 → 15.00 (change -20.0000).",
+          "Cost: component 60.00 → 60.00; effective weight 30.0% → 60.0%; weighted contribution 18.00 → 36.00 (change +18.0000).",
+          "Housing: component 100.00 → 100.00; effective weight 20.0% → 15.0%; weighted contribution 20.00 → 15.00 (change -5.0000).",
+          "Amenities: component 100.00 → 100.00; effective weight 15.0% → 10.0%; weighted contribution 15.00 → 10.00 (change -5.0000).",
+          "Reasons for no current rank: freshness: The snapshot check must not be later than evaluation time or more than 24 hours old.",
+          "No formal total score or rank is available. Known component contributions cannot replace a complete score."
         ],
         "score_contributions": {
           "commute": {
@@ -7013,13 +7013,13 @@
         "after_score": null,
         "score_change": null,
         "change_reasons": [
-          "资格：待确认 → 待确认。",
-          "通勤：分项 80.00 → 80.00；有效权重 35.0% → 15.0%；加权贡献 28.00 → 12.00（变化 -16.0000）。",
-          "费用：分项 未知 → 未知；有效权重 30.0% → 60.0%；加权贡献 未知 → 未知（变化 不可比较）。",
-          "居住：分项 100.00 → 100.00；有效权重 20.0% → 15.0%；加权贡献 20.00 → 15.00（变化 -5.0000）。",
-          "便利：分项 100.00 → 100.00；有效权重 15.0% → 10.0%；加权贡献 15.00 → 10.00（变化 -5.0000）。",
-          "当前未排名依据：budget：周费用须不超过 AUD 550（per_person）；conflicts：字段或同来源重复记录冲突须先核对；rent_amount：来源信息冲突。",
-          "当前没有正式总分和排名；已知分项贡献不能代替完整评分。"
+          "Eligibility: Pending confirmation → Pending confirmation.",
+          "Commute: component 80.00 → 80.00; effective weight 35.0% → 15.0%; weighted contribution 28.00 → 12.00 (change -16.0000).",
+          "Cost: component Unknown → Unknown; effective weight 30.0% → 60.0%; weighted contribution Unknown → Unknown (change Not comparable).",
+          "Housing: component 100.00 → 100.00; effective weight 20.0% → 15.0%; weighted contribution 20.00 → 15.00 (change -5.0000).",
+          "Amenities: component 100.00 → 100.00; effective weight 15.0% → 10.0%; weighted contribution 15.00 → 10.00 (change -5.0000).",
+          "Reasons for no current rank: budget: Weekly cost must not exceed AUD 550 (per_person); conflicts: Conflicting fields or duplicate records from the same source must be checked first; rent_amount: Conflicting source information.",
+          "No formal total score or rank is available. Known component contributions cannot replace a complete score."
         ],
         "score_contributions": {
           "commute": {
@@ -7055,8 +7055,8 @@
         "after_score": null,
         "score_change": null,
         "change_reasons": [
-          "资格：重复 → 重复。",
-          "同来源且事实一致的重复记录，不独立评分或排名。"
+          "Eligibility: Duplicate → Duplicate.",
+          "Duplicate records with the same source and facts are not scored or ranked independently."
         ],
         "score_contributions": {
           "commute": {
@@ -7092,13 +7092,13 @@
         "after_score": null,
         "score_change": null,
         "change_reasons": [
-          "资格：待确认 → 待确认。",
-          "通勤：分项 64.00 → 64.00；有效权重 35.0% → 15.0%；加权贡献 22.40 → 9.60（变化 -12.8000）。",
-          "费用：分项 98.00 → 98.00；有效权重 30.0% → 60.0%；加权贡献 29.40 → 58.80（变化 +29.4000）。",
-          "居住：分项 40.00 → 40.00；有效权重 20.0% → 15.0%；加权贡献 8.00 → 6.00（变化 -2.0000）。",
-          "便利：分项 87.50 → 87.50；有效权重 15.0% → 10.0%；加权贡献 13.12 → 8.75（变化 -4.3750）。",
-          "当前未排名依据：permission：数据使用权限须明确；source_permission：信息缺失。",
-          "当前没有正式总分和排名；已知分项贡献不能代替完整评分。"
+          "Eligibility: Pending confirmation → Pending confirmation.",
+          "Commute: component 64.00 → 64.00; effective weight 35.0% → 15.0%; weighted contribution 22.40 → 9.60 (change -12.8000).",
+          "Cost: component 98.00 → 98.00; effective weight 30.0% → 60.0%; weighted contribution 29.40 → 58.80 (change +29.4000).",
+          "Housing: component 40.00 → 40.00; effective weight 20.0% → 15.0%; weighted contribution 8.00 → 6.00 (change -2.0000).",
+          "Amenities: component 87.50 → 87.50; effective weight 15.0% → 10.0%; weighted contribution 13.12 → 8.75 (change -4.3750).",
+          "Reasons for no current rank: permission: Data-use permission must be explicit; source_permission: Missing information.",
+          "No formal total score or rank is available. Known component contributions cannot replace a complete score."
         ],
         "score_contributions": {
           "commute": {
@@ -7134,13 +7134,13 @@
         "after_score": null,
         "score_change": null,
         "change_reasons": [
-          "资格：待确认 → 待确认。",
-          "通勤：分项 未知 → 未知；有效权重 35.0% → 15.0%；加权贡献 未知 → 未知（变化 不可比较）。",
-          "费用：分项 70.00 → 70.00；有效权重 30.0% → 60.0%；加权贡献 21.00 → 42.00（变化 +21.0000）。",
-          "居住：分项 100.00 → 100.00；有效权重 20.0% → 15.0%；加权贡献 20.00 → 15.00（变化 -5.0000）。",
-          "便利：分项 45.83 → 45.83；有效权重 15.0% → 10.0%；加权贡献 6.88 → 4.58（变化 -2.2917）。",
-          "当前未排名依据：commute：模拟到校时间须不超过 40 分钟；commute：目的地、时段、交通模式、位置精度或查询时效不匹配。",
-          "当前没有正式总分和排名；已知分项贡献不能代替完整评分。"
+          "Eligibility: Pending confirmation → Pending confirmation.",
+          "Commute: component Unknown → Unknown; effective weight 35.0% → 15.0%; weighted contribution Unknown → Unknown (change Not comparable).",
+          "Cost: component 70.00 → 70.00; effective weight 30.0% → 60.0%; weighted contribution 21.00 → 42.00 (change +21.0000).",
+          "Housing: component 100.00 → 100.00; effective weight 20.0% → 15.0%; weighted contribution 20.00 → 15.00 (change -5.0000).",
+          "Amenities: component 45.83 → 45.83; effective weight 15.0% → 10.0%; weighted contribution 6.88 → 4.58 (change -2.2917).",
+          "Reasons for no current rank: commute: Synthetic campus travel time must not exceed 40 minutes; commute: Destination, time, transport mode, location precision or query freshness does not match.",
+          "No formal total score or rank is available. Known component contributions cannot replace a complete score."
         ],
         "score_contributions": {
           "commute": {
@@ -7166,6 +7166,6 @@
         }
       }
     ],
-    "note": "排名变化=原排名−新排名，正数表示上升；比较覆盖全部候选，仅合格项有正式排名。加权贡献按报告展示的分项分数计算并舍入，合计与未舍入总分可能有微小差异；未知不等于零。"
+    "note": "Rank change = previous rank minus new rank; a positive number means improvement. The comparison covers all candidates, but only eligible items have formal ranks. Weighted contributions use displayed component scores and rounding, so their sum may differ slightly from the unrounded total. Unknown is not zero."
   }
 }

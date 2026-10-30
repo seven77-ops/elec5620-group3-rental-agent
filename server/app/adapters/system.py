@@ -36,7 +36,7 @@ class SystemAdapter:
                 'agreement_examples': [{'id': key, 'name': key + '.txt'} for key in examples],
                 'capabilities': {'agent1': 'local_service', 'agent2': True, 'agent3': True, 'agent4': True,
                                  'external_ai': self.ctx.ai_provider.public_config()['configured'], 'external_ai_opt_in': True, 'lease_draft_generation': self.ctx.settings.catalog is not None, 'synthetic_contract_only': self.ctx.settings.catalog is None, 'max_upload_bytes': MAX_BYTES,
-                                 'living_services':real,
+                                 'living_services':real, 'decision_routing':self.ctx.decision_router.provider.public_config(),
                                  'aftercare_evidence_template': [] if real else templates['create']['evidence'],
                                  'aftercare_clock_policy': 'Actual Australia/Sydney clock; original retries retain original time' if real else 'Per-case monotonic; poll advances to 2026-11-03T09:00:00+11:00; close to 09:01; original retries retain original time'}}
 

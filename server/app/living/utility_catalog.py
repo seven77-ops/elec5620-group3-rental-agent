@@ -14,9 +14,9 @@ SEED=Path(__file__).with_name('data')/'utility-plans.json'
 CATEGORIES={'electricity','gas','internet','water'}
 HOSTS={'www.telstra.com.au','www.optus.com.au','www.tpg.com.au','www.aussiebroadband.com.au',
        'www.superloop.com','www.sydneywater.com.au','www.energymadeeasy.gov.au'}
-MODELS={'SINGLE_RATE':'单一费率','SINGLE_RATE_CONT_LOAD':'单一费率＋受控负荷',
-        'TIME_OF_USE':'分时费率','TIME_OF_USE_CONT_LOAD':'分时费率＋受控负荷','FLEXIBLE_CONT_LOAD':'灵活费率＋受控负荷'}
-PERIODS={'P1D':'每天','P1M':'每月','P3M':'每季度','P1Y':'每年'}
+MODELS={'SINGLE_RATE':'Single rate','SINGLE_RATE_CONT_LOAD':'Single rate + controlled load',
+        'TIME_OF_USE':'Time of use','TIME_OF_USE_CONT_LOAD':'Time of use + controlled load','FLEXIBLE_CONT_LOAD':'Flexible rate + controlled load'}
+PERIODS={'P1D':'Daily','P1M':'Monthly','P3M':'Quarterly','P1Y':'Yearly'}
 
 
 def day(value=None):
@@ -100,7 +100,7 @@ class UtilityPlanCatalog:
         rows=self.search(include_unavailable=True)
         return {'checked_on':self.checked_on,'fingerprint':self.fingerprint,'total':len(rows),
                 'current':sum(p['status']=='current' for p in rows),'freshness_days':self.freshness_days,
-                'scope':'所收录的官方套餐快照；未覆盖全市场，未核实具体地址，非实时报价。'}
+                'scope':'Included official plan snapshots only; coverage is not market-wide, address availability is unverified and prices are not live quotes.'}
 
 
 def decorate(p,today):
@@ -110,39 +110,39 @@ def decorate(p,today):
         p['promotion_active']=promo;p['effective_monthly_aud']=v['intro_monthly_aud'] if promo else v['monthly_aud']
         months=min(v.get('intro_months',0),12) if promo else 0
         p['first_year_base_cost_aud']=float(Decimal(str(p['effective_monthly_aud']))*months+Decimal(str(v['monthly_aud']))*(12-months))
-        if promo:lines.append(f"前{v['intro_months']}个月 AUD {amount(v['intro_monthly_aud'])}/月；之后 AUD {amount(v['monthly_aud'])}/月")
-        else:lines.append(f"AUD {amount(v['monthly_aud'])}/月"+('；原促销已结束' if v.get('intro_monthly_aud') is not None else ''))
-        lines += [f"典型晚高峰下载/上传 {amount(v['download_mbps'])}/{amount(v['upload_mbps'])} Mbps · 无限流量",
-                  f"首12个月基础月租合计 AUD {amount(p['first_year_base_cost_aud'])}；不含路由器、运费及特殊安装"]
-        if v.get('promo_code') and promo:lines.append('优惠码：'+v['promo_code'])
-        if v.get('offer_ends_on') and promo:lines.append('优惠申请截止：'+v['offer_ends_on'])
-        lines.append(v.get('hardware_notes','设备条件另核。'))
+        if promo:lines.append(f"First {v['intro_months']} months AUD {amount(v['intro_monthly_aud'])}/month; then AUD {amount(v['monthly_aud'])}/month")
+        else:lines.append(f"AUD {amount(v['monthly_aud'])}/month"+('; previous promotion ended' if v.get('intro_monthly_aud') is not None else ''))
+        lines += [f"Typical evening download/upload {amount(v['download_mbps'])}/{amount(v['upload_mbps'])} Mbps · unlimited data",
+                  f"First 12 months of base fees total AUD {amount(p['first_year_base_cost_aud'])}; excludes router, delivery and special installation"]
+        if v.get('promo_code') and promo:lines.append('Promo code: '+v['promo_code'])
+        if v.get('offer_ends_on') and promo:lines.append('Offer application deadline: '+v['offer_ends_on'])
+        lines.append(v.get('hardware_notes','Check hardware conditions separately.'))
     elif p['category'] in ('electricity','gas'):
-        unit=v['unit'];lines.append(MODELS.get(v['model'],v['model'])+'；以下为含GST的优惠前基准费率')
+        unit=v['unit'];lines.append(MODELS.get(v['model'],v['model'])+'; baseline rates below include GST, before discounts')
         for period in v['tariff_periods']:
-            label=f"{period['start_date']}至{period['end_date']}"
-            if period.get('daily_supply_aud') is not None:lines.append(f"{label}：固定费 AUD {amount(period['daily_supply_aud'])}/天")
+            label=f"{period['start_date']} to {period['end_date']}"
+            if period.get('daily_supply_aud') is not None:lines.append(f"{label}: supply charge AUD {amount(period['daily_supply_aud'])}/day")
             for rate in period['rates']:
                 chunks=[]
                 for index,b in enumerate(rate['blocks']):
-                    block=f"第{index+1}档 {amount(b['volume'])}{unit}" if b.get('volume') is not None else ('其余用量' if len(rate['blocks'])>1 else rate['name'])
-                    chunks.append(f"{block} {amount(b['unit_price_aud']*100)}澳分/{unit}")
-                times='；'.join('/'.join(t['days'])+' '+t['startTime']+'–'+t['endTime'] for t in rate.get('time_windows',[]))
-                lines.append('；'.join(chunks)+('（阶梯周期：'+PERIODS.get(rate.get('block_period'),str(rate.get('block_period')))+'）' if len(chunks)>1 else '')+(' · '+times if times else ''))
+                    block=f"Block {index+1}: {amount(b['volume'])}{unit}" if b.get('volume') is not None else ('Remaining usage' if len(rate['blocks'])>1 else rate['name'])
+                    chunks.append(f"{block} {amount(b['unit_price_aud']*100)} cents/{unit}")
+                times='; '.join('/'.join(t['days'])+' '+t['startTime']+'–'+t['endTime'] for t in rate.get('time_windows',[]))
+                lines.append('; '.join(chunks)+(' (block period: '+PERIODS.get(rate.get('block_period'),str(rate.get('block_period')))+')' if len(chunks)>1 else '')+(' · '+times if times else ''))
         for load in v.get('controlled_load',[]):
-            charge='；'.join(f"{amount(b['unit_price_aud']*100)}澳分/{unit}"+(f"（该档{amount(b['volume'])}{unit}）" if b.get('volume') is not None else '') for b in load['blocks'])
-            supply=f"；另加固定费 AUD {amount(load['daily_supply_aud'])}/天" if load.get('daily_supply_aud') is not None else ''
-            lines.append('受控负荷 '+load['name']+'：'+charge+supply)
+            charge='; '.join(f"{amount(b['unit_price_aud']*100)} cents/{unit}"+(f" (block {amount(b['volume'])}{unit})" if b.get('volume') is not None else '') for b in load['blocks'])
+            supply=f"; additional supply charge AUD {amount(load['daily_supply_aud'])}/day" if load.get('daily_supply_aud') is not None else ''
+            lines.append('Controlled load '+load['name']+':'+charge+supply)
         for d in v.get('discounts',[]):
-            rate=d.get('value',{}).get('rate');lines.append(d['name']+(f" {amount(float(rate)*100)}%" if rate is not None else '')+'；适用项目及条件须核对，未从上述基准价重复扣除')
+            rate=d.get('value',{}).get('rate');lines.append(d['name']+(f" {amount(float(rate)*100)}%" if rate is not None else '')+'; check applicable items and conditions; not deducted again from the baseline rates above')
         for i in v.get('incentives',[]):
-            if i.get('name'):lines.append('可能的优惠：'+i['name']+'；仅在满足条款时适用，未抵扣比较金额')
+            if i.get('name'):lines.append('Potential benefit: '+i['name']+'; applies only if conditions are met; not deducted from comparison amounts')
     else:
-        lines=[f"普通用水 AUD {amount(v['usage_aud_per_kl'])}/kL；旱情价 AUD {amount(v['drought_usage_aud_per_kl'])}/kL",
-               f"再生水 AUD {amount(v['recycled_aud_per_kl'])}/kL（适用物业）",
-               f"房东固定费用参考：供水 AUD {amount(v['water_service_aud_per_quarter'])}/季度；污水 AUD {amount(v['wastewater_aud_per_quarter'])}/季度",
-               '季度固定费示例按最长92天计，实际按天计算；雨水费按区域和房型另计。',v['drought_condition']]
-    p['price_summary']=lines[0] if lines else '费率需核对';p['pricing_lines']=lines
+        lines=[f"Standard water usage AUD {amount(v['usage_aud_per_kl'])}/kL; drought price AUD {amount(v['drought_usage_aud_per_kl'])}/kL",
+               f"Recycled water AUD {amount(v['recycled_aud_per_kl'])}/kL (eligible properties)",
+               f"Landlord fixed-charge reference: water AUD {amount(v['water_service_aud_per_quarter'])}/quarter; wastewater AUD {amount(v['wastewater_aud_per_quarter'])}/quarter",
+               'Quarterly fixed-charge examples use up to 92 days; actual charges are calculated daily. Stormwater charges vary by area and property type.',v['drought_condition']]
+    p['price_summary']=lines[0] if lines else 'Rates require verification';p['pricing_lines']=lines
     return p
 
 

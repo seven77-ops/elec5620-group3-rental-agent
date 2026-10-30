@@ -23,13 +23,20 @@ export default function RecommendationAi({
     );
   };
   return (
-    <section className="panel ai-panel" aria-label="AI 推荐解读">
+    <section
+      className="panel ai-panel"
+      aria-label="AI recommendation explanation"
+    >
       <div className="ai-title">
-        <h2>AI 推荐解读</h2>
-        <span className="muted">基于已保存评分与证据的辅助说明</span>
+        <h2>AI recommendation explanation</h2>
+        <span className="muted">
+          Assisted explanation based on saved scores and evidence
+        </span>
       </div>
       <p>
-        模型解释推荐原因、费用与通勤取舍；房源资格、分数和排名继续使用原评估结果。
+        AI explains recommendation reasons and cost/commute trade-offs.
+        Eligibility, scores, and rankings continue to use the original
+        assessment.
       </p>
       <AiSetup config={config} />
       <Checkbox
@@ -37,7 +44,8 @@ export default function RecommendationAi({
         disabled={action.busy || !active}
         onChange={(e) => setConsent(e.target.checked)}
       >
-        我同意将本报告的偏好、评分及证据摘要发送到配置的模型，用于推荐解读。
+        I agree to send the preferences, scores, and evidence summary in this
+        report to the configured model for recommendation explanation.
       </Checkbox>
       <Space wrap>
         <Button
@@ -45,17 +53,19 @@ export default function RecommendationAi({
           disabled={!active || !consent || !config?.configured}
           loading={action.busy}
           onClick={generate}
-          aria-label="生成推荐解读"
+          aria-label="Generate recommendation explanation"
         >
-          生成推荐解读
+          Generate recommendation explanation
         </Button>
         <Button disabled={action.busy} onClick={reload}>
-          读取最新 AI 解读
+          Load latest AI explanation
         </Button>
       </Space>
       {!active && (
         <p className="muted">
-          当前报告未绑定当前确认偏好；历史 AI 解读可读，请切换到最新报告后生成。
+          This report is not linked to the current confirmed preferences.
+          Historical AI explanations remain readable. Switch to the latest
+          report before generating one.
         </p>
       )}
       <Failure
@@ -71,18 +81,21 @@ export default function RecommendationAi({
               showIcon
               type="warning"
               title={record.error.message}
-              description={`状态：${record.status} · ${record.error.code}`}
+              description={`Status: ${record.status} · ${record.error.code}`}
             />
           )}
           {record.status === "skipped" && (
-            <p>当前没有合格推荐，本次未调用模型；请先调整并确认偏好。</p>
+            <p>
+              There are no eligible recommendations. No model was called. Adjust
+              and confirm preferences first.
+            </p>
           )}
           {record.result?.items?.map((item) => (
             <article className="ai-recommendation" key={item.listing_id}>
-              <h3>{item.listing_id} · AI 解读</h3>
+              <h3>{item.listing_id} · AI explanation</h3>
               <p>{item.text}</p>
               <p className="muted">
-                引用已有证据：{item.evidence_refs.join(" · ")}
+                Existing evidence cited: {item.evidence_refs.join(" · ")}
               </p>
             </article>
           ))}

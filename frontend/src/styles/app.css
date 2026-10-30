@@ -1796,20 +1796,6 @@ li {
   margin-bottom: 10px;
   line-height: 1.65;
 }
-.candidate-followup-form-heading {
-  margin: 26px 0 18px;
-}
-.candidate-followup-form-heading h3 {
-  margin-bottom: 6px;
-}
-.candidate-facts-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0 18px;
-}
-.candidate-facts-grid .ant-input-number {
-  width: 100%;
-}
 .contract-comparison-row {
   padding: 14px 0;
   border-bottom: 1px solid #edf1f7;
@@ -1834,7 +1820,6 @@ li {
   .candidate-next-compact {
     padding: 10px 16px;
   }
-  .candidate-facts-grid,
   .contract-comparison-values {
     grid-template-columns: 1fr;
   }
@@ -2084,4 +2069,58 @@ li {
 }
 .aftercare-evidence-card small {
   color: #718096;
+}
+
+/* Aftercare: prefill and AI helper blocks, readable lists, multi-claim rows. */
+.aftercare-prefill,
+.aftercare-ai {
+  margin-block: 12px;
+}
+.plain-list {
+  margin: 4px 0 8px;
+  padding-inline-start: 20px;
+}
+.plain-list li {
+  margin-block: 2px;
+}
+.claim-row {
+  align-items: flex-end;
+}
+
+/* Case progress: numbered pipeline of agents, operator and tenant decisions. */
+.progress-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.progress-step {
+  display: flex;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line, #e5e7eb);
+}
+.progress-step:last-child {
+  border-bottom: 0;
+}
+.progress-index {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  background: #eef2f7;
+}
+.progress-step.done .progress-index {
+  background: #d9f2f0;
+}
+.progress-step.waiting .progress-index {
+  background: #fdf0c8;
+}
+.progress-body {
+  min-width: 0;
+}
+.progress-body p {
+  margin: 6px 0;
 }

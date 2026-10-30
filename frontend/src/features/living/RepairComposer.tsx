@@ -52,7 +52,7 @@ export default function RepairComposer({
     const input: RepairPolishInput = {
       draft: values.description,
       recipient_name: values.recipient_name || "",
-      language: values.language,
+      language: "en",
       tone: values.tone,
       title: values.title || "",
       location: values.location || "",
@@ -86,7 +86,9 @@ export default function RepairComposer({
     } catch (e) {
       if (generation.current === token)
         setError(
-          e instanceof Error ? e.message : "润色暂未完成，原稿仍保留，请重试。",
+          e instanceof Error
+            ? e.message
+            : "Polishing could not be completed. Your original draft is preserved. Please retry.",
         );
     } finally {
       pending.current = false;
@@ -102,7 +104,7 @@ export default function RepairComposer({
         form.setFieldValue("title", email.subject);
       const fields = await form.validateFields();
       if (email && (!email.subject.trim() || !email.body.trim())) {
-        setError("请补全邮件主题和正文后保存。");
+        setError("Complete the email subject and body before saving.");
         return;
       }
       const values: RepairValues = {
@@ -114,26 +116,29 @@ export default function RepairComposer({
         ...(email ? { email_draft: { ...email } } : {}),
       };
       modal.confirm({
-        title: "准备这封报修邮件？",
+        title: "Prepare this repair email?",
         content: (
           <>
             <p>
               <strong>{email?.subject || values.title}</strong> ·{" "}
-              {values.location || "未注明位置"}
+              {values.location || "Location not specified"}
             </p>
             <p className="living-prewrap">
               {email?.body || values.description}
             </p>
             <p>
-              收件人：{values.recipient_name || "未填写姓名"} ·{" "}
+              Recipient: {values.recipient_name || "Name not entered"} ·{" "}
               {record.profile.agent_email ||
-                "尚未填写邮箱，可复制草稿后自行填写"}
+                "No email address entered. Copy the draft and add it yourself"}
             </p>
-            <p>只保存邮件草稿，之后由你核对并在自己的邮箱中发送。</p>
+            <p>
+              Only an email draft is saved. Check and send it from your own
+              email application.
+            </p>
           </>
         ),
-        okText: "确认保存报修草稿",
-        cancelText: "继续编辑",
+        okText: "Confirm repair draft",
+        cancelText: "Continue editing",
         onOk: async () => {
           const saved = await save("/repairs", values, record.version, () => {
             form.resetFields();
@@ -142,7 +147,10 @@ export default function RepairComposer({
             setError("");
             request.current = null;
           });
-          if (!saved) throw new Error("保存未完成，请核对页面提示后重试。");
+          if (!saved)
+            throw new Error(
+              "Saving could not be completed. Check the page message and retry.",
+            );
         },
       });
     } catch {
@@ -153,12 +161,13 @@ export default function RepairComposer({
   return (
     <>
       <p className="muted">
-        写下报修原稿，提供中介或房东姓名，AI 会整理成一封可编辑的邮件。
+        Write your repair draft and provide the agent or landlord name. AI will
+        organise it into an editable email.
       </p>
       {!record.profile.agent_email && (
         <Alert
           type="info"
-          title="未填写邮箱，可先保存报修草稿或拨打已记录电话；补充邮箱后可在邮件客户端打开。"
+          title="No email address entered. You can save a repair draft or call the recorded number. Add an email to open it in your email app."
         />
       )}
       <Form
@@ -178,83 +187,84 @@ export default function RepairComposer({
         onFinish={() => void prepare()}
       >
         <div className="living-form-grid">
-          <Form.Item name="recipient_name" label="中介或房东姓名（邮件称呼）">
+          <Form.Item
+            name="recipient_name"
+            label="Agent or landlord name (email greeting)"
+          >
             <Input
-              aria-label="报修邮件收件人姓名"
+              aria-label="Repair email recipient name"
               maxLength={200}
-              placeholder="例如 Alex；不清楚可留空"
+              placeholder="For example, Alex; leave blank if unknown"
             />
           </Form.Item>
           <Form.Item
             name="title"
-            label="报修标题"
+            label="Repair title"
             rules={[
               {
                 required: !email,
                 whitespace: true,
-                message: "请填写报修标题，或先让 AI 生成邮件。",
+                message:
+                  "Enter a repair title or let AI generate the email first.",
               },
             ]}
           >
             <Input
-              aria-label="报修标题"
+              aria-label="Repair title"
               maxLength={200}
-              placeholder="可先留空，由 AI 生成主题"
+              placeholder="Optional; AI can generate the subject"
             />
           </Form.Item>
         </div>
         <Form.Item
           name="description"
-          label="报修原稿 / 问题描述"
+          label="Repair draft / issue description"
           rules={[
             {
               required: true,
               whitespace: true,
-              message: "请写下要报修的问题。",
+              message: "Describe the issue that needs repair.",
             },
           ]}
         >
           <Input.TextArea
-            aria-label="问题描述"
+            aria-label="Issue description"
             rows={4}
             maxLength={5000}
             showCount
-            placeholder="中文或英文都可以，例如：厨房水槽下面从昨晚开始漏水，想请中介安排检查。"
+            placeholder="For example: Water has been leaking under the kitchen sink since last night. Please arrange an inspection."
           />
         </Form.Item>
         <div className="living-form-grid">
-          <Form.Item name="location" label="位置">
+          <Form.Item name="location" label="Location">
             <Input
-              aria-label="位置"
+              aria-label="Location"
               maxLength={500}
-              placeholder="例如厨房、浴室（可选）"
+              placeholder="For example, kitchen or bathroom (optional)"
             />
           </Form.Item>
-          <Form.Item name="priority" label="紧急程度">
+          <Form.Item name="priority" label="Urgency">
             <Select
-              aria-label="报修紧急程度"
+              aria-label="Repair urgency"
               options={[
-                { value: "normal", label: "普通" },
-                { value: "urgent", label: "紧急" },
+                { value: "normal", label: "Normal" },
+                { value: "urgent", label: "Urgent" },
               ]}
             />
           </Form.Item>
-          <Form.Item name="language" label="邮件语言">
+          <Form.Item name="language" label="Email language">
             <Select
-              aria-label="邮件语言"
-              options={[
-                { value: "en", label: "英文" },
-                { value: "zh", label: "中文" },
-              ]}
+              aria-label="Email language"
+              options={[{ value: "en", label: "English" }]}
             />
           </Form.Item>
-          <Form.Item name="tone" label="邮件语气">
+          <Form.Item name="tone" label="Email tone">
             <Select
-              aria-label="邮件语气"
+              aria-label="Email tone"
               options={[
-                { value: "polite", label: "礼貌" },
-                { value: "standard", label: "正式" },
-                { value: "concise", label: "简洁" },
+                { value: "polite", label: "Polite" },
+                { value: "standard", label: "Formal" },
+                { value: "concise", label: "Concise" },
               ]}
             />
           </Form.Item>
@@ -262,15 +272,15 @@ export default function RepairComposer({
         {priority === "urgent" && (
           <Alert
             type="warning"
-            title="紧急问题请先联系紧急维修负责人；如有人身危险，请立即联系当地紧急救援。"
+            title="For urgent repairs, contact the emergency repair contact first. If anyone is in danger, contact local emergency services immediately."
             description={
               <>
                 {record.profile.emergency_phone ? (
                   <a href={`tel:${record.profile.emergency_phone}`}>
-                    紧急维修电话：{record.profile.emergency_phone}
+                    Emergency repair phone: {record.profile.emergency_phone}
                   </a>
                 ) : (
-                  "可以在住处与联系人中保存紧急维修电话。"
+                  "Save an emergency repair phone in Home and contacts."
                 )}
                 <br />
                 <a
@@ -278,34 +288,35 @@ export default function RepairComposer({
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  NSW 紧急维修官方指引
+                  Official NSW urgent repair guidance
                 </a>
               </>
             }
           />
         )}
         <p className="muted">
-          点击润色会将本表单原稿和称呼发送至已配置的
-          AI，生成后请核对。邮件不会自动发送。
+          Polishing sends the original text and greeting from this form to the
+          configured AI. Check the generated email. It will not be sent
+          automatically.
         </p>
         <Space wrap>
           <Button
             type="primary"
-            aria-label={email ? "重新润色邮件" : "AI 润色邮件"}
+            aria-label={email ? "Polish email again" : "Polish email with AI"}
             loading={generating}
             disabled={locked}
             onClick={() => void polish()}
           >
-            {email ? "重新润色邮件" : "AI 润色邮件"}
+            {email ? "Polish email again" : "Polish email with AI"}
           </Button>
           {!email && (
             <Button
-              aria-label="准备报修邮件"
+              aria-label="Prepare repair email"
               disabled={locked}
               onClick={() => void prepare()}
               loading={busy}
             >
-              准备报修邮件
+              Prepare repair email
             </Button>
           )}
         </Space>
@@ -314,7 +325,7 @@ export default function RepairComposer({
         <Alert
           role="alert"
           type="error"
-          title="邮件润色或保存未完成"
+          title="Email polishing or saving could not be completed"
           description={error}
         />
       )}
@@ -322,22 +333,22 @@ export default function RepairComposer({
         <div
           className="living-polished-email"
           ref={preview}
-          aria-label="润色后的邮件"
+          aria-label="Polished email"
         >
           <div className="living-card-heading">
-            <h3>润色后的邮件</h3>
-            <span className="muted">可继续编辑 · 尚未发送</span>
+            <h3>Polished email</h3>
+            <span className="muted">Editable · Not sent</span>
           </div>
           {sourceChanged && (
             <Alert
               type="info"
-              title="原稿或选项已修改，当前邮件不会自动更新。请重新润色，或在下方自行修改邮件。"
+              title="The original text or options have changed. This email does not update automatically. Polish it again or edit the email below."
             />
           )}
           <Form layout="vertical" disabled={locked}>
-            <Form.Item label="邮件主题" required>
+            <Form.Item label="Email subject" required>
               <Input
-                aria-label="润色邮件主题"
+                aria-label="Polished email subject"
                 value={email.subject}
                 maxLength={200}
                 onChange={(e) =>
@@ -345,9 +356,9 @@ export default function RepairComposer({
                 }
               />
             </Form.Item>
-            <Form.Item label="邮件正文" required>
+            <Form.Item label="Email body" required>
               <Input.TextArea
-                aria-label="润色邮件正文"
+                aria-label="Polished email body"
                 value={email.body}
                 maxLength={8000}
                 rows={10}
@@ -363,13 +374,15 @@ export default function RepairComposer({
                   await navigator.clipboard.writeText(
                     `Subject: ${email.subject}\n\n${email.body}`,
                   );
-                  message.success("邮件草稿已复制。");
+                  message.success("Email draft copied.");
                 } catch {
-                  message.error("无法访问剪贴板，可直接选中主题和正文复制。");
+                  message.error(
+                    "Clipboard unavailable. Select and copy the subject and body directly.",
+                  );
                 }
               }}
             >
-              复制润色邮件
+              Copy polished email
             </Button>
             <Button
               type="primary"
@@ -377,7 +390,7 @@ export default function RepairComposer({
               loading={busy}
               onClick={() => void prepare()}
             >
-              保存润色报修草稿
+              Save polished repair draft
             </Button>
           </Space>
         </div>

@@ -3,9 +3,9 @@
   "data_mode": "synthetic_demo",
   "recipient": "ContractAgent",
   "handoff_status": "prepared_not_sent",
-  "recommendation_run_id": "rr-416489817d8ef341c02f1a80bc564939f2e105a587dcabcf445dacf411d785be",
-  "selection_check_run_id": "rr-a5811c753d7521cc5988712b21d9827d4895f4d9b1ad717489d4f4fe39d7039a",
-  "dataset_fingerprint": "32c38e031a258ef5e973d9e25bc8a59e0296cf91f9d402bdc7bfca3fa57acc20",
+  "recommendation_run_id": "rr-af6b18506b289408fbb153d03e3fc635570ab7da2637142f87d0f31bbd30e809",
+  "selection_check_run_id": "rr-4631249ffeac0a60d416869e7d3ce1abe984300299465c1e38abbee9898cf707",
+  "dataset_fingerprint": "499210ec46bfb2220ca40ac67aea6f07054bb82ab829073814374176cb76f2bb",
   "profile_fingerprint": "6a6af2b862177ed975092141cdbf96a0e182fe7808872270153e6d53a91381c5",
   "search_id": "demo-search-001",
   "profile_version": 1,
@@ -64,7 +64,7 @@
     "source_listing_id": "fixture-6",
     "data_kind": "synthetic",
     "fixture_category": "complete",
-    "description": "虚构课程样本，非真实在租房源。",
+    "description": "Fictional course sample, not an actual available rental property.",
     "listing_status": "active",
     "source_permission": true,
     "last_checked_at": "2026-09-17T08:00:00+10:00",
@@ -259,7 +259,7 @@
       "source_listing_id": "fixture-6",
       "data_kind": "synthetic",
       "fixture_category": "complete",
-      "description": "虚构课程样本，非真实在租房源。",
+      "description": "Fictional course sample, not an actual available rental property.",
       "listing_status": "active",
       "source_permission": true,
       "last_checked_at": "2026-09-17T08:00:00+10:00",
@@ -464,43 +464,43 @@
     "hard_checks": {
       "availability": {
         "status": "pass",
-        "reason": "房源须为 active（仅模拟状态）"
+        "reason": "The listing must be active (synthetic status only)"
       },
       "freshness": {
         "status": "pass",
-        "reason": "快照核对时间须不晚于评估时点且不超过24小时"
+        "reason": "The snapshot check must not be later than evaluation time or more than 24 hours old"
       },
       "permission": {
         "status": "pass",
-        "reason": "数据使用权限须明确"
+        "reason": "Data-use permission must be explicit"
       },
       "conflicts": {
         "status": "pass",
-        "reason": "字段或同来源重复记录冲突须先核对"
+        "reason": "Conflicting fields or duplicate records from the same source must be checked first"
       },
       "rental_mode": {
         "status": "pass",
-        "reason": "租赁方式须为 private_room"
+        "reason": "Rental mode must be private_room"
       },
       "move_in": {
         "status": "pass",
-        "reason": "供方接受的起租范围须与 2027-02-01 至 2027-02-07 相交"
+        "reason": "The provider start-date range must overlap 2027-02-01 to 2027-02-07"
       },
       "lease": {
         "status": "pass",
-        "reason": "须接受 12 个月租期"
+        "reason": "A 12-month lease must be accepted"
       },
       "private_bedroom": {
         "status": "pass",
-        "reason": "必须满足 private_bedroom"
+        "reason": "Must satisfy private_bedroom"
       },
       "budget": {
         "status": "pass",
-        "reason": "周费用须不超过 AUD 550（per_person）"
+        "reason": "Weekly cost must not exceed AUD 550 (per_person)"
       },
       "commute": {
         "status": "pass",
-        "reason": "模拟到校时间须不超过 40 分钟"
+        "reason": "Synthetic campus travel time must not exceed 40 minutes"
       }
     },
     "weekly_cost": 500,
@@ -509,14 +509,14 @@
     "transfers": 0,
     "supermarket_distance_m": 400,
     "reasons": [
-      "可比周费用 AUD 500.00（per_person；含账单）",
-      "模拟到校通勤 25 分钟；目的地 demo-usyd",
-      "模拟最近超市直线距离 400 米，不是步行时长",
-      "满足软偏好 furnished",
-      "满足软偏好 private_bathroom"
+      "Comparable weekly cost AUD 500.00 (per_person; bills included)",
+      "Synthetic campus commute 25 minutes; destination demo-usyd",
+      "Synthetic straight-line distance to the nearest supermarket: 400 metres; not a walking duration",
+      "Meets soft preference furnished",
+      "Meets soft preference private_bathroom"
     ],
     "tradeoffs": [
-      "比舒适预算高 AUD 50.00/周"
+      "AUD 50.00/week above the preferred budget"
     ],
     "issues": [],
     "evidence_refs": {
@@ -619,14 +619,14 @@
     "last_checked_at": "2026-09-17T08:00:00+10:00"
   },
   "unresolved_items": [
-    "尚未提供或审查租赁合同；本证据包不代表批准签约。"
+    "No tenancy agreement has been supplied or reviewed. This evidence package does not approve signing."
   ],
   "data_limitations": [
-    "全部房源、路线、设施和证据均为模拟数据，不可用于真实租房决策。",
-    "本原型仅为 Agent 2 的确定性工具核心，未接入 LLM、房源平台或 TfNSW。",
-    "as_of 是输入快照时点，不代表今天仍可租；分数是偏好匹配，不是房屋安全或签约保证。",
-    "不支持自动换汇、按人数分摊、真实市场租金估值或未来班次保证。",
-    "user_confirmed 是调用方显式声明，不是用户鉴权或签名；本地原型未发送数据给 Agent 3。",
-    "来源事实和时效检查基于提供的模拟快照，不等于已实地验证房源真实或已重新联系供方。"
+    "All listings, routes, facilities and evidence are synthetic and cannot support real rental decisions.",
+    "This prototype is the deterministic Agent 2 tool core, without an LLM, listing platform or TfNSW connection.",
+    "as_of is the input snapshot time and does not establish current availability. Scores indicate preference fit, not property safety or approval to sign.",
+    "Automatic currency conversion, per-person cost division, live market valuations and future service guarantees are unsupported.",
+    "user_confirmed is an explicit caller declaration, not user authentication or a signature. This local prototype has not sent data to Agent 3.",
+    "Source-fact and freshness checks use the supplied synthetic snapshot. They do not establish an on-site property verification or renewed contact with the provider."
   ]
 }

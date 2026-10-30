@@ -11,6 +11,8 @@ import type { ReactNode } from "react";
 import { Button, Drawer, Layout, Menu, Space } from "antd";
 import {
   CheckSquareOutlined,
+  AuditOutlined,
+  NodeIndexOutlined,
   FileTextOutlined,
   FormOutlined,
   HomeOutlined,
@@ -32,6 +34,7 @@ const Contract = lazy(() => import("../features/contracts/ContractAssistant"));
 const Aftercare = lazy(() => import("../features/Aftercare"));
 const LivingHub = lazy(() => import("../features/living/LivingHub"));
 const Operator = lazy(() => import("../features/Operator"));
+const CaseProgress = lazy(() => import("../features/CaseProgress"));
 
 class ErrorBoundary extends Component<
   { children: ReactNode },
@@ -44,9 +47,12 @@ class ErrorBoundary extends Component<
   render() {
     return this.state.error ? (
       <div className="panel">
-        <h1>页面暂时无法显示</h1>
-        <p>已提交的数据保存在本地服务中。刷新后可以重新读取。</p>
-        <Button onClick={() => location.reload()}>重新读取案例</Button>
+        <h1>This page is temporarily unavailable</h1>
+        <p>
+          Submitted data is saved in the local service. Refresh to load it
+          again.
+        </p>
+        <Button onClick={() => location.reload()}>Reload case</Button>
       </div>
     ) : (
       this.props.children
@@ -56,28 +62,38 @@ class ErrorBoundary extends Component<
 const nav = [
   {
     key: "assistant",
-    label: "AI租房助手",
+    label: "AI rental assistant",
     icon: <CommentOutlined aria-hidden="true" />,
   },
   {
     key: "preferences",
-    label: "租房偏好",
+    label: "Rental preferences",
     icon: <FormOutlined aria-hidden="true" />,
   },
   {
     key: "recommendations",
-    label: "房源推荐",
+    label: "Housing recommendations",
     icon: <HomeOutlined aria-hidden="true" />,
   },
   {
     key: "contract",
-    label: "合同复核",
+    label: "Contract assistant",
     icon: <FileTextOutlined aria-hidden="true" />,
   },
   {
     key: "aftercare",
-    label: "租后服务",
+    label: "Aftercare services",
     icon: <CheckSquareOutlined aria-hidden="true" />,
+  },
+  {
+    key: "progress",
+    label: "Case progress",
+    icon: <NodeIndexOutlined aria-hidden="true" />,
+  },
+  {
+    key: "operator",
+    label: "Human review",
+    icon: <AuditOutlined aria-hidden="true" />,
   },
 ];
 export default function App() {
@@ -174,7 +190,7 @@ export default function App() {
                 .filter((item) => item.key !== "preferences")
                 .map((item) =>
                   item.key === "contract"
-                    ? { ...item, label: "合同助手" }
+                    ? { ...item, label: "Contract assistant" }
                     : item,
                 )
             : nav
@@ -190,12 +206,12 @@ export default function App() {
             onClick={create}
             loading={action.busy}
           >
-            新建演示案例
+            New demo case
           </Button>
         )}
         {config?.mode !== "real_listings" && (
           <Link to="/operator" onClick={() => setMobile(false)}>
-            本地演示操作员
+            Local demo operator
           </Link>
         )}
       </div>
@@ -214,6 +230,7 @@ export default function App() {
     contract: <Contract />,
     aftercare: config?.mode === "real_listings" ? <LivingHub /> : <Aftercare />,
     operator: <Operator />,
+    progress: <CaseProgress />,
   };
   return (
     <ErrorBoundary>
@@ -221,7 +238,7 @@ export default function App() {
         <header className="app-header">
           <div className="brand">
             <HomeOutlined />
-            <span>租房助手</span>
+            <span>Rental Assistant</span>
           </div>
           <Space>
             {current && (
@@ -230,14 +247,14 @@ export default function App() {
                 size="small"
                 onClick={create}
                 loading={action.busy}
-                aria-label="新建案例"
+                aria-label="New case"
               >
-                新建案例
+                New case
               </Button>
             )}
             <Button
               className="mobile-menu"
-              aria-label="打开导航"
+              aria-label="Open navigation"
               icon={<MenuOutlined />}
               onClick={() => setMobile(true)}
             />
@@ -248,7 +265,7 @@ export default function App() {
             {navigation}
           </Layout.Sider>
           <Drawer
-            title="租房助手导航"
+            title="Rental Assistant navigation"
             placement="left"
             open={mobile}
             onClose={() => setMobile(false)}
@@ -260,7 +277,7 @@ export default function App() {
             className={`main-content ${page === "assistant" ? "assistant-page" : ""}`}
           >
             <a className="skip-link" href="#page-content">
-              跳至内容
+              Skip to content
             </a>
             {loading ? (
               <Loading />
@@ -277,17 +294,20 @@ export default function App() {
                 {!current || !config || current.case_id !== caseId ? (
                   <div className="welcome panel">
                     <HomeOutlined className="welcome-icon" />
-                    <h1>找到适合你的下一个家</h1>
-                    <p>从一句话开始，让租房助手陪你理清需求。</p>
+                    <h1>Find your next home</h1>
+                    <p>
+                      Start with a sentence and let Rental Assistant help you
+                      clarify your needs.
+                    </p>
 
                     <Button
                       type="primary"
                       size="large"
                       loading={action.busy}
                       onClick={create}
-                      aria-label="新建演示案例"
+                      aria-label="New demo case"
                     >
-                      新建演示案例
+                      New demo case
                     </Button>
                   </div>
                 ) : (

@@ -5,8 +5,8 @@ import html
 from .validation import DIMENSIONS, ValidationError
 
 
-LABELS = {'commute': '通勤', 'cost': '费用', 'housing': '居住', 'amenities': '便利'}
-STATES = {'eligible': '合格', 'pending': '待确认', 'excluded': '排除', 'duplicate': '重复'}
+LABELS = {'commute': 'Commute', 'cost': 'Cost', 'housing': 'Housing', 'amenities': 'Amenities'}
+STATES = {'eligible': 'Eligible', 'pending': 'Pending confirmation', 'excluded': 'Excluded', 'duplicate': 'Duplicate'}
 
 
 def safe(value):
@@ -18,20 +18,20 @@ def safe(value):
 
 
 def numeric(value):
-    return '未知' if value is None else f'{value:.2f}'
+    return 'Unknown' if value is None else f'{value:.2f}'
 
 
 def comparison_details(a, b, before_weights, after_weights):
     """Explain displayed assessments; never turn partial contributions into a score."""
-    reasons = [f"资格：{STATES[a['status']]} → {STATES[b['status']]}。"]
+    reasons = [f"Eligibility: {STATES[a['status']]} → {STATES[b['status']]}."]
     left_checks, right_checks = a.get('hard_checks', {}), b.get('hard_checks', {})
-    check_labels = {'pass': '满足', 'fail': '不满足', 'unknown': '待确认'}
+    check_labels = {'pass': 'Met', 'fail': 'Not met', 'unknown': 'Pending confirmation'}
     for key in sorted(left_checks.keys() | right_checks.keys()):
         left, right = left_checks.get(key), right_checks.get(key)
         if left != right:
-            old = '未启用' if left is None else f"{check_labels[left['status']]}（{left['reason']}）"
-            new = '未启用' if right is None else f"{check_labels[right['status']]}（{right['reason']}）"
-            reasons.append(f'硬条件 {key}：{old} → {new}。')
+            old = 'Disabled' if left is None else f"{check_labels[left['status']]} ({left['reason']})"
+            new = 'Disabled' if right is None else f"{check_labels[right['status']]} ({right['reason']})"
+            reasons.append(f'Required criterion {key}: {old} → {new}.')
 
     contributions = {}
     for key in DIMENSIONS:
@@ -43,35 +43,35 @@ def comparison_details(a, b, before_weights, after_weights):
         delta = None if ac is None or bc is None else round(bc - ac, 4)
         contributions[key] = {'before': ac, 'after': bc, 'change': delta}
         if a['status'] != 'duplicate' and (av != bv or aw != bw):
-            change = '不可比较' if delta is None else f'{delta:+.4f}'
-            reasons.append(f'{LABELS[key]}：分项 {numeric(av)} → {numeric(bv)}；'
-                           f'有效权重 {aw:.1%} → {bw:.1%}；'
-                           f'加权贡献 {numeric(ac)} → {numeric(bc)}（变化 {change}）。')
+            change = 'Not comparable' if delta is None else f'{delta:+.4f}'
+            reasons.append(f'{LABELS[key]}: component {numeric(av)} → {numeric(bv)}; '
+                           f'effective weight {aw:.1%} → {bw:.1%}; '
+                           f'weighted contribution {numeric(ac)} → {numeric(bc)} (change {change}).')
 
     if b['status'] in ('pending', 'excluded'):
-        blockers = [f"{key}：{value['reason']}" for key, value in sorted(right_checks.items())
+        blockers = [f"{key}: {value['reason']}" for key, value in sorted(right_checks.items())
                     if value['status'] != 'pass'] + b.get('issues', [])
         if blockers:
-            reasons.append('当前未排名依据：' + '；'.join(dict.fromkeys(blockers)) + '。')
-        reasons.append('当前没有正式总分和排名；已知分项贡献不能代替完整评分。')
+            reasons.append('Reasons for no current rank: ' + '; '.join(dict.fromkeys(blockers)) + '.')
+        reasons.append('No formal total score or rank is available. Known component contributions cannot replace a complete score.')
     elif b['status'] == 'duplicate':
-        reasons.append('同来源且事实一致的重复记录，不独立评分或排名。')
+        reasons.append('Duplicate records with the same source and facts are not scored or ranked independently.')
     if a['rank'] is not None and b['rank'] is not None:
         if a['rank'] == b['rank']:
-            reasons.append('名次不变；总分变化不必然导致名次变化。')
+            reasons.append('Rank unchanged; a total-score change does not necessarily change rank.')
         else:
-            reasons.append(f"名次 {a['rank']} → {b['rank']}；排名由全部合格候选的相对得分及 ID 决定。")
+            reasons.append(f"Rank {a['rank']} → {b['rank']}; ranking depends on relative scores and IDs across all eligible candidates.")
             if a['score'] == b['score']:
-                reasons.append('本房源展示总分不变；名次变化需结合其他候选的资格和得分变化，不能归因为自身涨分。')
+                reasons.append('This listing displayed total score is unchanged. Its rank change reflects eligibility and score changes among other candidates, not an increase in its own score.')
     return reasons, contributions
 
 
 def compare_reports(before, after):
     """Compare all candidates, not only Top 5; do not mutate either evaluation."""
     if before['search_id'] != after['search_id']:
-        raise ValidationError('comparison: 只能比较同一租房任务的偏好版本')
+        raise ValidationError('comparison: Only preference versions from the same rental search can be compared')
     if any(before[key] != after[key] for key in ('dataset_fingerprint', 'as_of', 'scoring_version', 'data_mode')):
-        raise ValidationError('comparison: 只能比较同一数据快照、时点与评分版本')
+        raise ValidationError('comparison: Only the same data snapshot, timestamp and scoring version can be compared')
 
     def index(report):
         rows = {r['listing_id']: r for group in ('eligible', 'pending_confirmation', 'excluded') for r in report[group]}
@@ -105,72 +105,72 @@ def compare_reports(before, after):
             'before_run_id': before['recommendation_run_id'], 'after_run_id': after['recommendation_run_id'],
             'before_weights': dict(before['effective_weights']), 'after_weights': dict(after['effective_weights']),
             'changed_fields': changes, 'rows': rows,
-            'note': '排名变化=原排名−新排名，正数表示上升；比较覆盖全部候选，仅合格项有正式排名。'
-                    '加权贡献按报告展示的分项分数计算并舍入，合计与未舍入总分可能有微小差异；未知不等于零。'}
+            'note': 'Rank change = previous rank minus new rank; a positive number means improvement. The comparison covers all candidates, but only eligible items have formal ranks. '
+                    'Weighted contributions use displayed component scores and rounding, so their sum may differ slightly from the unrounded total. Unknown is not zero.'}
 
 
 def render_markdown(report):
     p = report['profile']
-    lines = ['# 悉尼租房评估报告（模拟数据）', '',
-             '> 仅供课程演示；房源、通勤、设施和证据全部虚构，不可据此租房或签约。', '',
-             f"评估快照：{safe(report['as_of'])}；评分版本：{safe(report['scoring_version'])}；偏好版本：{p['profile_version']}。", '',
-             f"推荐批次 ID：{safe(report['recommendation_run_id'])}", '',
-             '## 需求与结果概况', '',
-             f"预算：AUD {p['budget']['preferred']:g}–{p['budget']['maximum']:g}/周，计价对象 {safe(p['budget']['scope'])}；含账单口径：{p['budget']['includes_bills']}。", '',
-             f"目的地：{safe(p['destination_id'])}；到达时段：{safe(p['arrival_time'])}；期望/上限通勤：{p['commute']['preferred_minutes']:g}/{p['commute']['maximum_minutes']:g} 分钟。", '',
-             '权重：' + '、'.join(f'{LABELS[k]} {report["effective_weights"][k]:.1%}' for k in DIMENSIONS) + '。', '',
-             '数量：' + '；'.join(f'{k}={v}' for k, v in report['counts'].items()) + '。', '',
-             '## Top 5 推荐', '',
-             '| 排名 | 房源 | 可比周费用 AUD | 模拟通勤/分钟 | 超市直线距离/米 | 通勤/费用/居住/便利分 | 总分 |',
+    lines = ['# Sydney rental evaluation report (synthetic data)', '',
+             '> Coursework demonstration only. Listings, commutes, facilities and evidence are fictional and cannot support renting or signing decisions.', '',
+             f"Evaluation snapshot: {safe(report['as_of'])}; Scoring version: {safe(report['scoring_version'])}; Preference version: {p['profile_version']}.", '',
+             f"Recommendation run ID: {safe(report['recommendation_run_id'])}", '',
+             '## Requirements and results', '',
+             f"Budget: AUD {p['budget']['preferred']:g}–{p['budget']['maximum']:g}/week, rent scope {safe(p['budget']['scope'])}; Bills included: {p['budget']['includes_bills']}.", '',
+             f"Destination: {safe(p['destination_id'])}; Arrival time: {safe(p['arrival_time'])}; Preferred/maximum commute: {p['commute']['preferred_minutes']:g}/{p['commute']['maximum_minutes']:g} minutes.", '',
+             'Weights: ' + ', '.join(f'{LABELS[k]} {report["effective_weights"][k]:.1%}' for k in DIMENSIONS) + '.', '',
+             'Counts: ' + '; '.join(f'{k}={v}' for k, v in report['counts'].items()) + '.', '',
+             '## Top 5 recommendations', '',
+             '| Rank | Listing | Comparable weekly cost AUD | Synthetic commute/minutes | Supermarket straight-line distance/metres | Commute/Cost/Housing/Amenities scores | Total score |',
              '|---|---|---:|---:|---:|---|---:|']
     for row in report['recommendations']:
         scores = ' / '.join(numeric(row['score_breakdown'][k]) for k in DIMENSIONS)
         lines.append(f"| {row['rank']} | {safe(row['listing_id'])} | {numeric(row['weekly_cost'])} | {numeric(row['commute_minutes'])} | {numeric(row['supermarket_distance_m'])} | {scores} | {numeric(row['score'])} |")
     if not report['recommendations']:
-        lines.extend(['', '没有满足完整条件的候选；未自动放宽预算、通勤或其他要求。'])
+        lines.extend(['', 'No candidates meet all requirements. Budget, commute and other requirements have not been relaxed automatically.'])
     for row in report['recommendations']:
         lines.extend(['', f"### {row['rank']}. {safe(row['listing_id'])}", '',
-                      '- 推荐依据：' + safe('；'.join(row['reasons'])),
-                      f"- 模拟路线补充：步行 {numeric(row['walking_minutes'])} 分钟；换乘 {row['transfers'] if row['transfers'] is not None else '未知'} 次。步行已包含在总通勤中，不重复加总。",
-                      '- 取舍：' + safe('；'.join(row['tradeoffs']) or '已知评分项未超过舒适阈值；不代表房屋没有其他风险。'),
-                      '- 最近来源核对：' + safe(row['last_checked_at'])])
-    lines.extend(['', '## 待确认（不进入正式排名）', '',
-                  '| 房源 | 分数可能范围 | 已知评分权重比例 | 硬条件待确认项 / 信息问题 |',
+                      '- Recommendation reasons: ' + safe('; '.join(row['reasons'])),
+                      f"- Synthetic route details: walking {numeric(row['walking_minutes'])} minutes; transfers {row['transfers'] if row['transfers'] is not None else 'Unknown'}. Walking is included in the total commute and is not added again.",
+                      '- Tradeoffs: ' + safe('; '.join(row['tradeoffs']) or 'Known scored criteria do not exceed preferred thresholds; this does not establish that the property has no other risks.'),
+                      '- Latest source check: ' + safe(row['last_checked_at'])])
+    lines.extend(['', '## Pending confirmation (not formally ranked)', '',
+                  '| Listing | Possible score range | Known scoring weight share | Pending required criteria / information issues |',
                   '|---|---|---:|---|'])
     for row in report['pending_confirmation']:
         why = [f"{k}: {v['reason']}" for k, v in row['hard_checks'].items() if v['status'] == 'unknown'] + row['issues']
-        lines.append(f"| {safe(row['listing_id'])} | {row['score_range'][0]:.2f}–{row['score_range'][1]:.2f} | {row['evidence_coverage']:.0%} | {safe('；'.join(why))} |")
-    lines.extend(['', '区间仅反映缺失评分项的可能贡献，不是统计置信区间；已知权重比例也不是可信概率。', '',
-                  '## 排除', '', '| 房源 | 已知不满足的条件 |', '|---|---|'])
+        lines.append(f"| {safe(row['listing_id'])} | {row['score_range'][0]:.2f}–{row['score_range'][1]:.2f} | {row['evidence_coverage']:.0%} | {safe('; '.join(why))} |")
+    lines.extend(['', 'Ranges reflect only possible contributions from missing scoring criteria, not statistical confidence intervals. Known weight share is not a confidence probability.', '',
+                  '## Excluded', '', '| Listing | Known unmet criteria |', '|---|---|'])
     for row in report['excluded']:
         why = [f"{k}: {v['reason']}" for k, v in row['hard_checks'].items() if v['status'] == 'fail']
-        lines.append(f"| {safe(row['listing_id'])} | {safe('；'.join(why))} |")
-    lines.extend(['', '## 重复记录', ''])
-    lines.extend(f"- {safe(r['listing_id'])} → {safe(r['duplicate_of'])}：{safe(r['reason'])}" for r in report['duplicates'])
+        lines.append(f"| {safe(row['listing_id'])} | {safe('; '.join(why))} |")
+    lines.extend(['', '## Duplicate records', ''])
+    lines.extend(f"- {safe(r['listing_id'])} → {safe(r['duplicate_of'])}: {safe(r['reason'])}" for r in report['duplicates'])
     if not report['duplicates']:
-        lines.append('无。')
-    lines.extend(['', '## 需要确认的问题', ''])
+        lines.append('None.')
+    lines.extend(['', '## Questions to confirm', ''])
     lines.extend('- ' + safe(message) for message in report['clarification_requests'])
     if not report['clarification_requests']:
-        lines.append('当前模拟快照没有阻止排名的待确认事项。')
+        lines.append('The current synthetic snapshot has no pending items that prevent ranking.')
     if 'comparison' in report:
         comp = report['comparison']
-        lines.extend(['', '## 偏好调整前后', '', safe(comp['note']), '',
-                      '本报告 Top 5 使用调整后的偏好；原始文件未被修改。', '',
-                      '| 修改字段 | 调整前 | 调整后 |', '|---|---|---|'])
+        lines.extend(['', '## Before and after preference changes', '', safe(comp['note']), '',
+                      'This report Top 5 uses the adjusted preferences. Original files are unchanged.', '',
+                      '| Changed field | Before | After |', '|---|---|---|'])
         for change in comp['changed_fields']:
             lines.append(f"| {safe(change['field'])} | {safe(change['before'])} | {safe(change['after'])} |")
-        lines.extend(['', '| 房源 | 状态变化 | 原排名 | 新排名 | 排名变化 | 原分数 | 新分数 | 变化原因 |',
+        lines.extend(['', '| Listing | Status change | Previous rank | New rank | Rank change | Previous score | New score | Reasons for change |',
                       '|---|---|---:|---:|---:|---:|---:|---|'])
         for row in comp['rows']:
-            reasons = row.get('change_reasons', ['旧报告未记录变化原因；请用原始偏好与快照重新生成比较。'])
-            lines.append(f"| {safe(row['listing_id'])} | {STATES[row['before_status']]} → {STATES[row['after_status']]} | {row['before_rank'] or '—'} | {row['after_rank'] or '—'} | {row['rank_change'] if row['rank_change'] is not None else '—'} | {numeric(row['before_score'])} | {numeric(row['after_score'])} | {safe('；'.join(reasons))} |")
-    lines.extend(['', '## 模拟证据索引', '',
-                  'fixture: 是本地模拟记录定位符，不是真实网页。每个已使用字段的观测时间和来源也保存在同名 JSON 报告的 evidence_refs 中。', '',
-                  '| 房源 | 已使用的字段证据 |', '|---|---|'])
+            reasons = row.get('change_reasons', ['The older report has no reasons for change. Regenerate the comparison using the original preferences and snapshot.'])
+            lines.append(f"| {safe(row['listing_id'])} | {STATES[row['before_status']]} → {STATES[row['after_status']]} | {row['before_rank'] or '—'} | {row['after_rank'] or '—'} | {row['rank_change'] if row['rank_change'] is not None else '—'} | {numeric(row['before_score'])} | {numeric(row['after_score'])} | {safe('; '.join(reasons))} |")
+    lines.extend(['', '## Synthetic evidence index', '',
+                  'fixture: identifies a local synthetic record, not a live webpage. Observation times and sources for used fields are also stored in evidence_refs in the corresponding JSON report.', '',
+                  '| Listing | Evidence for used fields |', '|---|---|'])
     for row in report['eligible'] + report['pending_confirmation'] + report['excluded']:
-        refs = '；'.join(e['source_ref'] for _, e in sorted(row['evidence_refs'].items()))
+        refs = '; '.join(e['source_ref'] for _, e in sorted(row['evidence_refs'].items()))
         lines.append(f"| {safe(row['listing_id'])} | {safe(refs)} |")
-    lines.extend(['', '## 数据限制', ''])
+    lines.extend(['', '## Data limitations', ''])
     lines.extend('- ' + safe(message) for message in report['data_limitations'])
     return '\n'.join(lines) + '\n'

@@ -68,8 +68,12 @@ async function photoFixture(page: Page, request: APIRequestContext) {
     });
   });
   await page.route("**/api/v1/listings/*", (route) => {
-    const identifier = decodeURIComponent(new URL(route.request().url()).pathname.split("/").pop()!);
-    const item = items.find((row: Record<string, unknown>) => row.listing_id === identifier);
+    const identifier = decodeURIComponent(
+      new URL(route.request().url()).pathname.split("/").pop()!,
+    );
+    const item = items.find(
+      (row: Record<string, unknown>) => row.listing_id === identifier,
+    );
     return item ? route.fulfill({ json: item }) : route.continue();
   });
   return { c, items, urls };
@@ -87,7 +91,7 @@ test("real-photo thumbnail opens details by keyboard, previews and retains obser
   const { c, items, urls } = await photoFixture(page, request);
   await page.goto(`/cases/${c.case_id}/recommendations`);
   const thumb = page.getByRole("button", {
-    name: `查看 ${items[0].address} 照片与详情`,
+    name: `View ${items[0].address} Photos and details`,
     exact: true,
   });
   await expect(thumb.getByRole("img")).toHaveAttribute("src", urls[0]);
@@ -99,7 +103,15 @@ test("real-photo thumbnail opens details by keyboard, previews and retains obser
     )
     .toBeGreaterThan(0);
   await expect(page.getByTestId("real-catalog").locator("thead th")).toHaveText(
-    ["房源", "卧室", "浴室", "车位", "周租", "到悉大", "操作"],
+    [
+      "Listings",
+      "Bedrooms",
+      "Bathrooms",
+      "Car spaces",
+      "Weekly rent",
+      "To USYD",
+      "Actions",
+    ],
   );
   await thumb.focus();
   await page.keyboard.press("Enter");
@@ -111,14 +123,14 @@ test("real-photo thumbnail opens details by keyboard, previews and retains obser
     }),
   ).toBeVisible();
   await expect(
-    drawer.getByRole("link", { name: "照片来源", exact: true }).first(),
+    drawer.getByRole("link", { name: "Photo source", exact: true }).first(),
   ).toHaveAttribute("href", String(items[0].source_url));
   await expect(drawer.locator(".listing-photo-caption")).toContainText(
     "2026/10/22",
   );
   await drawer
     .getByRole("button", {
-      name: `预览 ${items[0].address} 照片 1`,
+      name: `Preview ${items[0].address} Photo 1`,
       exact: true,
     })
     .click();
@@ -149,23 +161,23 @@ test("missing and broken images fall back without carrying photos to a different
   const { c, items, urls } = await photoFixture(page, request);
   await page.goto(`/cases/${c.case_id}/recommendations`);
   const broken = page.getByRole("button", {
-    name: `查看 ${items[1].address} 照片与详情`,
+    name: `View ${items[1].address} Photos and details`,
     exact: true,
   });
-  await expect(broken).toContainText("暂无照片");
+  await expect(broken).toContainText("No photos");
   await broken.click();
   await expect(
-    page.getByRole("dialog").getByText("暂无照片", { exact: true }),
+    page.getByRole("dialog").getByText("No photos", { exact: true }),
   ).toBeVisible();
   await page.keyboard.press("Escape");
   const missing = page.getByRole("button", {
-    name: `查看 ${items[2].address} 照片与详情`,
+    name: `View ${items[2].address} Photos and details`,
     exact: true,
   });
-  await expect(missing).toContainText("暂无照片");
+  await expect(missing).toContainText("No photos");
   await missing.click();
   await expect(
-    page.getByRole("dialog").getByText("暂无照片", { exact: true }),
+    page.getByRole("dialog").getByText("No photos", { exact: true }),
   ).toBeVisible();
   await expect(
     page.getByRole("dialog").locator(`img[src="${urls[0]}"]`),
@@ -173,7 +185,7 @@ test("missing and broken images fall back without carrying photos to a different
   await page.keyboard.press("Escape");
   await page.locator(".ant-pagination-item-2").click();
   const next = page.getByRole("button", {
-    name: `查看 ${items[20].address} 照片与详情`,
+    name: `View ${items[20].address} Photos and details`,
     exact: true,
   });
   await next.click();
@@ -199,14 +211,14 @@ test("photo rows and details fit a 360px viewport", async ({
   await page.goto(`/cases/${c.case_id}/recommendations`);
   await page
     .getByRole("button", {
-      name: `查看 ${items[0].address} 照片与详情`,
+      name: `View ${items[0].address} Photos and details`,
       exact: true,
     })
     .click();
   await expect(
     page
       .getByRole("dialog")
-      .getByRole("link", { name: "照片来源", exact: true })
+      .getByRole("link", { name: "Photo source", exact: true })
       .first(),
   ).toBeVisible();
   expect(

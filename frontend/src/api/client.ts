@@ -42,14 +42,15 @@ export async function api<T>(
       // a valid nullable success response.
       if (response.ok)
         throw new ApiError(
-          "服务返回的内容无法读取，请读取最新状态后重试。",
+          "Unable to read the service response. Load the latest state and retry.",
           "invalid_response",
         );
     }
     if (!response.ok) {
       const error = result?.error;
       throw new ApiError(
-        error?.message ?? "请求未完成，请核对输入或稍后重试。",
+        error?.message ??
+          "The request could not be completed. Check your input or try again later.",
         error?.code ?? `http_${response.status}`,
         error?.request_id,
         error?.fields,
@@ -58,19 +59,19 @@ export async function api<T>(
     }
     if (result === null && !options?.allowNull)
       throw new ApiError(
-        "服务返回的内容无法读取，请读取最新状态后重试。",
+        "Unable to read the service response. Load the latest state and retry.",
         "invalid_response",
       );
     return result as T;
   } catch (error) {
     if (controller.signal.aborted)
       throw new ApiError(
-        "本地请求超时，已保存的结果保留。可重试原操作或读取最新状态。",
+        "The local request timed out. Saved results are preserved. Retry the action or load the latest state.",
         "timeout",
       );
     if (error instanceof ApiError) throw error;
     throw new ApiError(
-      "暂时无法连接本地服务。请检查服务是否运行，再重试原操作。",
+      "Unable to connect to the local service. Check that it is running and retry.",
     );
   } finally {
     window.clearTimeout(timeout);

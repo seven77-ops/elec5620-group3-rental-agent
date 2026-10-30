@@ -81,7 +81,7 @@ export interface RepairEmailDraft {
 export interface RepairPolishInput {
   draft: string;
   recipient_name: string;
-  language: "en" | "zh";
+  language: "en";
   tone: RepairTone;
   title: string;
   location: string;
@@ -99,6 +99,7 @@ export const polishRepairEmail = (
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ...input,
+        language: "en",
         request_id: requestId,
         allow_external_ai: true,
       }),

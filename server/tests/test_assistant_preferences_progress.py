@@ -15,28 +15,30 @@ class PreferenceProgressTests(unittest.TestCase):
 
     def test_whole_property_reply_advances_instead_of_repeating_scope(self):
         c=self.start()
+        calls_before=len(self.provider.inputs)
         self.provider.result={'intent':'collect_preferences','brief_patch':{}}
-        r=self.send(c,'scope','整套');self.assertEqual(r.status_code,200,r.text);c=r.json()
+        r=self.send(c,'scope','Whole property');self.assertEqual(r.status_code,200,r.text);c=r.json()
         self.assertEqual(c['rental_brief']['budget_scope'],'whole_property')
         self.assertEqual(c['rental_brief']['budget_amount'],1200)
         self.assertEqual(c['rental_brief']['suburb'],'Burwood')
-        self.assertIn('卧室',c['messages'][-1]['content'])
-        self.assertNotIn('是整套、每个房间',c['messages'][-1]['content'])
-        self.assertEqual(self.provider.inputs[-1]['pending_question']['fields'],['budget_scope'])
+        self.assertIn('bedrooms',c['messages'][-1]['content'])
+        self.assertNotIn('for the whole property, per room',c['messages'][-1]['content'])
+        self.assertEqual(len(self.provider.inputs),calls_before)
+        self.assertEqual(c['messages'][-1]['routing']['source'],'state')
 
     def test_scope_reply_is_not_inferred_in_a_new_conversation(self):
         self.provider.result={'intent':'collect_preferences','brief_patch':{}}
-        c=self.send(self.conversation(),'not-pending','整套').json()
+        c=self.send(self.conversation(),'not-pending','Whole property').json()
         self.assertNotIn('budget_scope',c['rental_brief'])
 
     def test_commute_intake_also_accepts_the_same_short_budget_scope(self):
         self.provider.result={'intent':'recommend_areas','brief_patch':{'budget_amount':1200,'budget_period':'week','suburb':'Burwood'}}
         c=self.send(self.conversation(),'commute','按通勤找房，Burwood每周1200').json()
         self.provider.result={'intent':'recommend_areas','brief_patch':{}}
-        r=self.send(c,'scope','整套')
+        r=self.send(c,'scope','Whole property')
         self.assertEqual(r.status_code,200,r.text)
         self.assertEqual(r.json()['rental_brief']['budget_scope'],'whole_property')
-        self.assertIn('卧室',r.json()['messages'][-1]['content'])
+        self.assertIn('bedrooms',r.json()['messages'][-1]['content'])
 
     def test_free_text_pending_reply_has_a_bounded_recovery(self):
         c=self.start();self.provider.result={'intent':'collect_preferences','brief_patch':{}}
@@ -66,17 +68,17 @@ class PreferenceProgressTests(unittest.TestCase):
                 self.provider.result={'intent':'collect_preferences','brief_patch':{'suburb':'Burwood','budget_amount':4800,'budget_period':'month','budget_scope':'whole_property'}}
                 c=self.send(self.conversation(),'monthly-'+str(copy_amount),'整套月预算4800，想住Burwood').json()
                 self.provider.result={'intent':'collect_preferences','brief_patch':{'budget_period':'week',**({'budget_amount':4800} if copy_amount else {})}}
-                r=self.send(c,'cycle-'+str(copy_amount),'每周')
+                r=self.send(c,'cycle-'+str(copy_amount),'Weekly')
                 self.assertEqual(r.status_code,200,r.text)
                 self.assertEqual(r.json()['rental_brief']['budget_period'],'month')
                 self.assertEqual(r.json()['rental_brief']['budget_amount'],4800)
-                self.assertIn('每周最高',r.json()['messages'][-1]['content'])
+                self.assertIn('maximum weekly budget',r.json()['messages'][-1]['content'])
 
     def test_unknown_cycle_can_be_filled_and_explicit_new_week_amount_is_allowed(self):
         self.provider.result={'intent':'collect_preferences','brief_patch':{'suburb':'Burwood','budget_amount':1200,'budget_scope':'whole_property'}}
         c=self.send(self.conversation(),'unknown','Burwood整套预算1200').json()
         self.provider.result={'intent':'collect_preferences','brief_patch':{}}
-        c=self.send(c,'week','每周').json()
+        c=self.send(c,'week','Weekly').json()
         self.assertEqual(c['rental_brief']['budget_period'],'week')
         self.provider.result={'intent':'collect_preferences','brief_patch':{'budget_amount':4800,'budget_period':'month'}}
         c=self.send(c,'monthly','改成月预算4800').json()

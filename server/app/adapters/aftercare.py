@@ -60,9 +60,11 @@ class AftercareAdapter:
                     if body['operation'] == 'revise_tenancy' and isinstance(payload.get('tenancy'), dict):
                         previous = aftercare.get(m4_id, TENANT)
                         payload['tenancy'].update(tenant_id=TENANT, tenancy_id=previous['tenancy']['tenancy_id'])
-                if body['operation'] == 'request_draft':
-                    require(payload.get('use_model') is False and payload.get('allow_external_ai') is False,
-                            422, 'external_ai_disabled', 'This synthetic demo uses deterministic drafts only')
+                if body['operation'] == 'request_draft' and payload.get('use_model') is not False:
+                    require(payload.get('use_model') is True and payload.get('allow_external_ai') is True,
+                            422, 'ai_consent_required', 'AI-assisted drafts need explicit consent for this request')
+                    require(self.ctx.ai_provider.public_config()['configured'], 503, 'ai_unavailable',
+                            'AI is not enabled; prepare the factual template draft instead')
                 previous_clock = repo.get(db, 'clock', case['case_id'])
                 if self.ctx.settings.catalog is not None:
                     actual = datetime.now(ZoneInfo('Australia/Sydney'))

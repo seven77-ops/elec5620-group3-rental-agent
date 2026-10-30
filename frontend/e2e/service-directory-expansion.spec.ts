@@ -11,15 +11,15 @@ test("all 24 moving and cleaning companies are shown and new quotes remain durab
   await expect(men).not.toContainText("1800 438 668");
   await men.click();
   const details = page.getByRole("dialog", {
-    name: "Men That Move · 服务商详情",
+    name: "Men That Move · Provider details",
     exact: true,
   });
-  await expect(details).toContainText("家具和住宅搬运");
+  await expect(details).toContainText("furniture and residential moving");
   await expect(
-    details.getByRole("link", { name: "公司网站", exact: true }),
+    details.getByRole("link", { name: "Company website", exact: true }),
   ).toHaveAttribute("href", "https://menthatmove.com/");
   await details
-    .getByRole("button", { name: "记录报价或预约", exact: true })
+    .getByRole("button", { name: "Record quote or booking", exact: true })
     .hover();
   await page.screenshot({
     path: "/tmp/service-directory-expanded-desktop.png",
@@ -28,20 +28,20 @@ test("all 24 moving and cleaning companies are shown and new quotes remain durab
   });
   await page.setViewportSize({ width: 390, height: 844 });
   await details
-    .getByRole("button", { name: "记录报价或预约", exact: true })
+    .getByRole("button", { name: "Record quote or booking", exact: true })
     .click();
   const dialog = page.getByRole("dialog");
   await dialog
-    .getByRole("spinbutton", { name: "收到的报价（AUD）", exact: true })
+    .getByRole("spinbutton", { name: "Quote received (AUD)", exact: true })
     .fill("250");
   await dialog
     .getByRole("checkbox", {
-      name: "我确认仅保存记录，不会向服务商提交预约。",
+      name: "I confirm this only saves a record and does not submit a booking to the provider.",
       exact: true,
     })
     .check();
   await dialog
-    .getByRole("button", { name: "确认保存服务记录", exact: true })
+    .getByRole("button", { name: "Confirm service record", exact: true })
     .click();
   await expect(dialog).toHaveCount(0);
   await page.reload();
@@ -53,15 +53,15 @@ test("all 24 moving and cleaning companies are shown and new quotes remain durab
   const last = page.locator('[data-provider-id="clean-australia"]');
   await last.click();
   const cleaningDetails = page.getByRole("dialog", {
-    name: "Clean Australia Service · 服务商详情",
+    name: "Clean Australia Service · Provider details",
     exact: true,
   });
   await expect(cleaningDetails).toBeVisible();
   await expect(cleaningDetails).toBeInViewport();
-  await expect(cleaningDetails).toContainText("住宅、公寓、退租");
+  await expect(cleaningDetails).toContainText("house, apartment, end-of-lease");
   await expect(cleaningDetails.getByRole("link")).toHaveCount(1);
   await cleaningDetails
-    .getByRole("button", { name: "关闭详情", exact: true })
+    .getByRole("button", { name: "Close details", exact: true })
     .hover();
   expect(
     await page.evaluate(
@@ -82,8 +82,12 @@ test("AI moving and cleaning replies use all twelve sourced companies in each ca
   for (const query of ["多推荐一些搬家公司", "多推荐一些退租清洁公司"]) {
     const c = await (await request.post("/api/v1/cases", { data: {} })).json();
     await page.goto(`/cases/${c.case_id}/assistant`);
-    await page.getByRole("textbox", { name: "给租房助手的消息" }).fill(query);
-    await page.getByRole("button", { name: "发送消息", exact: true }).click();
+    await page
+      .getByRole("textbox", { name: "Message to Rental Assistant" })
+      .fill(query);
+    await page
+      .getByRole("button", { name: "Send message", exact: true })
+      .click();
     await expect(
       page.locator(".assistant-listing[data-provider-id]"),
     ).toHaveCount(12);

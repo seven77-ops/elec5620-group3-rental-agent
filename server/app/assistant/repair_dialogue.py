@@ -19,11 +19,12 @@ def repair_focus(ctx, case_id, conversation, record):
 def focus_context(focus):
     pending=focus.get('pending')
     return {'focused_repair_id':focus.get('repair_id'),
-        'pending_repair':({'kind':pending['kind'],'values':deepcopy(pending['values'])} if pending else None)}
+        'pending_repair':({'kind':pending['kind'],'values':{k:deepcopy(v) for k,v in pending['values'].items()
+            if k in ('repair_id','title','description','location','priority','status','email_tone','email_language')}} if pending else None)}
 
 
 def propose_update(ctx, intent, case_id, record, focus, user_message):
-    answer={'content':'请先说明要更新哪一条报修；可以说出问题名称，或从报修卡片继续聊。', 'actions':[]}
+    answer={'content':'Specify which repair to update. Name the issue or continue from its repair card.', 'actions':[]}
     requested=intent.get('repair_id')
     named=[r for r in record['repairs'] if r['repair_id'] in user_message or r['title'] in user_message]
     rid=focus.get('repair_id')
@@ -40,29 +41,42 @@ def propose_update(ctx, intent, case_id, record, focus, user_message):
     pending=focus.get('pending')
     patch=deepcopy(intent.get('repair_update',{}))
     service=LivingService(ctx)
+    draft_values=None;call=None;recipient=''
     if rid:
         target=next((r for r in record['repairs'] if r['repair_id']==rid),None)
-        if target and target.get('email_draft') and 'email_tone' in patch:
-            return {'content':'这封邮件已经过润色。请在日常报修页面粘贴原稿，选择语气后重新润色；已保存的邮件仍会保留。',
-                    'actions':[{'type':'navigate','label':'润色报修邮件','page':'aftercare?tab=repairs'}]}
+        if target is None:return answer
         values={}
         if pending and pending['kind']=='repair_update' and pending['values'].get('repair_id')==rid:
             values=deepcopy(pending['values'])
         values.update(patch,repair_id=rid)
+        if 'email_tone' in patch or 'email_language' in patch:
+            from .repair_drafts import generate_draft
+            draft_values,call=generate_draft(ctx,case_id,{**{k:target[k] for k in ('title','description','location','priority')},
+                **{k:values[k] for k in ('email_tone','email_language') if k in values}},record,user_message,
+                previous={**target,**values})
+            values.update({key:draft_values[key] for key in ('email_tone','email_language','email_draft')})
+            recipient=target['email']['to']
         if 'status' in patch or not patch:values['note']=user_message
         if set(values)=={'repair_id'}:return answer
         proposal=service.prepare_proposal(case_id,'repair_update',values,user_message)
-        content='已整理这条报修的更新。确认后修改原记录，保留之前的问题描述；邮件不会发送。'
+        content='The repair update is ready. Confirm to update the existing record and retain the original issue description. The email will not be sent.'
     elif pending and pending['kind']=='repair' and not requested:
         # A rewrite of an unconfirmed draft remains an unconfirmed draft.
-        if set(patch)!={'email_tone'}:
-            answer['content']='这条报修还没有确认保存。请先确认报修草稿，再记录联系结果或处理状态。'
+        if not patch or set(patch)-{'email_tone','email_language'}:
+            answer['content']='This repair has not been confirmed and saved. Confirm the draft before recording contact results or status.'
             return answer
         values={**pending['values'],**patch}
+        from .repair_drafts import generate_draft
+        values,call=generate_draft(ctx,case_id,values,record,user_message,previous=pending['values'])
+        draft_values=values;recipient=record['profile']['agent_email']
         proposal=service.prepare_proposal(case_id,'repair',values,user_message)
-        content='已调整这封待确认报修草稿的语气，原来的问题描述保持不变。确认后只保存一条报修。'
+        content='The draft tone has been updated while retaining the original issue description. Confirmation saves one repair record.'
     else:return answer
-    return {'content':content,'actions':[{'type':'apply_living_services','label':'确认更新这条报修',
+    result={'content':('The requested changes are ready to copy below. Confirming the save updates the same repair record; the email will not be sent.' if draft_values else content),'actions':[{'type':'apply_living_services','label':'Save to Aftercare' if draft_values else 'Confirm repair update',
         'proposal_id':proposal['proposal_id'],'expected_version':proposal['expected_version'],'summary':proposal['summary']}],
         '_living_focus':{'proposal_id':proposal['proposal_id'],**({'repair_id':rid} if rid else {})},
         '_supersede_living_proposal':pending['proposal_id'] if pending else None}
+    if draft_values:
+        from .repair_drafts import preview
+        result.update(repair_email=preview(draft_values,recipient,proposal,rid),_repair_call=call)
+    return result

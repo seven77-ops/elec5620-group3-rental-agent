@@ -71,12 +71,13 @@ export default function DraftAi({
   const changed = snapshot.current !== JSON.stringify(fields);
   return (
     <section className="lease-ai-panel">
-      <h2>用一句话整理合同要点</h2>
+      <h2>Describe the contract details in a sentence</h2>
       <p className="muted">
-        告诉我已经准备好的信息，我会整理成待确认字段，并提示还缺什么。
+        Tell me what you have ready. I will organise it into fields to confirm
+        and identify what is missing.
       </p>
       <Input.TextArea
-        aria-label="合同要点描述"
+        aria-label="Contract details description"
         rows={3}
         maxLength={3000}
         value={description}
@@ -86,14 +87,15 @@ export default function DraftAi({
           setConsent(false);
           action.clear();
         }}
-        placeholder="例如：整租，拟定每周600澳元，押金2400，租客姓名 Zhang San，2026-11-01 起租。"
+        placeholder="For example: whole property, proposed rent AUD600/week, bond AUD2400, tenant Zhang San, starting 2026-11-01."
       />
       <Checkbox
         checked={consent}
         disabled={disabled || action.busy || !config?.configured}
         onChange={(e) => setConsent(e.target.checked)}
       >
-        同意将这段文字发送至配置的外部 AI，用于本次字段提取。
+        I agree to send this text to the configured external AI for this field
+        extraction.
       </Checkbox>
       <Space wrap>
         <Button
@@ -103,22 +105,30 @@ export default function DraftAi({
             disabled || !consent || !description.trim() || !config?.configured
           }
         >
-          AI 整理合同要点
+          Extract contract details with AI
         </Button>
         {!config?.configured && (
-          <span className="muted small">AI 未配置，可直接在下方填写。</span>
+          <span className="muted small">
+            AI is not configured. You can fill in the form below directly.
+          </span>
         )}
       </Space>
+      {action.busy && (
+        <p className="muted small" role="status">
+          Organising contract fields. Larger inputs may take several dozen
+          seconds. Please wait.
+        </p>
+      )}
       <Failure
         error={action.error}
         retry={consent && !disabled ? action.retry : undefined}
       />
       <Modal
-        title="核对 AI 整理的字段"
+        title="Check AI-extracted fields"
         open={show}
         onCancel={() => setShow(false)}
-        okText="将这些字段填入表单"
-        cancelText="继续手动填写"
+        okText="Fill these fields into the form"
+        cancelText="Continue manual entry"
         okButtonProps={{
           disabled:
             changed ||
@@ -133,12 +143,23 @@ export default function DraftAi({
           }
         }}
       >
-        <p>核对后只会填入表单，保存草稿仍需你再次确认。</p>
+        <p>
+          Checking only fills the form. Saving the draft still requires your
+          confirmation.
+        </p>
+        {!!proposal?.warnings?.length && (
+          <Alert
+            type="warning"
+            showIcon
+            title="Some fields need manual checking"
+            description={`These fields were not filled automatically: ${proposal.warnings.map((item) => item.label).join(", ")}. Other checked fields can still be filled into the form.`}
+          />
+        )}
         {changed && (
           <Alert
             type="warning"
             showIcon
-            title="表单已变化，请重新提取，避免覆盖最新填写。"
+            title="The form has changed. Extract again to avoid overwriting your latest input."
           />
         )}
         <Descriptions
@@ -152,7 +173,7 @@ export default function DraftAi({
         />
         {proposal?.questions.length ? (
           <div className="lease-ai-questions">
-            <strong>还需要补充</strong>
+            <strong>Still needed</strong>
             <ul>
               {proposal.questions.slice(0, 5).map((q) => (
                 <li key={q.field}>{q.question}</li>

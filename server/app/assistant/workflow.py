@@ -1,7 +1,7 @@
 """A maximum of three typed, read-only catalogue operations per assistant turn."""
 from .comparison import prepare_enquiry, verification_checklist
 
-LABELS={'search':'筛选房源','compare':'比较房源','explain':'解释房源','prepare_enquiry':'准备询问信草稿'}
+LABELS={'search':'Filter listings','compare':'Compare listings','explain':'Explain listing','prepare_enquiry':'Prepare enquiry draft'}
 
 
 def execute_workflow(intent,case,conversation,catalog,requested_ids,ctx=None):
@@ -20,13 +20,13 @@ def execute_workflow(intent,case,conversation,catalog,requested_ids,ctx=None):
             else: ids=step.get('listing_ids',[])
             count=len(ids)
             if not count or (kind=='compare' and count<2) or (kind=='prepare_enquiry' and count!=1):
-                detail='请选择两套已展示房源进行比较。' if kind=='compare' else ('请明确选择一套房源，或先比较再指定标示周租较低的一套。' if kind=='prepare_enquiry' else '请选择要解释的已展示房源。')
+                detail='Select two displayed listings to compare.' if kind=='compare' else ('Select one listing explicitly, or compare first and choose the one with lower advertised weekly rent.' if kind=='prepare_enquiry' else 'Select a displayed listing to explain.')
                 outcomes.append({'label':LABELS[kind],'status':'needs_input','detail':detail}); content.append(detail)
                 previous=[]
                 continue
         if kind=='prepare_enquiry':
             row=catalog.get(ids[0]); extras['enquiry']=prepare_enquiry(row)
-            rows=[row]; detail='已准备询问信草稿，请核对后自行复制发送。'
+            rows=[row]; detail='The enquiry draft is ready. Review it, then copy and send it yourself.'
         else:
             result=execute({'intent':kind,**({'filters':step.get('filters',{})} if kind=='search' else {'listing_ids':ids})},case,memory,catalog,[],ctx=ctx)
             rows=result['listings']; detail=result['content']

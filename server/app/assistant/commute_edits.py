@@ -30,6 +30,16 @@ DURATION = r'(?:单程)?(?:最多|不超过|至多|上限|≤)?\s*(?P<minutes>[0
 EDIT = re.compile(PREFIX + r'(?P<mode>' + MODE + r')?\s*(?:' + DURATION + r')?(?:到达的房子|到校的房子)?')
 
 
+ENGLISH_MODES = {'public transport':'public_transport', 'train':'train', 'metro':'metro',
+                 'bus':'bus', 'walk':'walk', 'walking':'walk', 'drive':'drive',
+                 'driving':'drive', 'bike':'bike', 'cycling':'bike'}
+ENGLISH_EDIT = re.compile(
+    r'(?:(?:change (?:the commute )?to|switch to|use)\s+)?'
+    r'(?P<mode>public transport|train|metro|bus|walking|walk|driving|drive|cycling|bike)?\s*'
+    r'(?:(?:one[- ]way\s+)?(?:at most|no more than|within|maximum|up to)?\s*'
+    r'(?P<minutes>[0-9]{1,3})\s*(?:minutes?|mins?))?')
+
+
 def explicit_edit(conversation, text):
     brief = conversation.get('rental_brief', {})
     if conversation.get('dialogue_mode') not in ('recommend_areas', 'search') or not brief:
@@ -37,11 +47,15 @@ def explicit_edit(conversation, text):
     if not any(brief.get(key) for key in ('commute_mode', 'commute_max_minutes', 'recommend_areas')):
         return None
     match = EDIT.fullmatch(text.strip().rstrip('。.!！·').strip())
+    modes = MODES
+    if not match:
+        match = ENGLISH_EDIT.fullmatch(text.strip().rstrip('.!').strip().casefold())
+        modes = ENGLISH_MODES
     if not match:
         return None
     patch = {}
     if match['mode']:
-        patch['commute_mode'] = MODES[match['mode']]
+        patch['commute_mode'] = modes[match['mode']]
     if match['minutes']:
         raw = match['minutes'].replace('两', '二')
         minutes = int(raw) if raw.isascii() and raw.isdigit() else NUMBERS.get(raw)

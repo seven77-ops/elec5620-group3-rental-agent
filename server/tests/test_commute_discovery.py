@@ -51,12 +51,12 @@ class DiscoveryTests(unittest.TestCase):
         brief={'budget_amount':900,'budget_period':'week','budget_scope':'whole_property',
                'min_bedrooms':1,'commute_mode':'public_transport','commute_max_minutes':30}
         def answer(*args):
-            return {'intent':'recommend_areas','content':'已筛选','listings':deepcopy(rows),'actions':[],
+            return {'intent':'recommend_areas','content':'Filtered','listings':deepcopy(rows),'actions':[],
                     'commute_recommendation':{'criteria':deepcopy(args[1]),'areas':[],'routes':[]}}
         with patch('server.app.assistant.commute.plan_routes',side_effect=answer):
-            first,_=prepare(SimpleNamespace(),{'messages':[]},deepcopy(brief),{},'找房',True)
+            first,_=prepare(SimpleNamespace(),{'messages':[]},deepcopy(brief),{},'find a home',True)
             conversation={'messages':[first]}
-            second,_=prepare(SimpleNamespace(),conversation,deepcopy(brief),{},'换一批',True,refresh=True)
+            second,_=prepare(SimpleNamespace(),conversation,deepcopy(brief),{},'Show more options',True,refresh=True)
         a={r['listing_id'] for r in first['listings'][:12]}
         b={r['listing_id'] for r in second['listings'][:12]}
         self.assertFalse(a&b)

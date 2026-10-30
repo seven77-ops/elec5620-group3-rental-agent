@@ -7,8 +7,8 @@ from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
 from ..bootstrap import ROOT
 
-TOPICS = {'parks':'公园与户外', 'food':'餐饮', 'shopping':'购物', 'library':'图书馆',
-          'community':'社区设施', 'walkability':'散步步道', 'quiet':'安静', 'safety':'安全'}
+TOPICS = {'parks':'Parks and outdoors', 'food':'Dining', 'shopping':'Shopping', 'library':'Libraries',
+          'community':'Community facilities', 'walkability':'Walking paths', 'quiet':'Quietness', 'safety':'Safety'}
 PRIORITIES_SCHEMA = {'type':'array','maxItems':8,'uniqueItems':True,'items':{'enum':list(TOPICS)}}
 DATA_PATH = ROOT / 'agent2/data/areas/sydney-evidence.json'
 
@@ -84,24 +84,24 @@ class AreaKnowledge:
                 'min_weekly_rent':min((r['weekly_rent'] for r in group),default=None),
                 'max_weekly_rent':max((r['weekly_rent'] for r in group),default=None),
                 'matched_topics':matched, 'missing_topics':[t for t in topics if t not in matched],
-                'match_reasons':[f'你看重{TOPICS[t]}，本区有相关的设施资料可供核对。' for t in matched],
+                'match_reasons':[f'You prioritise {TOPICS[t]}; this area has relevant facilities evidence to review.' for t in matched],
                 'evidence':evidence[:4],
-                'notes':(['区域资料尚未整理，不能据此判断生活条件。'] if not evidence else [])+
-                        (['当前库存没有符合本次可比较预算及房型条件的房源；这里只提供区域资料。'] if not group else [])})
+                'notes':(['Area information is not yet compiled; living conditions cannot be established from this gap.'] if not evidence else [])+
+                        (['Current inventory has no listings matching the comparable budget and property requirements. Only area information is shown here.'] if not group else [])})
         if not areas:
             items.sort(key=lambda a:(-len(a['matched_topics']),a['min_weekly_rent'] if a['min_weekly_rent'] is not None else float('inf'),a['suburb']))
-        limitations=['区域资料只用于生活偏好参考，不代表具体房源的质量、安静程度、安全或可租状态。',
-                     '设施存在不代表离这套房步行可达；通勤只认单独查询的实际路线，尚未查询时不能判定满足。',
-                     '库存数量和周租范围来自当前房源快照，不是全区域市场统计；背景报道和住户观点不计入已核对的条件。']
+        limitations=['Area information supports lifestyle preferences only; it does not establish a property quality, quietness, safety or availability.',
+                     'Facility presence does not establish walking access from this property. Commute requirements need a separately checked actual route.',
+                     'Inventory counts and weekly rent ranges come from the current listing snapshot, not whole-area market statistics. Background reports and resident opinions do not count as verified criteria.']
         if not budget_applied:
-            limitations.append('预算金额、周期或计价对象未明确为整套每周，未用预算筛除，也未按人数乘除租金。')
+            limitations.append('The amount, period or scope does not establish a whole-property weekly budget. Budget filtering and occupant-based rent conversion were not applied.')
         criteria=[]
         if brief.get('budget_amount'):
-            scope={'whole_property':'整套','per_room':'每间','per_person':'每人'}.get(brief.get('budget_scope'),'计价对象待确认')
-            period={'week':'每周','month':'每月'}.get(brief.get('budget_period'),'预算周期待确认')
-            criteria.append(f"{scope}{period}上限 AUD {brief['budget_amount']:g}")
-        for key,label in (('min_bedrooms','卧'),('min_bathrooms','卫'),('min_car_spaces','车位')):
-            if key in brief:criteria.append(f"至少{brief[key]}{label}" if brief[key] else label+'不限')
+            scope={'whole_property':'whole property ','per_room':'per room ','per_person':'per person '}.get(brief.get('budget_scope'),'rent scope unconfirmed ')
+            period={'week':'weekly ','month':'monthly '}.get(brief.get('budget_period'),'budget period unconfirmed ')
+            criteria.append(f"{scope}{period}limit AUD {brief['budget_amount']:g}")
+        for key,label in (('min_bedrooms','bedrooms'),('min_bathrooms','bathrooms'),('min_car_spaces','parking spaces')):
+            if key in brief:criteria.append(f"At least {brief[key]} {label}" if brief[key] else label+' unrestricted')
         return {'dataset_version':self.version,'fingerprint':self.fingerprint,'checked_at':today.isoformat(),
                 'criteria_summary':' · '.join(criteria),
                 'coverage':{'covered_suburbs':len({r['suburb'] for r in self.records}&set(catalog.suburbs)),

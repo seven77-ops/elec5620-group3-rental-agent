@@ -63,23 +63,25 @@ test("an over-limit historical card explains the mismatch without locking chat o
   ).toBe(200);
   await page.goto(`/cases/${c.case_id}/assistant`);
   const card = page.locator(`[data-listing-id="${row.listing_id}"]`);
-  await card.getByRole("button", { name: "选定并跟进", exact: true }).click();
+  await card
+    .getByRole("button", { name: "Select and follow up", exact: true })
+    .click();
   await page
-    .getByRole("button", { name: "确认并开始跟进", exact: true })
+    .getByRole("button", { name: "Confirm and start follow-up", exact: true })
     .click();
   const warning = page
     .getByRole("alert")
-    .filter({ hasText: "这套房源不符合当前筛选条件" });
-  await expect(warning).toContainText("超过你设置的 30 分钟");
-  await expect(warning).not.toContainText("到校时刻");
+    .filter({ hasText: "This listing does not match your current filters" });
+  await expect(warning).toContainText(/exceed(?:s|ing) your 30-minute limit/);
+  await expect(warning).not.toContainText("Campus arrival time");
   await expect(
-    page.getByRole("button", { name: "重试原操作", exact: true }),
+    page.getByRole("button", { name: "Retry original action", exact: true }),
   ).toHaveCount(0);
   await expect(
-    page.getByRole("textbox", { name: "给租房助手的消息" }),
+    page.getByRole("textbox", { name: "Message to Rental Assistant" }),
   ).toBeEnabled();
   await expect(
-    card.getByRole("button", { name: "收藏房源", exact: true }),
+    card.getByRole("button", { name: "Save listing", exact: true }),
   ).toBeEnabled();
   await page.screenshot({
     path: "/tmp/selection-mismatch-warning.png",
@@ -95,16 +97,16 @@ test("an over-limit historical card explains the mismatch without locking chat o
     path: "/tmp/selection-mismatch-mobile.png",
     animations: "disabled",
   });
-  await card.getByRole("button", { name: "收藏房源", exact: true }).click();
+  await card.getByRole("button", { name: "Save listing", exact: true }).click();
   await expect(
-    card.getByRole("button", { name: "取消收藏", exact: true }),
+    card.getByRole("button", { name: "Remove favorite", exact: true }),
   ).toBeVisible();
   expect((await (await request.get(root)).json()).selection).toBeNull();
   await warning
-    .getByRole("button", { name: "调整租房需求", exact: true })
+    .getByRole("button", { name: "Adjust rental needs", exact: true })
     .click();
   await expect(
-    page.getByRole("dialog", { name: "我的租房需求", exact: true }),
+    page.getByRole("dialog", { name: "My rental needs", exact: true }),
   ).toBeVisible();
 });
 
@@ -153,25 +155,35 @@ test("legacy arrival deadlines do not affect approximate discovery or selecting 
     ).status(),
   ).toBe(200);
   await page.goto(`/cases/${c.case_id}/assistant`);
-  await page.getByRole("button", { name: "我的租房需求", exact: true }).click();
-  const needs = page.getByRole("dialog", { name: "我的租房需求", exact: true });
-  await expect(needs).not.toContainText("03:17");
-  await expect(
-    needs.getByRole("button", { name: "不限定到校时刻", exact: true }),
-  ).toHaveCount(0);
-  await needs.getByRole("button", { name: "关闭", exact: true }).click();
   await page
-    .getByRole("button", { name: "我的收藏（1）", exact: true })
+    .getByRole("button", { name: "My rental needs", exact: true })
     .click();
-  await page.getByRole("button", { name: "选定并跟进", exact: true }).click();
-  const modal = page.getByRole("dialog", {
-    name: "选定这套房并开始跟进？",
+  const needs = page.getByRole("dialog", {
+    name: "My rental needs",
     exact: true,
   });
-  await expect(modal).toContainText("通勤按大概时长参考");
+  await expect(needs).not.toContainText("03:17");
+  await expect(
+    needs.getByRole("button", {
+      name: "No fixed campus arrival time",
+      exact: true,
+    }),
+  ).toHaveCount(0);
+  await needs.getByRole("button", { name: "Close", exact: true }).click();
+  await page
+    .getByRole("button", { name: "My favorites (1)", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Select and follow up", exact: true })
+    .click();
+  const modal = page.getByRole("dialog", {
+    name: "Select this property and start follow-up?",
+    exact: true,
+  });
+  await expect(modal).toContainText("Commute uses approximate duration");
   await expect(modal).not.toContainText("03:17");
   await modal
-    .getByRole("button", { name: "确认并开始跟进", exact: true })
+    .getByRole("button", { name: "Confirm and start follow-up", exact: true })
     .click();
   await expect(page.getByTestId("candidate-next")).toContainText(row.address);
   const state = await (await request.get(root)).json();
@@ -181,9 +193,11 @@ test("legacy arrival deadlines do not affect approximate discovery or selecting 
   );
   await page.reload();
   await expect(page.getByTestId("candidate-next")).toContainText(row.address);
-  await page.getByRole("menuitem", { name: "房源推荐", exact: true }).click();
-  const result = page.getByRole("heading", { name: /筛选结果/ });
-  await expect(result).toContainText(/筛选结果.*\d+ 条/);
+  await page
+    .getByRole("menuitem", { name: "Housing recommendations", exact: true })
+    .click();
+  const result = page.getByRole("heading", { name: /Filtered results/ });
+  await expect(result).toContainText(/Filtered results.*\d+ records/);
   await expect(
     page.getByTestId("real-catalog").locator("tbody tr.ant-table-row").first(),
   ).toBeVisible();

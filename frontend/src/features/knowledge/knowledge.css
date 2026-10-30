@@ -1,0 +1,40 @@
+.knowledge-evidence {
+  margin: 16px 0;
+  padding: 16px;
+  border: 1px solid #dce5f4;
+  border-radius: 12px;
+  background: #fbfcff;
+  min-width: 0;
+}
+.knowledge-evidence-heading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.knowledge-answer,
+.knowledge-source blockquote {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.7;
+}
+.knowledge-source + .knowledge-source {
+  border-top: 1px solid #e6ebf3;
+  padding-top: 16px;
+  margin-top: 16px;
+}
+.knowledge-source blockquote {
+  margin: 10px 0;
+  padding-left: 14px;
+  border-left: 3px solid #b8cae7;
+  color: #354965;
+}
+.knowledge-limitations {
+  margin-top: 12px;
+  font-size: 12px;
+  color: #5d6e89;
+}
+.knowledge-limitations summary {
+  cursor: pointer;
+}

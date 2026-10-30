@@ -53,46 +53,55 @@ test("zero-result alternatives apply one real change, expose reasons and keep wo
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(`/cases/${c.case_id}/assistant`);
   const controls = page.getByRole("region", {
-    name: "本次找房条件",
+    name: "Current housing criteria",
     exact: true,
   });
-  await expect(controls).toContainText("已筛选 0 套");
+  await expect(controls).toContainText("Filtered 0 properties");
   await controls
     .getByRole("button", {
-      name: `${option.label} · 可找到 ${option.count} 套`,
+      name: `${option.label} · Matches available: ${option.count} properties`,
       exact: true,
     })
     .click();
   const result = page.locator(".commute-results").last();
   await expect(result.locator(".commute-home").first()).toBeVisible();
-  await expect(controls).toContainText(`已筛选 ${option.count} 套`);
+  await expect(controls).toContainText(`Filtered ${option.count} properties`);
   let current = await (await request.get(root)).json();
   expect(current.messages.at(-1).listings).toHaveLength(option.count);
   expect(current.rental_brief).toMatchObject({
     ...brief,
     budget_amount: brief.budget_amount + 50,
   });
-  await expect(result).not.toContainText("平均通勤");
+  await expect(result).not.toContainText("Average commute");
   await expect(
-    result.getByRole("list", { name: "推荐理由" }).first(),
-  ).toContainText("公共交通");
+    result.getByRole("list", { name: "Recommendation reasons" }).first(),
+  ).toContainText("Public transport");
   await expect(
-    page.getByRole("status", { name: "本次筛选变化" }).last(),
-  ).toContainText(`房源 0 → ${option.count} 套`);
+    page.getByRole("status", { name: "Filter changes" }).last(),
+  ).toContainText(`Listings 0 → ${option.count} properties`);
   await controls
-    .getByRole("button", { name: "修改通勤条件", exact: true })
+    .getByRole("button", { name: "Edit commute criteria", exact: true })
     .click();
-  const dialog = page.getByRole("dialog", { name: "调整通勤", exact: true });
+  const dialog = page.getByRole("dialog", {
+    name: "Adjust commute",
+    exact: true,
+  });
   await dialog
-    .getByRole("spinbutton", { name: "本次通勤上限", exact: true })
+    .getByRole("spinbutton", { name: "Current commute limit", exact: true })
     .fill("40");
   await dialog
-    .getByRole("button", { name: "应用修改并重新筛选", exact: true })
+    .getByRole("button", {
+      name: "Apply changes and filter again",
+      exact: true,
+    })
     .click();
   await expect(dialog).toHaveCount(0);
   await expect(
-    controls.getByRole("button", { name: "修改通勤条件", exact: true }),
-  ).toContainText("≤40分钟");
+    controls.getByRole("button", {
+      name: "Edit commute criteria",
+      exact: true,
+    }),
+  ).toContainText("≤40 minutes");
   current = await (await request.get(root)).json();
   expect(current.rental_brief).toMatchObject({
     ...brief,
@@ -105,15 +114,15 @@ test("zero-result alternatives apply one real change, expose reasons and keep wo
   });
   await page.setViewportSize({ width: 390, height: 844 });
   await controls
-    .getByRole("button", { name: "修改预算条件", exact: true })
+    .getByRole("button", { name: "Edit budget criteria", exact: true })
     .click();
   const budgetDialog = page.getByRole("dialog", {
-    name: "调整预算",
+    name: "Adjust budget",
     exact: true,
   });
   const editedAmount = String(brief.budget_amount + 55);
   await budgetDialog
-    .getByRole("spinbutton", { name: "本次预算上限", exact: true })
+    .getByRole("spinbutton", { name: "Current budget limit", exact: true })
     .fill(editedAmount);
   await page.route("**/recommendation-adjustments", (route) =>
     route.fulfill({
@@ -125,17 +134,25 @@ test("zero-result alternatives apply one real change, expose reasons and keep wo
     }),
   );
   await budgetDialog
-    .getByRole("button", { name: "应用修改并重新筛选", exact: true })
+    .getByRole("button", {
+      name: "Apply changes and filter again",
+      exact: true,
+    })
     .click();
   await expect(budgetDialog).toContainText("测试服务暂不可用");
   await expect(
-    budgetDialog.getByRole("spinbutton", { name: "本次预算上限", exact: true }),
+    budgetDialog.getByRole("spinbutton", {
+      name: "Current budget limit",
+      exact: true,
+    }),
   ).toHaveAttribute("aria-valuenow", editedAmount);
-  await budgetDialog.getByRole("button", { name: "取消", exact: true }).click();
+  await budgetDialog
+    .getByRole("button", { name: "Cancel", exact: true })
+    .click();
   await expect(budgetDialog).toHaveCount(0);
   await page.unroute("**/recommendation-adjustments");
   await page.reload();
-  await expect(controls).toContainText("≤40分钟");
+  await expect(controls).toContainText("≤40 minutes");
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
@@ -166,30 +183,38 @@ test("catalogue zero results offer computed single-filter alternatives and keep 
   const cap = reference.items[0].weekly_rent - 25;
   await page.goto(`/cases/${c.case_id}/recommendations`);
   await page
-    .getByRole("spinbutton", { name: "至少卧室数", exact: true })
+    .getByRole("spinbutton", { name: "Minimum bedrooms", exact: true })
     .fill("2");
   await page
-    .getByRole("spinbutton", { name: "至少浴室数", exact: true })
+    .getByRole("spinbutton", { name: "Minimum bathrooms", exact: true })
     .fill("1");
   await page
-    .getByRole("spinbutton", { name: "最高周租（AUD）", exact: true })
+    .getByRole("spinbutton", { name: "Maximum weekly rent (AUD)", exact: true })
     .fill(String(cap));
   await page
-    .getByRole("combobox", { name: "到校通勤方式", exact: true })
+    .getByRole("combobox", { name: "Commute mode to campus", exact: true })
     .click();
   await page
     .locator(".ant-select-dropdown:visible .ant-select-item-option-content")
-    .getByText("公共交通", { exact: true })
+    .getByText("Public transport", { exact: true })
     .click();
   await page
-    .getByRole("spinbutton", { name: "到悉大最多（分钟）", exact: true })
+    .getByRole("spinbutton", {
+      name: "Maximum commute to USYD (minutes)",
+      exact: true,
+    })
     .fill("30");
-  await page.getByRole("button", { name: "应用筛选", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Apply filters", exact: true })
+    .click();
   await expect(
-    page.getByRole("heading", { name: "筛选结果 · 0 条", exact: true }),
+    page.getByRole("heading", {
+      name: "Filtered results · 0 records",
+      exact: true,
+    }),
   ).toBeVisible();
   const budget = page.getByRole("button", {
-    name: /周租上限增加 AUD 50.*可找到/,
+    name: /Increase weekly rent limit by AUD 50.*Matches available:/,
   });
   await expect(budget).toBeVisible();
   await budget.click();
@@ -197,16 +222,21 @@ test("catalogue zero results offer computed single-filter alternatives and keep 
     page.getByTestId("real-catalog").locator("tbody tr.ant-table-row").first(),
   ).toBeVisible();
   await expect(
-    page.getByRole("spinbutton", { name: "到悉大最多（分钟）", exact: true }),
+    page.getByRole("spinbutton", {
+      name: "Maximum commute to USYD (minutes)",
+      exact: true,
+    }),
   ).toHaveValue("30");
   await expect(
-    page.getByRole("spinbutton", { name: "至少卧室数", exact: true }),
+    page.getByRole("spinbutton", { name: "Minimum bedrooms", exact: true }),
   ).toHaveValue("2");
-  await expect(page.getByTestId("real-catalog")).toContainText("公共交通");
+  await expect(page.getByTestId("real-catalog")).toContainText(
+    "Public transport",
+  );
   await expect(
     page
       .getByTestId("real-catalog")
-      .getByRole("list", { name: "推荐理由" })
+      .getByRole("list", { name: "Recommendation reasons" })
       .first(),
   ).toBeVisible();
 });

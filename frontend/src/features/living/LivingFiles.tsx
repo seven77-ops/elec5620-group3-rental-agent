@@ -7,9 +7,9 @@ import { newRequestId } from "../../api/client";
 import { Failure } from "../../components/Common";
 import { useAction } from "../../components/useAction";
 const purposes: Record<LivingAttachment["purpose"], string> = {
-  repair: "报修照片或资料",
-  receipt: "收据",
-  moveout: "退租资料",
+  repair: "Repair photos or documents",
+  receipt: "Receipt",
+  moveout: "Move-out documents",
 };
 const allowedTypes = new Set(["image/jpeg", "image/png", "application/pdf"]);
 export default function LivingFiles({
@@ -82,14 +82,14 @@ export default function LivingFiles({
   return (
     <section
       className="living-files living-section"
-      aria-label="照片与收据附件"
+      aria-label="Photo and receipt attachments"
     >
       <div className="living-section-heading">
         <div>
-          <h2>照片与收据</h2>
+          <h2>Photos and receipts</h2>
         </div>
         <Button
-          aria-label="读取附件列表"
+          aria-label="Load attachments"
           loading={loading}
           disabled={action.busy}
           onClick={() => {
@@ -97,7 +97,7 @@ export default function LivingFiles({
             void load();
           }}
         >
-          读取附件列表
+          Load attachments
         </Button>
       </div>
       {Boolean(error || action.error) && (
@@ -106,24 +106,24 @@ export default function LivingFiles({
           {Boolean(action.error) && (
             <Space wrap>
               <Button
-                aria-label="重试原文件上传"
+                aria-label="Retry original file upload"
                 loading={action.busy}
                 onClick={() => void action.retry()}
               >
-                重试原文件上传
+                Retry original file upload
               </Button>
               <Button disabled={action.busy} onClick={() => action.clear()}>
-                取消本次上传
+                Cancel this upload
               </Button>
             </Space>
           )}
         </>
       )}
       <div className="living-file-controls">
-        <label htmlFor="living-file-purpose">附件用途</label>
+        <label htmlFor="living-file-purpose">Attachment purpose</label>
         <Select
           id="living-file-purpose"
-          aria-label="附件用途"
+          aria-label="Attachment purpose"
           value={purpose}
           disabled={frozen}
           onChange={setPurpose}
@@ -132,14 +132,14 @@ export default function LivingFiles({
             label,
           }))}
         />
-        <label htmlFor="living-file-repair">关联报修（可选）</label>
+        <label htmlFor="living-file-repair">Link repair (optional)</label>
         <Select
           id="living-file-repair"
-          aria-label="关联报修（可选）"
+          aria-label="Link repair (optional)"
           value={repairId}
           disabled={frozen}
           allowClear
-          placeholder="不关联特定报修"
+          placeholder="Do not link a specific repair"
           onChange={(id) => setRepairId(id || null)}
           options={repairs.map((repair) => ({
             value: repair.repair_id,
@@ -157,12 +157,12 @@ export default function LivingFiles({
           beforeUpload={(candidate) => {
             if (!allowedTypes.has(candidate.type)) {
               setFile(null);
-              setError("请选择 JPEG、PNG 图片或 PDF 文件。");
+              setError("Choose a JPEG, PNG, or PDF file.");
               return false;
             }
             if (candidate.size === 0 || candidate.size > 10 * 1024 * 1024) {
               setFile(null);
-              setError("请选择非空且不超过10 MiB的文件。");
+              setError("Choose a non-empty file no larger than 10 MiB.");
               return false;
             }
             setFile(candidate);
@@ -171,42 +171,42 @@ export default function LivingFiles({
           }}
         >
           <Button
-            aria-label="选择照片或PDF"
+            aria-label="Choose photo or PDF"
             icon={<UploadOutlined aria-hidden="true" />}
             disabled={frozen}
           >
-            选择照片或PDF
+            Choose photo or PDF
           </Button>
         </Upload>
         <Button
           type="primary"
-          aria-label="上传并保存附件"
+          aria-label="Upload and save attachment"
           disabled={!file || frozen || loading}
           loading={action.busy}
           onClick={upload}
         >
-          上传并保存附件
+          Upload and save attachment
         </Button>
       </Space>
       {file && (
         <p className="living-file-picked">
-          待上传：{file.name} · {(file.size / 1024).toFixed(1)} KiB{" "}
+          Ready to upload: {file.name} · {(file.size / 1024).toFixed(1)} KiB{" "}
           <Button
             size="small"
             type="text"
             disabled={frozen}
             onClick={() => setFile(null)}
           >
-            移除选中文件
+            Remove selected file
           </Button>
         </p>
       )}
       <p className="living-note">
-        支持 JPEG、PNG、PDF，每个文件最多10
-        MiB。选择文件后需点击上传；不会发送给中介、供应商或 AI。
+        JPEG, PNG, and PDF supported, up to 10 MiB each. Select a file and then
+        upload it. Files are not sent to an agent, provider, or AI.
       </p>
       {!items.length && !loading && (
-        <p className="muted small">还没有上传附件。</p>
+        <p className="muted small">No attachments uploaded yet.</p>
       )}
       <div className="living-attachment-list">
         {items.map((item) => (
@@ -215,23 +215,23 @@ export default function LivingFiles({
               <a
                 href={item.download_url}
                 download={item.filename}
-                aria-label={`下载 ${item.filename}`}
+                aria-label={`Download ${item.filename}`}
               >
                 {item.filename}
               </a>
               <p>
                 {purposes[item.purpose]} · {(item.size_bytes / 1024).toFixed(1)}{" "}
-                KiB · {new Date(item.created_at).toLocaleString("zh-CN")}
+                KiB · {new Date(item.created_at).toLocaleString("en-AU")}
               </p>
               {item.repair_id && (
                 <small>
-                  关联报修：
+                  Linked repair:
                   {repairs.find((repair) => repair.repair_id === item.repair_id)
-                    ?.title || "报修记录"}
+                    ?.title || "Repair record"}
                 </small>
               )}
             </div>
-            <Tag>用户上传 · 未核实</Tag>
+            <Tag>Uploaded by user · Unverified</Tag>
           </article>
         ))}
       </div>

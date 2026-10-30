@@ -14,9 +14,12 @@ test("selected commute uses that mode alone and preserves estimate bounds", () =
   });
   assert.equal(
     selectedCommute(source, "public_transport")?.text,
-    "公共交通约 28 分钟",
+    "Public transport Approx. 28 minutes",
   );
-  assert.equal(selectedCommute(source, "walk")?.text, "步行约 90 分钟");
+  assert.equal(
+    selectedCommute(source, "walk")?.text,
+    "Walking Approx. 90 minutes",
+  );
   assert.equal(selectedCommute(source, "train"), null);
   const estimate = selectedCommute(
     data(
@@ -25,7 +28,7 @@ test("selected commute uses that mode alone and preserves estimate bounds", () =
     ),
     "public_transport",
   );
-  assert.equal(estimate?.text, "公共交通估算 22–30 分钟");
+  assert.equal(estimate?.text, "Public transport Estimated 22–30 minutes");
   assert.equal(estimate?.upper, 30);
   assert.equal(
     selectedCommute(

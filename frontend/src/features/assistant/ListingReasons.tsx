@@ -14,7 +14,7 @@ export default function ListingReasons({
 }) {
   const reasons = listingReasons(listing, criteria, filters);
   return reasons.length ? (
-    <ul className="recommendation-reasons" aria-label="推荐理由">
+    <ul className="recommendation-reasons" aria-label="Recommendation reasons">
       {reasons.map((reason) => (
         <li key={reason}>{reason}</li>
       ))}

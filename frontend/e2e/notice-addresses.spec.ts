@@ -39,31 +39,33 @@ test("notice street fields preserve independent manual metadata and never search
   });
   await page.goto(`/cases/${c.case_id}/contract?mode=draft`);
   const property = await page
-    .getByLabel("房屋地址", { exact: true })
+    .getByLabel("Property address", { exact: true })
     .inputValue();
-  await page.getByText("出租方中介（如适用）", { exact: true }).click();
-  for (const prefix of ["出租方", "租客", "出租方中介"]) {
+  await page
+    .getByText("Landlord agent (if applicable)", { exact: true })
+    .click();
+  for (const prefix of ["Landlord", "Tenant", "Landlord agent"]) {
     await page
-      .getByLabel(`${prefix}区域（Suburb）`, { exact: true })
+      .getByLabel(`${prefix} suburb`, { exact: true })
       .fill("West Footscray");
     await page.getByLabel(`${prefix} State`, { exact: true }).fill("VIC");
-    await page.getByLabel(`${prefix}邮编`, { exact: true }).fill("3012");
+    await page.getByLabel(`${prefix} postcode`, { exact: true }).fill("3012");
     await page
-      .getByLabel(`${prefix}送达地址`, { exact: true })
+      .getByLabel(`${prefix} notice address`, { exact: true })
       .fill("Unit 2001, 10 Example Street");
     await expect(
-      page.getByLabel(`${prefix}区域（Suburb）`, { exact: true }),
+      page.getByLabel(`${prefix} suburb`, { exact: true }),
     ).toHaveValue("West Footscray");
     await expect(
       page.getByLabel(`${prefix} State`, { exact: true }),
     ).toHaveValue("VIC");
-    await expect(page.getByLabel(`${prefix}邮编`, { exact: true })).toHaveValue(
-      "3012",
-    );
+    await expect(
+      page.getByLabel(`${prefix} postcode`, { exact: true }),
+    ).toHaveValue("3012");
   }
-  await expect(page.getByLabel("房屋地址", { exact: true })).toHaveValue(
-    property,
-  );
+  await expect(
+    page.getByLabel("Property address", { exact: true }),
+  ).toHaveValue(property);
   expect(listingQueries).toHaveLength(0);
 });
 
@@ -73,10 +75,12 @@ test("independent postal choices handle same-name suburbs and leading zeros, the
 }) => {
   const { c, root } = await seed(request);
   await page.goto(`/cases/${c.case_id}/contract?mode=draft`);
-  await page.getByText("出租方中介（如适用）", { exact: true }).click();
+  await page
+    .getByText("Landlord agent (if applicable)", { exact: true })
+    .click();
   const parties = [
     {
-      prefix: "出租方",
+      prefix: "Landlord",
       field: "landlord",
       street: "Unit 6903, 10 Example Street",
       suburb: "West Footscray",
@@ -84,7 +88,7 @@ test("independent postal choices handle same-name suburbs and leading zeros, the
       postcode: "3012",
     },
     {
-      prefix: "租客",
+      prefix: "Tenant",
       field: "tenant",
       street: "Unit 2001, 20 Example Road",
       suburb: "Darwin",
@@ -92,7 +96,7 @@ test("independent postal choices handle same-name suburbs and leading zeros, the
       postcode: "0800",
     },
     {
-      prefix: "出租方中介",
+      prefix: "Landlord agent",
       field: "agent",
       street: "30 Example Avenue",
       suburb: "Burwood",
@@ -102,13 +106,11 @@ test("independent postal choices handle same-name suburbs and leading zeros, the
   ];
   for (const p of parties) {
     await page
-      .getByLabel(`${p.prefix}送达地址`, { exact: true })
+      .getByLabel(`${p.prefix} notice address`, { exact: true })
       .fill(p.street);
     await page.getByLabel(`${p.prefix} State`, { exact: true }).click();
     await page.getByRole("option", { name: p.state, exact: true }).click();
-    await page
-      .getByLabel(`${p.prefix}区域（Suburb）`, { exact: true })
-      .fill(p.suburb);
+    await page.getByLabel(`${p.prefix} suburb`, { exact: true }).fill(p.suburb);
     const options = page.locator(`#${p.field}_notice_suburb_list`);
     await expect(options).not.toContainText(p.state === "NSW" ? "VIC" : "NSW");
     await options
@@ -118,53 +120,59 @@ test("independent postal choices handle same-name suburbs and leading zeros, the
       })
       .click();
     await expect(
-      page.getByLabel(`${p.prefix}送达地址`, { exact: true }),
+      page.getByLabel(`${p.prefix} notice address`, { exact: true }),
     ).toHaveValue(p.street);
     await expect(
-      page.getByLabel(`${p.prefix}邮编`, { exact: true }),
+      page.getByLabel(`${p.prefix} postcode`, { exact: true }),
     ).toHaveValue(p.postcode);
   }
   // Selecting another same-name locality is explicit; street text remains the user's.
-  await page.getByLabel("出租方中介 State", { exact: true }).fill("VIC");
+  await page.getByLabel("Landlord agent State", { exact: true }).fill("VIC");
   await page
-    .getByLabel("出租方中介区域（Suburb）", { exact: true })
+    .getByLabel("Landlord agent suburb", { exact: true })
     .fill("Burwood");
   await page
     .locator("#agent_notice_suburb_list")
     .getByRole("option", { name: "Burwood · VIC 3125", exact: true })
     .click();
-  await expect(page.getByLabel("出租方中介邮编", { exact: true })).toHaveValue(
-    "3125",
-  );
   await expect(
-    page.getByLabel("出租方中介送达地址", { exact: true }),
+    page.getByLabel("Landlord agent postcode", { exact: true }),
+  ).toHaveValue("3125");
+  await expect(
+    page.getByLabel("Landlord agent notice address", { exact: true }),
   ).toHaveValue("30 Example Avenue");
   // Postal lookup also permits explicit selection and retains NT's leading zero.
-  await page.getByLabel("租客邮编", { exact: true }).fill("080");
+  await page.getByLabel("Tenant postcode", { exact: true }).fill("080");
   await page
     .locator("#tenant_notice_postcode_list")
     .getByRole("option", { name: "Darwin · NT 0800", exact: true })
     .click();
-  await expect(page.getByLabel("租客邮编", { exact: true })).toHaveValue(
+  await expect(page.getByLabel("Tenant postcode", { exact: true })).toHaveValue(
     "0800",
   );
-  await page.getByLabel("租约适用范围", { exact: true }).click();
+  await page.getByLabel("Lease scope", { exact: true }).click();
   await page
-    .getByRole("option", { name: "新州普通整租住宅", exact: true })
+    .getByRole("option", {
+      name: "Standard NSW whole-property residential tenancy",
+      exact: true,
+    })
     .click();
   await page
-    .getByRole("button", { name: "核对并填入合同", exact: true })
+    .getByRole("button", { name: "Check and fill contract", exact: true })
     .click();
   const dialog = page.getByRole("dialog", {
-    name: "确认保存租约草稿",
+    name: "Confirm lease draft save",
     exact: true,
   });
   await dialog.getByRole("checkbox").check();
   await dialog
-    .getByRole("button", { name: "确认保存未签署草稿", exact: true })
+    .getByRole("button", {
+      name: "Confirm and save unsigned draft",
+      exact: true,
+    })
     .click();
   await expect(
-    page.getByRole("dialog", { name: "合同预览 · v1", exact: true }),
+    page.getByRole("dialog", { name: "Contract preview · v1", exact: true }),
   ).toBeVisible();
   const list = await (await request.get(root + "/lease-drafts")).json();
   const saved = await (
@@ -179,10 +187,10 @@ test("independent postal choices handle same-name suburbs and leading zeros, the
   expect(pdf.ok()).toBe(true);
   await writeFile("/tmp/notice-addresses-browser.pdf", await pdf.body());
   await page.reload();
-  await expect(page.getByLabel("出租方送达地址", { exact: true })).toHaveValue(
-    parties[0].street,
-  );
-  await expect(page.getByLabel("租客邮编", { exact: true })).toHaveValue(
+  await expect(
+    page.getByLabel("Landlord notice address", { exact: true }),
+  ).toHaveValue(parties[0].street);
+  await expect(page.getByLabel("Tenant postcode", { exact: true })).toHaveValue(
     "0800",
   );
 });
@@ -216,11 +224,11 @@ test("mobile notice lookup ignores late State responses and permits unmatched ma
       });
   });
   await page.goto(`/cases/${c.case_id}/contract?mode=draft`);
-  await page.getByLabel("租客 State", { exact: true }).fill("NSW");
-  await page.getByLabel("租客区域（Suburb）", { exact: true }).fill("Darwin");
+  await page.getByLabel("Tenant State", { exact: true }).fill("NSW");
+  await page.getByLabel("Tenant suburb", { exact: true }).fill("Darwin");
   await expect.poll(() => oldStarted).toBe(true);
-  await page.getByLabel("租客 State", { exact: true }).fill("NT");
-  await page.getByLabel("租客区域（Suburb）", { exact: true }).click();
+  await page.getByLabel("Tenant State", { exact: true }).fill("NT");
+  await page.getByLabel("Tenant suburb", { exact: true }).click();
   const options = page.locator("#tenant_notice_suburb_list");
   await expect(options).toContainText("Darwin · NT 0800");
   const response = page.waitForResponse((r) =>
@@ -233,39 +241,45 @@ test("mobile notice lookup ignores late State responses and permits unmatched ma
     .getByRole("option", { name: "Darwin · NT 0800", exact: true })
     .click();
   await page
-    .getByLabel("租客区域（Suburb）", { exact: true })
+    .getByLabel("Tenant suburb", { exact: true })
     .fill("Unlisted Test Locality");
   const failed = page.waitForResponse((r) =>
     r.url().includes("/lease-localities?q=Unlisted"),
   );
   await failed;
-  await page.getByLabel("租客邮编", { exact: true }).fill("0999");
+  await page.getByLabel("Tenant postcode", { exact: true }).fill("0999");
   await page
-    .getByLabel("租客送达地址", { exact: true })
+    .getByLabel("Tenant notice address", { exact: true })
     .fill("Unit 2001, 40 Example Road");
-  await expect(
-    page.getByLabel("租客区域（Suburb）", { exact: true }),
-  ).toHaveValue("Unlisted Test Locality");
-  await expect(page.getByLabel("租客邮编", { exact: true })).toHaveValue(
+  await expect(page.getByLabel("Tenant suburb", { exact: true })).toHaveValue(
+    "Unlisted Test Locality",
+  );
+  await expect(page.getByLabel("Tenant postcode", { exact: true })).toHaveValue(
     "0999",
   );
-  await page.getByLabel("租约适用范围", { exact: true }).click();
+  await page.getByLabel("Lease scope", { exact: true }).click();
   await page
-    .getByRole("option", { name: "新州普通整租住宅", exact: true })
+    .getByRole("option", {
+      name: "Standard NSW whole-property residential tenancy",
+      exact: true,
+    })
     .click();
   await page
-    .getByRole("button", { name: "核对并填入合同", exact: true })
+    .getByRole("button", { name: "Check and fill contract", exact: true })
     .click();
   const confirm = page.getByRole("dialog", {
-    name: "确认保存租约草稿",
+    name: "Confirm lease draft save",
     exact: true,
   });
   await confirm.getByRole("checkbox").check();
   await confirm
-    .getByRole("button", { name: "确认保存未签署草稿", exact: true })
+    .getByRole("button", {
+      name: "Confirm and save unsigned draft",
+      exact: true,
+    })
     .click();
   await expect(
-    page.getByRole("dialog", { name: "合同预览 · v1", exact: true }),
+    page.getByRole("dialog", { name: "Contract preview · v1", exact: true }),
   ).toBeVisible();
   const list = await (await request.get(root + "/lease-drafts")).json();
   const saved = await (

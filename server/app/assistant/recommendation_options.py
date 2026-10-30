@@ -31,11 +31,11 @@ def alternatives(catalog,filters,total):
     choices=[]
     if 'max_weekly_rent' in filters and filters['max_weekly_rent']<=1_000_000_000_000-50:
         amount=filters['max_weekly_rent']+50
-        choices.append(('budget',f'周租上限增加 AUD 50（至 {amount:g}/周）',{'budget_amount':amount}))
+        choices.append(('budget',f'Increase weekly rent limit by AUD 50 (to {amount:g}/week)',{'budget_amount':amount}))
     if 'usyd_max_minutes' in filters and filters['usyd_max_minutes']<=230:
         minutes=filters['usyd_max_minutes']+10
-        choices.append(('commute',f'通勤增加 10 分钟（至 {minutes} 分钟）',{'commute_max_minutes':minutes}))
-    if filters.get('suburb'):choices.append(('area','扩大到全部区域',{'suburb':None}))
+        choices.append(('commute',f'Increase commute limit by 10 minutes (to {minutes} minutes)',{'commute_max_minutes':minutes}))
+    if filters.get('suburb'):choices.append(('area','Expand to all suburbs',{'suburb':None}))
     result=[]
     for identifier,label,patch in choices:
         changed=deepcopy(filters)

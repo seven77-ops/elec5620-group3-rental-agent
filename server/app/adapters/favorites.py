@@ -31,7 +31,7 @@ class FavoritesAdapter:
         shape(body, ('request_id', 'listing_id', 'saved'))
         key = case_id + ':' + request_id(body['request_id'])
         opaque_ref(body['listing_id'])
-        require(type(body['saved']) is bool, 422, 'invalid_input', '请选择收藏或取消收藏。')
+        require(type(body['saved']) is bool, 422, 'invalid_input', 'Choose whether to save or remove the favourite.')
         with self.ctx.repo.transaction() as db:
             self.ctx.get(db, 'case', case_id)
             old = self.ctx.receipt(db, 'favorite_receipt', key, body)
@@ -57,9 +57,9 @@ class FavoritesAdapter:
         shape(body, ('request_id', 'expected_profile_fingerprint', 'listing_id', 'confirmed'), ('allow_external_data',))
         key = case_id + ':' + request_id(body['request_id'])
         opaque_ref(body['listing_id'])
-        require(body['confirmed'] is True, 422, 'selection_confirmation_required', '请明确确认选定此房源。')
+        require(body['confirmed'] is True, 422, 'selection_confirmation_required', 'Explicitly confirm selecting this listing.')
         if 'allow_external_data' in body:
-            require(type(body['allow_external_data']) is bool,422,'invalid_input','外部路线查询选项无效。')
+            require(type(body['allow_external_data']) is bool,422,'invalid_input','Invalid external route lookup option.')
         from .real_agent2 import RealProfilesAdapter, require_matching_listing
         from ..assistant.service import BorrowedRepository
         with self.ctx.repo.transaction() as db, self.ctx.preferences.store.join(db):
@@ -68,7 +68,7 @@ class FavoritesAdapter:
             if old:
                 return old['result']
             require(body['expected_profile_fingerprint'] == case['draft']['fingerprint'],
-                    409, 'stale_profile', '租房需求已更新，请重新读取后再选定房源。')
+                    409, 'stale_profile', 'Rental requirements changed. Reload before selecting a listing.')
             confirmed = self.ctx.current(case)
             self.ctx.settings.catalog.get(body['listing_id'])
             joined = copy(self.ctx)
