@@ -52,10 +52,15 @@ class AssistantCommuteTests(unittest.TestCase):
         r=self.recommend(self.conversation(),{},text='刚来悉尼，不知道住哪，帮我推荐')
         self.assertEqual(r.status_code,200,r.text);c=r.json()
         self.assertIn('budget',c['messages'][-1]['content']);self.assertNotIn('Which suburb would you prefer',c['messages'][-1]['content'])
-        self.assertEqual(c['dialogue_mode'],'recommend_areas')
+        self.assertEqual(c['dialogue_mode'],'collect_preferences')
         r=self.recommend(c,{'budget_amount':850,'budget_period':'week','budget_scope':'whole_property','min_bedrooms':2},'next','每周整套850，两卧')
-        self.assertEqual(r.status_code,200,r.text);text=r.json()['messages'][-1]['content']
-        self.assertIn('USYD main campus',text);self.assertNotIn('Which suburb would you prefer',text)
+        self.assertEqual(r.status_code,200,r.text);c=r.json();text=c['messages'][-1]['content']
+        self.assertIn('bathrooms',text);self.assertNotIn('Which suburb would you prefer',text)
+        self.assertNotIn('commute_question',c['messages'][-1])
+        r=self.recommend(c,{'min_bathrooms':1,'min_car_spaces':0,'occupants':1},'basic-complete','One bathroom, no parking, one person.')
+        self.assertEqual(r.status_code,200,r.text)
+        self.assertIs(r.json()['messages'][-1].get('commute_preference_question'),True)
+        self.assertEqual(r.json()['messages'][-1]['listings'],[])
         self.assertEqual(self.client.get('/api/v1/cases/'+self.case['case_id']).json(),self.case)
 
     def test_transit_mode_reply_continues_without_asking_for_arrival_time(self):

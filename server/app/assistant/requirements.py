@@ -5,6 +5,7 @@ from ..common import ApiError, require, shape, request_id
 from ..real_data.profile import supplied_profile
 from ..adapters.real_agent2 import RealProfilesAdapter
 from .dialogue import BRIEF_SCHEMA
+from .commute_choice import normalize
 from .recommendation_options import filters_for, metadata
 from .service import AssistantService, BorrowedRepository, message, signature
 
@@ -17,6 +18,7 @@ def validate(brief, catalog):
 
 
 def missing(brief):
+    brief=normalize(brief)
     fields = []
     if brief.get('budget_amount') is not None:
         if brief.get('budget_period', 'unknown') == 'unknown': fields.append('budget_period')
@@ -28,6 +30,7 @@ def missing(brief):
 
 def save_profile(ctx, db, case, brief):
     validate(brief, ctx.settings.catalog)
+    brief=normalize(brief)
     require(not missing(brief), 422, 'incomplete_requirements', 'Complete the highlighted required fields.')
     base = supplied_profile(case['draft']['profile'], case.get('requirements_contract') != 'supplied-only-v1')
     profile = deepcopy(base)
@@ -50,7 +53,7 @@ def save_profile(ctx, db, case, brief):
     if brief.get('commute_mode') and brief.get('commute_max_minutes'):
         profile['student_commute'] = {'mode': brief['commute_mode'], 'maximum_minutes': brief['commute_max_minutes']}
         if brief.get('max_transfers') is not None: profile['student_commute']['max_transfers'] = brief['max_transfers']
-    else: profile.pop('student_commute', None)
+    elif brief.get('commute_preference')=='skip': profile.pop('student_commute', None)
     try:
         current = ctx.current(case)
     except ApiError as exc:
@@ -65,6 +68,7 @@ def save_profile(ctx, db, case, brief):
 
 
 def finish_sync(ctx, db, conversation, case, brief):
+    brief=normalize(brief)
     conversation['rental_brief'] = deepcopy(brief)
     conversation['last_search_filters'] = ctx.settings.catalog.filters(filters_for(brief))
     conversation['dialogue_mode'] = 'recommend_areas' if brief.get('commute_mode') else 'search'
@@ -94,33 +98,36 @@ class RequirementsService:
             old = self.ctx.receipt(db, 'requirements_save_receipt', key, identity)
             if old: return old['result']
             c, case = AssistantWorkspace(self.ctx).context(db, case_id, conversation_id, body)
-            validate(body['brief'], self.ctx.settings.catalog)
+            validate(body['brief'],self.ctx.settings.catalog)
+            base=supplied_profile(case['draft']['profile'],case.get('requirements_contract')!='supplied-only-v1')
+            brief=normalize(body['brief'],saved=base.get('student_commute'))
+            validate(brief, self.ctx.settings.catalog)
             before = self.ctx.settings.catalog.filters(c.get('last_search_filters', {}) if c.get('dialogue_mode') == 'search' else filters_for(c.get('rental_brief', {})))
-            after = self.ctx.settings.catalog.filters(filters_for(body['brief']))
-            case = save_profile(self.ctx, db, case, body['brief'])
+            after = self.ctx.settings.catalog.filters(filters_for(brief))
+            case = save_profile(self.ctx, db, case, brief)
             answer = None
             has_results = any(m.get('listings') or m.get('commute_recommendation') for m in c['messages'])
             if before != after or not has_results:
                 from ..commute.cached_plan import reference_answer
                 from ..commute.usyd import DESTINATION
                 from .tools import search_answer
-                answer = reference_answer(self.ctx.settings.catalog, body['brief'], DESTINATION) if after.get('usyd_max_minutes') else search_answer(self.ctx.settings.catalog, after)
+                answer = reference_answer(self.ctx.settings.catalog, brief, DESTINATION) if after.get('usyd_max_minutes') else search_answer(self.ctx.settings.catalog, after)
                 answer.pop('_search_filters', None)
                 count = len(self.ctx.settings.catalog.matching(before))
                 answer['content'] = f'Rental requirements updated. Matching listings changed from {count} to {len(answer["listings"])}.'
                 from .recommendation_workspace import LABELS
                 answer['recommendation_change'] = {'before_count': count, 'after_count': len(answer['listings']),
                     'changes': [{'field': k, 'label': LABELS.get(k, 'Rental requirements'), 'before': c.get('rental_brief', {}).get(k), 'after': v}
-                                for k, v in body['brief'].items() if c.get('rental_brief', {}).get(k) != v]}
-                answer.update(metadata(self.ctx.settings.catalog, after, body['brief']))
+                                for k, v in brief.items() if c.get('rental_brief', {}).get(k) != v]}
+                answer.update(metadata(self.ctx.settings.catalog, after, brief))
                 c['messages'].append(message('assistant', **answer))
-            finish_sync(self.ctx, db, c, case, body['brief'])
+            finish_sync(self.ctx, db, c, case, brief)
             c['revision'] += 1
             if answer and answer.get('commute_recommendation'):
                 from ..common import now
                 self.ctx.repo.put(db, 'assistant_commute_report', case_id, {'conversation_id': conversation_id,
                     'conversation_revision': c['revision'], 'case_signature': signature(case),
-                    'catalog_fingerprint': self.ctx.settings.catalog.fingerprint, 'brief': deepcopy(body['brief']),
+                    'catalog_fingerprint': self.ctx.settings.catalog.fingerprint, 'brief': deepcopy(brief),
                     'created_at': now(), 'message': c['messages'][-1]})
             assistant.save(db, c)
             result = {'case': case, 'conversation': c}

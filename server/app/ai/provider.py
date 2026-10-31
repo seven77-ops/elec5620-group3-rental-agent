@@ -163,6 +163,11 @@ TASKS = {
         'Example 先找Rhodes两卧，再比较，然后给标价最低的写询问: {"intent":"workflow","steps":[{"kind":"search","filters":{"suburb":"Rhodes","min_bedrooms":2}},{"kind":"compare","reference":"previous"},{"kind":"prepare_enquiry","reference":"cheapest"}]}. '
         'Requests about what happens after choosing a candidate, viewing preparation, agent enquiries, or application preparation use followup with no optional fields. saved_candidate identifies the case selection; never infer it from a card or submit an application/contact an agent. This specific followup intent takes priority over ongoing intake. '
         'FIRST distinguish ongoing Agent1 requirement collection from an explicit one-off Agent2 query. '
+        'Commute filtering is optional. Never require commute mode or a time limit merely because the user is a student, chooses any suburb, or does not know an area. '
+        'Use brief_patch commute_preference include only for an explicit request to filter or rank by commute, and skip for an explicit opt-out such as no commute filter or I already know the commute and do not need a commute filter. '
+        'For a concrete suburb such as Burwood without an explicit commute request, use ordinary collect_preferences or the requested one-off search, not mandatory commute intake. '
+        'Preserve existing commute requirements unless the user explicitly opts out. The server offers undecided users an optional include-or-skip choice after basic intake. '
+
         'Personalized AREA / COMMUTE recommendations take priority over ordinary intake and unknown_fact. '
         'Use recommend_areas with brief_patch when user is new to Sydney, does not know where to live, asks suitable suburbs based on USYD/classes/commute, or continues dialogue_mode recommend_areas. '
         'This intent asks missing details and the server obtains real locations/routes; never output a duration, coordinate, area rating or a guessed campus. '
@@ -170,6 +175,10 @@ TASKS = {
         'For commute intake, brief_patch additionally allows destination_query (verbatim school/company/campus/address keywords from user; preserve explicit campus), destination_id exact currently offered commute.destination_options ID, '
         'commute_max_minutes integer1..240 (approximate duration only; never extract arrival_time, travel_day or travel_date), commute_hard_limit bool, commute_priority balanced/rent/commute, max_transfers integer0..5, commute_mode public_transport/train/metro/bus/walk/drive/bike. 火车=train, 地铁=metro, 公交车/巴士=bus, 公共交通=public_transport. '
         'Do not invent arrival times, modes, commute ceilings, travel dates or destination_ids. For a chosen destination copy the exact ID only when the user message includes it. '
+        'Public transport is an umbrella for any actual combination, including a single bus or train and mixed routes. Use public_transport for general transit requests. '
+        'Legacy train, metro and bus choices mean the journey includes that mode, never exclusive travel by that mode. Walking connections and other transit legs may be present. '
+        'Never average journey durations, combine legs from separate journeys or invent legs for an estimate. Distinct actual journeys remain separate even when their durations are equal. '
+
         'If the user does not know a suburb use suburb null and keep the area recommendation intake. Budget/housing details continue to use existing brief fields. '
         'Followups like 愿意多坐十分钟车 / 放宽到50分钟 / 想便宜一点 remain recommend_areas, retain old slots, patch only the new ceiling or commute_priority rent. '
         'When the user asks 换一批 / 再给我换一下其他推荐 / 还有别的房源吗 / 其他选择, use recommend_areas with refresh_recommendations true. Preserve all existing budget, bedroom, suburb and commute constraints by omission; never relax them to invent variety. '

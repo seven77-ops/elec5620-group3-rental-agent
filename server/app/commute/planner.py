@@ -178,7 +178,8 @@ class CommutePlanner:
                 response=getattr(self.ctx,'transit_provider',self.ctx.data_provider).trips({'origin':{k:origin[k] for k in ('latitude','longitude')},
                     'destination':{k:destination[k] for k in ('latitude','longitude')},
                     'arrival_at':arrival.isoformat(),'allow_external':True})
-                journeys=response.get('journeys',[])
+                from .transit_options import planned_journeys,distinct,LIMIT,path_key
+                journeys=[{**r,'basis':'scheduled_live_query'} for r in planned_journeys(response.get('journeys',[]),arrival.isoformat(),now(),limit=None)]
                 usable=[]
                 for journey in journeys:
                     if not number(journey.get('duration_minutes'),0,10080): continue
@@ -193,8 +194,11 @@ class CommutePlanner:
                     return unavailable(row,'The provider returned no route with verifiable times and duration that arrives on time on the selected date and meets transfer limits.',precision=origin['precision'])
                 chosen=min(usable,key=lambda r:r['duration_minutes'])
                 over=chosen['duration_minutes']>brief['commute_max_minutes']
+                alternatives=distinct(journeys)
+                if path_key(chosen) not in {path_key(r) for r in alternatives}:alternatives=distinct(alternatives[:LIMIT-1]+[chosen])
                 return {'listing_id':row['listing_id'],'status':'over_limit' if over else 'ok',
                         **{k:chosen.get(k) for k in ('duration_minutes','walking_minutes','transfers','departure_at','arrival_at','transit_modes','services','legs')},
+                        'transit_options':alternatives,
                         'source_url':TFNSW_DOC,'route_url':directions_url(row,destination),'origin_precision':origin['precision'],
                         'mode':mode,'basis':'scheduled_live_query',
                         'transport_backend':response.get('transport_backend','tfnsw_direct'),
@@ -229,13 +233,21 @@ class CommutePlanner:
             if maximum is not None and (type(route.get('transfers')) is not int
                     or not 0<=route['transfers']<=maximum): continue
             card={**deepcopy(row),'commute_minutes':route['duration_minutes'],'commute_status':route['status']}
-            if route.get('origin') and card.get('usyd_commute'):
+            if route.get('origin'):
                 from .snapshot import distance_metres
-                annotation=card['usyd_commute'];annotation['origin']=deepcopy(route['origin'])
+                annotation=card.get('usyd_commute')
+                if not annotation:
+                    annotation={'modes':{},'destination':deepcopy(destination),
+                                'generated_at':route['queried_at'],
+                                'reference_note':destination.get('reference_note','Destination reference point; not a verified entrance.')}
+                    card['usyd_commute']=annotation
+                annotation['origin']=deepcopy(route['origin'])
                 annotation['straight_line_distance_m']=distance_metres(route['origin'])
                 annotation.pop('estimates',None)
                 annotation['modes'][mode]={**deepcopy(route),'status':'planned',
                     'queried_at':route['queried_at'],'reference_arrival_at':arrival.isoformat()}
+                annotation['transit_options']=deepcopy(route.get('transit_options',[]))
+                annotation['selected_transit_route']={**{k:deepcopy(v) for k,v in route.items() if k!='transit_options'},'status':'planned','mode':mode,'reference_arrival_at':arrival.isoformat()}
                 annotation['reference_arrival_at']=arrival.isoformat()
             eligible.append(card)
         eligible_ids={row['listing_id'] for row in eligible}

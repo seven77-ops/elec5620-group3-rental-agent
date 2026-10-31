@@ -55,7 +55,7 @@ class RecommendationWorkbenchTests(unittest.TestCase):
         service = self.workbench(); body=self.request({'commute_max_minutes':60})
         updated=service.adjust(self.cid,self.c['conversation_id'],body)
         from server.app.commute.usyd import student_brief
-        self.assertEqual(updated['rental_brief'],student_brief({**self.brief,'commute_max_minutes':60,'recommend_areas':True}))
+        self.assertEqual(updated['rental_brief'],student_brief({**self.brief,'commute_max_minutes':60,'recommend_areas':True,'commute_preference':'include'}))
         report=updated['messages'][-1]
         self.assertEqual(report['recommendation_change']['before_count'],len(self.catalog.matching(service.filters(self.brief))))
         self.assertEqual(report['recommendation_change']['after_count'],len(report['listings']))

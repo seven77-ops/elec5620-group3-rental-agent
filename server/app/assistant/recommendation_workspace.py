@@ -5,6 +5,7 @@ from jsonschema import Draft202012Validator
 from ..common import require, shape, integer, request_id, now
 from ..commute.usyd import student_brief, DESTINATION
 from .dialogue import BRIEF_SCHEMA
+from .commute_choice import normalize
 from .recommendation_options import FIELD_MAP, alternatives, filters_for, criteria_for, metadata
 from .service import AssistantService, signature, message
 
@@ -61,7 +62,7 @@ class RecommendationWorkspace:
             require(len(c['messages'])<199,409,'message_limit','This conversation is full. Start a new conversation.')
             require(c.get('dialogue_mode') in ('search','recommend_areas'),409,'requirements_not_ready','Provide rental requirements and generate recommendations first.')
             before,filters=self.context(c);previous_count=len(catalog.matching(filters))
-            patch=body['patch'];brief={**before,**deepcopy(patch)}
+            patch=body['patch'];brief=normalize({**before,**deepcopy(patch)},patch)
             for key,value in patch.items():
                 # Personal/room budgets are not silently multiplied or treated as whole-ad rent.
                 if key=='budget_amount' and 'max_weekly_rent' not in filters and not (brief.get('budget_scope')=='whole_property' and brief.get('budget_period')=='week'):continue

@@ -9,7 +9,7 @@ from .usyd import DESTINATION,MODE_LABELS
 def shortlist(rows,brief,limit=12):
     mode=brief.get('commute_mode','public_transport')
     def rank(row):
-        route=observation(row,mode)
+        route=observation(row,mode,max_transfers=brief.get('max_transfers'))
         record=row.get('usyd_commute') or {}
         # Measured route first, then actual coordinate distance. Price never admits
         # a distant suburb before a known nearby home just because it is cheaper.
@@ -42,7 +42,7 @@ def reference_answer(catalog,brief,destination):
     source_label='Existing scheduled transit reference' if transit else 'Road-network estimate'
     routes=[];eligible=[];pending=[]
     for row in rows:
-        item=observation(row,mode);record=row.get('usyd_commute') or {}
+        item=observation(row,mode,max_transfers=brief.get('max_transfers'));record=row.get('usyd_commute') or {}
         estimate=estimate_for(row,mode) if not item else None
         # A range only passes a maximum when its UPPER bound passes it.
         minutes=item['duration_minutes'] if item else estimate['upper_minutes'] if estimate else None
@@ -57,9 +57,16 @@ def reference_answer(catalog,brief,destination):
                'basis':'coarse_estimate' if estimate else basis,'mode':mode,'transit_modes':item.get('transit_modes',[]) if transit and item else [],
                'reference_arrival_at':(item or estimate or {}).get('reference_arrival_at'),
                'distance_m':item.get('distance_m') if item else None}
+        if transit and item:
+            from .transit_options import options
+            route.update({k:deepcopy(item[k]) for k in ('departure_at','arrival_at','queried_at','services','legs') if k in item})
+            route['transit_options']=options(record,selected=item)
         routes.append(route)
         if estimate and ok:route['reason']='Filtered using street, suburb or postcode route ranges. The upper estimate is checked against commute requirements.'
-        card={**row,'commute_minutes':minutes,'commute_status':route['status'],'recommendation_mode':mode}
+        card={**deepcopy(row),'commute_minutes':minutes,'commute_status':route['status'],'recommendation_mode':mode}
+        if transit and item:
+            card['usyd_commute']['transit_options']=deepcopy(route['transit_options'])
+            card['usyd_commute']['selected_transit_route']={**deepcopy(item),'mode':mode}
         (eligible if ok else pending).append(card)
     rent_floor=max(min((r['weekly_rent'] for r in eligible),default=1),1)
     time_floor=max(min((r['commute_minutes'] for r in eligible),default=1),1)

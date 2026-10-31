@@ -93,7 +93,15 @@ class AssistantDemoProvider:
         message = context.get('message') or context.get('latest_user_message') or context.get('query') or ''
         lower = message.casefold()
         has = lambda *words: any(word.casefold() in lower for word in words)
-        if message in ('How do I request repairs?', '在 NSW，租客怎么报修？'):
+        basic_intakes={
+            'Record my rental needs: any suburb, AUD 900 per week for the whole property, one person, at least two bedrooms and two bathrooms, no parking.':None,
+            'Record my rental needs: Burwood, AUD 900 per week for the whole property, one person, at least two bedrooms and two bathrooms, no parking.':'Burwood',
+        }
+        if message in basic_intakes:
+            result={'intent':'collect_preferences','brief_patch':{'suburb':basic_intakes[message],
+                'budget_amount':900,'budget_period':'week','budget_scope':'whole_property','occupants':1,
+                'min_bedrooms':2,'min_bathrooms':2,'min_car_spaces':0,'rental_mode':'whole_property'}}
+        elif message in ('How do I request repairs?', '在 NSW，租客怎么报修？', 'What is my exact rent debt?', 'How can I avoid rental scams when finding accommodation near university?'):
             result = {'intent': 'knowledge'}
         elif has('网络套餐', 'internet plan'):
             result = {'intent': 'living_services', 'topic': 'utilities', 'service_action': 'recommend', 'provider_category': 'internet'}

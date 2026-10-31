@@ -6,6 +6,7 @@ from ..common import require,shape,integer,request_id,uid
 from ..adapters.real_agent2 import RealProfilesAdapter
 from .service import AssistantService,BorrowedRepository,signature,message
 from .dialogue import BRIEF_SCHEMA,next_question,brief_profile_patch
+from .commute_choice import normalize
 from .intents import merge_profile
 from .tools import preference_summary,known_listings
 
@@ -35,6 +36,7 @@ class AssistantWorkspace:
             422,'invalid_input','Review the suburb, budget, occupants, bedrooms, bathrooms and parking requirements.')
         require(brief.get('suburb') is None or brief['suburb'] in catalog.suburbs,
             422,'invalid_input','Choose a suburb in the current listing catalogue.')
+        brief=normalize(brief)
         question=next_question(brief)
         require(question is None,422,'incomplete_requirements',question or 'Complete your rental requirements.')
         require('rental_mode' in brief,422,'incomplete_requirements','Choose a rental mode, such as whole property or private room.')
@@ -53,10 +55,11 @@ class AssistantWorkspace:
                     previous['case_signature']==signature(case),409,'stale_proposal','The conversation requirements are out of date. Prepare and confirm them again.')
                 base_profile=previous['profile']
                 legacy=previous.get('requirements_contract')!='supplied-only-v1'
+            brief=normalize(brief,saved=base_profile.get('student_commute'))
             patch=brief_profile_patch(brief)
             profile=merge_profile(base_profile,patch,legacy=legacy)
             if 'student_commute' in patch:profile['student_commute']=deepcopy(patch['student_commute'])
-            else:profile.pop('student_commute',None)
+            elif brief.get('commute_preference')=='skip':profile.pop('student_commute',None)
             catalog.filters({k:v for k,v in profile.get('housing_preferences',{}).items() if k!='budget_match_mode'})
             p={'proposal_id':uid('proposal'),'case_id':case_id,'conversation_id':conversation_id,
                 'case_signature':signature(case),'conversation_revision':c['revision']+1,

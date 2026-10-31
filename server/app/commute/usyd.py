@@ -17,7 +17,8 @@ _HASH_REFERENCE = {**DESTINATION, 'label': "\u6089\u5c3c\u5927\u5b66 Camperdown 
                    'reference_note': "\u4ee5 Fisher Library \u5b98\u65b9\u8bbe\u65bd\u70b9\u4e3a\u7edf\u4e00\u5230\u6821\u53c2\u8003\uff1b\u5230\u5177\u4f53\u6559\u5ba4\u53ca\u697c\u5185\u7684\u65f6\u95f4\u53e6\u8ba1\u3002"}
 CAMPUS_FINGERPRINT = hashlib.sha256(json.dumps(_HASH_REFERENCE,sort_keys=True).encode()).hexdigest()
 MODES = ('public_transport','train','metro','bus','drive','bike','walk')
-MODE_LABELS = {'public_transport':'public transport','train':'train','metro':'metro','bus':'bus',
+PUBLIC_TRANSPORT_LABEL='Public transport (any combination)'
+MODE_LABELS = {'public_transport':'public transport','train':'includes train','metro':'includes metro','bus':'includes bus',
                'drive':'driving','bike':'cycling','walk':'walking','light_rail':'light rail','ferry':'ferry'}
 
 

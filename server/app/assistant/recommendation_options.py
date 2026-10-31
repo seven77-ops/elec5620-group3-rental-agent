@@ -1,5 +1,6 @@
 """Deterministic filter context and one-change counterfactuals over the same inventory."""
 from copy import deepcopy
+from .commute_choice import normalize
 
 FIELD_MAP = {'budget_amount':'max_weekly_rent','commute_mode':'usyd_mode',
              'commute_max_minutes':'usyd_max_minutes','max_transfers':'usyd_max_transfers',
@@ -7,6 +8,7 @@ FIELD_MAP = {'budget_amount':'max_weekly_rent','commute_mode':'usyd_mode',
 
 
 def filters_for(brief):
+    brief=normalize(brief)
     result={k:brief[k] for k in ('suburb','min_bedrooms','min_bathrooms','min_car_spaces') if brief.get(k) is not None}
     if brief.get('budget_period')=='week' and brief.get('budget_scope')=='whole_property' and brief.get('budget_amount') is not None:
         result['max_weekly_rent']=brief['budget_amount']
@@ -17,7 +19,7 @@ def filters_for(brief):
 
 
 def criteria_for(filters,brief=None):
-    result=deepcopy(brief or {})
+    result=normalize(brief or {})
     for key in ('arrival_time','travel_date','travel_day'):result.pop(key,None)
     for target,source in FIELD_MAP.items():
         if source in filters:result[target]=filters[source]

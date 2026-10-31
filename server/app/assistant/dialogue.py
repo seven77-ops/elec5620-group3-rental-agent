@@ -2,6 +2,7 @@
 from copy import deepcopy
 from .commute import COMMUTE_PROPERTIES
 from ..areas.evidence import PRIORITIES_SCHEMA
+from . import commute_choice
 
 COUNT = {'type':'integer','minimum':0,'maximum':100}
 BRIEF_SCHEMA = {'type':'object','additionalProperties':False,'properties':{
@@ -26,6 +27,10 @@ def merge_brief(conversation,intent):
             elif key=='max_weekly_rent':
                 brief['budget_amount']=value
                 brief['budget_period']='week'
+    patch=intent.get('brief_patch',{})
+    if intent['intent']=='search' and any(k.startswith('usyd_') for k in intent.get('filters',{})):
+        patch={**patch,'commute_preference':'include'}
+    brief=commute_choice.normalize(brief,patch)
     return {k:v for k,v in brief.items() if k not in ("arrival_time","travel_day","travel_date")}
 
 
@@ -42,6 +47,7 @@ def brief_summary(brief):
         period={'week':'/week','month':'/month'}.get(brief.get('budget_period'),' (period unconfirmed)')
         scope={'per_person':'per person','per_room':'per room','whole_property':'whole property'}.get(brief.get('budget_scope'),'rent scope unconfirmed')
         parts.append(f"Budget limit {brief['budget_amount']:g} AUD{period}, {scope}")
+    if brief.get('commute_preference')=='skip':parts.append('No commute filter')
     return ', '.join(parts)
 
 
@@ -63,6 +69,7 @@ def next_question(brief):
 
 
 def brief_filters(brief):
+    brief=commute_choice.normalize(brief)
     result={k:brief[k] for k in ('suburb','min_bedrooms','min_bathrooms','min_car_spaces') if k in brief and brief[k] is not None}
     result['max_weekly_rent']=brief['budget_amount']
     if brief.get('commute_mode') and brief.get('commute_max_minutes'):
@@ -73,6 +80,7 @@ def brief_filters(brief):
 
 
 def brief_profile_patch(brief):
+    brief=commute_choice.normalize(brief)
     patch={'budget':{'currency':'AUD','period':'week','maximum':brief['budget_amount'],'scope':brief['budget_scope']},
         'housing_preferences':{k:brief[k] for k in ('suburb','min_bedrooms','min_bathrooms','min_car_spaces') if k in brief},
         'occupants':brief['occupants']}

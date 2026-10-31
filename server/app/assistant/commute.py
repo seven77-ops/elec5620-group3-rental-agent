@@ -7,6 +7,7 @@ from ..common import ApiError,require,now
 from ..commute.usyd import DESTINATION,MODES,student_brief
 
 COMMUTE_PROPERTIES={
+    'commute_preference':{'enum':['include','skip']},
     'recommend_areas':{'type':'boolean'},
     'destination_query':{'type':'string','minLength':2,'maxLength':180},
     'destination_id':{'type':'string','minLength':1,'maxLength':100},
@@ -75,7 +76,7 @@ def next_question(brief):
     if brief.get('budget_scope') not in ('whole_property','per_room','per_person'):return 'Is this weekly budget for the whole property, per room or per person?'
     if 'min_bedrooms' not in brief:return 'How many bedrooms do you need at minimum? Add bathroom and parking requirements if you have any.'
     if 'commute_max_minutes' not in brief:return 'What is your maximum one-way commute in minutes to the USYD main campus?'
-    if not brief.get('commute_mode'):return 'Which commute mode do you prefer: public transport, train, metro, bus, driving, cycling or walking?'
+    if not brief.get('commute_mode'):return 'Which commute mode do you prefer: public transport (any combination), driving, cycling or walking? You can also request routes that include train, metro or bus.'
     return None
 
 

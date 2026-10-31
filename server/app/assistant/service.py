@@ -15,7 +15,7 @@ from .living import read_snapshot, model_context, answer_living
 from ..living.service import LivingService
 from .repair_dialogue import repair_focus, focus_context
 from .lease_bridge import LeaseChatBridge
-from . import commute
+from . import commute, commute_choice
 from . import areas
 from . import progress
 from .preferences_progress import guard_monthly
@@ -201,9 +201,22 @@ class AssistantService:
                 require(recovered['intent']=='collect_preferences',502,'ai_invalid_response','Previous requirements could not be extracted. Please retry.')
                 memory={**c,'rental_brief':recovered.get('brief_patch',{})}
             brief=merge_explicit_priorities(merge_brief(memory,intent),body['message'])
-            if intent['intent']=='collect_preferences' and (brief.get('commute_mode') or brief.get('commute_max_minutes')):
-                intent['intent']='recommend_areas'
+            if intent['intent'] in ('collect_preferences','recommend_areas','search'):
+                saved_commute=context['draft_profile'].get('student_commute')
+                previous_filters=c.get('last_search_filters',{})
+                if not saved_commute and previous_filters.get('usyd_mode') and previous_filters.get('usyd_max_minutes'):
+                    saved_commute={'mode':previous_filters['usyd_mode'],'maximum_minutes':previous_filters['usyd_max_minutes']}
+                    if previous_filters.get('usyd_max_transfers') is not None:saved_commute['max_transfers']=previous_filters['usyd_max_transfers']
+                brief=commute_choice.normalize(brief,intent.get('brief_patch',{}),body['message'],saved_commute)
+                if intent['intent']!='search':
+                    if brief.get('commute_preference')=='skip':intent['intent']='collect_preferences'
+                    elif commute_choice.requested(brief):intent['intent']='recommend_areas'
+                    elif intent['intent']=='recommend_areas':
+                        brief.setdefault('suburb',None)
+                        intent['intent']='collect_preferences'
             question=next_question(brief) if intent['intent']=='collect_preferences' else None
+            optional_commute=(intent['intent']=='collect_preferences' and question is None and commute_choice.optional(brief))
+            if optional_commute:question=commute_choice.QUESTION
             if uncertain_region:
                 answer={'intent':'collect_preferences','agent':'agent1','listings':[],'actions':[],
                         'content':f'Which suburb does {uncertain_region} refer to? Please provide its full English name. Your budget and property requirements are retained until you clarify the suburb.'}
@@ -222,12 +235,15 @@ class AssistantService:
             elif intent['intent']=='collect_preferences' and question:
                 summary=brief_summary(brief)
                 answer={'intent':'collect_preferences','agent':'agent1',
-                    'content':('Noted: '+summary+'.\n' if summary else '')+question,'listings':[],'actions':[]}
+                    'content':('Noted: '+summary+'.\n' if summary else '')+question,'listings':[],'actions':[],
+                    **({'commute_preference_question':True} if optional_commute else {})}
             elif intent['intent'] in ('update_preferences','collect_preferences'):
                 patch=brief_profile_patch(brief) if intent['intent']=='collect_preferences' else intent.get('preference_patch',{})
                 try:
                     require(bool(patch),422,'empty_patch','Please add your preferences.')
-                    profile=merge_profile(case['draft']['profile'],patch,legacy=case.get('requirements_contract')!='supplied-only-v1')
+                    base=deepcopy(case['draft']['profile'])
+                    if brief.get('commute_preference')=='skip':base.pop('student_commute',None)
+                    profile=merge_profile(base,patch,legacy=case.get('requirements_contract')!='supplied-only-v1')
                     housing=profile.get('housing_preferences',{})
                     catalog.filters({k:v for k,v in housing.items() if k!='budget_match_mode'})
                 except (ApiError,ValueError):
@@ -253,7 +269,7 @@ class AssistantService:
             elif intent['intent']=='transit_info':
                 from .transit_info import answer as transit_answer
                 answer=transit_answer(self.ctx,intent,case,c,requested,body.get('allow_external_data',False))
-            else: answer=execute(intent,case,c,catalog,requested,ctx=self.ctx)
+            else: answer=execute(intent,case,{**c,'rental_brief':brief},catalog,requested,ctx=self.ctx)
             answer=rank_answer(answer,brief,catalog)
             search_filters=answer.pop('_search_filters',None)
             repair_call=answer.pop('_repair_call',None)
@@ -315,12 +331,14 @@ class AssistantService:
                         current['rental_brief']=kept
                         current['dialogue_mode']='recommend_areas'
                     else:
-                        current['rental_brief']=({**{k:v for k,v in brief.items() if k=='lifestyle_priorities'},**profile_brief(profile)}
+                        current['rental_brief']=({**{k:v for k,v in brief.items() if k in ('lifestyle_priorities','commute_preference')},**profile_brief(profile)}
                                                 if proposal and intent['intent']=='update_preferences' else brief)
                         current['dialogue_mode']='collect_preferences'
                 elif intent['intent']=='search':
                     current['dialogue_mode']='search'
                     if brief: current['rental_brief']=brief
+                if brief.get('commute_preference')=='skip':
+                    current['last_search_filters']=commute_choice.without_filters(current.get('last_search_filters',{}))
                 if search_filters is not None:
                     current['last_search_filters']=search_filters
                     if intent['intent']=='workflow': current['dialogue_mode']='search'
@@ -400,7 +418,7 @@ class AssistantService:
                 c['rental_brief']={**c['rental_brief'],**profile_brief(p['profile'])}
                 c['dialogue_mode']='recommend_areas'
             else:
-                c['rental_brief']={**{k:v for k,v in c.get('rental_brief',{}).items() if k=='lifestyle_priorities'},**profile_brief(p['profile'])}
+                c['rental_brief']={**{k:v for k,v in c.get('rental_brief',{}).items() if k in ('lifestyle_priorities','commute_preference')},**profile_brief(p['profile'])}
                 c['dialogue_mode']='search'
             c['revision']+=1; self.save(db,c)
             p['status']='applied'; self.ctx.repo.put(db,'assistant_proposal',proposal_id,p)

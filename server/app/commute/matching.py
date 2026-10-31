@@ -6,7 +6,7 @@ FILTER_KEYS=('usyd_mode','usyd_max_minutes','usyd_arrival_time','usyd_travel_day
 
 
 def reference_matches(row,filters):
-    mode=filters.get('usyd_mode','public_transport');route=observation(row,mode)
+    mode=filters.get('usyd_mode','public_transport');route=observation(row,mode,max_transfers=filters.get('usyd_max_transfers'))
     if not route:
         from .estimates import estimate_matches
         approximate={k:v for k,v in filters.items() if k not in ('usyd_arrival_time','usyd_travel_day','usyd_travel_date')}

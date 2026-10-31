@@ -31,6 +31,11 @@ def load_snapshot(catalog,path=None):
             if origin is not None and not valid_point(origin):return None
             if origin is not None and not validated_origin(source,origin):return None
             if set(record['modes'])!=set(MODES):return None
+            if 'transit_options' in record:
+                from .transit_options import valid_option,LIMIT
+                extra=record['transit_options']
+                if not isinstance(extra,list) or len(extra)>LIMIT or (extra and not valid_point(origin)):return None
+                if any(not valid_option(route,fresh=False) for route in extra):return None
             for mode,route in record['modes'].items():
                 value=route.get('duration_minutes')
                 if route['status'] not in ('planned','routing_estimate','unavailable','no_observed_option'):return None
@@ -49,13 +54,18 @@ def public_record(data,identifier):
     if not data:return None
     record=deepcopy(data['records'].get(identifier))
     if not record:return None
+    from .transit_options import options
+    record.pop('selected_transit_route',None)
+    record['transit_options']=options(record)
     record.update(destination=deepcopy(DESTINATION),generated_at=data['generated_at'],
                   reference_arrival_at=record['modes']['public_transport'].get('reference_arrival_at') or data.get('reference_arrival_at'),reference_note=DESTINATION['reference_note'])
     return record
 
 
-def observation(row,mode):
+def observation(row,mode,max_transfers=None):
     annotation=row.get('usyd_commute') or {}
+    from .transit_options import TRANSIT,select
+    if mode in TRANSIT:return select(annotation,mode,max_transfers)
     item=annotation.get('modes',{}).get(mode)
     if not item or item.get('status') not in ('planned','routing_estimate') or item.get('duration_minutes') is None:return None
     if item['status'] in ('planned','routing_estimate'):

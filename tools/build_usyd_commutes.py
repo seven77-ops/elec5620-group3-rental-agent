@@ -25,10 +25,24 @@ def save(path,data):
     temp=path.with_suffix('.tmp');temp.write_text(json.dumps(data,ensure_ascii=False,indent=2));temp.replace(path)
 
 
-def blank(mode,reason='尚未取得可核对的路线'):
+def blank(mode,reason='No checked route is available yet.'):
     return {'status':'unavailable','duration_minutes':None,'distance_m':None,
             'source_url':TFNSW_DOC if mode not in ('walk','bike','drive') else 'https://routing.openstreetmap.de/about.html',
             'reason':reason}
+
+
+
+def observations_for(journeys,arrival,queried_at):
+    """Keep distinct actual journeys and backwards-compatible includes-mode slots."""
+    from server.app.commute.transit_options import planned_journeys,distinct
+    options=planned_journeys(journeys,arrival.isoformat(),queried_at,limit=None)
+    observations={}
+    for mode in ('public_transport','train','metro','bus'):
+        usable=[r for r in options if mode=='public_transport' or mode in r.get('transit_modes',[])]
+        observations[mode]=(deepcopy(usable[0]) if usable else
+            {**blank(mode,'No checked journey including this mode was returned for this query.'),
+             'status':'no_observed_option','queried_at':queried_at})
+    return observations,distinct(options)
 
 
 def run(args):
@@ -68,10 +82,10 @@ def run(args):
     arrival=arrival_for({'arrival_time':'09:00','travel_day':'weekday'})
     data={'schema_version':'1.0','catalog_fingerprint':catalog.fingerprint,'campus_fingerprint':CAMPUS_FINGERPRINT,
           'destination':DESTINATION,'generated_at':now(),'reference_arrival_at':arrival.isoformat(),'records':{},
-          'limitations':['统一到校参考为Fisher Library设施点，楼内及到具体教室时间另计。',
-            '道路时间为按各自路网计算的估算；驾车不含实时拥堵、停车、收费及下车后步行。',
-            '公共交通为所列工作日09:00前到达的计划时刻样本，含步行候车换乘，不代表所有时刻。',
-            '火车、地铁、公交字段表示本次返回的路线含该方式，可能还有其他公共交通及步行接驳；空值不表示绝对无此类路线。']}
+          'limitations':['Fisher Library is the common campus reference. Indoor walking and travel to specific classrooms are additional.',
+            'Road travel times are separate network estimates. Driving excludes live congestion, parking, tolls and walking after alighting.',
+            'Public transport (any combination) uses sampled scheduled journeys arriving before 09:00 on the listed weekday, including walking, waiting and transfers; it does not cover all times.',
+            'Legacy train, metro and bus slots mean a journey includes that mode, possibly with other transit and walking connections. Missing observations do not establish that no such route exists.']}
     if output.is_file():
         previous=json.loads(output.read_text())
         if previous.get('catalog_fingerprint')==catalog.fingerprint and previous.get('campus_fingerprint')==CAMPUS_FINGERPRINT:
@@ -84,9 +98,10 @@ def run(args):
         identifier=row['listing_id'];point=points.get(identifier)
         record=data['records'].setdefault(identifier,{'listing_id':identifier,'address':row['address'],'suburb':row['suburb'],
              'origin':point,'straight_line_distance_m':distance_metres(point) if point else None,
-             'modes':{m:blank(m,'完整房源地址未能唯一定位' if not point else '尚未查询') for m in MODES}})
+             'modes':{m:blank(m,'The full property address could not be uniquely located.' if not point else 'Not queried yet.') for m in MODES}})
         if record.get('origin')!=point:
-            record['modes']={m:blank(m,'位置已变化，需要重新核对路线') for m in MODES}
+            record['modes']={m:blank(m,'The location changed. Check routes again.') for m in MODES}
+            record.pop('transit_options',None)
         record['origin']=point;record['straight_line_distance_m']=distance_metres(point) if point else None
     save(output,data)
     located=[r for r in rows if r['listing_id'] in points]
@@ -110,7 +125,7 @@ def run(args):
                     data['records'][row['listing_id']]['modes'][mode]={'status':'routing_estimate','duration_minutes':round(seconds/60,2),
                         'distance_m':round(distance),'queried_at':now(),'source_url':f'https://routing.openstreetmap.de/routed-{backend}/',
                         'routing_profile':backend,'attribution':'© OpenStreetMap contributors · FOSSGIS OSRM',
-                        'reason':'独立的'+backend+'路网规划估算；不含实时交通及楼内时间。'}
+                        'reason':'Independent '+backend+' road-network estimate; excludes live traffic and indoor travel.'}
             except (ApiError,ValueError,KeyError,TypeError,IndexError) as error:
                 print('Road batch unavailable',mode,start,type(error).__name__,flush=True)
             data['generated_at']=now();save(output,data)
@@ -123,23 +138,15 @@ def run(args):
             try:
                 response=provider.trips({'origin':{k:origin[k] for k in ('latitude','longitude')},
                     'destination':{k:DESTINATION[k] for k in ('latitude','longitude')},'arrival_at':arrival.isoformat(),'allow_external':True})
-                journeys=[j for j in response['journeys'] if j.get('duration_minutes') is not None and timing_matches(j,arrival)]
-                observations={}
-                for mode in ('public_transport','train','metro','bus'):
-                    options=[j for j in journeys if mode=='public_transport' or mode in j.get('transit_modes',[])]
-                    if not options:
-                        observations[mode]={**blank(mode,'本次计划时刻未返回包含此方式的可核对方案'),'status':'no_observed_option','queried_at':now()}
-                        continue
-                    chosen=min(options,key=lambda j:j['duration_minutes'])
-                    observations[mode]={'status':'planned','source_url':TFNSW_DOC,'queried_at':now(),'reference_arrival_at':arrival.isoformat(),
-                        **{k:deepcopy(chosen.get(k)) for k in ('duration_minutes','walking_minutes','transfers','departure_at','arrival_at','services','transit_modes','legs')}}
-                return row['listing_id'],observations,None
-            except ApiError as e:return row['listing_id'],{},e.code
+                observations,options=observations_for(response['journeys'],arrival,now())
+                return row['listing_id'],observations,options,None
+            except ApiError as e:return row['listing_id'],{},[],e.code
         with ThreadPoolExecutor(max_workers=3) as pool:
             futures=[pool.submit(trip,r) for r in pending]
             errors=0
             for count,f in enumerate(as_completed(futures),1):
-                identifier,observations,error=f.result();data['records'][identifier]['modes'].update(observations)
+                identifier,observations,options,error=f.result();data['records'][identifier]['modes'].update(observations)
+                if not error:data['records'][identifier]['transit_options']=options
                 if error:errors+=1
                 if count%10==0 or count==len(pending):
                     data['generated_at']=now();save(output,data)

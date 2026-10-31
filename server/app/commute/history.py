@@ -32,5 +32,9 @@ def recent_routes(reports,brief,destination,arrival,listing_ids,catalog_fingerpr
                 if maximum is not None and (type(route.get('transfers')) is not int or not 0<=route['transfers']<=maximum):continue
                 route={**route,'status':'ok' if minutes<=brief['commute_max_minutes'] else 'over_limit'}
             elif route.get('status') not in ('unavailable','unsupported'):continue
+            if 'transit_options' in route:
+                from .transit_options import valid_option,distinct
+                items=route['transit_options']
+                route['transit_options']=distinct([r for r in items[:30] if valid_option(r)]) if isinstance(items,list) else []
             result[route['listing_id']]=deepcopy(route)
     return result

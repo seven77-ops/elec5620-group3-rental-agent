@@ -142,7 +142,20 @@ class RealCatalog:
             rows=[r for r in rows if reference_matches(self.get(r['record_id']),f)]
         order = f['sort']
         rows.sort(key=lambda r: ((-r['weekly_rent'] if order == 'rent_desc' else -r['bedrooms'] if order == 'bedrooms_desc' else r['weekly_rent']), r['record_id']))
-        return [self.get(row['record_id']) for row in rows]
+        result=[self.get(row['record_id']) for row in rows]
+        if 'usyd_max_minutes' in f:
+            from ..commute.snapshot import observation
+            from ..commute.transit_options import TRANSIT,options
+            mode=f.get('usyd_mode','public_transport')
+            for row in result:
+                route=observation(row,mode,max_transfers=f.get('usyd_max_transfers'))
+                row['recommendation_mode']=mode
+                if route:
+                    row['commute_minutes']=route['duration_minutes']
+                    if mode in TRANSIT:
+                        row['usyd_commute']['selected_transit_route']={**deepcopy(route),'mode':mode}
+                        row['usyd_commute']['transit_options']=options(row['usyd_commute'],selected=route)
+        return result
 
     def search(self, filters=None, page=1, page_size=20):
         require(type(page) is int and page >= 1 and type(page_size) is int and 1 <= page_size <= 100,

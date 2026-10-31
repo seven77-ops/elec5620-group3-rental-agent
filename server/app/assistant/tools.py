@@ -49,6 +49,9 @@ def execute(intent,case,conversation,catalog,requested_ids,ctx=None):
             case['confirmations'] and case['confirmations'][-1]['fingerprint']==case['draft']['fingerprint'] and
             case['confirmations'][-1]['draft_revision']==case['draft']['revision']) else {}
         filters={**filters,**(conversation.get('last_search_filters') or {}),**intent.get('filters',{})}
+        if conversation.get('rental_brief',{}).get('commute_preference')=='skip':
+            from .commute_choice import without_filters
+            filters=without_filters(filters)
         return search_answer(catalog,filters,ctx=ctx,case_id=case["case_id"])
     elif name in ('compare','explain','select'):
         cards=[catalog.get(i) for i in ids]

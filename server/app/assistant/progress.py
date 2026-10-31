@@ -4,8 +4,8 @@ from copy import deepcopy
 from jsonschema import Draft202012Validator, FormatChecker
 from ..ai.provider import ProviderError
 from ..common import ApiError
-from . import commute
-from .dialogue import BRIEF_SCHEMA
+from . import commute, commute_choice
+from .dialogue import BRIEF_SCHEMA, next_question
 from .intents import validate_intent
 from . import preferences_progress
 from .commute_edits import explicit_edit
@@ -15,7 +15,12 @@ SCHOOL_REPLY=re.compile(r'(?:usyd|unsw|uts|wsu|悉大|悉尼大学|悉尼科技�
 
 def pending_question(conversation):
     brief=conversation.get('rental_brief',{})
-    if conversation.get('dialogue_mode')!='recommend_areas':return preferences_progress.pending(conversation)
+    if conversation.get('dialogue_mode')!='recommend_areas':
+        pending=preferences_progress.pending(conversation)
+        if pending:return pending
+        if conversation.get('dialogue_mode')=='collect_preferences' and next_question(brief) is None and commute_choice.optional(brief):
+            return {'task':'rental_preferences','fields':['commute_preference'],'question':commute_choice.QUESTION}
+        return None
     fields=commute.question_fields(brief)
     if not fields:return None
     return {'task':'commute','fields':fields,'question':commute.next_question(brief),
@@ -35,6 +40,8 @@ def region_continuation(conversation,text):
 
 
 def explicit_transition(conversation,text):
+    if (conversation.get('rental_brief') or conversation.get('messages')) and text.strip() in (commute_choice.YES,commute_choice.NO):
+        return {'intent':'collect_preferences','brief_patch':{'commute_preference':'include' if text.strip()==commute_choice.YES else 'skip'}}
     edited=explicit_edit(conversation,text)
     if edited:return edited
     if conversation.get('dialogue_mode')=='recommend_areas' and text.strip() in ('保持全部已确认的预算、房型和通勤条件，换一批推荐，优先展示之前没看过的房源。', 'Keep all confirmed budget, property and commute requirements and refresh the recommendations, prioritising listings not previously shown.', 'Keep all confirmed budget, housing and commute criteria. Show another set of recommendations, prioritising listings I have not seen before.'):
@@ -44,7 +51,7 @@ def explicit_transition(conversation,text):
     if preference:return preference
     suburb=region_continuation(conversation,text)
     if suburb:
-        return {'intent':'recommend_areas','brief_patch':{'suburb':suburb,'recommend_areas':True}}
+        return {'intent':'recommend_areas','brief_patch':{'suburb':suburb,'recommend_areas':True,'commute_preference':'include'}}
     if pending and pending['task']=='commute' and SCHOOL_REPLY.fullmatch(text.strip()):
         if re.search(r'usyd|悉大|悉尼大学|University of Sydney',text,re.I):
             return {'intent':'recommend_areas','brief_patch':{}}
