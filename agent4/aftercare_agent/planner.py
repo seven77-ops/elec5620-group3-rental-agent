@@ -44,9 +44,12 @@ def build_plan(tenancy, move_out, confirmed, now):
             add('inventory-' + item['id'], f"Check supplied inventory: {item['name']}", item['room_id'], -2, refs)
     elif tenancy['furnished'] is None:
         questions.append('Confirm whether the property is furnished.')
+    add('utilities', 'Arrange final meter readings and close or transfer electricity, gas and internet accounts', 'property', -5)
     add('belongings', 'Remove belongings and arrange personal service/address changes', 'property', -1)
     add('inspection', 'Prepare final inspection photos and compare available condition records', 'property', -1, refs)
     add('keys', 'Arrange key return and retain a dated receipt', 'property', 0)
+    # Rental Bonds Online is the tenant's own action; the plan only reminds and records the reference.
+    add('bond-refund', 'Check the bond refund claim on Rental Bonds Online and record its reference', 'property', 1)
     require(confirmed is not True or not questions, 'needs_clarification', '; '.join(questions))
     return {'state': 'Active' if confirmed else 'Draft', 'move_out_date': move_out,
             'schedule_confirmed': confirmed, 'tasks': tasks, 'evidence_gaps': gaps,

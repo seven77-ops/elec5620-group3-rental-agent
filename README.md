@@ -1,33 +1,64 @@
 # ELEC5620 Group 3 · Rental Agent
 
-小组租房多 Agent 项目。各成员的实现放在独立目录中，再通过约定的数据契约联调。
+An English rental assistant integrating the group's four agents through a React/TypeScript frontend and a local FastAPI service. The current team trial is **`codex/group-trial-20261022` / draft PR #7**. Do not merge into `main` yet.
 
-| 模块 | 内容 | 运行说明 |
-|---|---|---|
-| [agent2/](agent2/) | Member 2：房源资格评估、评分推荐、偏好版本比较与本地选房证据包 | [Agent 2 README](agent2/README.md) |
-| [agent3/](agent3/) | Member 3：合同读取、选房交叉核对、人工复核与问题清单 | [Agent 3 README](agent3/README.md) |
+Read the [31 October functional update](docs/frontend/2026-10-31-trial-update.md) for optional commute filtering, the compact weighted display, contact enquiries and the revised contract/knowledge flow. Earlier release notes retain their original stage.
 
-## 运行 Agent 2
+Read the [30 October trial handoff](docs/frontend/2026-10-30-trial-update.md) for installation, optional model configuration, current verification and known limits. The [English manual test prompts](docs/frontend/english-manual-test-questions.md) provide a reproducible checklist; they describe expected behaviour, not completed team acceptance.
 
-需要 Python 3.10+。从仓库根目录执行：
+## Run locally
+
+Use a new directory to protect your own uncommitted work:
 
 ```sh
-cd agent2
-python3 -m pip install -r requirements.txt
-python3 -m unittest discover -s tests -v
-python3 -m rental_agent --profile data/demo/profiles/commute.json --listings data/demo/listings.json --output reports/my-first-run
+git clone --branch codex/group-trial-20261022 https://github.com/seven77-ops/elec5620-group3-rental-agent.git
+cd elec5620-group3-rental-agent
+python3 -m venv .venv
+.venv/bin/python -m pip install -r server/requirements-lock.txt
+(cd frontend && npm ci)
+.venv/bin/python scripts/dev.py
 ```
 
-房源和路线全部为模拟数据。完整参数、比较功能和接口边界见 [Agent 2 说明](agent2/README.md)及[数据契约](agent2/docs/data-contracts.md)。
+Open <http://127.0.0.1:5173>. Python 3.11+ is required; this publication was checked on macOS with Python 3.13 and Node 22. Windows commands are in the handoff. If ports are occupied, use `--web-port 5197 --api-port 8017`. Stop with Ctrl+C.
 
-## 小组协作
+Business cases, uploads, operator keys and local indexes live in ignored `.runtime/`; dependencies and credentials are not distributed in Git. The app does not provide production multi-user authentication.
 
-在自己的模块目录中开发，通过分支与 Pull Request 集成；提交信息和 PR 标题注明 Jira 编号。
+## Optional AI and transport
 
-- [SCRUM-2：偏好确认与房源评估联调](https://breezebee64.atlassian.net/browse/SCRUM-2)
-- [SCRUM-7：偏好比较与排名变化解释](https://breezebee64.atlassian.net/browse/SCRUM-7)
-- [SCRUM-19：Member 1 接口适配与最新推荐版本绑定](https://breezebee64.atlassian.net/browse/SCRUM-19)
+Copy `.env.example` to your own `.env`; keep keys on the backend. New installations default to AI disabled and Jev routing off. The developer's local credentials and active settings are not shared. Manual forms and the bundled catalogue remain available without external models.
 
-## 跨 Agent 对接
+- Configure the complete chat-completions URL, model and your own authorized key for business extraction and drafting.
+- Jev uses a separate OpenRouter key and `off`, `shadow` or `active` mode. Continuation and validation rules remain authoritative; uncertain or unavailable classification falls back.
+- Public/private retrieval supports local keywords and optional embeddings, fusion and reranking. Configure full endpoints matching your own provider workspace. Build public vectors explicitly with `.venv/bin/python scripts/rag_index.py --embed`; ordinary startup does not call an embedding provider.
+- Optional TfNSW MCP setup: `.venv/bin/python scripts/setup_tfnsw_mcp.py`. It requires `uv` and Python 3.12+ in its independent environment. The launcher uses POSIX paths; Windows automatic MCP startup has not been verified. The existing direct transport fallback remains available. See the [MCP implementation record](docs/frontend/2026-10-27-tfnsw-mcp.md).
 
-[输入约定与本地联调](integration/README.md)：包含 Agent 1 已确认偏好及外层确认/版本/任务样例，以及 Agent 2 → Agent 3 的可复现场景。真实 Agent 1 服务尚待接入。
+## Current journey
+
+1. **Requirements and housing:** Agent1 confirmation/versioning, 1,000 real advertisement snapshots across 72 areas, complete hard-filtered results, mode-specific reference commute times, explicit working-condition edits and evidence-backed lifestyle ordering. Unknown facts remain unknown; advertisements are not proof of current availability.
+2. **Parallel choices:** save/compare favorites or select directly. A single explicit confirmation saves current needs and the selected home atomically. Inspection questions are read-only; contract facts are entered/reviewed on the contract page. The former separate agent-reply form is removed, with historical records retained.
+3. **Contract assistance:** prepare an unsigned NSW template draft or upload a TXT/DOCX/PDF for basic review, including standalone document consent without a selected listing. Review summaries and source questions are available in chat. Private search and external processing require separate consent; changes and revocation invalidate old access.
+4. **Aftercare:** source-based tenancy prefill, repair-email preview/rewrite/copy and explicit save, provider information and personal service records, move-out planning and bond-fact follow-up. Drafts are not sent, bookings are not submitted and funds are not handled.
+5. **Human review and progress:** an operator-key protected inbox shows pending reviews and durable history across local cases. Release decisions unlock system draft preparation only; they do not approve deductions or determine refunds.
+6. **Knowledge:** 14 public documents / 153 chunks, comprising NSW guidance/template material, a University of Sydney guide and product help. Answers expose source quotations and conservative fallbacks. Local private-contract indexes stay separate. Retrieval recall and model source checks are not legal or semantic certification.
+
+Newly authored UI, replies and drafts are English. Original messages, names, documents, quotations and saved facts retain their supplied text; multilingual input remains supported. See [AGENTS.md](AGENTS.md) and the [English release record](docs/frontend/2026-10-30-english-product.md).
+
+## Modules and contribution boundaries
+
+| Module | Responsibility | Reference |
+| --- | --- | --- |
+| Agent1 | Confirmed rental preferences and versions | [Agent1](agent1/) |
+| Agent2 | Listing filtering, evidence, comparison and handoff | [Agent2](agent2/README.md) |
+| Agent3 | Contract reading, template drafts and review | [Agent3](agent3/README.md) |
+| Agent4 | Move-out tasks, bond facts and human-review gates | [Agent4](agent4/) |
+| Shared app | Data adaptation, frontend, AI interaction and integration | [Trial handoff](docs/frontend/2026-10-30-trial-update.md) |
+
+Anda's work covers data, adapters, frontend, AI interaction and integration. Members' original Agent1/3/4 modules and the third-party MCP implementation retain their authorship.
+
+## Team trial
+
+[PR #7](https://github.com/seven77-ops/elec5620-group3-rental-agent/pull/7) · [SCRUM-34](https://breezebee64.atlassian.net/browse/SCRUM-34) · [SCRUM-35](https://breezebee64.atlassian.net/browse/SCRUM-35)
+
+Try the complete flow on your own device. Report reproduction steps, expected/actual behaviour and screenshots to Anda in the group; let Anda coordinate changes to the shared integration. Keep individual module work on separate branches. Data refresh, current availability, cross-device checks, formal M3→M4 coordination and team acceptance remain outstanding.
+
+Historical implementation reports are retained under `docs/frontend/`; their earlier language controls, intermediate commute policies and stage-specific counts are not parallel current features or new acceptance results.

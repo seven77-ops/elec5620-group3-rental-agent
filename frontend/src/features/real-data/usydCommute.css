@@ -1,0 +1,102 @@
+.usyd-commute-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+.usyd-commute-title > span {
+  color: #667b99;
+  font-size: 13px;
+}
+.usyd-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin: 18px 0;
+}
+.usyd-mode-grid > div {
+  border: 1px solid #e3eaf5;
+  border-radius: 10px;
+  padding: 14px 12px;
+  background: #f8faff;
+}
+.usyd-mode-grid dt {
+  color: #566b89;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+.usyd-mode-grid dd {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.usyd-mode-grid dd strong {
+  font-size: 21px;
+  color: #1b52a8;
+  font-variant-numeric: tabular-nums;
+}
+.usyd-mode-grid dd strong small {
+  font-size: 12px;
+  font-weight: 400;
+}
+.usyd-mode-grid dd > small {
+  color: #7a8ba5;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.usyd-map-link {
+  font-size: 12px;
+  margin-top: 6px;
+}
+.usyd-commute-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 12px;
+}
+.usyd-commute-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  overflow-wrap: normal;
+}
+.usyd-commute-mini > strong {
+  color: #1b52a8;
+  font-variant-numeric: tabular-nums;
+}
+.usyd-commute-mini .commute-time {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.usyd-commute-mini > small {
+  color: #7a8ba5;
+  font-size: 11px;
+}
+@media (max-width: 640px) {
+  .usyd-mode-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .usyd-commute-title {
+    display: block;
+  }
+}
+.usyd-listing-drawer .ant-drawer-content-wrapper {
+  width: min(760px, 100vw) !important;
+  max-width: 100vw;
+}
+.usyd-route-notes > summary {
+  cursor: pointer;
+  color: #1b52a8;
+  font-size: 13px;
+  padding: 8px 0;
+}
+.usyd-route-notes {
+  margin: 8px 0;
+  font-size: 13px;
+  color: #52647c;
+}
+.usyd-route-notes p {
+  margin: 4px 0 10px;
+}

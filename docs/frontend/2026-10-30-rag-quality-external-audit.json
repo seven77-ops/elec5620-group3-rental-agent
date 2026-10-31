@@ -1,0 +1,371 @@
+{
+  "report": "docs/frontend/2026-10-30-rag-quality-external.json",
+  "report_dataset_sha256": "1457fc29ec6950eee6cb88557fa0d423d11fd4b2409bad88a9fdf9ddec3ab262",
+  "scope": "Manual targeted audit of all reported failures, all accepted claim text, and selected quote/condition risks; not a legal validation or comprehensive human support pass rate.",
+  "transport": {
+    "embedding_degradations": 0,
+    "rerank_timeouts": [
+      "nsw-023",
+      "nsw-027",
+      "nsw-039",
+      "nsw-046",
+      "nsw-054",
+      "nsw-057",
+      "nsw-062",
+      "nsw-079",
+      "nsw-080"
+    ],
+    "generation_failure_observability": "This in-flight earlier harness report has no generation_observation fields; supported fallback cannot distinguish provider error, schema rejection, unsupported number/citation, or valid empty model claims. No evidence justifies labeling these as generation transport timeouts.",
+    "supported_generation_fallbacks": [
+      {
+        "id": "nsw-014",
+        "elapsed_ms": 7252.54,
+        "relevant_target_retrieved": true,
+        "warnings": [
+          "The AI summary was unavailable or failed citation checks. Review the source excerpts instead."
+        ]
+      },
+      {
+        "id": "nsw-015",
+        "elapsed_ms": 7965.64,
+        "relevant_target_retrieved": true,
+        "warnings": [
+          "The AI summary was unavailable or failed citation checks. Review the source excerpts instead."
+        ]
+      },
+      {
+        "id": "nsw-020",
+        "elapsed_ms": 8392.47,
+        "relevant_target_retrieved": true,
+        "warnings": [
+          "The AI summary was unavailable or failed citation checks. Review the source excerpts instead."
+        ]
+      },
+      {
+        "id": "nsw-031",
+        "elapsed_ms": 7765.04,
+        "relevant_target_retrieved": true,
+        "warnings": [
+          "The AI summary was unavailable or failed citation checks. Review the source excerpts instead."
+        ]
+      },
+      {
+        "id": "nsw-032",
+        "elapsed_ms": 6769.8,
+        "relevant_target_retrieved": true,
+        "warnings": [
+          "The AI summary was unavailable or failed citation checks. Review the source excerpts instead."
+        ]
+      },
+      {
+        "id": "nsw-051",
+        "elapsed_ms": 7812.06,
+        "relevant_target_retrieved": true,
+        "warnings": [
+          "The AI summary was unavailable or failed citation checks. Review the source excerpts instead."
+        ]
+      },
+      {
+        "id": "nsw-052",
+        "elapsed_ms": 9866.75,
+        "relevant_target_retrieved": true,
+        "warnings": [
+          "The AI summary was unavailable or failed citation checks. Review the source excerpts instead."
+        ]
+      }
+    ],
+    "unsupported_sources_only": [
+      "nsw-073",
+      "nsw-074",
+      "nsw-075",
+      "nsw-076",
+      "nsw-077",
+      "nsw-078",
+      "nsw-079",
+      "nsw-080"
+    ],
+    "required_observation_rerun_ids": [
+      "nsw-014",
+      "nsw-015",
+      "nsw-020",
+      "nsw-031",
+      "nsw-032",
+      "nsw-051",
+      "nsw-052",
+      "nsw-073",
+      "nsw-074",
+      "nsw-075",
+      "nsw-076",
+      "nsw-077",
+      "nsw-078",
+      "nsw-079",
+      "nsw-080"
+    ]
+  },
+  "retrieval": {
+    "keyword": {
+      "recall_at_1": 0.7639,
+      "recall_at_3": 0.9028,
+      "recall_at_6": 0.9722,
+      "supported_passage_misses": [
+        "nsw-044",
+        "nsw-072"
+      ]
+    },
+    "hybrid": {
+      "recall_at_1": 0.75,
+      "recall_at_3": 0.9444,
+      "recall_at_6": 0.9722,
+      "supported_passage_misses": [
+        "nsw-044",
+        "nsw-049"
+      ]
+    },
+    "hybrid_rerank": {
+      "recall_at_1": 0.8611,
+      "recall_at_3": 0.9861,
+      "recall_at_6": 0.9861,
+      "supported_passage_misses": [
+        "nsw-049"
+      ]
+    }
+  },
+  "findings": [
+    {
+      "id": "nsw-023",
+      "severity": "high",
+      "kind": "alternative_conditions_changed_to_joint_necessity",
+      "question": "When can a bond refund be claimed before the tenancy has ended?",
+      "explanation": "Two separate ONLY IF claims make each alternative necessary. The source permits written agreement OR directing the full bond to the landlord. These statements should be one claim preserving the disjunction, not two independent necessary conditions.",
+      "mechanical_checks_passed": true,
+      "claims": [
+        {
+          "text": "You can only claim a bond refund before the end of a tenancy if you have a written agreement from your landlord or agent to submit an earlier claim.",
+          "evidence_id": "6ffac333f8cab567003d46c2c8b437e1",
+          "quote": "*   you have a written agreement from your landlord or agent to submit an earlier claim, or"
+        },
+        {
+          "text": "You can only claim a bond refund before the end of a tenancy if you are directing the full bond to go to your landlord or property agent.",
+          "evidence_id": "6ffac333f8cab567003d46c2c8b437e1",
+          "quote": "*   you are directing the full bond to go to your landlord or property agent."
+        }
+      ],
+      "retrieved_targets": [
+        1
+      ],
+      "source_context": [
+        {
+          "document_id": "bond-refund",
+          "section": "What do you need to do?",
+          "text": "[](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-your-bond-back)Make sure you have:\n\n*   paid your rent to and including [end of your notice period](https://www.nsw.gov.au/housing-and-construction/rules/minimum-notice-periods-for-ending-a-residential-tenancy \"Minimum notice periods for ending a residential tenancy\") or your moving date if [breaking lease early](https://www.nsw.gov.au/housing-and-construction/rules/breaking-a-fixed-term-residential-tenancy-early \"Breaking a fixed-term residential tenancy early\").\n*   cleaned your rental property to match its[original condition](https://www.nsw.gov.au/housing-and-construction/rules/rental-property-condition-reports \"Property condition at end of tenancy\").\n*   removed all [your personal things](https://www.nsw.gov.au/housing-and-construction/rules/dealing-goods-left-behind \"Dealing with goods left behind\").\n*   repaired any[damage that was beyond ‘fair wear and tear’](https://www.nsw.gov.au/housing-and-construction/rules/fair-wear-and-tear-versus-damage-rental-properties \"Fair wear and tear versus damage in rental properties\").\n*   signed off on[the condition report](https://www.nsw.gov.au/housing-and-construction/rental-forms-surveys-and-data/resources/residential-tenancy-condition-report \"Residential tenancy condition report\")with your landlord.\n*   returned all [keys and other items](https://www.nsw.gov.au/housing-and-construction/rules/keys-locks-and-security-devices-a-rental-property \"Keys, locks and security devices in a rental property\")given to you for the property when you moved in.\n\nNow you can claim your refund [using Rental Bonds Online](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-rental-bonds/rental-bonds-online-for-tenants \"Rental Bonds Online for tenants\"). Your landlord or agent has up to 14 days to accept your claim.\n\n[Log in to Rental Bonds Online](https://rbo.fairtrading.nsw.gov.au/tenant/login \"Rental Bonds Online registered tenant login (https://rbo.fairtrading.nsw.gov.au/tenant/login)\")\n\nAdditional information about getting bond back if:\n\nExpand all Collapse all\n\nYou are in a shared tenancy keyboard_arrow_down\n\nThe principal tenant who acts on behalf of all co-tenants for the shared rental should\n\n*   submit or respond to a claim for refund of bond money using Rental Bonds Online on behalf of all the tenants at the end of the tenancy.\n*   distribute the bond refund to the other tenants.\n\n[Log in to Rental Bonds Online](https://rbo.fairtrading.nsw.gov.au/tenant/login \"Rental Bonds Online registered tenant login (https://rbo.fairtrading.nsw.gov.au/tenant/login)\") if you are the principal tenant and need to claim the bond.\n\nIf a co-tenant moves out of a shared tenancy and requests their bond refund, the remaining tenant/s must pay back their bond – less any rent owed or other reasonable costs – within 14 days of the request.\n\n[Download a change of shared tenancy request form](https://www.nsw.gov.au/housing-and-construction/rental-forms-surveys-and-data/resources/change-of-shared-tenancy-arrangement-form \"Change of shared tenancy arrangement form\").\n\nThis does not apply if:\n\n*   the former co-tenant’s debts exceed the amount of bond money they paid, or\n*   the former co-tenant has been excluded from the premises by a final apprehended violence order.\n\n[Learn more about shared tenancies](https://www.nsw.gov.au/housing-and-construction/rules/sharing-a-residential-rental-property \"Sharing a residential rental property\").\n\nYou have a Rentstart bond loan keyboard_arrow_down\n\nIf you have repaid your Rentstart bond loan in full before the end of your tenancy, you can claim your bond back at the end of your tenancy.\n\nIf your tenancy ends before you have repaid the Rentstart bond loan in full:\n\n*   any funds still owed to the [Department of Communities and Justice (DCJ)](https://dcj.nsw.gov.au/housing.html)will be returned to them from the bond, and\n*   any amounts you have repaid will be returned directly to you, less any amount still owed to the agent or landlord.\n\nIf a claim is made against the bond that you do not agree with, you can still challenge this claim regardless of whether the loan has been repaid in full.\n\n[Get more information about Rentstart](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/financial-support#toc-rentstart).\n\nYou need to get the bond back before the end of your tenancy keyboard_arrow_down\n\nYou can only claim a bond refund before the end of a tenancy if:\n\n*   you have a written agreement from your landlord or agent to submit an earlier claim, or\n\n*   you are directing the full bond to go to your landlord or property agent.\n\nThere are very specific legal reasons to end a tenancy early. Otherwise, you could breach the terms of your tenancy agreement.\n\nGet more information about [ending a tenancy](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/ending-a-residential-tenancy \"Ending a residential tenancy\")and [minimum notice periods](https://www.nsw.gov.au/housing-and-construction/rules/minimum-notice-periods-for-ending-a-residential-tenancy \"Minimum notice periods for ending a residential tenancy\") that apply.\n\nYou need to claim your bond refund on paper keyboard_arrow_down\n\nIf you don't have a Rental Bonds Online account, you can fill in a ‘Claim for Bond Refund’ paper form from NSW Fair Trading.\n\n1.   [Download the Claim for Bond Refund form](https://www.nsw.gov.au/housing-and-construction/rental-forms-surveys-and-data/resources/claim-for-refund-of-bond-money-form \"NSW Fair Trading claim for refund of bond money form (https://www.fairtrading.nsw.gov.au/__data/assets/pdf_file/0009/367749/Claim-for-Bond-Refund-form.pdf)\").\n2.   Sign the completed form with the landlord or agent.\n3.   Return the form to NSW Fair Trading by \n    *   post (address on form)\n    *   email[bondclaims@customerservice.nsw.gov.au](mailto:bondclaims@customerservice.nsw.gov.au)\n    *   or in person (details of where to lodge are on the form).\n\nFair Trading will give the landlord or agent written notice that you have made a claim.\n\nIf your landlord or agent fails to sign the form, you can still submit it. They are given 14 days to dispute your claim.\n\nIf the landlord or agent doesn't dispute your claim, Fair Trading will pay your claim after 14 days.\n\nYour money will be deposited into your bank account.\n\n* * *"
+        }
+      ]
+    },
+    {
+      "id": "nsw-058",
+      "severity": "high",
+      "kind": "mandatory_notice_condition_omitted",
+      "question": "On a fixed term of at least two years, can a rent increase trigger penalty-free early termination?",
+      "explanation": "Accepted claim omits the same quote’s mandatory 21 days written notice before the increase starts. The output can be read as permitting penalty-free termination immediately on receiving an increase. This is a gold-condition failure already caught by the old regex.",
+      "mechanical_checks_passed": false,
+      "claims": [
+        {
+          "text": "Tenants can end a fixed term agreement of 2 years or more early and without penalty if they have been given a rent increase notice.",
+          "evidence_id": "801d29509d3fb60ca4934322d557ffa4",
+          "quote": "Tenants can also end a fixed term agreement of 2 years or more early and without penalty if they have been given a rent increase notice. They must give 21 days’ written notice to the landlord before the rent increase starts."
+        }
+      ],
+      "retrieved_targets": [
+        1
+      ],
+      "source_context": [
+        {
+          "document_id": "break-lease",
+          "section": "Other situations where break fees do not apply",
+          "text": "In other cases, tenants can give 14 days’ written notice to end a fixed-term agreement early without penalty if:\n\n*   they have accepted an offer of social housing (e.g. from DCJ Housing)\n*   they need to move into an aged care facility or nursing home (not a retirement village)\n*   the landlord has breached the agreement or has not disclosed something they were [required to disclose](https://www.nsw.gov.au/housing-and-construction/rules/what-tenants-need-to-be-told-about-a-rental-property \"What tenants need to be told about a rental property\") before entering the agreement.\n*   a[landlord has put the property on the market for sale during the fixed-term](https://www.nsw.gov.au/housing-and-construction/rules/landlord-ending-a-tenancy \"Landlord ending a tenancy\"), and the tenant was not told before signing the agreement that the property would be sold\n*   if the property becomes listed on the[Loose Fill Asbestos Insulation register](https://www.nsw.gov.au/housing-and-construction/safety-home/loose-fill-asbestos-insulation/loose-fill-asbestos-insulation-register \"Loose-fill Asbestos Insulation register\")during the tenancy or was previously listed without the landlord or agent disclosing that information to the tenant.\n\nTenants can also end a fixed term agreement of 2 years or more early and without penalty if they have been given a rent increase notice. They must give 21 days’ written notice to the landlord before the rent increase starts.\n\nTenants need to pay the rent until they hand back possession of the property."
+        }
+      ]
+    },
+    {
+      "id": "nsw-049",
+      "severity": "high",
+      "kind": "missing_target_and_temporal_scope_confusion",
+      "question": "For a fixed-term agreement longer than three years, is the four-tier short-lease fee automatic?",
+      "explanation": "The modern >3-year compensation passage is absent from retrieved top six. The answer uses an old optional break fee clause without its before-23-March-2020 scope, and does not answer whether current four-tier short-lease fee is automatic. Parent-heading loss amplifies the ranking miss.",
+      "mechanical_checks_passed": false,
+      "claims": [
+        {
+          "text": "The same optional break fee clause applies for fixed-term agreements of more than 3 years, unless the tenancy agreement specifies a break fee of another amount.",
+          "evidence_id": "af0d863517814dc4d49d5aa85b77c1ec",
+          "quote": "The same optional break fee clause applies for fixed-term agreements of more than 3 years, unless the tenancy agreement specifies a break fee of another amount."
+        }
+      ],
+      "retrieved_targets": [
+        null
+      ],
+      "source_context": [
+        {
+          "document_id": "break-lease",
+          "section": "If the optional break fee is included in agreement",
+          "text": "The optional break fee clause will apply if the break fee clause has not been deleted from the tenancy agreement. The break fee payable will be either:\n\n*   6 weeks rent if the tenant leaves in the first half of the fixed-term agreement, or\n*   4 weeks rent if the tenant leaves in the second half of the fixed-term agreement.\n\nThe same optional break fee clause applies for fixed-term agreements of more than 3 years, unless the tenancy agreement specifies a break fee of another amount."
+        }
+      ]
+    },
+    {
+      "id": "nsw-028",
+      "severity": "medium",
+      "kind": "mandatory_notice_contents_incomplete",
+      "question": "What information must a written termination notice include?",
+      "explanation": "Question asks what information a notice must include. All three claims omit ground-for-termination requirement and tenant exceptions, although their common quote contains it. Max-three-claims budget is consumed by separate writing and signed/dated claims.",
+      "mechanical_checks_passed": true,
+      "claims": [
+        {
+          "text": "A termination notice must be in writing.",
+          "evidence_id": "b805c0e1e92f5f6f885fb5238ff6a0ee",
+          "quote": "*   be in writing\n*   be signed and dated by the party giving the notice\n*   include the address of the rented property\n*   state the day the tenancy agreement will end (when the tenant must be fully moved out)\n*   include the ground for termination (unless given by a tenant to end a periodic agreement or a fixed term agreement at the end of the term)."
+        },
+        {
+          "text": "A termination notice must be signed and dated by the party giving the notice.",
+          "evidence_id": "b805c0e1e92f5f6f885fb5238ff6a0ee",
+          "quote": "*   be in writing\n*   be signed and dated by the party giving the notice\n*   include the address of the rented property\n*   state the day the tenancy agreement will end (when the tenant must be fully moved out)\n*   include the ground for termination (unless given by a tenant to end a periodic agreement or a fixed term agreement at the end of the term)."
+        },
+        {
+          "text": "A termination notice must include the address of the rented property and state the day the tenancy agreement will end.",
+          "evidence_id": "b805c0e1e92f5f6f885fb5238ff6a0ee",
+          "quote": "*   be in writing\n*   be signed and dated by the party giving the notice\n*   include the address of the rented property\n*   state the day the tenancy agreement will end (when the tenant must be fully moved out)\n*   include the ground for termination (unless given by a tenant to end a periodic agreement or a fixed term agreement at the end of the term)."
+        }
+      ],
+      "retrieved_targets": [
+        1
+      ],
+      "source_context": [
+        {
+          "document_id": "ending-notice",
+          "section": "Termination notices",
+          "text": "A termination notice must:\n\n*   be in writing\n*   be signed and dated by the party giving the notice\n*   include the address of the rented property\n*   state the day the tenancy agreement will end (when the tenant must be fully moved out)\n*   include the ground for termination (unless given by a tenant to end a periodic agreement or a fixed term agreement at the end of the term)."
+        }
+      ]
+    },
+    {
+      "id": "nsw-055",
+      "severity": "medium",
+      "kind": "applicability_exception_omitted",
+      "question": "After the landlord gives a fixed-term termination notice, how much early-exit notice is required?",
+      "explanation": "Answer gives correct 14-day amount and timing windows, but omits the same section’s exclusion when landlord terminates for breach or unusable property. Risk arises if read as general eligibility after any landlord notice; the question narrowly asks amount, so rank below explicit missing prerequisite nsw-058.",
+      "mechanical_checks_passed": true,
+      "claims": [
+        {
+          "text": "The early exit notice must be given at least 14 days before the date the tenant will give vacant possession of the property.",
+          "evidence_id": "ab6521d8354a3fa7613b0536cb5d752f",
+          "quote": "The date for vacant possession must be at least 14 days after the notice is given to the landlord. If the tenant has fully moved out by the date given in the early exit notice, then they do not have to pay a break fee."
+        },
+        {
+          "text": "For fixed-term agreements of 6 months or less, the early exit notice can only be given in the last 60 days of the agreement.",
+          "evidence_id": "ab6521d8354a3fa7613b0536cb5d752f",
+          "quote": "*   **For fixed-term agreements of 6 months or less –**the notice can only be given in the last 60 days of the agreement.\n*   **For fixed-term agreements of more than 6 months** – the notice can only be given in the last 90 days of the agreement."
+        },
+        {
+          "text": "For fixed-term agreements of more than 6 months, the early exit notice can only be given in the last 90 days of the agreement.",
+          "evidence_id": "ab6521d8354a3fa7613b0536cb5d752f",
+          "quote": "*   **For fixed-term agreements of 6 months or less –**the notice can only be given in the last 60 days of the agreement.\n*   **For fixed-term agreements of more than 6 months** – the notice can only be given in the last 90 days of the agreement."
+        }
+      ],
+      "retrieved_targets": [
+        1
+      ],
+      "source_context": [
+        {
+          "document_id": "break-lease",
+          "section": "Ending a tenancy after the landlord has given a termination notice",
+          "text": "If a landlord gives a tenant in a fixed-term agreement a termination notice, the tenant has the option to leave before the end of the term without penalty. To do this they must give an early exit notice.\n\nThe early exit notice must be given to the landlord or agent.\n\nThe notice must:\n\n*   tell the landlord that the tenant will move out before the termination date, and\n*   include the date the tenant will give vacant possession of the property. \n\nThe date for vacant possession must be at least 14 days after the notice is given to the landlord. If the tenant has fully moved out by the date given in the early exit notice, then they do not have to pay a break fee.\n\nThere are limits on when the early exit notice can be given.\n\n*   **For fixed-term agreements of 6 months or less –**the notice can only be given in the last 60 days of the agreement.\n*   **For fixed-term agreements of more than 6 months** – the notice can only be given in the last 90 days of the agreement.\n\nIf the landlord is ending the tenancy due to a breach of agreement or because the property is unusable, then the tenant cannot give an early exit notice.\n\n[Download a sample early exit notice](https://www.nsw.gov.au/housing-and-construction/rental-forms-surveys-and-data/resources/early-exit-notice-form)"
+        }
+      ]
+    },
+    {
+      "id": "nsw-008",
+      "severity": "medium",
+      "kind": "claim_not_supported_by_its_own_quote",
+      "question": "If I caused urgent damage myself, is reimbursement guaranteed?",
+      "explanation": "Claim 1 includes the tenant-caused-damage exception, but its quotation ends at \"if:\" before the exception list. Claim 2 gives a valid supporting statement from a different quote, so answer-level conclusion is supported, while claim-level citation 1 is not self-contained.",
+      "mechanical_checks_passed": true,
+      "claims": [
+        {
+          "text": "Your landlord or agent may not have to reimburse you for the cost of the repair if you caused the damage.",
+          "evidence_id": "a92b2f75a169dea7ffc63d93614d45f6",
+          "quote": "Your landlord or agent may not have to reimburse you for the cost of the repair if:"
+        },
+        {
+          "text": "For urgent repairs, you need to show that the problem needing repair was not your fault.",
+          "evidence_id": "463303d6ab4ebbfb1d6601e0d4e8ab08",
+          "quote": "*   the problem needing repair was not your fault\n*   you made a ‘reasonable’ attempt to contact the landlord/agent\n*   you allowed the landlord or agent a ‘reasonable’ chance to do the repairs\n*   a repair person named in your tenancy agreement (if possible) or a licensed or qualified tradesperson did the repairs\n*   you have copies of all receipts and records of conversations or letters that you have written."
+        }
+      ],
+      "retrieved_targets": [
+        2
+      ],
+      "source_context": [
+        {
+          "document_id": "repairs",
+          "section": "Steps to get urgent repairs done",
+          "text": "1\n\nTell them – in writing if possible – about what needs fixing.\n\n2\n\nFollow up any conversations in writing.\n\n3\n\nKeep a copy of any correspondence or conversations as evidence.\n\n4\n\nIf your landlord or agent cannot be contacted or is unwilling or taking too long to arrange repairs, check whether your lease includes details of a preferred tradesperson.\n\n5\n\nGet the repair work done by a licensed tradesperson, preferably one that has been recommended on your lease.\n\nYour landlord or agent may not have to reimburse you for the cost of the repair if:\n\n*   you [caused the damage](https://www.nsw.gov.au/housing-and-construction/rules/fair-wear-and-tear-versus-damage-rental-properties \"Fair wear and tear versus damage in rental properties\")\n*   you didn’t try to contact them about the repair\n*   you didn’t give them a reasonable amount of time to organise the repair\n*   the repair was not carried out by a licensed tradesperson.\n\n6\n\nMake sure you send written details of repairs, including receipts for the costs, so you can get repaid.\n\n7\n\nYou can get repaid for the cost of the work up to $1,000.Your landlord or agent must pay you back within 14 days of your notice."
+        }
+      ]
+    },
+    {
+      "id": "nsw-071",
+      "severity": "medium",
+      "kind": "fragmented_table_citation",
+      "question": "For a breach-of-agreement dispute, when does the three-month application period start?",
+      "explanation": "Claim asserts three-month breach period, but selected quote contains neither duration nor unambiguous row label. Full retrieved table supports the conclusion. Written-out \"three-month\" bypasses current digit-only numerical quote check; do not claim quotation alone verifies duration.",
+      "mechanical_checks_passed": true,
+      "claims": [
+        {
+          "text": "For a breach-of-agreement dispute, the three-month application period starts from the day the applicant became aware of the breach.",
+          "evidence_id": "658c2ba6a05f6008e497c0a5bfbb3267",
+          "quote": "From the day the applicant became aware of the breach\nReasons for Tribunal application"
+        }
+      ],
+      "retrieved_targets": [
+        1
+      ],
+      "source_context": [
+        {
+          "document_id": "disputes",
+          "section": "Either landlord or tenant",
+          "text": "| Reasons for Tribunal application | Tribunal time limit | Time limit starts |\n| --- | --- | --- |\n| Challenge termination order | 3 months | From the day the termination notice is given, up until 3 months after the termination date |\n| Resolve breach of agreement | 3 months | From the day the applicant became aware of the breach |\n| Payment of the rental bond | 6 months | From the day the rental bond was paid out |\n\nReasons for Tribunal application\n\nChallenge termination order\n\nTribunal time limit\n\n3 months\n\nTime limit starts\n\nFrom the day the termination notice is given, up until 3 months after the termination date\nReasons for Tribunal application\n\nResolve breach of agreement\n\nTribunal time limit\n\n3 months\n\nTime limit starts\n\nFrom the day the applicant became aware of the breach\nReasons for Tribunal application\n\nPayment of the rental bond\n\nTribunal time limit\n\n6 months\n\nTime limit starts\n\nFrom the day the rental bond was paid out\n\n**A landlord, tenant or other person may seek an extension from the Tribunal if the time limit has already passed.**"
+        }
+      ]
+    },
+    {
+      "id": "nsw-060",
+      "severity": "medium",
+      "kind": "party_scope_broadened_beyond_selected_quote",
+      "question": "Does hardship automatically end my lease without compensation?",
+      "explanation": "Claim 3 adds landlord and an exclusive no-unilateral-termination conclusion to a selected quote about tenant application. The retrieved section includes another landlord paragraph, and a Tribunal order is the stated route, but this claim is not wholly established by its own selected quotation.",
+      "mechanical_checks_passed": true,
+      "claims": [
+        {
+          "text": "A tenant or landlord applying to end a tenancy on hardship grounds must do so through the Tribunal and cannot unilaterally terminate without an order.",
+          "evidence_id": "9124bdb6d246cd9c8ac29fd7bf12a1c9",
+          "quote": "A tenant can apply to the Tribunal to end the tenancy on hardship grounds if there are special circumstances and they are within the term of a fixed term agreement. A tenant can ask for an urgent hearing but will need to keep paying the rent. No prior notice is required."
+        }
+      ],
+      "retrieved_targets": [
+        1
+      ],
+      "source_context": [
+        {
+          "document_id": "break-lease",
+          "section": "Ending a tenancy early due to hardship",
+          "text": "A tenant can apply to the Tribunal to end the tenancy on hardship grounds if there are special circumstances and they are within the term of a fixed term agreement. A tenant can ask for an urgent hearing but will need to keep paying the rent. No prior notice is required.\n\nA landlord can apply to the Tribunal to end the tenancy on hardship grounds if there are special circumstances, at any stage of the tenancy. There is no minimum notice period.\n\n[Learn more about experiencing hardship during a tenancy](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/experiencing-hardship-during-a-tenancy \"Experiencing hardship during a tenancy\"), including examples of hardship."
+        }
+      ]
+    }
+  ],
+  "reporting_cautions": [
+    "71/80 old automated checks passed is not a human quality score.",
+    "All eight unsupported outputs safely contain no accepted claims, but successful model abstention is unproven without raw responses.",
+    "Old dataset hash differs from frozen final annotations; never silently overwrite this report or relabel it as the final fixture run.",
+    "Zero exact-citation failures does not imply entailment: quoted strings can omit a qualifier, list, table row, or inherited section condition."
+  ]
+}

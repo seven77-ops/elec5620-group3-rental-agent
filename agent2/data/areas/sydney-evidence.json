@@ -1,0 +1,368 @@
+{
+  "schema_version": "1.0",
+  "dataset_version": "2026-10-24.1",
+  "description": "A brief factual summary verified manually, with source references only; no full text reproduction, no AUO data, and no general habitability rating.",
+  "records": [
+    {
+      "evidence_id": "burwood-dining",
+      "suburb": "Burwood",
+      "topics": [
+        "food",
+        "shopping"
+      ],
+      "kind": "venue",
+      "summary": "Burwood Chinatown’s operator describes this area as a dining and retail precinct offering diverse Asian food options.",
+      "geographic_scope": "precinct",
+      "scope_label": "Burwood Chinatown commercial precinct",
+      "limitation": "An operator description; it supports only the presence of dining and retail facilities, not value for money, noise levels or the overall suburb experience.",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "Burwood Chinatown",
+        "title": "Burwood Chinatown – Asian Dining & Retail Precinct",
+        "url": "https://burwoodchinatown.com.au/",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "burwood-sbs-2025",
+      "suburb": "Burwood",
+      "topics": [
+        "food",
+        "community"
+      ],
+      "kind": "media",
+      "summary": "A 2025 SBS report named Burwood one of Time Out’s coolest neighbourhoods, highlighting its diverse dining options and community lifestyle.",
+      "geographic_scope": "suburb",
+      "scope_label": "Burwood area report",
+      "limitation": "Lifestyle media feature; inclusion in this list does not guarantee lower rent, quieter accommodation or suitability for any particular tenant.",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "SBS 中文",
+        "title": "全球最型格社區：雪梨華人區冠澳洲",
+        "url": "https://www.sbs.com.au/language/chinese/zh-hant/article/sydney-chinese-neighbourhoods-ranks-the-worlds-coolest/2g26wj79u",
+        "published_at": "2025-10-01",
+        "updated_at": null,
+        "data_period": "2025",
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "rhodes-foreshore",
+      "suburb": "Rhodes",
+      "topics": [
+        "parks",
+        "walkability"
+      ],
+      "kind": "official",
+      "summary": "Canada Bay Council describes The Connection as facing the Homebush Bay Corso walking and cycling route, near Bennelong Bridge, which links Rhodes and Wentworth Point.",
+      "geographic_scope": "facility",
+      "scope_label": "Rhodes The Connection and nearby walking routes",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "City of Canada Bay Council",
+        "title": "The Connection visitor information",
+        "url": "https://www.canadabay.nsw.gov.au/community/facilities-and-venues/the-connection/visitor-information",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "rhodes-community",
+      "suburb": "Rhodes",
+      "topics": [
+        "community"
+      ],
+      "kind": "official",
+      "summary": "The Connection offers a Learning Space, Digital Gallery and bookable event spaces.",
+      "geographic_scope": "facility",
+      "scope_label": "Rhodes The Connection community facilities",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "City of Canada Bay Council",
+        "title": "The Connection visitor information",
+        "url": "https://www.canadabay.nsw.gov.au/community/facilities-and-venues/the-connection/visitor-information",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "rhodes-shopping",
+      "suburb": "Rhodes",
+      "topics": [
+        "shopping"
+      ],
+      "kind": "official",
+      "summary": "The Council’s visitor guide lists Rhodes Waterside Shopping Centre on nearby Rider Boulevard.",
+      "geographic_scope": "facility",
+      "scope_label": "Commercial facilities near Rhodes The Connection",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "City of Canada Bay Council",
+        "title": "The Connection visitor information",
+        "url": "https://www.canadabay.nsw.gov.au/community/facilities-and-venues/the-connection/visitor-information",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "rhodes-resident-noise",
+      "suburb": "Rhodes",
+      "topics": [
+        "quiet"
+      ],
+      "kind": "resident_opinion",
+      "summary": "Homely’s page includes 2024 resident reviews mentioning noise, alongside other positive but varied living experiences—opinions are inconsistent.",
+      "geographic_scope": "suburb",
+      "scope_label": "Individual resident feedback, not a measurement of the wider area",
+      "limitation": "Personal experiences may be outdated or influenced by specific building design and orientation; they cannot be used to assess current noise levels at a given property.",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "Homely",
+        "title": "Rhodes suburb profile & local reviews",
+        "url": "https://www.homely.com.au/suburb-profile/rhodes-nsw-2138",
+        "published_at": "2024-02-03",
+        "updated_at": null,
+        "data_period": "Reviews from 2024 and some with unspecified dates",
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "redfern-park",
+      "suburb": "Redfern",
+      "topics": [
+        "parks"
+      ],
+      "kind": "official",
+      "summary": "The City of Sydney lists playgrounds, sports fields and basketball facilities at Redfern Park.",
+      "geographic_scope": "facility",
+      "scope_label": "Specific facility information does not represent the entire area.",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "City of Sydney",
+        "title": "Redfern Park",
+        "url": "https://www.cityofsydney.nsw.gov.au/parks/redfern-park",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "camperdown-victoria",
+      "suburb": "Camperdown",
+      "topics": [
+        "parks"
+      ],
+      "kind": "official",
+      "summary": "Victoria Park’s official webpage lists grassed areas, playgrounds, a swimming pool and a café; the address is listed as Parramatta Road, Broadway 2008.",
+      "geographic_scope": "nearby_facility",
+      "scope_label": "Nearby reference facilities for Camperdown: Victoria Park in Broadway.",
+      "limitation": "The source location is listed as Broadway for reference purposes only; this does not mean all properties in the area are conveniently walkable to these facilities, nor does it confirm proximity to university gates.",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "City of Sydney",
+        "title": "Victoria Park",
+        "url": "https://www.cityofsydney.nsw.gov.au/parks/victoria-park",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "glebe-foreshore",
+      "suburb": "Glebe",
+      "topics": [
+        "parks",
+        "walkability"
+      ],
+      "kind": "official",
+      "summary": "The NSW Government lists the Glebe Foreshore Walk at Glebe Point Road, Glebe.",
+      "geographic_scope": "facility",
+      "scope_label": "Specific facility information does not represent the entire area.",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "NSW Government",
+        "title": "Glebe Foreshore Walk",
+        "url": "https://www.nsw.gov.au/visiting-and-exploring-nsw/locations-and-attractions/glebe-foreshore-walk",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "marrickville-library",
+      "suburb": "Marrickville",
+      "topics": [
+        "library",
+        "community"
+      ],
+      "kind": "official",
+      "summary": "Marrickville Library and Pavilion is located at Patyegarang Place, 313 Marrickville Road; the Council lists wheelchair access and lift facilities.",
+      "geographic_scope": "facility",
+      "scope_label": "Specific facility information does not represent the entire area.",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "Inner West Council",
+        "title": "Marrickville Library and Pavilion",
+        "url": "https://www.innerwest.nsw.gov.au/find-a-library/marrickville-library-and-pavilion",
+        "published_at": null,
+        "updated_at": "2026-10-06",
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "petersham-park",
+      "suburb": "Petersham",
+      "topics": [
+        "parks"
+      ],
+      "kind": "official",
+      "summary": "Petersham Park’s official facilities list includes sports fields, playgrounds, outdoor fitness equipment, picnic areas and the Fanny Durack Aquatic Centre.",
+      "geographic_scope": "facility",
+      "scope_label": "Specific facility information does not represent the entire area.",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "Inner West Council",
+        "title": "Petersham Park",
+        "url": "https://www.innerwest.nsw.gov.au/sporting-grounds/petersham-park",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "strathfield-park",
+      "suburb": "Strathfield",
+      "topics": [
+        "parks",
+        "community"
+      ],
+      "kind": "official",
+      "summary": "Strathfield Park’s Council webpage describes sports and recreation facilities, children’s playgrounds, picnic areas and community events.",
+      "geographic_scope": "facility",
+      "scope_label": "Specific facility information does not represent the entire area.",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "Strathfield Council",
+        "title": "Strathfield Park",
+        "url": "https://www.strathfield.nsw.gov.au/Play/Parks-and-Natural-Areas/Strathfield-Park",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "eastwood-library",
+      "suburb": "Eastwood",
+      "topics": [
+        "library",
+        "community"
+      ],
+      "kind": "official",
+      "summary": "The City of Ryde lists Eastwood Library’s location at the corner of Hillview Road and West Parade.",
+      "geographic_scope": "facility",
+      "scope_label": "Specific facility information does not represent the entire area.",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "City of Ryde",
+        "title": "Eastwood Library",
+        "url": "https://www.ryde.nsw.gov.au/Library/Visit-Us/Eastwood-Library",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "chatswood-library",
+      "suburb": "Chatswood",
+      "topics": [
+        "library",
+        "community"
+      ],
+      "kind": "official",
+      "summary": "Willoughby City Library’s official website lists Chatswood Library at The Concourse, 409 Victoria Avenue, Lower Ground level.",
+      "geographic_scope": "facility",
+      "scope_label": "Specific facility information does not represent the entire area.",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "Willoughby City Library",
+        "title": "Willoughby City Library",
+        "url": "https://libraries.willoughby.nsw.gov.au/Home",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "parramatta-park",
+      "suburb": "Parramatta",
+      "topics": [
+        "parks"
+      ],
+      "kind": "official",
+      "summary": "Greater Sydney Parklands lists picnic shelters, barbecues and playgrounds at Parramatta Park; the Domain Creek Playground is located on the Westmead side of the park.",
+      "geographic_scope": "facility",
+      "scope_label": "Parramatta Park facilities (including those on the Westmead side).",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "Greater Sydney Parklands",
+        "title": "Parramatta Park facilities",
+        "url": "https://www.greatersydneyparklands.nsw.gov.au/parramatta-park-facilities",
+        "published_at": null,
+        "updated_at": null,
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    },
+    {
+      "evidence_id": "ashfield-library",
+      "suburb": "Ashfield",
+      "topics": [
+        "library",
+        "community"
+      ],
+      "kind": "official",
+      "summary": "Ashfield Library’s official address is 260 Liverpool Road, Level 3, Ashfield Civic Centre; the Council lists lift access and accessible facilities.",
+      "geographic_scope": "facility",
+      "scope_label": "Specific facility information does not represent the entire area.",
+      "limitation": "This only confirms the existence of the facility; the walking distance from a specific property, its opening hours and your personal living experience must be verified separately.",
+      "review_after_days": 120,
+      "source": {
+        "publisher": "Inner West Council",
+        "title": "Ashfield Library",
+        "url": "https://www.innerwest.nsw.gov.au/find-a-library/ashfield-library",
+        "published_at": null,
+        "updated_at": "2026-08-10",
+        "data_period": null,
+        "checked_at": "2026-10-24"
+      }
+    }
+  ]
+}

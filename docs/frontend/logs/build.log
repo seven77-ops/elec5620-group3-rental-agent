@@ -1,0 +1,26 @@
+
+> elec5620-rental-workspace@0.1.0 build
+> tsc -b && vite build
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 3117 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                               0.69 kB │ gzip:   0.40 kB
+dist/assets/index-6MGAt2bh.css               14.45 kB │ gzip:   3.53 kB
+dist/assets/rolldown-runtime-WkwZ5CU-.js      0.59 kB │ gzip:   0.36 kB
+dist/assets/Operator-DEFqXxdI.js              4.68 kB │ gzip:   2.19 kB
+dist/assets/Preferences-NFmFwE9x.js          10.54 kB │ gzip:   3.74 kB
+dist/assets/Recommendations-ZUjqmdff.js      10.75 kB │ gzip:   4.07 kB
+dist/assets/Contract-UWn6Z7xG.js             13.58 kB │ gzip:   5.15 kB
+dist/assets/index-D5H6Jpdx.js                15.26 kB │ gzip:   6.56 kB
+dist/assets/Aftercare-vL88ak16.js            25.12 kB │ gzip:   7.74 kB
+dist/assets/vendor-DZnlqMR_.js            1,141.32 kB │ gzip: 362.01 kB
+
+[plugin builtin:vite-reporter]
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 488ms

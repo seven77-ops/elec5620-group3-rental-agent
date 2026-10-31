@@ -1,0 +1,455 @@
+{
+  "label_status": "proposed_baseline_for_human_review",
+  "configuration": {
+    "mode": "off",
+    "configured": true,
+    "enabled": false,
+    "model": "typesafe/jev-1.14",
+    "timeout_seconds": 3.0,
+    "min_confidence": 0.65,
+    "min_margin": 0.15
+  },
+  "metrics": {
+    "count": 36,
+    "completed": 36,
+    "accuracy_including_failures": 1.0,
+    "accepted_fraction": 0.8333333333333334,
+    "p95_request_ms": 615,
+    "known_cost_usd": 0.000853818,
+    "cost_observed_calls": 36,
+    "per_class": {
+      "housing": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "count": 6
+      },
+      "contract": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "count": 6
+      },
+      "aftercare": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "count": 6
+      },
+      "knowledge": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "count": 6
+      },
+      "mixed": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "count": 6
+      },
+      "unclear_or_other": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "count": 6
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "housing-01",
+      "expected": "housing",
+      "predicted": "housing",
+      "confidence": 0.99,
+      "accepted": true,
+      "duration_ms": 606,
+      "cost": 2.3898e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "housing-02",
+      "expected": "housing",
+      "predicted": "housing",
+      "confidence": 0.92,
+      "accepted": true,
+      "duration_ms": 587,
+      "cost": 2.3772e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "housing-03",
+      "expected": "housing",
+      "predicted": "housing",
+      "confidence": 0.81,
+      "accepted": true,
+      "duration_ms": 605,
+      "cost": 2.3814e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "housing-04",
+      "expected": "housing",
+      "predicted": "housing",
+      "confidence": 1,
+      "accepted": true,
+      "duration_ms": 647,
+      "cost": 2.3856e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "housing-05",
+      "expected": "housing",
+      "predicted": "housing",
+      "confidence": 0.94,
+      "accepted": true,
+      "duration_ms": 615,
+      "cost": 2.352e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "housing-06",
+      "expected": "housing",
+      "predicted": "housing",
+      "confidence": 0.99,
+      "accepted": true,
+      "duration_ms": 475,
+      "cost": 2.3562e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "contract-01",
+      "expected": "contract",
+      "predicted": "contract",
+      "confidence": 0.98,
+      "accepted": true,
+      "duration_ms": 484,
+      "cost": 2.3814e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "contract-02",
+      "expected": "contract",
+      "predicted": "contract",
+      "confidence": 0.93,
+      "accepted": true,
+      "duration_ms": 524,
+      "cost": 2.3856e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "contract-03",
+      "expected": "contract",
+      "predicted": "contract",
+      "confidence": 0.88,
+      "accepted": true,
+      "duration_ms": 521,
+      "cost": 2.3856e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "contract-04",
+      "expected": "contract",
+      "predicted": "contract",
+      "confidence": 0.95,
+      "accepted": true,
+      "duration_ms": 527,
+      "cost": 2.3646e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "contract-05",
+      "expected": "contract",
+      "predicted": "contract",
+      "confidence": 0.96,
+      "accepted": true,
+      "duration_ms": 531,
+      "cost": 2.373e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "contract-06",
+      "expected": "contract",
+      "predicted": "contract",
+      "confidence": 0.99,
+      "accepted": true,
+      "duration_ms": 517,
+      "cost": 2.3646e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "aftercare-01",
+      "expected": "aftercare",
+      "predicted": "aftercare",
+      "confidence": 0.94,
+      "accepted": true,
+      "duration_ms": 522,
+      "cost": 2.394e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "aftercare-02",
+      "expected": "aftercare",
+      "predicted": "aftercare",
+      "confidence": 0.95,
+      "accepted": true,
+      "duration_ms": 560,
+      "cost": 2.3856e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "aftercare-03",
+      "expected": "aftercare",
+      "predicted": "aftercare",
+      "confidence": 1,
+      "accepted": true,
+      "duration_ms": 513,
+      "cost": 2.394e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "aftercare-04",
+      "expected": "aftercare",
+      "predicted": "aftercare",
+      "confidence": 0.88,
+      "accepted": true,
+      "duration_ms": 504,
+      "cost": 2.3646e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "aftercare-05",
+      "expected": "aftercare",
+      "predicted": "aftercare",
+      "confidence": 0.99,
+      "accepted": true,
+      "duration_ms": 523,
+      "cost": 2.3646e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "aftercare-06",
+      "expected": "aftercare",
+      "predicted": "aftercare",
+      "confidence": 0.8,
+      "accepted": true,
+      "duration_ms": 530,
+      "cost": 2.3646e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "knowledge-01",
+      "expected": "knowledge",
+      "predicted": "knowledge",
+      "confidence": 0.94,
+      "accepted": true,
+      "duration_ms": 519,
+      "cost": 2.3604e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "knowledge-02",
+      "expected": "knowledge",
+      "predicted": "knowledge",
+      "confidence": 0.96,
+      "accepted": true,
+      "duration_ms": 524,
+      "cost": 2.3898e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "knowledge-03",
+      "expected": "knowledge",
+      "predicted": "knowledge",
+      "confidence": 0.93,
+      "accepted": true,
+      "duration_ms": 522,
+      "cost": 2.3814e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "knowledge-04",
+      "expected": "knowledge",
+      "predicted": "knowledge",
+      "confidence": 0.99,
+      "accepted": true,
+      "duration_ms": 526,
+      "cost": 2.3604e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "knowledge-05",
+      "expected": "knowledge",
+      "predicted": "knowledge",
+      "confidence": 0.96,
+      "accepted": true,
+      "duration_ms": 550,
+      "cost": 2.352e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "knowledge-06",
+      "expected": "knowledge",
+      "predicted": "knowledge",
+      "confidence": 0.95,
+      "accepted": true,
+      "duration_ms": 559,
+      "cost": 2.3562e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "mixed-01",
+      "expected": "mixed",
+      "predicted": "mixed",
+      "confidence": 1,
+      "accepted": true,
+      "duration_ms": 467,
+      "cost": 2.3898e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "mixed-02",
+      "expected": "mixed",
+      "predicted": "mixed",
+      "confidence": 1,
+      "accepted": true,
+      "duration_ms": 522,
+      "cost": 2.3982e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "mixed-03",
+      "expected": "mixed",
+      "predicted": "mixed",
+      "confidence": 0.83,
+      "accepted": true,
+      "duration_ms": 524,
+      "cost": 2.3856e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "mixed-04",
+      "expected": "mixed",
+      "predicted": "mixed",
+      "confidence": 1,
+      "accepted": true,
+      "duration_ms": 526,
+      "cost": 2.3604e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "mixed-05",
+      "expected": "mixed",
+      "predicted": "mixed",
+      "confidence": 1,
+      "accepted": true,
+      "duration_ms": 521,
+      "cost": 2.3772e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "mixed-06",
+      "expected": "mixed",
+      "predicted": "mixed",
+      "confidence": 0.98,
+      "accepted": true,
+      "duration_ms": 525,
+      "cost": 2.3688e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "unclear_or_other-01",
+      "expected": "unclear_or_other",
+      "predicted": "unclear_or_other",
+      "confidence": 1,
+      "accepted": false,
+      "duration_ms": 522,
+      "cost": 2.3646e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "unclear_or_other-02",
+      "expected": "unclear_or_other",
+      "predicted": "unclear_or_other",
+      "confidence": 0.99,
+      "accepted": false,
+      "duration_ms": 592,
+      "cost": 2.352e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "unclear_or_other-03",
+      "expected": "unclear_or_other",
+      "predicted": "unclear_or_other",
+      "confidence": 1,
+      "accepted": false,
+      "duration_ms": 481,
+      "cost": 2.3688e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "unclear_or_other-04",
+      "expected": "unclear_or_other",
+      "predicted": "unclear_or_other",
+      "confidence": 1,
+      "accepted": false,
+      "duration_ms": 503,
+      "cost": 2.352e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "unclear_or_other-05",
+      "expected": "unclear_or_other",
+      "predicted": "unclear_or_other",
+      "confidence": 0.98,
+      "accepted": false,
+      "duration_ms": 521,
+      "cost": 2.3478e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    },
+    {
+      "id": "unclear_or_other-06",
+      "expected": "unclear_or_other",
+      "predicted": "unclear_or_other",
+      "confidence": 1,
+      "accepted": false,
+      "duration_ms": 529,
+      "cost": 2.352e-05,
+      "model": "typesafe/jev-1.14-20261014"
+    }
+  ],
+  "limitations": "Synthetic label baseline; review labels and use held-out data. This measures routing, not end-to-end task success.",
+  "verification_context": {
+    "requests": "36 synthetic fixture requests; no private case records sent",
+    "labels": "proposed baseline, not independently human-reviewed",
+    "live_mode": "shadow; explicitly authorized by user, running service restarted and key loaded; actual execution remains Alibaba",
+    "smoke_test": {
+      "http_status": 200,
+      "route": "knowledge",
+      "duration_ms": 711,
+      "cost_usd": 2.2974e-05
+    },
+    "all_37_observed_cost_usd": 0.000876792
+  },
+  "activation": {
+    "mode": "shadow",
+    "configured": true,
+    "enabled": true,
+    "saved_databases_unchanged": [
+      "aftercare.sqlite3",
+      "intake.sqlite3",
+      "rag.sqlite3",
+      "utility_catalog.sqlite3",
+      "web.sqlite3"
+    ],
+    "operator_items_preserved": 10
+  },
+  "shadow_integration_smoke": {
+    "synthetic_requests": 2,
+    "decision_routes": [
+      "knowledge",
+      "housing"
+    ],
+    "actual_execution_sources": [
+      "ali",
+      "ali"
+    ],
+    "alibaba_execution_simulated": true,
+    "business_case_unchanged": true,
+    "knowledge_citations_present": true
+  }
+}

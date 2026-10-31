@@ -42,10 +42,12 @@ def _ocr_pdf(raw: bytes, page_count: int) -> list[str]:
             raise ResubmissionRequired("Local OCR failed; supply a clearer agreement") from exc
 
 
-def load_document(path: str | Path, *, consent: bool) -> dict:
+def load_document(path: str | Path, *, consent: bool, max_pdf_pages: int = MAX_PDF_PAGES) -> dict:
     # Consent is checked before opening the document.
     if consent is not True:
         raise ContractError("Explicit consent is required before reading a rental agreement")
+    if type(max_pdf_pages) is not int or not 1 <= max_pdf_pages <= 30:
+        raise ContractError("PDF page allowance must be an integer between 1 and 30")
     path = Path(path)
     suffix = path.suffix.lower()
     if suffix not in {".txt", ".docx", ".pdf"}:
@@ -79,14 +81,16 @@ def load_document(path: str | Path, *, consent: bool) -> dict:
             raise ContractError("Text-based PDF support requires pypdf") from exc
         try:
             reader = PdfReader(io.BytesIO(raw))
-            if len(reader.pages) > MAX_PDF_PAGES:
-                raise ContractError("PDF exceeds the 10-page prototype limit")
+            if len(reader.pages) > max_pdf_pages:
+                raise ContractError(f"PDF exceeds the {max_pdf_pages}-page prototype limit")
             pages = [page.extract_text() or "" for page in reader.pages]
         except ContractError:
             raise
         except Exception as exc:
             raise ResubmissionRequired("PDF is unreadable; supply a clearer copy") from exc
         if not any(page.strip() for page in pages):
+            if len(pages) > MAX_PDF_PAGES:
+                raise ResubmissionRequired("Image-only PDF exceeds the 10-page OCR allowance; supply a text-based copy")
             pages = _ocr_pdf(raw, len(pages))
             extraction_mode = "ocr"
         if not any(page.strip() for page in pages):

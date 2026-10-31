@@ -1,3 +1,4 @@
+from contextlib import closing
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
 from pathlib import Path
@@ -334,10 +335,10 @@ class Workflows(unittest.TestCase):
     def test_storage_failure_rolls_back_case_and_receipt(self):
         before = self.case()
         command = self.command('create_plan', {'move_out_date': '2026-10-31', 'schedule_confirmed': True})
-        with sqlite3.connect(self.agent.database) as conn:
+        with closing(sqlite3.connect(self.agent.database)) as conn, conn:
             conn.execute("CREATE TRIGGER reject_receipt BEFORE INSERT ON receipts BEGIN SELECT RAISE(ABORT,'simulated storage error'); END")
         self.error('storage_error', self.agent.submit, command)
-        with sqlite3.connect(self.agent.database) as conn:
+        with closing(sqlite3.connect(self.agent.database)) as conn, conn:
             self.assertEqual(conn.execute('SELECT COUNT(*) FROM receipts').fetchone()[0], 1)
             conn.execute('DROP TRIGGER reject_receipt')
         self.agent.submit(command)
@@ -345,7 +346,7 @@ class Workflows(unittest.TestCase):
 
     def test_review_storage_failure_never_reports_routed_success(self):
         self.active_bond()
-        with sqlite3.connect(self.agent.database) as conn:
+        with closing(sqlite3.connect(self.agent.database)) as conn, conn:
             conn.execute("CREATE TRIGGER reject_review BEFORE UPDATE ON cases BEGIN SELECT RAISE(ABORT,'queue storage failed'); END")
         self.error('storage_error', self.run_op, 'bond_update', {'entry': self.entry(conflicting_evidence=True)})
         self.assertEqual(self.case()['reviews'], [])
@@ -385,6 +386,49 @@ class Workflows(unittest.TestCase):
         other = AftercareAgent(self.agent.database)
         self.assertEqual(other.get('aftercare-demo-1', 'demo-tenant'), self.case())
         validate('aftercare-case', self.case())
+
+    def test_empty_poll_is_a_read_and_keeps_concurrent_edits_current(self):
+        self.plan()
+        self.run_op('reminder_preferences', {'enabled': True, 'follow_up_at': None})
+        loaded = self.case()
+        empty = self.run_op('poll_reminders', {})
+        self.assertEqual(empty['result']['delivered'], [])
+        self.assertEqual(empty['version'], loaded['version'])
+        self.assertEqual(self.case(), loaded, 'An empty poll must not commit')
+        # A tenant edit prepared before the poll is still current.
+        self.agent.submit({**self.command('edit_task', {'task_id': 'keys', 'status': 'done', 'evidence_refs': []}),
+                           'expected_version': loaded['version']})
+        due = self.run_op('poll_reminders', {}, as_of='2026-11-03T09:00:00+11:00')
+        self.assertTrue(due['result']['delivered'])
+        self.assertEqual(due['version'], loaded['version'] + 2, 'A delivering poll still commits once')
+
+    def test_plan_includes_utility_and_bond_refund_steps(self):
+        self.plan()
+        tasks = {t['task_id']: t for t in self.case()['plan']['tasks']}
+        self.assertEqual(tasks['utilities']['due_at'], '2026-10-26T09:00:00+11:00')
+        self.assertEqual(tasks['bond-refund']['due_at'], '2026-11-01T09:00:00+11:00')
+
+    def test_empty_poll_retains_receipt_and_request_identity(self):
+        poll = self.command('poll_reminders', {})
+        response = self.agent.submit(poll)
+        changed = {**poll, 'operation': 'reminder_preferences',
+                   'payload': {'enabled': True, 'follow_up_at': None}}
+        self.error('request_conflict', self.agent.submit, changed)
+        self.run_op('reminder_preferences', {'enabled': True, 'follow_up_at': None})
+        self.assertEqual(self.agent.submit(poll), response)
+
+    def test_past_move_out_dates_and_zero_claims_are_rejected(self):
+        self.error('invalid_input', self.run_op, 'create_plan', {'move_out_date': '2026-10-14', 'schedule_confirmed': True})
+        self.plan()
+        self.error('invalid_input', self.run_op, 'propose_date', {'move_out_date': '2026-10-01'})
+        self.active_bond()
+        self.error('invalid_input', self.run_op, 'bond_update', {'entry': self.entry(claims=[
+            {'claim_id': 'zero', 'amount_cents': 0, 'reason': 'Nothing', 'evidence_refs': [], 'disputed': False}])})
+
+    def test_draft_uses_readable_sydney_dates(self):
+        self.active_bond()
+        draft = self.run_op('request_draft', {'use_model': False, 'allow_external_ai': False})['result']['draft']
+        self.assertIn('Tenant-reported update (15 Oct 2026)', draft['text'])
 
 
 if __name__ == '__main__':

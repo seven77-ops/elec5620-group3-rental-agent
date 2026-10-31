@@ -1,0 +1,117 @@
+{
+  "status": "succeeded",
+  "scope": "Synthetic questions and temporary cases; real Jev, Alibaba extraction and RAG calls",
+  "scenarios": [
+    {
+      "expected_route": "knowledge",
+      "intent": "knowledge",
+      "routing": {
+        "mode": "active",
+        "source": "jev",
+        "route": "knowledge",
+        "reason": "accepted"
+      },
+      "alibaba_calls": [
+        {
+          "task": "rag_answer",
+          "intents": []
+        }
+      ],
+      "knowledge_status": "answered",
+      "citations": 3,
+      "retrieval_methods": [
+        "keywords",
+        "vectors",
+        "rerank"
+      ]
+    },
+    {
+      "expected_route": "housing",
+      "intent": "search",
+      "routing": {
+        "mode": "active",
+        "source": "jev",
+        "route": "housing",
+        "reason": "accepted"
+      },
+      "alibaba_calls": [
+        {
+          "task": "assistant_intent",
+          "intents": [
+            "area_advice",
+            "collect_preferences",
+            "recommend_areas",
+            "search",
+            "update_preferences",
+            "compare",
+            "explain",
+            "select",
+            "market",
+            "clarify",
+            "outside_scope",
+            "followup",
+            "other",
+            "transit_info",
+            "workflow"
+          ]
+        }
+      ]
+    },
+    {
+      "expected_route": "contract",
+      "intent": "contract",
+      "routing": {
+        "mode": "active",
+        "source": "jev",
+        "route": "contract",
+        "reason": "accepted"
+      },
+      "alibaba_calls": [
+        {
+          "task": "assistant_intent",
+          "intents": [
+            "clarify",
+            "outside_scope",
+            "contract",
+            "draft_contract",
+            "other"
+          ]
+        }
+      ]
+    },
+    {
+      "expected_route": "aftercare",
+      "intent": "aftercare",
+      "routing": {
+        "mode": "active",
+        "source": "jev",
+        "route": "aftercare",
+        "reason": "accepted"
+      },
+      "alibaba_calls": [
+        {
+          "task": "assistant_intent",
+          "intents": [
+            "clarify",
+            "outside_scope",
+            "aftercare",
+            "other",
+            "living_services"
+          ]
+        }
+      ]
+    },
+    {
+      "expected_route": "mixed",
+      "intent": "clarify",
+      "routing": {
+        "mode": "active",
+        "source": "jev",
+        "route": "mixed",
+        "reason": "accepted"
+      },
+      "alibaba_calls": []
+    }
+  ],
+  "business_case_unchanged": true
+}

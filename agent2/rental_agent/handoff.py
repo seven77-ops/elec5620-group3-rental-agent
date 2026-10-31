@@ -8,7 +8,7 @@ from .validation import ValidationError, require, text, timestamp
 
 
 def build_selected_listing_evidence(report, dataset, listing_id, *, selected_at, user_confirmed):
-    require(user_confirmed is True, 'selection.user_confirmed', '必须有用户明确选择，不自动选择第一名')
+    require(user_confirmed is True, 'selection.user_confirmed', 'Explicit user selection is required; the top-ranked listing is not selected automatically')
     text(listing_id, 'selection.listing_id')
     selected_time = timestamp(selected_at, 'selection.selected_at')
     validate_contract('RecommendationReport', report)
@@ -17,20 +17,20 @@ def build_selected_listing_evidence(report, dataset, listing_id, *, selected_at,
         require(comparison['after_run_id'] == report['recommendation_run_id']
                 and comparison['after_profile_version'] == report['profile_version']
                 and comparison['after_weights'] == report['effective_weights'],
-                'selection.comparison', '比较结果的目标批次、版本或权重与本报告不一致')
+                'selection.comparison', 'The comparison target run, version or weights do not match this report')
     require(selected_time >= timestamp(report['as_of'], 'report.as_of'),
-            'selection.selected_at', '不能早于推荐快照时点')
+            'selection.selected_at', 'Cannot be earlier than the recommendation snapshot')
     # Recompute the score/evidence snapshot; comparison history is not selected evidence.
     original = evaluate(report['profile'], dataset, as_of=report['as_of'])
     supplied = {k: v for k, v in report.items() if k != 'comparison'}
-    require(supplied == original, 'selection.report', '报告与原始数据不一致；请重新评估，禁止修改分数或批次引用')
+    require(supplied == original, 'selection.report', 'The report does not match the original data. Re-evaluate; scores and run references cannot be altered')
     require(any(row['listing_id'] == listing_id for row in original['eligible']),
-            'selection.listing_id', '只能选择本批次合格房源；不存在、重复、待确认和排除项不能直接交接')
+            'selection.listing_id', 'Only eligible listings in this run can be selected. Missing, duplicate, pending and excluded items cannot be handed off directly')
     # A stale recommendation does not become current merely because the user clicks it.
     current = evaluate(report['profile'], dataset, as_of=selected_at)
     assessment = next((row for row in current['eligible'] if row['listing_id'] == listing_id), None)
     if assessment is None:
-        raise ValidationError('selection.freshness: 选择时房源或证据已失效/不完整，须先刷新数据并重新推荐')
+        raise ValidationError('selection.freshness: Listing details or evidence are expired or incomplete at selection time. Refresh the data and generate recommendations again')
     snapshot = next(row for row in dataset['listings'] if row['listing_id'] == listing_id)
     related = [row for row in dataset['listings']
                if (row['source'], row['source_listing_id']) == (snapshot['source'], snapshot['source_listing_id'])]
@@ -43,10 +43,10 @@ def build_selected_listing_evidence(report, dataset, listing_id, *, selected_at,
         'listing_id': listing_id, 'selected_at': selected_at, 'user_confirmed': True,
         'profile': deepcopy(original['profile']), 'listing_snapshot': deepcopy(snapshot),
         'source_records': deepcopy(related), 'assessment': deepcopy(assessment),
-        'unresolved_items': list(assessment['issues']) + ['尚未提供或审查租赁合同；本证据包不代表批准签约。'],
+        'unresolved_items': list(assessment['issues']) + ['No tenancy agreement has been supplied or reviewed. This evidence package does not approve signing.'],
         'data_limitations': list(original['data_limitations']) + [
-            'user_confirmed 是调用方显式声明，不是用户鉴权或签名；本地原型未发送数据给 Agent 3。',
-            '来源事实和时效检查基于提供的模拟快照，不等于已实地验证房源真实或已重新联系供方。',
+            'user_confirmed is an explicit caller declaration, not user authentication or a signature. This local prototype has not sent data to Agent 3.',
+            'Source-fact and freshness checks use the supplied synthetic snapshot. They do not establish an on-site property verification or renewed contact with the provider.',
         ],
     }
     validate_contract('SelectedListingEvidence', packet)

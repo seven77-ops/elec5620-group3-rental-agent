@@ -1,0 +1,6 @@
+{
+  "repository": "https://github.com/maxim75/tfnsw_trip_planner_mcp",
+  "commit": "f020393ce6759b125f6198226c496a28c7822935",
+  "license": "MIT",
+  "changes": "Upstream Python sources and lockfile copied unchanged; integration code lives in server/app/commute and scripts."
+}

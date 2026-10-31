@@ -1,0 +1,42 @@
+{
+  "status": "succeeded",
+  "scope": "Synthetic messages/document and temporary cases; real Jev, Alibaba email generation and private contract Q&A",
+  "results": {
+    "repair": {
+      "status": "succeeded",
+      "routing": {
+        "mode": "active",
+        "source": "jev",
+        "route": "aftercare",
+        "reason": "accepted"
+      },
+      "language": "en",
+      "tone": "polite",
+      "subject": "Repair Request: Leaking Kitchen Sink",
+      "body": "Dear Sir or Madam,\n\nI hope this message finds you well. I am writing to report a repair issue in the kitchen: the sink has been leaking since last night.\n\nPlease let me know how you would like to proceed and whether you need any further details or access arrangements.\n\nThank you for your attention to this matter.\n\nBest regards,",
+      "exact_preview_saved": true,
+      "sent": false
+    },
+    "contract": {
+      "status": "succeeded",
+      "routing": {
+        "mode": "active",
+        "source": "jev",
+        "route": "contract",
+        "reason": "accepted"
+      },
+      "review_status": "Reviewed",
+      "answer_status": "answered",
+      "answer": "Source context: Contract text\n\nAddress: 1 Example Street, Sydney NSW 2000\nLandlord: Example Landlord\nTenant: Example Tenant\nRent: AUD 650 per week whole property\nBond: AUD 2600\nStart date: 2026-11-01\nEnd date: 2027-11-01 [1]",
+      "private_citations": 1,
+      "without_selection": true,
+      "retrieval_methods": [
+        "contract_keywords",
+        "contract_vectors",
+        "contract_rerank",
+        "public_keywords",
+        "public_rerank"
+      ]
+    }
+  }
+}

@@ -1,0 +1,470 @@
+{
+  "checked_on": "2026-10-28",
+  "providers": [
+    {
+      "id": "agl",
+      "name": "AGL",
+      "categories": [
+        "electricity",
+        "gas"
+      ],
+      "website": "https://www.agl.com.au/",
+      "contact_url": "https://www.agl.com.au/help-support/contact-us",
+      "phone": "131 245",
+      "coverage": "NSW; confirm service availability for your address",
+      "source_url": "https://www.agl.com.au/help-support/contact-us",
+      "checked_on": "2026-10-22",
+      "notes": "Electricity, gas, and moving services; specific plans, rates, and account setup conditions must be verified on the provider’s official website."
+    },
+    {
+      "id": "origin",
+      "name": "Origin Energy",
+      "categories": [
+        "electricity",
+        "gas"
+      ],
+      "website": "https://www.originenergy.com.au/",
+      "contact_url": "https://www.originenergy.com.au/electricity-gas/",
+      "phone": "13 24 61",
+      "coverage": "NSW; confirm service availability for your address",
+      "source_url": "https://www.originenergy.com.au/contact-us/complaints/",
+      "checked_on": "2026-10-22",
+      "notes": "Electricity and gas; customer-service numbers are from the official website. Check plans for your address; live rates are not integrated."
+    },
+    {
+      "id": "energyaustralia",
+      "name": "EnergyAustralia",
+      "categories": [
+        "electricity",
+        "gas"
+      ],
+      "website": "https://www.energyaustralia.com.au/",
+      "contact_url": "https://www.energyaustralia.com.au/home/help-and-support/contact-us",
+      "phone": "133 466",
+      "coverage": "NSW; confirm service availability for your address",
+      "source_url": "https://www.energyaustralia.com.au/home/help-and-support/contact-us",
+      "checked_on": "2026-10-22",
+      "notes": "Electricity, gas and moving enquiries; ask the provider to confirm plans for your address."
+    },
+    {
+      "id": "telstra",
+      "name": "Telstra",
+      "categories": [
+        "internet"
+      ],
+      "website": "https://www.telstra.com.au/",
+      "contact_url": "https://www.telstra.com.au/contact-us",
+      "phone": null,
+      "coverage": "Sydney / NSW; confirm the connection type for your address",
+      "source_url": "https://www.telstra.com.au/contact-us",
+      "checked_on": "2026-10-22",
+      "notes": "Home internet, fault reporting, and relocation services; select the appropriate contact method via the official website — connection speed and activation date require confirmation."
+    },
+    {
+      "id": "optus",
+      "name": "Optus",
+      "categories": [
+        "internet"
+      ],
+      "website": "https://www.optus.com.au/",
+      "contact_url": "https://www.optus.com.au/support/contact-us",
+      "phone": "133 937",
+      "coverage": "Sydney / NSW; confirm the connection type for your address",
+      "source_url": "https://www.optus.com.au/support/contact-us",
+      "checked_on": "2026-10-22",
+      "notes": "Home internet and account support; eligibility for nbn, 5G, or other technologies is determined by your address."
+    },
+    {
+      "id": "tpg",
+      "name": "TPG",
+      "categories": [
+        "internet"
+      ],
+      "website": "https://www.tpg.com.au/",
+      "contact_url": "https://www.tpg.com.au/contact",
+      "phone": "13 14 23",
+      "coverage": "Sydney / NSW; confirm the connection type for your address",
+      "source_url": "https://www.tpg.com.au/contact",
+      "checked_on": "2026-10-22",
+      "notes": "The official website lists separate contact lines for technical support, billing, and moving; this is a general enquiry entry point."
+    },
+    {
+      "id": "aussie-broadband",
+      "name": "Aussie Broadband",
+      "categories": [
+        "internet"
+      ],
+      "website": "https://www.aussiebroadband.com.au/",
+      "contact_url": "https://www.aussiebroadband.com.au/contact/",
+      "phone": "1300 880 905",
+      "coverage": "Sydney / NSW; confirm the connection type for your address",
+      "source_url": "https://www.aussiebroadband.com.au/contact/",
+      "checked_on": "2026-10-22",
+      "notes": "Home internet sales, technical support, billing, and order enquiries; available plans and installation timeframes must be confirmed via the official website."
+    },
+    {
+      "id": "superloop",
+      "name": "Superloop",
+      "categories": [
+        "internet"
+      ],
+      "website": "https://www.superloop.com/",
+      "contact_url": "https://www.superloop.com/contact/",
+      "phone": "1800 57 87 37",
+      "coverage": "Sydney / NSW; confirm the connection type for your address",
+      "source_url": "https://www.superloop.com/contact/",
+      "checked_on": "2026-10-22",
+      "notes": "Home internet sales, technical support, and billing enquiries; real-time plan availability or address coverage checks are not integrated."
+    },
+    {
+      "id": "sydney-water",
+      "name": "Sydney Water",
+      "categories": [
+        "water"
+      ],
+      "website": "https://www.sydneywater.com.au/",
+      "contact_url": "https://www.sydneywater.com.au/contact-us.html",
+      "phone": "13 20 92",
+      "coverage": "Sydney Water service area; eligibility must be confirmed using your property address",
+      "source_url": "https://www.sydneywater.com.au/contact-us.html",
+      "checked_on": "2026-10-22",
+      "notes": "Account and billing enquiries. Your water provider is determined by your address — you cannot switch providers freely like electricity retailers. Responsibility for charges must be verified separately under your lease agreement and actual bills."
+    },
+    {
+      "id": "two-men-and-a-truck",
+      "name": "TWO MEN AND A TRUCK",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://www.twomen.com.au/",
+      "contact_url": "https://www.twomen.com.au/contact-us/",
+      "phone": "1300 880 412",
+      "coverage": "Sydney; ask the provider to confirm the route",
+      "source_url": "https://www.twomen.com.au/contact-us/",
+      "checked_on": "2026-10-22",
+      "notes": "Sydney moving consultation; when requesting a quote, provide your pickup address, delivery address, floor level, elevator access, and furniture list — price and available time slots are subject to provider confirmation."
+    },
+    {
+      "id": "grace",
+      "name": "Grace Removals",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://www.grace.com.au/",
+      "contact_url": "https://www.grace.com.au/location/sydney-seven-hills/",
+      "phone": "02 9838 5600",
+      "coverage": "Sydney branch; ask the provider to confirm the route",
+      "source_url": "https://www.grace.com.au/location/sydney-seven-hills/",
+      "checked_on": "2026-10-22",
+      "notes": "Seven Hills, Sydney branch contact details; check with the provider for moving and storage requirements, item scope, and pricing."
+    },
+    {
+      "id": "kent",
+      "name": "Kent Removals & Storage",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://www.kentremovalsstorage.com.au/",
+      "contact_url": "https://www.kentremovalsstorage.com.au/contact-us",
+      "phone": "1300 490 557",
+      "coverage": "Sydney / NSW; ask the provider to confirm the route",
+      "source_url": "https://www.kentremovalsstorage.com.au/contact-us",
+      "checked_on": "2026-10-22",
+      "notes": "Residential moving and storage quote request; no real-time availability check has been performed, and this does not constitute a booking."
+    },
+    {
+      "id": "simply-maid",
+      "name": "Simply Maid",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://simplymaid.com.au/",
+      "contact_url": "https://simplymaid.com.au/services/end-of-lease-cleaning/sydney",
+      "phone": null,
+      "coverage": "Sydney; confirm service coverage for your suburb or postcode",
+      "source_url": "https://simplymaid.com.au/services/end-of-lease-cleaning/sydney",
+      "checked_on": "2026-10-22",
+      "notes": "Website provides end-of-lease cleaning quotes for Sydney; confirm number of bedrooms and bathrooms, vacant property conditions, oven and window cleaning scope, and separately confirm any add-on services such as carpet cleaning."
+    },
+    {
+      "id": "fantastic-cleaners",
+      "name": "Fantastic Cleaners",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://fantasticcleaners.com.au/",
+      "contact_url": "https://fantasticcleaners.com.au/contact-us/",
+      "phone": "02 8103 2006",
+      "coverage": "Sydney; confirm service coverage for your address",
+      "source_url": "https://fantasticcleaners.com.au/contact-us/",
+      "checked_on": "2026-10-22",
+      "notes": "Routine and end-of-lease cleaning enquiry; carpet cleaning, window cleaning, rework conditions and associated costs must be confirmed in the quote."
+    },
+    {
+      "id": "calibre-cleaning",
+      "name": "Calibre Cleaning",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://www.calibrecleaning.com.au/",
+      "contact_url": "https://www.calibrecleaning.com.au/contact/",
+      "phone": "1300 991 368",
+      "coverage": "Sydney; confirm service coverage for your address",
+      "source_url": "https://www.calibrecleaning.com.au/contact/",
+      "checked_on": "2026-10-22",
+      "notes": "Website provides routine and end-of-lease cleaning services for Sydney; quotes, add-on services and rework policies must be confirmed with the provider — this does not guarantee bond refund."
+    },
+    {
+      "id": "men-that-move",
+      "name": "Men That Move",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://menthatmove.com/",
+      "contact_url": "https://menthatmove.com/contact-us/",
+      "phone": "1800 438 668",
+      "coverage": "Sydney, based in Marrickville; confirm the route for your addresses",
+      "source_url": "https://menthatmove.com/contact-us/",
+      "checked_on": "2026-10-28",
+      "notes": "Furniture and residential moving; website offers reusable moving box hire and quote request. For small loads, please specify your item list, floor level, elevator access and parking conditions; box availability and transport conditions to be confirmed separately."
+    },
+    {
+      "id": "holloway",
+      "name": "Holloway Removals & Storage",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://hollowayremovals.com.au/",
+      "contact_url": "https://hollowayremovals.com.au/contact-us/",
+      "phone": "02 8503 4444",
+      "coverage": "Sydney and surrounding areas; Sydney office located in Wolli Creek.",
+      "source_url": "https://hollowayremovals.com.au/contact-us/",
+      "checked_on": "2026-10-28",
+      "notes": "Local and interstate moving, packing/unpacking, and storage; on-site or video assessment available for quoting. Special large items, insurance coverage, date changes and building access conditions must be confirmed in advance."
+    },
+    {
+      "id": "removal-brothers",
+      "name": "Removal Brothers",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://removalbrothers.com.au/",
+      "contact_url": "https://removalbrothers.com.au/",
+      "phone": "0405 919 600",
+      "coverage": "Sydney; covers Eastern Suburbs, Inner West and North Shore; other routes available on request.",
+      "source_url": "https://removalbrothers.com.au/",
+      "checked_on": "2026-10-28",
+      "notes": "Residential and apartment moving, packing, storage and interstate transport; website lists indicative pricing based on vehicle type and crew size; Sunday rates, minimum hours and trip fees require separate confirmation — this is not a confirmed quote."
+    },
+    {
+      "id": "moveworx",
+      "name": "Moveworx Removals & Storage",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://moveworx.com.au/",
+      "contact_url": "https://moveworx.com.au/",
+      "phone": "1300 731 730",
+      "coverage": "Sydney; covers North Shore, Hills District, Inner West and Greater Western Sydney.",
+      "source_url": "https://moveworx.com.au/",
+      "checked_on": "2026-10-28",
+      "notes": "Local and interstate furniture removal, packing, and storage; quotes are based on the volume of furniture, route, and service requirements. Confirm whether packing, storage duration, and loading/unloading conditions are included in the quote."
+    },
+    {
+      "id": "optimove",
+      "name": "Optimove",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://www.optimove.com.au/",
+      "contact_url": "https://www.optimove.com.au/",
+      "phone": "1300 400 874",
+      "coverage": "Sydney and selected interstate routes; actual pickup and delivery addresses to be confirmed separately.",
+      "source_url": "https://www.optimove.com.au/",
+      "checked_on": "2026-10-28",
+      "notes": "Residential furniture removal with full packing and assembly services; provide a detailed item list, floor level, and large items when requesting a quote. The route, inclusions, and insurance coverage are as specified in the written quote."
+    },
+    {
+      "id": "man-and-his-van",
+      "name": "Man And His Van",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://manandhisvan.com.au/",
+      "contact_url": "https://manandhisvan.com.au/contact/",
+      "phone": "02 9907 3300",
+      "coverage": "Sydney; service hubs in Brookvale / Northern Beaches; routes to be confirmed separately.",
+      "source_url": "https://manandhisvan.com.au/contact/",
+      "checked_on": "2026-10-28",
+      "notes": "Furniture, residential, and office removals, removal boxes, and storage advice; call first to outline the number of items and origin/destination areas, then confirm vehicle, crew, and trip costs."
+    },
+    {
+      "id": "nuss",
+      "name": "NUSS Removals",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://www.nuss.com.au/",
+      "contact_url": "https://www.nuss.com.au/",
+      "phone": "02 9425 4600",
+      "coverage": "Sydney; including Inner West, CBD, North Shore, and surrounding areas.",
+      "source_url": "https://www.nuss.com.au/",
+      "checked_on": "2026-10-28",
+      "notes": "Local, interstate, and international removals, packing, and storage; online quoting supports small consignments and various bedroom configurations, with options for in-person or video assessments. Access to floors, elevator availability, and vehicle proximity to premises affect the final quote."
+    },
+    {
+      "id": "chess-moving",
+      "name": "Chess Moving Sydney",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://www.chessmoving.com.au/",
+      "contact_url": "https://www.chessmoving.com.au/about/office-locations/sydney",
+      "phone": "02 9671 8400",
+      "coverage": "Sydney / NSW; branch in Blacktown; routes to be confirmed separately.",
+      "source_url": "https://www.chessmoving.com.au/about/office-locations/sydney",
+      "checked_on": "2026-10-28",
+      "notes": "Local residential, NSW regional, interstate, and international removals and storage; Sydney branch offers quoting via item list or on-site assessment. Transport, packing, storage, and special handling are priced per selected service."
+    },
+    {
+      "id": "citymove",
+      "name": "CityMove Removals",
+      "categories": [
+        "removalist"
+      ],
+      "website": "https://www.citymove.com.au/",
+      "contact_url": "https://www.citymove.com.au/",
+      "phone": "1300 729 994",
+      "coverage": "Based in Sydney; local and interstate routes require address confirmation.",
+      "source_url": "https://www.citymove.com.au/contact",
+      "checked_on": "2026-10-28",
+      "notes": "Residential, apartment, and office removals; quotes based on item volume, route, and job duration. The website notes that access conditions, traffic time, and vehicle dispatch fees affect the final amount—always verify the written quote."
+    },
+    {
+      "id": "maid2match",
+      "name": "Maid2Match",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://www.maid2match.com.au/",
+      "contact_url": "https://www.maid2match.com.au/cleaners-sydney/",
+      "phone": "1800 207 686",
+      "coverage": "Sydney; confirm service coverage and available appointments for your postcode",
+      "source_url": "https://www.maid2match.com.au/cleaners-sydney/",
+      "checked_on": "2026-10-28",
+      "notes": "Regular or one-off residential cleaning; the website lists fixed-price whole-house quotes (by number of bedrooms and bathrooms) and hourly rates for targeted cleaning. Specific tasks, cleaning supplies, and add-ons must be confirmed—routine cleaning is not automatically treated as a full end-of-lease clean."
+    },
+    {
+      "id": "absolute-domestics",
+      "name": "Absolute Domestics",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://www.absolutedomestics.com.au/",
+      "contact_url": "https://www.absolutedomestics.com.au/contact-us/",
+      "phone": "1300 364 646",
+      "coverage": "Sydney; covering Inner West, North Shore, Eastern Suburbs, Parramatta, and other areas.",
+      "source_url": "https://www.absolutedomestics.com.au/services/end-of-lease-cleaning/sydney/",
+      "checked_on": "2026-10-28",
+      "notes": "Residential routine, one-off, and end-of-lease cleaning, matched with local cleaners via a booking platform; confirm duration and priority tasks before the first service. Specialist services (e.g., carpet cleaning) and re-clean conditions are assessed separately."
+    },
+    {
+      "id": "this-is-neat",
+      "name": "This Is Neat Cleaning",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://thisisneat.com.au/",
+      "contact_url": "https://thisisneat.com.au/end-of-lease-cleaning/sydney",
+      "phone": null,
+      "coverage": "Sydney metropolitan area; specific postcode and date subject to confirmation.",
+      "source_url": "https://thisisneat.com.au/end-of-lease-cleaning/sydney",
+      "checked_on": "2026-10-28",
+      "notes": "Specialising in end-of-lease and move-in/move-out cleaning. The official website explicitly states that routine domestic or office cleaning is not offered. Custom quotes are provided for studios, apartments or houses. Additional services such as carpet steam cleaning and re-clean clauses are assessed separately."
+    },
+    {
+      "id": "maid-for-you",
+      "name": "MaidForYou",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://www.maidforyou.com.au/",
+      "contact_url": "https://www.maidforyou.com.au/contact-us/",
+      "phone": "1300 138 892",
+      "coverage": "Sydney; specific suburb and available booking slots confirmed by address.",
+      "source_url": "https://www.maidforyou.com.au/contact-us/",
+      "checked_on": "2026-10-28",
+      "notes": "Routine, one-off and end-of-lease residential cleaning; pricing quoted per number of bedrooms and bathrooms, property condition and selected services. Inclusion of carpet, oven and window cleaning must be confirmed item-by-item. This does not guarantee bond refund."
+    },
+    {
+      "id": "maid2go",
+      "name": "Maid2Go Cleaning",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://maid2gocleaning.com.au/",
+      "contact_url": "https://maid2gocleaning.com.au/",
+      "phone": "02 7256 7367",
+      "coverage": "Sydney, including Inner West, Burwood, Camperdown and surrounding suburbs.",
+      "source_url": "https://maid2gocleaning.com.au/",
+      "checked_on": "2026-10-28",
+      "notes": "Offers routine, deep and end-of-lease cleaning; quotes based on property type and selected services. Service coverage areas and online quoting are available on the official website. Inclusions such as cleaning supplies, carpet cleaning and other add-ons are as specified in the quote."
+    },
+    {
+      "id": "1800-cleaner",
+      "name": "1800 CLEANER",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://1800cleaner.com.au/",
+      "contact_url": "https://1800cleaner.com.au/contact-1800-cleaner/",
+      "phone": "1800 253 263",
+      "coverage": "Sydney Inner West and Eastern Suburbs; outer suburbs require separate enquiry.",
+      "source_url": "https://1800cleaner.com.au/contact-1800-cleaner/",
+      "checked_on": "2026-10-28",
+      "notes": "Residential cleaning, deep cleaning, window cleaning and carpet cleaning; suburbs listed on the official website include Newtown, Glebe, Camperdown, Burwood and Strathfield. A travel fee may apply for outer suburbs; pricing depends on number of bedrooms and bathrooms and service type."
+    },
+    {
+      "id": "jims-cleaning",
+      "name": "Jim’s Cleaning Group",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://jimscleaning.com.au/",
+      "contact_url": "https://jimscleaning.com.au/local/carpet-cleaning/nsw/sydney/",
+      "phone": "131 546",
+      "coverage": "Sydney and surrounding areas; coverage confirmed by local service branch.",
+      "source_url": "https://jimscleaning.com.au/local/carpet-cleaning/nsw/sydney/",
+      "checked_on": "2026-10-28",
+      "notes": "Specialist carpet steam cleaning, stain removal and upholstery cleaning across NSW; full-house residential and end-of-lease cleaning must be enquired with the relevant local branch. Quotes require details of carpet area, material, stain type and whether a service receipt is needed."
+    },
+    {
+      "id": "call-the-cleaners",
+      "name": "Call The Cleaners",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://callthecleaners.com.au/",
+      "contact_url": "https://callthecleaners.com.au/sydney/",
+      "phone": "0451 550 849",
+      "coverage": "Sydney; branch located in Rhodes, covering Inner West, Southern Suburbs and other areas.",
+      "source_url": "https://callthecleaners.com.au/sydney/",
+      "checked_on": "2026-10-28",
+      "notes": "Residential routine, deep, apartment and end-of-lease cleaning; suburbs listed on the official website include Newtown, Burwood and Redfern. Quotes depend on property size, service category and add-ons; availability of time slots requires separate confirmation."
+    },
+    {
+      "id": "clean-australia",
+      "name": "Clean Australia Service",
+      "categories": [
+        "cleaner"
+      ],
+      "website": "https://www.cleanaustraliaservice.com.au/",
+      "contact_url": "https://www.cleanaustraliaservice.com.au/",
+      "phone": "1300 034 788",
+      "coverage": "Sydney; covers Lidcombe, CBD and multiple other suburbs; exact address subject to confirmation.",
+      "source_url": "https://www.cleanaustraliaservice.com.au/",
+      "checked_on": "2026-10-28",
+      "notes": "Residential, apartment, end-of-lease, carpet steam and window cleaning; quotes based on property condition and scope of work. Commercial and residential packages differ; carpet, furniture and specialist stain treatments require separate confirmation of scope and cost."
+    }
+  ]
+}
