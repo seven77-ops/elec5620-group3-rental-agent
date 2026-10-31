@@ -41,14 +41,15 @@ test("calendar lease lengths calculate end dates, preserve explicit custom dates
   await page.getByLabel("Lease duration", { exact: true }).click();
   await page.getByRole("option", { name: "6 months", exact: true }).click();
   await page.getByLabel("Lease start date", { exact: true }).fill("2026-08-31");
+  await page.getByLabel("Lease start date", { exact: true }).press("Tab");
   await expect(page.getByLabel("End date", { exact: true })).toHaveValue(
-    "2027-02-28",
+    "28/02/2027",
   );
   await expect(page.getByLabel("End date", { exact: true })).toBeDisabled();
   await page.getByLabel("Lease duration", { exact: true }).click();
   await page.getByRole("option", { name: "1 year", exact: true }).click();
   await expect(page.getByLabel("End date", { exact: true })).toHaveValue(
-    "2027-08-31",
+    "31/08/2027",
   );
   await page.getByLabel("Lease duration", { exact: true }).click();
   await page.getByRole("option", { name: "Custom dates", exact: true }).click();
@@ -130,6 +131,7 @@ test("chosen addresses populate structured PDF boxes, additional fields and a st
   await page.getByLabel("Lease duration", { exact: true }).click();
   await page.getByRole("option", { name: "6 months", exact: true }).click();
   await page.getByLabel("Lease start date", { exact: true }).fill("2026-08-31");
+  await page.getByLabel("Lease start date", { exact: true }).press("Tab");
   await page.getByText("Signing details (optional)", { exact: true }).click();
   await page
     .getByLabel("Proposed signing date", { exact: true })
@@ -175,7 +177,7 @@ test("chosen addresses populate structured PDF boxes, additional fields and a st
     page.getByLabel("Landlord postcode", { exact: true }),
   ).toHaveValue("2016");
   await expect(page.getByLabel("End date", { exact: true })).toHaveValue(
-    "2027-02-28",
+    "28/02/2027",
   );
 });
 
@@ -239,4 +241,40 @@ test("mobile property search ignores late results and permits explicit manual ad
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
+});
+
+test.describe("English contract dates", () => {
+  test.use({ locale: "zh-CN" });
+  test("date fields and calendar stay English in a Chinese browser locale", async ({
+    page,
+    request,
+  }) => {
+    const { c } = await seed(request);
+    await page.goto(`/cases/${c.case_id}/contract?mode=draft`);
+    for (const name of [
+      "Lease start date",
+      "End date",
+      "First rent payment date",
+    ]) {
+      const input = page.getByLabel(name, { exact: true });
+      await expect(input).toHaveAttribute("placeholder", "DD/MM/YYYY");
+      await expect(input).not.toHaveAttribute("type", "date");
+    }
+    const start = page.getByLabel("Lease start date", { exact: true });
+    await start.click();
+    const calendar = page.locator(".ant-picker-dropdown:visible");
+    await expect(calendar).toBeVisible();
+    await expect(calendar).not.toContainText(/\p{Script=Han}/u);
+    await expect(calendar.getByText("Today", { exact: true })).toBeVisible();
+    await start.fill("31/08/2026");
+    await start.press("Enter");
+    await expect(start).toHaveValue("31/08/2026");
+    await page.getByText("Signing details (optional)", { exact: true }).click();
+    await expect(
+      page.getByLabel("Proposed signing date", { exact: true }),
+    ).toHaveAttribute("placeholder", "DD/MM/YYYY");
+    await start.locator("xpath=ancestor::section[1]").screenshot({
+      path: "/tmp/rental-contract-english-dates.png",
+    });
+  });
 });

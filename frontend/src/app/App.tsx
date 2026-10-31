@@ -241,6 +241,9 @@ export default function App() {
             <span>Rental Assistant</span>
           </div>
           <Space>
+            <Button type="link" size="small" href="/api/v1/rag/product-guide" target="_blank" rel="noreferrer">
+              User guide
+            </Button>
             {current && (
               <Button
                 className="new-case"

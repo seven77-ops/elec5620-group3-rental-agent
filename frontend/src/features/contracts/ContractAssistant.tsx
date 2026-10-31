@@ -1,4 +1,3 @@
-import KnowledgePanel from "../knowledge/KnowledgePanel";
 import { lazy, Suspense } from "react";
 import { Tabs } from "antd";
 import { useSearchParams } from "react-router-dom";
@@ -17,7 +16,7 @@ export default function ContractAssistant() {
       : "draft";
   return (
     <>
-      <PageTitle title="Contract assistant" extra={<KnowledgePanel />} />
+      <PageTitle title="Contract assistant" />
       <Tabs
         activeKey={mode}
         onChange={(key) => setParams({ mode: key })}

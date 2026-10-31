@@ -245,7 +245,7 @@ test("official lease draft requires confirmation, saves versions, reloads and do
     .getByRole("tab", { name: "Upload contract for review", exact: true })
     .click();
   await expect(
-    page.getByText("Review an existing contract directly", { exact: true }),
+    page.getByRole("heading", { name: "Upload your contract", exact: true }),
   ).toBeVisible();
 });
 
@@ -349,7 +349,8 @@ test("saved PDF preview can retry a failed load on mobile without saving another
     name: "Contract preview · v1",
     exact: true,
   });
-  await expect(preview).toContainText("PDF 暂时无法读取");
+  await expect(preview).toContainText("Unable to complete this action");
+  await expect(preview).not.toContainText("PDF 暂时无法读取");
   allowPdf = true;
   await preview
     .getByRole("button", { name: "Reload preview", exact: true })

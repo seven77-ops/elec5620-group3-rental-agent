@@ -137,7 +137,7 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
     const results = page.locator(".commute-results").last();
     await expect(
       results.getByRole("list", { name: "Recommendation reasons" }).first(),
-    ).toContainText("Walking");
+    ).toContainText("Walk ·");
     await expect(results).not.toContainText("Average commute");
     await controls
       .getByRole("button", { name: "Edit commute criteria", exact: true })
@@ -146,7 +146,12 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
       name: "Adjust commute",
       exact: true,
     });
-    await choose(page, commute, "Current travel mode", "Public transport");
+    await choose(
+      page,
+      commute,
+      "Current travel mode",
+      "Public transport (any combination)",
+    );
     await commute
       .getByLabel("Current commute limit", { exact: true })
       .fill("30");
@@ -160,7 +165,7 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
     await expect(controls).toContainText("Public transport ≤30 minutes");
     await expect(
       results.getByRole("list", { name: "Recommendation reasons" }).first(),
-    ).toContainText("Public transport");
+    ).toContainText("Transit ·");
     await expect(results).not.toContainText("Average commute");
     const publicContext = await (await request.get(contextUrl)).json();
     const currentConversation = await (
@@ -232,20 +237,26 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
     await page
       .getByTestId("candidate-next")
       .getByRole("button", {
-        name: "Prepare inspection and enquiry",
+        name: "Contact property agent",
         exact: true,
       })
       .click();
     const drawer = page.getByRole("dialog", {
-      name: "Inspection enquiry checklist",
+      name: "Contact property agent",
       exact: true,
     });
-    await expect(drawer.locator("input, textarea")).toHaveCount(0);
+    await expect(
+      drawer.getByLabel("Agent name (optional)", { exact: true }),
+    ).toBeVisible();
     await expect(
       page.getByRole("button", { name: "Record agent reply", exact: true }),
     ).toHaveCount(0);
-    await drawer
-      .getByRole("button", { name: "Enter lease details", exact: true })
+    await drawer.getByRole("button", { name: "Close", exact: true }).click();
+    await page
+      .getByRole("menuitem", { name: "Contract assistant", exact: true })
+      .click();
+    await page
+      .getByRole("tab", { name: "Generate lease draft", exact: true })
       .click();
     await expect(
       page.getByLabel("Property address", { exact: true }),
@@ -406,6 +417,12 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
     await page
       .getByRole("button", { name: "Upload and review", exact: true })
       .click();
+    await page
+      .getByRole("button", {
+        name: "Compare with the selected property",
+        exact: true,
+      })
+      .click();
     await expect(page.getByTestId("real-contract-comparison")).toContainText(
       address,
     );
@@ -414,6 +431,12 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
     await expect(comparison).toContainText(String(contractRent));
     expect((await state()).reviews).toHaveLength(1);
     await page.reload();
+    await page
+      .getByRole("button", {
+        name: "Compare with the selected property",
+        exact: true,
+      })
+      .click();
     await expect(comparison).toContainText("Confirm pricing basis");
   });
 

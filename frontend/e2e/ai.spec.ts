@@ -80,17 +80,23 @@ test("obsolete AI apply completion preserves a different selected review", async
   const second = (await upload.json()).review;
   expect(second.review_id).not.toBe(first.review_id);
   await page.goto(`/cases/${c.case_id}/contract`);
+  await page
+    .getByRole("button", { name: "AI-assisted check", exact: true })
+    .click();
   const selector = page.getByRole("combobox", {
     name: "Select contract review record",
   });
   await selector.click();
   await page.getByTitle("Contract 1 · v1", { exact: true }).click();
-  await expect(page.locator(".review-status")).toContainText(
-    "Review version v1",
-  );
+  await page
+    .getByRole("button", { name: "AI-assisted check", exact: true })
+    .click();
+  await expect(
+    page.getByRole("region", { name: "Contract review results" }),
+  ).toHaveAttribute("data-review-version", "1");
   await page
     .getByRole("checkbox", {
-      name: "I agree to send this contract text and review information to the configured model for this AI analysis.",
+      name: "I agree to send this contract to the AI service for this check.",
       exact: true,
     })
     .check();
@@ -99,13 +105,13 @@ test("obsolete AI apply completion preserves a different selected review", async
     .click();
   await page
     .getByRole("checkbox", {
-      name: "Select AI field: Contract rent",
+      name: "Use suggestion: Contract rent",
       exact: true,
     })
     .check();
   await page
     .getByRole("checkbox", {
-      name: "I have checked the source for each selected field and confirm applying them to the current review.",
+      name: "I have checked the original text and want to save the selected details.",
       exact: true,
     })
     .check();
@@ -130,7 +136,7 @@ test("obsolete AI apply completion preserves a different selected review", async
     },
   );
   await page
-    .getByRole("button", { name: "Confirm selected fields", exact: true })
+    .getByRole("button", { name: "Save selected details", exact: true })
     .click();
   await serverWritten;
   expect(
@@ -150,11 +156,11 @@ test("obsolete AI apply completion preserves a different selected review", async
     await page.getByTitle("Contract 2 · v1", { exact: true }).click();
     await loadedB;
     await expect(
-      page.getByRole("link", { name: "Download review JSON", exact: true }),
-    ).toHaveAttribute(
-      "href",
-      `/api/v1/contract-reviews/${second.review_id}/export`,
-    );
+      page.getByRole("region", {
+        name: "Contract review results",
+        exact: true,
+      }),
+    ).toHaveAttribute("data-review-id", second.review_id);
     const completed = page.waitForResponse(
       (r) => r.url().endsWith("/apply") && r.request().method() === "POST",
     );
@@ -162,27 +168,27 @@ test("obsolete AI apply completion preserves a different selected review", async
     await completed;
     // The success message is emitted after onApplied has completed.
     await expect(
-      page.getByText("Checked fields applied and a new review version saved.", {
+      page.getByText("Selected details saved and checked again.", {
         exact: true,
       }),
     ).toBeVisible();
     await expect(
-      page.getByRole("link", { name: "Download review JSON", exact: true }),
-    ).toHaveAttribute(
-      "href",
-      `/api/v1/contract-reviews/${second.review_id}/export`,
-    );
+      page.getByRole("region", {
+        name: "Contract review results",
+        exact: true,
+      }),
+    ).toHaveAttribute("data-review-id", second.review_id);
     await expect(
       page.locator(".ant-select").filter({ has: selector }),
     ).toContainText("Contract 2 · v1");
     await expect(
       page.getByRole("heading", {
-        name: "Extracted contract fields",
+        name: "Contract details",
         exact: true,
       }),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "AI contract analysis", exact: true }),
+      page.getByRole("button", { name: "AI-assisted check", exact: true }),
     ).toBeVisible();
   } finally {
     release();
@@ -196,8 +202,11 @@ test("obsolete AI apply completion does not refresh a departed case page", async
   const { c, review } = await contract(request);
   await page.goto(`/cases/${c.case_id}/contract`);
   await page
+    .getByRole("button", { name: "AI-assisted check", exact: true })
+    .click();
+  await page
     .getByRole("checkbox", {
-      name: "I agree to send this contract text and review information to the configured model for this AI analysis.",
+      name: "I agree to send this contract to the AI service for this check.",
       exact: true,
     })
     .check();
@@ -206,13 +215,13 @@ test("obsolete AI apply completion does not refresh a departed case page", async
     .click();
   await page
     .getByRole("checkbox", {
-      name: "Select AI field: Contract rent",
+      name: "Use suggestion: Contract rent",
       exact: true,
     })
     .check();
   await page
     .getByRole("checkbox", {
-      name: "I have checked the source for each selected field and confirm applying them to the current review.",
+      name: "I have checked the original text and want to save the selected details.",
       exact: true,
     })
     .check();
@@ -235,7 +244,7 @@ test("obsolete AI apply completion does not refresh a departed case page", async
     },
   );
   await page
-    .getByRole("button", { name: "Confirm selected fields", exact: true })
+    .getByRole("button", { name: "Save selected details", exact: true })
     .click();
   await serverWritten;
   try {
@@ -244,7 +253,7 @@ test("obsolete AI apply completion does not refresh a departed case page", async
     await page.getByRole("button", { name: "New case", exact: true }).click();
     await expect(page).not.toHaveURL(new RegExp(c.case_id));
     await expect(
-      page.getByRole("heading", { name: "Rental preferences", exact: true }),
+      page.getByRole("heading", { name: "AI rental assistant", exact: true }),
     ).toBeVisible();
     let caseReads = 0;
     page.on("request", (r) => {
@@ -257,7 +266,7 @@ test("obsolete AI apply completion does not refresh a departed case page", async
     release();
     await completed;
     await expect(
-      page.getByText("Checked fields applied and a new review version saved.", {
+      page.getByText("Selected details saved and checked again.", {
         exact: true,
       }),
     ).toBeVisible();
@@ -275,8 +284,11 @@ for (const update of ["newer correction", "same-version questions"] as const) {
     const { c, review } = await contract(request);
     await page.goto(`/cases/${c.case_id}/contract`);
     await page
+      .getByRole("button", { name: "AI-assisted check", exact: true })
+      .click();
+    await page
       .getByRole("checkbox", {
-        name: "I agree to send this contract text and review information to the configured model for this AI analysis.",
+        name: "I agree to send this contract to the AI service for this check.",
         exact: true,
       })
       .check();
@@ -286,11 +298,11 @@ for (const update of ["newer correction", "same-version questions"] as const) {
     const field =
       update === "newer correction" ? "Contract rent" : "Contract address";
     await page
-      .getByRole("checkbox", { name: `Select AI field: ${field}`, exact: true })
+      .getByRole("checkbox", { name: `Use suggestion: ${field}`, exact: true })
       .check();
     await page
       .getByRole("checkbox", {
-        name: "I have checked the source for each selected field and confirm applying them to the current review.",
+        name: "I have checked the original text and want to save the selected details.",
         exact: true,
       })
       .check();
@@ -314,7 +326,7 @@ for (const update of ["newer correction", "same-version questions"] as const) {
       },
     );
     await page
-      .getByRole("button", { name: "Confirm selected fields", exact: true })
+      .getByRole("button", { name: "Save selected details", exact: true })
       .click();
     expect(await serverWritten).toBe(update === "newer correction" ? 2 : 1);
 
@@ -336,8 +348,14 @@ for (const update of ["newer correction", "same-version questions"] as const) {
           r.request().method() === "GET" &&
           r.url().endsWith(`/contract-reviews/${review.review_id}/context`),
       );
+      const manage = page.getByRole("button", {
+        name: "Manage this contract",
+        exact: true,
+      });
+      if ((await manage.getAttribute("aria-expanded")) !== "true")
+        await manage.click();
       await page
-        .getByRole("button", { name: "Load latest review state", exact: true })
+        .getByRole("button", { name: "Refresh review", exact: true })
         .click();
       await Promise.all([
         loaded.then((r) => r.finished()),
@@ -349,11 +367,14 @@ for (const update of ["newer correction", "same-version questions"] as const) {
       await readLatest();
       if (update === "newer correction") {
         await expect(
-          page.getByText("Review version v2", { exact: true }),
-        ).toBeVisible();
+          page.getByRole("region", {
+            name: "Contract review results",
+            exact: true,
+          }),
+        ).toHaveAttribute("data-review-version", "2");
         await page
           .getByRole("button", {
-            name: "Correct extracted fields",
+            name: "Edit contract details",
             exact: true,
           })
           .click();
@@ -362,30 +383,28 @@ for (const update of ["newer correction", "same-version questions"] as const) {
           .fill("510");
         await page
           .getByRole("button", {
-            name: "Save as a new review version",
+            name: "Save changes",
             exact: true,
           })
           .click();
         await expect(
-          page.getByText(
-            "New review version saved. Earlier questions are no longer current.",
-            { exact: true },
-          ),
+          page.getByText("Contract details updated and checked again.", {
+            exact: true,
+          }),
         ).toBeVisible();
         await expect(
-          page.locator(".ant-select").filter({
-            has: page.getByRole("combobox", {
-              name: "Select contract review record",
-            }),
+          page.getByRole("region", {
+            name: "Contract review results",
+            exact: true,
           }),
-        ).toContainText("Contract 1 · v3");
+        ).toHaveAttribute("data-review-version", "3");
       } else {
         await page
           .getByRole("button", { name: "Prepare question list", exact: true })
           .click();
         await expect(
           page.getByRole("heading", {
-            name: "Questions · Not sent",
+            name: "Questions to ask your landlord or agent",
             exact: true,
           }),
         ).toBeVisible();
@@ -409,23 +428,26 @@ for (const update of ["newer correction", "same-version questions"] as const) {
       await expect(
         page.getByText(
           update === "newer correction"
-            ? "Checked fields applied and a new review version saved."
-            : "Selected fields match the existing values. No new version is needed.",
+            ? "Selected details saved and checked again."
+            : "The selected details already match your saved contract.",
           { exact: true },
         ),
       ).toBeVisible();
       await expect.poll(() => pendingGets.size).toBe(0);
       await expect(
-        page.getByText(`Review version v${latest.version}`, { exact: true }),
-      ).toBeVisible();
+        page.getByRole("region", {
+          name: "Contract review results",
+          exact: true,
+        }),
+      ).toHaveAttribute("data-review-version", String(latest.version));
       if (update === "newer correction") {
         await expect(
-          page.getByRole("cell", { name: /Contract\ rent : 510/ }),
+          page.getByRole("cell", { name: /Contract\ rent.*510/ }),
         ).toBeVisible();
       } else {
         await expect(
           page.getByRole("heading", {
-            name: "Questions · Not sent",
+            name: "Questions to ask your landlord or agent",
             exact: true,
           }),
         ).toBeVisible();
@@ -505,12 +527,15 @@ test("contract AI cites original lines and requires user-selected confirmation b
 }) => {
   const { c, review } = await contract(request);
   await page.goto(`/cases/${c.case_id}/contract`);
+  await page
+    .getByRole("button", { name: "AI-assisted check", exact: true })
+    .click();
   await expect(
     page.getByRole("button", { name: "Analyse contract with AI", exact: true }),
   ).toBeDisabled();
   await page
     .getByRole("checkbox", {
-      name: "I agree to send this contract text and review information to the configured model for this AI analysis.",
+      name: "I agree to send this contract to the AI service for this check.",
       exact: true,
     })
     .check();
@@ -518,7 +543,7 @@ test("contract AI cites original lines and requires user-selected confirmation b
     .getByRole("button", { name: "Analyse contract with AI", exact: true })
     .click();
   await expect(
-    page.getByText("AI candidate fields", { exact: true }),
+    page.getByText("Suggested details", { exact: true }),
   ).toBeVisible();
   await expect(
     page
@@ -535,17 +560,17 @@ test("contract AI cites original lines and requires user-selected confirmation b
     ).version,
   ).toBe(1);
   await expect(
-    page.getByRole("button", { name: "Confirm selected fields", exact: true }),
+    page.getByRole("button", { name: "Save selected details", exact: true }),
   ).toBeDisabled();
   await page
     .getByRole("checkbox", {
-      name: "Select AI field: Contract rent",
+      name: "Use suggestion: Contract rent",
       exact: true,
     })
     .check();
   await page
     .getByRole("checkbox", {
-      name: "I have checked the source for each selected field and confirm applying them to the current review.",
+      name: "I have checked the original text and want to save the selected details.",
       exact: true,
     })
     .check();
@@ -554,21 +579,20 @@ test("contract AI cites original lines and requires user-selected confirmation b
     fullPage: true,
   });
   await page
-    .getByRole("button", { name: "Confirm selected fields", exact: true })
+    .getByRole("button", { name: "Save selected details", exact: true })
     .click();
   await expect(
-    page.getByText("Review version v2", { exact: true }),
-  ).toBeVisible();
+    page.getByRole("region", { name: "Contract review results", exact: true }),
+  ).toHaveAttribute("data-review-version", "2");
   await expect(
-    page.getByText(
-      "The review linked to these AI candidates has changed. Historical analysis remains readable. Analyse the current version again.",
-      { exact: true },
-    ),
+    page.getByText("These suggestions are from an earlier review", {
+      exact: true,
+    }),
   ).toBeVisible();
   await page.reload();
   await expect(
-    page.getByText("Review version v2", { exact: true }),
-  ).toBeVisible();
+    page.getByRole("region", { name: "Contract review results", exact: true }),
+  ).toHaveAttribute("data-review-version", "2");
 });
 
 test("AI transport failure keeps rule results and offers original request retry", async ({
@@ -638,8 +662,11 @@ test("contract AI candidate view stays usable at 360px", async ({
   await page.setViewportSize({ width: 360, height: 1000 });
   await page.goto(`/cases/${c.case_id}/contract`);
   await page
+    .getByRole("button", { name: "AI-assisted check", exact: true })
+    .click();
+  await page
     .getByRole("checkbox", {
-      name: "I agree to send this contract text and review information to the configured model for this AI analysis.",
+      name: "I agree to send this contract to the AI service for this check.",
       exact: true,
     })
     .check();
@@ -647,7 +674,7 @@ test("contract AI candidate view stays usable at 360px", async ({
     .getByRole("button", { name: "Analyse contract with AI", exact: true })
     .click();
   await expect(
-    page.getByText("AI candidate fields", { exact: true }),
+    page.getByText("Suggested details", { exact: true }),
   ).toBeVisible();
   expect(
     await page.evaluate(
@@ -667,8 +694,11 @@ test("reading another AI analysis resets selected candidates and user acknowledg
   const { c, review } = await contract(request);
   await page.goto(`/cases/${c.case_id}/contract`);
   await page
+    .getByRole("button", { name: "AI-assisted check", exact: true })
+    .click();
+  await page
     .getByRole("checkbox", {
-      name: "I agree to send this contract text and review information to the configured model for this AI analysis.",
+      name: "I agree to send this contract to the AI service for this check.",
       exact: true,
     })
     .check();
@@ -676,22 +706,22 @@ test("reading another AI analysis resets selected candidates and user acknowledg
     .getByRole("button", { name: "Analyse contract with AI", exact: true })
     .click();
   await expect(
-    page.getByText("AI candidate fields", { exact: true }),
+    page.getByText("Suggested details", { exact: true }),
   ).toBeVisible();
   await page
     .getByRole("checkbox", {
-      name: "Select AI field: Contract rent",
+      name: "Use suggestion: Contract rent",
       exact: true,
     })
     .check();
   await page
     .getByRole("checkbox", {
-      name: "I have checked the source for each selected field and confirm applying them to the current review.",
+      name: "I have checked the original text and want to save the selected details.",
       exact: true,
     })
     .check();
   await expect(
-    page.getByRole("button", { name: "Confirm selected fields", exact: true }),
+    page.getByRole("button", { name: "Save selected details", exact: true }),
   ).toBeEnabled();
   const next = await request.post(
     `/api/v1/contract-reviews/${review.review_id}/ai-analyses`,
@@ -705,14 +735,14 @@ test("reading another AI analysis resets selected candidates and user acknowledg
   );
   expect(next.ok()).toBeTruthy();
   await page
-    .getByRole("button", { name: "Load latest AI analysis", exact: true })
+    .getByRole("button", { name: "Refresh AI suggestions", exact: true })
     .click();
   await expect(
-    page.getByRole("button", { name: "Confirm selected fields", exact: true }),
+    page.getByRole("button", { name: "Save selected details", exact: true }),
   ).toBeDisabled();
   await expect(
     page.getByRole("checkbox", {
-      name: "Select AI field: Contract rent",
+      name: "Use suggestion: Contract rent",
       exact: true,
     }),
   ).not.toBeChecked();

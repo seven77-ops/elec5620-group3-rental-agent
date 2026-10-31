@@ -5,7 +5,6 @@ import type { Review } from "../api/types";
 import {
   EvidenceDrawer,
   Failure,
-  JsonDetails,
   label,
   Status,
   text,
@@ -51,9 +50,9 @@ export default function ReviewHistory({
       <Alert
         type="info"
         title="Historical snapshots are read-only"
-        description="Saved field corrections, human decisions, and generated questions are preserved separately. Historical questions are no longer current."
+        description="See earlier saved reviews and their findings here. Return to the current review before making changes."
       />
-      <Failure error={error} />
+      <Failure error={error} showDetails={false} />
       <Select
         className="full-width"
         aria-label="Select review snapshot"
@@ -61,14 +60,14 @@ export default function ReviewHistory({
         onChange={setChosen}
         options={history.map((h, i) => ({
           value: h.snapshot_id,
-          label: `Record ${i + 1} · Field version v${h.review.version} · ${h.review.status}`,
+          label: `Record ${i + 1} · Version ${h.review.version} · ${h.review.status}`,
         }))}
       />
       {snapshot && (
         <>
           <h3>
             <Status value={snapshot.status} />
-            Field version v{snapshot.version}
+            Version {snapshot.version}
           </h3>
           <Descriptions
             column={1}
@@ -78,21 +77,26 @@ export default function ReviewHistory({
               children: text(f.value),
             }))}
           />
-          <h3>Findings and questions at the time</h3>
-          <JsonDetails
-            value={{
-              findings: snapshot.findings,
-              questions: snapshot.questions,
-            }}
-          />
-          <h3>Version evidence</h3>
-          <JsonDetails
-            value={{
-              snapshot_id: chosen,
-              events: snapshot.events,
-              revisions: snapshot.revisions,
-            }}
-          />
+          <h3>Items to check at the time</h3>
+          {snapshot.findings.length ? (
+            snapshot.findings.map((finding, index) => (
+              <article className="finding" key={index}>
+                <strong>{text(finding.title)}</strong>
+                <p>{text(finding.reason)}</p>
+              </article>
+            ))
+          ) : (
+            <p>No issues were listed in this saved review.</p>
+          )}
+          {Array.isArray(snapshot.questions) &&
+            snapshot.questions.length > 0 && (
+              <>
+                <h3>Questions prepared at the time</h3>
+                {snapshot.questions.map((question, index) => (
+                  <p key={index}>{text(question.text)}</p>
+                ))}
+              </>
+            )}
         </>
       )}
     </EvidenceDrawer>

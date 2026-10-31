@@ -1,4 +1,17 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
+
+async function askInChat(page: Page, caseId: string, question: string) {
+  await page.goto(`/cases/${caseId}/assistant`);
+  await page
+    .getByRole("textbox", { name: "Message to Rental Assistant", exact: true })
+    .fill(question);
+  await page.getByRole("button", { name: "Send message", exact: true }).click();
+  const reply = page.locator(".assistant-message-assistant").last();
+  await expect(
+    reply.getByRole("region", { name: "Knowledge evidence", exact: true }),
+  ).toBeVisible();
+  return reply;
+}
 
 test("Historical multilingual sources-only chat regenerates an English summary without rewriting the conversation", async ({
   page,
@@ -97,46 +110,51 @@ test("Chinese public questions receive English answers before collapsed evidence
   await expect(last.locator(".knowledge-source").first()).toBeVisible();
 });
 
-test("English knowledge sources work without external consent and preserve case data", async ({
+test("public source retrieval still works locally and obsolete modal buttons are absent across work screens", async ({
   page,
   request,
 }) => {
   const before = await (
     await request.post("/api/v1/cases", { data: {} })
   ).json();
-  await page.goto(`/cases/${before.case_id}/contract`);
-  await page
-    .getByRole("button", { name: "Ask rental knowledge", exact: true })
-    .click();
-  const dialog = page.getByRole("dialog", {
-    name: "Rental knowledge",
-    exact: true,
-  });
-  await expect(dialog).toContainText("English official sources");
-  await dialog
-    .getByRole("textbox", { name: "Rental knowledge question" })
-    .fill("How do I request repairs?");
-  await dialog
-    .getByRole("button", { name: "Find sources", exact: true })
-    .click();
-  await expect(
-    dialog.getByRole("region", { name: "Knowledge evidence" }),
-  ).toBeVisible();
-  await expect(dialog).toContainText("Sources only");
-  await dialog.getByText("Read source excerpts", { exact: true }).click();
-  await expect(
-    dialog.getByRole("link", { name: /NSW Government/ }).first(),
-  ).toHaveAttribute("href", /^https:\/\/www\.nsw\.gov\.au\//);
+  const response = await request.post(
+    `/api/v1/cases/${before.case_id}/rag/answers`,
+    {
+      data: {
+        question: "How do I request repairs?",
+        allow_external_ai: false,
+        language: "en",
+      },
+    },
+  );
+  expect(response.ok()).toBeTruthy();
+  const answer = await response.json();
+  expect(answer.status).toBe("sources_only");
+  expect(answer.generation_outcome).toBe("local_only");
+  expect(
+    answer.citations.some((source: { source_url: string }) =>
+      source.source_url.startsWith("https://www.nsw.gov.au/"),
+    ),
+  ).toBeTruthy();
   expect(
     await (await request.get(`/api/v1/cases/${before.case_id}`)).json(),
   ).toEqual(before);
-  await dialog.locator(".ant-modal-footer").getByRole("button", { name: "Close", exact: true }).click();
-  await page
-    .getByRole("menuitem", { name: "Aftercare services", exact: true })
-    .click();
-  await expect(
-    page.getByRole("button", { name: "Ask rental knowledge", exact: true }),
-  ).toBeVisible();
+  for (const [screen, title] of [
+    ["assistant", "AI rental assistant"],
+    ["contract", "Contract assistant"],
+    ["aftercare", "Living and aftercare services"],
+  ]) {
+    await page.goto(`/cases/${before.case_id}/${screen}`);
+    await expect(
+      page.getByRole("heading", { name: title, exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Ask rental knowledge", exact: true }),
+    ).toHaveCount(0);
+    await expect(
+      page.getByRole("dialog", { name: "Rental knowledge", exact: true }),
+    ).toHaveCount(0);
+  }
 });
 
 test("English public knowledge questions in chat show citations without recommending houses", async ({
@@ -145,6 +163,12 @@ test("English public knowledge questions in chat show citations without recommen
 }) => {
   const c = await (await request.post("/api/v1/cases", { data: {} })).json();
   await page.goto(`/cases/${c.case_id}/assistant`);
+  await expect(
+    page.getByRole("heading", { name: "AI rental assistant", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Ask rental knowledge", exact: true }),
+  ).toHaveCount(0);
   await page
     .getByPlaceholder("Describe your rental needs or ask a question…")
     .fill("How do I request repairs?");
@@ -153,102 +177,125 @@ test("English public knowledge questions in chat show citations without recommen
   await expect(
     last.getByRole("region", { name: "Knowledge evidence" }),
   ).toBeVisible();
-  await expect(last).toContainText("English rental sources");
+  await expect(last).not.toContainText("English rental sources");
+  await expect(last).toContainText("Cited answer");
   await expect(last.locator(".housing-card")).toHaveCount(0);
 });
 
-test("An intentional no-answer shows missing facts without claiming an AI outage", async ({
+test("a knowledge question in chat states missing facts without claiming an AI outage", async ({
   page,
   request,
 }) => {
   const c = await (await request.post("/api/v1/cases", { data: {} })).json();
-  await page.goto(`/cases/${c.case_id}/contract`);
-  await page
-    .getByRole("button", { name: "Ask rental knowledge", exact: true })
-    .click();
-  const dialog = page.getByRole("dialog", {
-    name: "Rental knowledge",
-    exact: true,
-  });
-  await dialog
-    .getByRole("textbox", { name: "Rental knowledge question" })
-    .fill("What is my exact rent debt?");
-  await dialog.getByRole("checkbox").check();
-  await dialog
-    .getByRole("button", { name: "Ask with AI", exact: true })
-    .click();
-  await expect(dialog).toContainText("More information needed");
-  await expect(dialog).toContainText(
+  const reply = await askInChat(page, c.case_id, "What is my exact rent debt?");
+  await expect(reply).toContainText("More information needed");
+  await expect(reply).toContainText(
     "Your rent ledger and payment dates are not supplied.",
   );
-  await expect(dialog).not.toContainText("The AI summary was unavailable");
-  await expect(dialog).not.toContainText("The AI summary is unavailable");
-  await expect(dialog).not.toContainText("failed citation checks");
+  await expect(reply).not.toContainText("The AI summary was unavailable");
+  await expect(reply).not.toContainText("The AI summary is unavailable");
+  await expect(reply).not.toContainText("failed citation checks");
+  await expect(page.locator("article.assistant-listing")).toHaveCount(0);
 });
 
-test("The product guide is readable and product questions cite the app guide only", async ({
+test("the product guide stays accessible and product questions are answered with guide citations in chat", async ({
   page,
   request,
 }) => {
   const c = await (await request.post("/api/v1/cases", { data: {} })).json();
-  await page.goto(`/cases/${c.case_id}/assistant`);
-  const guide = page.getByRole("link", { name: "User guide", exact: true });
-  await expect(guide).toHaveAttribute("href", "/api/v1/rag/product-guide");
+  const reply = await askInChat(
+    page,
+    c.case_id,
+    "Do I need to favorite a listing before selecting it?",
+  );
+  await expect(
+    page.getByRole("link", { name: "User guide", exact: true }),
+  ).toHaveAttribute("href", "/api/v1/rag/product-guide");
   const help = await request.get("/api/v1/rag/product-guide");
   expect(help.status()).toBe(200);
   expect(help.headers()["content-type"]).toContain("text/html");
   expect(await help.text()).toContain(
     "Favorites, comparison and direct selection",
   );
-  await page
-    .getByRole("button", { name: "Ask rental knowledge", exact: true })
-    .click();
-  const dialog = page.getByRole("dialog", {
-    name: "Rental knowledge",
-    exact: true,
-  });
-  await dialog
-    .getByRole("textbox", { name: "Rental knowledge question" })
-    .fill("Do I need to favorite a listing before selecting it?");
-  await dialog
-    .getByRole("button", { name: "Find sources", exact: true })
-    .click();
-  await expect(dialog).toContainText("Product usage guide");
-  await dialog.getByText("Read source excerpts", { exact: true }).click();
+  await expect(reply).toContainText("Product usage guide");
+  await reply.getByText("Read source excerpts", { exact: true }).click();
   await expect(
-    dialog.getByRole("link", { name: /Rental assistant guide/ }).first(),
+    reply.getByRole("link", { name: /Rental assistant guide/ }).first(),
   ).toHaveAttribute("href", /^\/api\/v1\/rag\/product-guide\?version=/);
-  await expect(dialog.locator(".knowledge-source")).not.toContainText([
+  await expect(reply.locator(".knowledge-source")).not.toContainText([
     "NSW Government",
   ]);
-  await expect(dialog).toContainText("two parallel choices");
+  await expect(reply).toContainText("two parallel choices");
 });
 
-test("University advice carries its own source label", async ({
+test("university advice in chat retains its own source label", async ({
   page,
   request,
 }) => {
   const c = await (await request.post("/api/v1/cases", { data: {} })).json();
-  await page.goto(`/cases/${c.case_id}/contract`);
-  await page
-    .getByRole("button", { name: "Ask rental knowledge", exact: true })
-    .click();
-  const dialog = page.getByRole("dialog", {
-    name: "Rental knowledge",
-    exact: true,
-  });
-  await dialog
-    .getByRole("textbox", { name: "Rental knowledge question" })
-    .fill(
-      "How can I avoid rental scams when finding accommodation near university?",
-    );
-  await dialog
-    .getByRole("button", { name: "Find sources", exact: true })
-    .click();
-  await dialog.getByText("Read source excerpts", { exact: true }).click();
-  const student = dialog
+  const reply = await askInChat(
+    page,
+    c.case_id,
+    "How can I avoid rental scams when finding accommodation near university?",
+  );
+  await reply.getByText("Read source excerpts", { exact: true }).click();
+  const student = reply
     .locator(".knowledge-source")
     .filter({ has: page.getByRole("link", { name: /University of Sydney/ }) });
   await expect(student.first()).toBeVisible();
   await expect(student.first()).not.toContainText("NSW Government");
+});
+
+test("knowledge questions interrupt housing intake without changing preferences and remain after reload", async ({
+  page,
+  request,
+}) => {
+  const c = await (await request.post("/api/v1/cases", { data: {} })).json();
+  await page.goto(`/cases/${c.case_id}/assistant`);
+  const input = page.getByRole("textbox", {
+    name: "Message to Rental Assistant",
+    exact: true,
+  });
+  await input.fill("I want to live in Burwood with a weekly budget of 1200");
+  await input.press("Enter");
+  await expect(
+    page.locator(".assistant-message-assistant").last(),
+  ).toContainText("whole property");
+  const root = `/api/v1/cases/${c.case_id}/assistant/conversations`;
+  const list = await (await request.get(root)).json();
+  const url = `${root}/${list.items[0].conversation_id}`;
+  const before = await (await request.get(url)).json();
+  await input.fill("How do I request repairs?");
+  await input.press("Enter");
+  await expect(
+    page
+      .locator(".assistant-message-assistant")
+      .last()
+      .getByRole("region", { name: "Knowledge evidence" }),
+  ).toBeVisible();
+  const after = await (await request.get(url)).json();
+  expect(after.rental_brief).toEqual(before.rental_brief);
+  expect(after.last_search_filters).toEqual(before.last_search_filters);
+  expect(
+    (await (await request.get(`/api/v1/cases/${c.case_id}`)).json()).draft,
+  ).toEqual(c.draft);
+  expect(after.messages.at(-1).listings).toHaveLength(0);
+  await page.reload();
+  await expect(
+    page
+      .locator(".assistant-message-assistant")
+      .last()
+      .getByRole("region", { name: "Knowledge evidence" }),
+  ).toBeVisible();
+  await input.fill("Whole property");
+  await input.press("Enter");
+  await expect(
+    page.locator(".assistant-message-assistant").last(),
+  ).toContainText("bedrooms");
+  const resumed = await (await request.get(url)).json();
+  expect(resumed.rental_brief).toMatchObject({
+    suburb: "Burwood",
+    budget_amount: 1200,
+    budget_scope: "whole_property",
+  });
 });

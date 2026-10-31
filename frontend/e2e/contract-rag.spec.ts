@@ -62,7 +62,7 @@ test("contract search needs separate consent and shows local page/section citati
   await expect(enable).toBeDisabled();
   await panel
     .getByRole("checkbox", {
-      name: "I agree to create a local private search index for the current version of this contract.",
+      name: "I agree to enable private search for this contract on this device.",
       exact: true,
     })
     .check();
@@ -83,8 +83,17 @@ test("contract search needs separate consent and shows local page/section citati
   await expect(evidence).toContainText("Uploaded contract");
   await expect(evidence).toContainText("Page 1");
   await expect(evidence).toContainText("fair wear and tear");
+  if (
+    (await panel
+      .getByRole("button", { name: "Search permissions", exact: true })
+      .getAttribute("aria-expanded")) !== "true"
+  ) {
+    await panel
+      .getByRole("button", { name: "Search permissions", exact: true })
+      .click();
+  }
   await panel
-    .getByRole("button", { name: "Delete contract search index", exact: true })
+    .getByRole("button", { name: "Turn off contract search", exact: true })
     .click();
   await expect(
     panel.getByRole("region", { name: "Knowledge evidence" }),
@@ -108,7 +117,7 @@ test("forgetting contract search during a question ignores a late private answer
   });
   await panel
     .getByRole("checkbox", {
-      name: "I agree to create a local private search index for the current version of this contract.",
+      name: "I agree to enable private search for this contract on this device.",
       exact: true,
     })
     .check();
@@ -142,11 +151,26 @@ test("forgetting contract search during a question ignores a late private answer
   await panel
     .getByRole("button", { name: "Find contract text", exact: true })
     .click();
-  await expect(
-    panel.getByRole("button", { name: "Delete contract search index", exact: true }),
-  ).toBeEnabled();
   await panel
-    .getByRole("button", { name: "Delete contract search index", exact: true })
+    .getByRole("button", { name: "Search permissions", exact: true })
+    .click();
+  await expect(
+    panel.getByRole("button", {
+      name: "Turn off contract search",
+      exact: true,
+    }),
+  ).toBeEnabled();
+  if (
+    (await panel
+      .getByRole("button", { name: "Search permissions", exact: true })
+      .getAttribute("aria-expanded")) !== "true"
+  ) {
+    await panel
+      .getByRole("button", { name: "Search permissions", exact: true })
+      .click();
+  }
+  await panel
+    .getByRole("button", { name: "Turn off contract search", exact: true })
     .click();
   await expect(panel).toContainText("Revoked");
   const late = page.waitForResponse(

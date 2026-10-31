@@ -15,9 +15,11 @@ import { userError } from "./errorPresentation";
 export function Failure({
   error,
   retry,
+  showDetails = true,
 }: {
   error: unknown;
   retry?: () => void;
+  showDetails?: boolean;
 }) {
   if (!error) return null;
   const e = error instanceof Error ? error : new Error(String(error));
@@ -39,31 +41,33 @@ export function Failure({
               <Button onClick={retry}>Retry original action</Button>
             </div>
           )}
-          <Collapse
-            ghost
-            size="small"
-            items={[
-              {
-                key: "details",
-                label: "View details",
-                children: (
-                  <JsonDetails
-                    value={{
-                      message: e.message,
-                      ...(e instanceof ApiError
-                        ? {
-                            code: e.code,
-                            request_id: e.requestId,
-                            fields: e.fields,
-                            status: e.status,
-                          }
-                        : {}),
-                    }}
-                  />
-                ),
-              },
-            ]}
-          />
+          {showDetails && (
+            <Collapse
+              ghost
+              size="small"
+              items={[
+                {
+                  key: "details",
+                  label: "View details",
+                  children: (
+                    <JsonDetails
+                      value={{
+                        message: e.message,
+                        ...(e instanceof ApiError
+                          ? {
+                              code: e.code,
+                              request_id: e.requestId,
+                              fields: e.fields,
+                              status: e.status,
+                            }
+                          : {}),
+                      }}
+                    />
+                  ),
+                },
+              ]}
+            />
+          )}
         </>
       }
     />

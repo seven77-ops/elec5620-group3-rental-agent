@@ -1,5 +1,6 @@
 """Public product documentation must remain local, reviewed and source-bound."""
 import hashlib
+import json
 import importlib
 import tempfile
 import unittest
@@ -46,7 +47,7 @@ class ProductGuideTests(unittest.TestCase):
             'language': 'en',
             'jurisdiction': 'PRODUCT',
             'scope': 'public',
-            'checked_at': '2026-10-30',
+            'checked_at': '2026-10-31',
             'published_at': None,
             'document_version': hashlib.sha256(text.encode('utf-8')).hexdigest(),
             'capture_method': 'Local reviewed product documentation',
@@ -97,7 +98,7 @@ class ProductGuideTests(unittest.TestCase):
         self.assertIn('p', parsed.tags)
         self.assertIn('li', parsed.tags)
         self.assertIn(document['title'], rendered)
-        self.assertIn('2026-10-30', rendered)
+        self.assertIn('2026-10-31', rendered)
         self.assertNotIn('script', parsed.tags)
         self.assertNotIn('iframe', parsed.tags)
         self.assertNotIn('a', parsed.tags)
@@ -129,10 +130,10 @@ class ProductGuideTests(unittest.TestCase):
             ('Commute estimates', 'frontend/src/features/real-data/UsydCommute.tsx', 'Google Maps'),
             ('Lifestyle preferences and sources', 'frontend/src/features/assistant/AreaAdvice.tsx', 'Find an area that fits your lifestyle'),
             ('Favorites, comparison and direct selection', 'frontend/src/features/favorites/ListingActions.tsx', 'Select and follow up'),
-            ('Confirm selection and prepare an inspection', 'frontend/src/features/candidate/CandidateFollowup.tsx', 'Inspection enquiry checklist'),
+            ('Confirm selection and prepare an inspection', 'frontend/src/features/candidate/CandidateFollowup.tsx', 'Contact property agent'),
             ('Lease draft form, AI assistance and PDF preview', 'frontend/src/features/contracts/LeaseDraft.tsx', 'Confirm and save unsigned draft'),
             ('Upload a contract for review', 'frontend/src/features/ContractUpload.tsx', 'Upload and review'),
-            ('Private contract search and separate consent', 'frontend/src/features/knowledge/ContractKnowledgePanel.tsx', 'Delete contract search index'),
+            ('Private contract search and separate consent', 'frontend/src/features/knowledge/ContractKnowledgePanel.tsx', 'Turn off contract search'),
             ('Repair emails and follow-up records', 'frontend/src/features/living/RepairComposer.tsx', 'Polish email with AI'),
             ('Utilities, moving and cleaning providers', 'frontend/src/features/living/Services.tsx', 'view provider details'),
             ('Move-out plans and bond follow-up', 'frontend/src/features/AftercareBond.tsx', 'Prepare factual draft'),
@@ -145,6 +146,14 @@ class ProductGuideTests(unittest.TestCase):
                            'does not send the email', 'does not submit a booking', 'not a legal-validity guarantee'):
             with self.subTest(capability=capability):
                 self.assertIn(capability, text.casefold())
+
+    def test_current_commute_help_matches_ui_and_canonical_snapshot(self):
+        document = self.guide.product_document()
+        for removed_control in ('Public transport route details', 'View journey details', '“Route details”'):
+            with self.subTest(control=removed_control):
+                self.assertNotIn(removed_control, document['text'])
+        snapshot = json.loads((GUIDE.parent / 'documents.json').read_text(encoding='utf-8'))
+        self.assertEqual([row for row in snapshot if row.get('document_id') == 'product-guide'], [document])
 
 
 if __name__ == '__main__':

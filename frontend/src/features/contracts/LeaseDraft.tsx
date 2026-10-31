@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import dayjs, { type Dayjs } from "dayjs";
 import {
   Alert,
   App,
@@ -6,6 +7,7 @@ import {
   Checkbox,
   Collapse,
   Descriptions,
+  DatePicker,
   Form,
   Input,
   InputNumber,
@@ -385,8 +387,10 @@ export default function LeaseDraft() {
       );
     else if (key.endsWith("_date"))
       input = (
-        <Input
-          type="date"
+        <DatePicker
+          format={["DD/MM/YYYY", "YYYY-MM-DD"]}
+          placeholder="DD/MM/YYYY"
+          style={{ width: "100%" }}
           disabled={
             key === "end_date" &&
             (fields?.lease_type === "periodic" ||
@@ -409,15 +413,23 @@ export default function LeaseDraft() {
         name={key}
         label={leaseLabels[key]}
         required={required.includes(key)}
+        trigger={key.endsWith("_date") ? "onCalendarChange" : "onChange"}
+        validateTrigger={
+          key.endsWith("_date") ? "onCalendarChange" : "onChange"
+        }
         getValueProps={
           key === "lease_term_months"
             ? (value) => ({ value: value == null ? "custom" : String(value) })
-            : undefined
+            : key.endsWith("_date")
+              ? (value) => ({ value: value ? dayjs(value) : null })
+              : undefined
         }
         getValueFromEvent={
           key === "lease_term_months"
             ? (value) => (value === "custom" ? null : Number(value))
-            : undefined
+            : key.endsWith("_date")
+              ? (value: Dayjs | null) => value?.format("YYYY-MM-DD") ?? null
+              : undefined
         }
         dependencies={
           key === "end_date" ? ["start_date", "lease_type"] : undefined

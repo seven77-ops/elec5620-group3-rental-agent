@@ -106,6 +106,46 @@ export default function ContractKnowledgePanel({
       if (epoch.current === token) setAnswer(next);
     });
   };
+  const permissionControls = (
+    <Space orientation="vertical" size="middle">
+      <Checkbox
+        checked={localConsent}
+        disabled={!active || busy || !status}
+        onChange={(e) => setLocalConsent(e.target.checked)}
+      >
+        I agree to enable private search for this contract on this device.
+      </Checkbox>
+      <Checkbox
+        checked={cloudConsent}
+        disabled={!active || busy || !status}
+        onChange={(e) => setCloudConsent(e.target.checked)}
+      >
+        I also allow the AI service to process this contract for search and
+        answers.
+      </Checkbox>
+      <Space wrap>
+        <Button
+          aria-label={
+            status?.status === "ready"
+              ? "Update search permissions"
+              : "Enable contract search"
+          }
+          disabled={!active || busy || !status || !localConsent}
+          loading={busy}
+          onClick={enable}
+        >
+          {status?.status === "ready"
+            ? "Update search permissions"
+            : "Enable contract search"}
+        </Button>
+        {status?.status === "ready" && (
+          <Button danger onClick={forget}>
+            Turn off contract search
+          </Button>
+        )}
+      </Space>
+    </Space>
+  );
   return (
     <Collapse
       defaultActiveKey={expanded ? ["contract-knowledge"] : []}
@@ -116,10 +156,8 @@ export default function ContractKnowledgePanel({
           children: (
             <section aria-label="Private contract Q&A">
               <p>
-                Search your uploaded contract by clause and page. Answers
-                distinguish contract text from NSW general guidance. Give
-                separate consent for local retrieval to ask about cleaning,
-                bond, repairs, or other clauses.
+                Ask about rent, bond, cleaning or other clauses. Check the
+                quoted contract text alongside each answer.
               </p>
               {!active && (
                 <Alert
@@ -135,15 +173,14 @@ export default function ContractKnowledgePanel({
                       : ((
                           {
                             not_enabled: "Not enabled",
-                            indexing: "Indexing",
-                            needs_reindex: "Reindex required",
+                            indexing: "Preparing search",
+                            needs_reindex: "Refresh needed",
                             revoked: "Revoked",
-                            failed: "Indexing failed",
+                            failed: "Search could not be prepared",
                           } as Record<string, string>
                         )[status.status] ?? status.status)}
                   </Tag>
-                  {status.source_name} · Review v{status.review_version} ·{" "}
-                  {status.page_count} pages
+                  {status.source_name} · {status.page_count} pages
                 </p>
               )}
               <Space
@@ -151,60 +188,20 @@ export default function ContractKnowledgePanel({
                 size="middle"
                 style={{ width: "100%" }}
               >
-                <Checkbox
-                  checked={localConsent}
-                  disabled={!active || busy || !status}
-                  onChange={(e) => setLocalConsent(e.target.checked)}
-                >
-                  I agree to create a local private search index for the current
-                  version of this contract.
-                </Checkbox>
-                <Checkbox
-                  checked={cloudConsent}
-                  disabled={!active || busy || !status}
-                  onChange={(e) => setCloudConsent(e.target.checked)}
-                >
-                  I separately agree that the configured AI service may process
-                  this contract to create a semantic index and process relevant
-                  source excerpts for ranking and answers.
-                </Checkbox>
-                <Space wrap>
-                  <Button
-                    aria-label={
-                      status?.status === "ready"
-                        ? "Rebuild contract search"
-                        : "Enable contract search"
-                    }
-                    disabled={!active || busy || !status || !localConsent}
-                    loading={busy}
-                    onClick={enable}
-                  >
-                    {status?.status === "ready"
-                      ? "Rebuild contract search"
-                      : "Enable contract search"}
-                  </Button>
-                  <Button
-                    disabled={busy || !active}
-                    onClick={() => {
-                      const token = epoch.current;
-                      setAnswer(null);
-                      void perform(async () => {
-                        const next = await getContractKnowledge(
-                          caseId,
-                          reviewId,
-                        );
-                        if (epoch.current === token) setStatus(next);
-                      });
-                    }}
-                  >
-                    Refresh contract search status
-                  </Button>
-                  {status?.status === "ready" && (
-                    <Button danger onClick={forget}>
-                      Delete contract search index
-                    </Button>
-                  )}
-                </Space>
+                {status?.status === "ready" ? (
+                  <Collapse
+                    className="full-width"
+                    items={[
+                      {
+                        key: "permissions",
+                        label: "Search permissions",
+                        children: permissionControls,
+                      },
+                    ]}
+                  />
+                ) : (
+                  permissionControls
+                )}
                 {!!status?.warnings.length && (
                   <Alert type="info" title={status.warnings.join(" ")} />
                 )}
@@ -245,12 +242,8 @@ export default function ContractKnowledgePanel({
                 >
                   {useAi ? "Explain contract with AI" : "Find contract text"}
                 </Button>
-                {busy && (
-                  <p role="status">
-                    Processing this contract and checking source permissions…
-                  </p>
-                )}
-                <Failure error={error} />
+                {busy && <p role="status">Finding relevant contract text…</p>}
+                <Failure error={error} showDetails={false} />
                 {answer && <KnowledgeEvidence answer={answer} showAnswer />}
               </Space>
             </section>

@@ -29,7 +29,13 @@ async function seed(request: APIRequestContext) {
   return { c, e };
 }
 async function navigate(page: Page, name: string) {
-  await page.getByRole("menuitem", { name: new RegExp(name) }).click();
+  await page
+    .getByRole("menuitem", {
+      name: new RegExp(
+        name === "Contract review" ? "Contract assistant" : name,
+      ),
+    })
+    .click();
   await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
 }
 
@@ -100,7 +106,7 @@ test("tenant completes confirmed profile, true recommendation, selection, contra
   await expect(
     page.getByText("fixture:DEMO-006#rent_amount", { exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Close", exact: true }).click();
+  await page.keyboard.press("Escape");
   await page.getByRole("tab", { name: "To confirm 9", exact: true }).click();
   await expect(page.getByText("Unscored", { exact: true })).toHaveCount(9);
   await expect(
@@ -159,7 +165,7 @@ test("tenant completes confirmed profile, true recommendation, selection, contra
   ).toBeVisible();
   await expect(
     page.getByText(
-      "This review has no findings. No additional questions will be generated.",
+      "No specific issues were found by the available checks. Review the contract details below.",
       { exact: true },
     ),
   ).toBeVisible();
@@ -171,7 +177,7 @@ test("tenant completes confirmed profile, true recommendation, selection, contra
     .first()
     .click();
   await expect(page.locator("blockquote")).toContainText("Address:");
-  await page.getByRole("button", { name: "Close", exact: true }).click();
+  await page.keyboard.press("Escape");
   const caseId = page.url().split("/")[4];
   const c = await (await request.get(`/api/v1/cases/${caseId}`)).json();
   const selection = await (
@@ -242,7 +248,7 @@ test("edited preferences require reconfirmation and zero-match remains a valid r
   await expect(
     page.getByText("Preference changes", { exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Close", exact: true }).click();
+  await page.keyboard.press("Escape");
   const saved = await (await request.get(`/api/v1/cases/${c.case_id}`)).json();
   expect(saved.confirmations).toHaveLength(2);
   expect(saved.evaluations).toHaveLength(2);
@@ -552,7 +558,7 @@ test("contract conflict requires operator, prepares unsent questions and retains
     .getByRole("button", { name: "Upload and review", exact: true })
     .click();
   await expect(
-    page.getByText("Awaiting local demo operator", { exact: true }),
+    page.getByText("Waiting for a reviewer", { exact: true }),
   ).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Prepare question list", exact: true }),
@@ -564,6 +570,9 @@ test("contract conflict requires operator, prepares unsent questions and retains
     .getByLabel("Local operator key", { exact: true })
     .fill("qa-local-key");
   await page
+    .getByRole("button", { name: "Load review records", exact: true })
+    .click();
+  await page
     .getByLabel("Human review notes")
     .fill("Synthetic rent difference reviewed; demonstration decision only.");
   await page
@@ -573,7 +582,7 @@ test("contract conflict requires operator, prepares unsent questions and retains
     .getByRole("button", { name: "Record human decision", exact: true })
     .click();
   await expect(
-    page.getByText("This case has no contracts awaiting human review.", {
+    page.getByText("No items awaiting human action.", {
       exact: true,
     }),
   ).toBeVisible();
@@ -582,7 +591,7 @@ test("contract conflict requires operator, prepares unsent questions and retains
     .getByRole("button", { name: "Prepare question list", exact: true })
     .click();
   await expect(
-    page.getByText("Questions · Not sent", { exact: true }),
+    page.getByText("Questions to ask your landlord or agent", { exact: true }),
   ).toBeVisible();
   const saved = await (await request.get(`/api/v1/cases/${c.case_id}`)).json();
   const reviewId = saved.reviews.at(-1).review_id;
@@ -592,45 +601,48 @@ test("contract conflict requires operator, prepares unsent questions and retains
   expect(packet.handoff_status).toBe("prepared_not_sent");
   expect(packet.questions.length).toBeGreaterThan(0);
   await page
-    .getByRole("button", { name: "Correct extracted fields", exact: true })
+    .getByRole("button", { name: "Edit contract details", exact: true })
     .click();
   await page
     .getByRole("spinbutton", { name: "Contract rent (AUD)" })
     .fill("500");
-  await page
-    .getByRole("button", { name: "Save as a new review version", exact: true })
-    .click();
+  await page.getByRole("button", { name: "Save changes", exact: true }).click();
   await expect(
-    page.getByText("Review version v2", { exact: true }),
-  ).toBeVisible();
+    page.getByRole("region", { name: "Contract review results", exact: true }),
+  ).toHaveAttribute("data-review-version", "2");
   await expect(
     page.getByText(
-      "This review has no findings. No additional questions will be generated.",
+      "No specific issues were found by the available checks. Review the contract details below.",
       { exact: true },
     ),
   ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Manage this contract", exact: true })
+    .click();
   await page
     .getByRole("button", { name: "View review history", exact: true })
     .click();
   await expect(
     page.getByText("Historical snapshots are read-only", { exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Close", exact: true }).click();
+  await page
+    .getByRole("dialog", { name: "Review history", exact: true })
+    .getByRole("button", { name: "Close", exact: true })
+    .click();
   await page
     .getByRole("button", {
-      name: "Revoke processing consent for this review",
+      name: "Stop processing this contract",
       exact: true,
     })
     .click();
   await expect(
-    page.getByText(
-      "Review processing consent is inactive or the context has changed",
-      { exact: true },
-    ),
+    page.getByText("Permission to process this contract is inactive", {
+      exact: true,
+    }),
   ).toBeVisible();
   await page.reload();
   await expect(
-    page.getByRole("button", { name: "Correct extracted fields", exact: true }),
+    page.getByRole("button", { name: "Edit contract details", exact: true }),
   ).toBeDisabled();
   await expect(page.locator("input[type=file]")).toHaveCount(0);
 });

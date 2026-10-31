@@ -18,13 +18,13 @@ export default function KnowledgeEvidence({
   return (
     <section className="knowledge-evidence" aria-label="Knowledge evidence">
       <div className="knowledge-evidence-heading">
-        <strong>
-          {answer.scope === "product"
-            ? "Product usage guide"
-            : answer.scope === "contract"
-              ? "Contract and reference sources"
-              : "English rental sources"}
-        </strong>
+        {(answer.scope === "product" || answer.scope === "contract") && (
+          <strong>
+            {answer.scope === "product"
+              ? "Product usage guide"
+              : "Contract and reference sources"}
+          </strong>
+        )}
         <Tag color={answer.status === "answered" ? "blue" : "default"}>
           {answer.status === "answered"
             ? "Cited answer"

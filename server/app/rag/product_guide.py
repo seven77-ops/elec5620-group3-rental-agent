@@ -10,7 +10,7 @@ import re
 
 
 _GUIDE_PATH = Path(__file__).resolve().parents[3] / 'data' / 'knowledge' / 'en' / 'product-guide.md'
-_CHECKED_AT = '2026-10-30'
+_CHECKED_AT = '2026-10-31'
 
 
 def product_document() -> dict:

@@ -1,3 +1,4 @@
+import { contractValue, reviewSummary } from "./contracts/reviewPresentation";
 import ContractKnowledgePanel from "./knowledge/ContractKnowledgePanel";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -13,13 +14,12 @@ import {
   Select,
   Space,
 } from "antd";
-import { useCase, currentConfirmation } from "../app/context";
-import { api, downloadUrl, post } from "../api/client";
+import { useCase } from "../app/context";
+import { api, post } from "../api/client";
 import type { Dict, Evidence, Review } from "../api/types";
 import {
   EvidenceDrawer,
   Failure,
-  JsonDetails,
   label,
   PageTitle,
   Status,
@@ -61,9 +61,6 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
   const [historyOpen, setHistoryOpen] = useState(false);
   const consentChanged = () => setConsentRevision((v) => v + 1);
   const summary = current.reviews.find((r) => r.review_id === ref);
-  const currentSelection =
-    current.selection?.profile_version ===
-    currentConfirmation(current)?.version;
   useEffect(() => {
     if (!ref) return;
     let valid = true;
@@ -116,9 +113,7 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
         setReview(r);
         setCorrect(false);
         await refresh();
-        message.success(
-          "New review version saved. Earlier questions are no longer current.",
-        );
+        message.success("Contract details updated and checked again.");
       });
     } catch {
       /* Inline form validation. */
@@ -126,29 +121,45 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
   };
   const findings = review?.findings ?? [];
   const questionList = Array.isArray(review?.questions) ? review.questions : [];
+  const overview = review ? reviewSummary(review) : null;
+  const editDetails = () => {
+    if (!review) return;
+    correctionForm.setFieldsValue(
+      Object.fromEntries(
+        ["address", "rent_amount", "bond", "start_date", "end_date"].map(
+          (key) => [key, review.fields[key]?.value],
+        ),
+      ),
+    );
+    setCorrect(true);
+  };
+  const upload = (
+    <ContractUpload
+      revision={consentRevision}
+      onConsentChange={consentChanged}
+      onReview={(next) => {
+        setReview(next);
+        setSelectedReview(next.review_id);
+        consentChanged();
+      }}
+    />
+  );
   return (
     <>
       {!embedded && (
         <PageTitle
           title="Contract review"
-          description="Upload a contract to review key clauses, items to check, and source evidence. Cross-check against a selected property when available."
-          extra={
-            current.reviews.length > 0 ? (
-              <Select
-                aria-label="Select contract review record"
-                value={ref}
-                onChange={setSelectedReview}
-                options={current.reviews.map((r, i) => ({
-                  value: r.review_id,
-                  label: `Contract ${i + 1} · v${r.version}`,
-                }))}
-              />
-            ) : undefined
-          }
+          description="Upload your contract, check the important details, and see what needs attention."
         />
       )}
-      {embedded && current.reviews.length > 0 && (
+      <Failure
+        error={action.error || error}
+        retry={error ? consentChanged : action.retry}
+        showDetails={false}
+      />
+      {current.reviews.length > 1 && (
         <Select
+          className="contract-review-picker"
           aria-label="Select contract review record"
           value={ref}
           onChange={setSelectedReview}
@@ -158,320 +169,275 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
           }))}
         />
       )}
-      <Failure
-        error={action.error || error}
-        retry={error ? consentChanged : action.retry}
-      />
-      {current.selection ? (
-        <section className="selection-strip">
-          <div>
-            <span>Selected property</span>
-            <strong>
-              {current.selection.data_mode === "real_listings"
-                ? text(current.selection.listing_snapshot.address)
-                : current.selection.listing_id}
-            </strong>
-            <p>
-              {current.selection.data_mode === "real_listings"
-                ? `Listing AUD ${text(current.selection.listing_snapshot.weekly_rent)}/week · Pricing basis to be confirmed`
-                : text(current.selection.listing_snapshot.address)}
-            </p>
-          </div>
-          <Button onClick={() => go("recommendations")}>
-            View selection evidence
-          </Button>
-        </section>
-      ) : (
-        <Alert
-          type="info"
-          showIcon
-          title="Upload an existing contract directly"
-          description="No rental needs or property selection is required. Give separate consent to review the contract, then continue asking about its clauses here."
-        />
-      )}
-      {current.selection && !currentSelection && (
-        <Alert
-          type="warning"
-          showIcon
-          title="The selected property uses an earlier preference version"
-          description="Reassess and select a property using your current confirmed preferences. Historical contract results are preserved."
-        />
-      )}
-      {current.selection?.data_mode === "real_listings" && (
-        <Alert
-          type="info"
-          showIcon
-          title="Review an existing contract directly"
-          description="The property remains an unverified snapshot. Contract fields are extracted locally and compared separately with the property and supplementary records."
-        />
-      )}
-      <ContractUpload
-        revision={consentRevision}
-        onConsentChange={consentChanged}
-        onReview={(r) => {
-          setReview(r);
-          setSelectedReview(r.review_id);
-          consentChanged();
-        }}
-      />
-      {review && (
-        <>
+      {!review && upload}
+      {review && overview && (
+        <section
+          className="contract-review-results"
+          aria-label="Contract review results"
+          data-review-id={review.review_id}
+          data-review-version={review.version}
+        >
+          <section className="panel contract-overview review-status">
+            <div>
+              <p className="muted contract-filename">
+                {review.document.source_name}
+              </p>
+              <Status value={review.status} />
+              <h2>{overview.title}</h2>
+              <p>{overview.description}</p>
+            </div>
+            <Button
+              onClick={editDetails}
+              disabled={!reviewConsent?.consent_active}
+            >
+              Edit contract details
+            </Button>
+          </section>
+          {!reviewConsent?.consent_active && (
+            <Alert
+              type="warning"
+              showIcon
+              title="Permission to process this contract is inactive"
+              description="You can still read your results. To make changes, upload the contract again and renew your permission."
+            />
+          )}
+          <section
+            className="panel contract-findings"
+            aria-label="Contract issues"
+          >
+            <h2>Items to check</h2>
+            {findings.length === 0 ? (
+              <p className="muted">
+                No specific issues were found by the available checks. Review
+                the contract details below.
+              </p>
+            ) : (
+              findings.map((finding, i) => (
+                <article className="finding" key={i}>
+                  <strong>{text(finding.title)}</strong>
+                  <p>{text(finding.reason)}</p>
+                  {Array.isArray(finding.evidence) && (
+                    <Space wrap>
+                      {(finding.evidence as Dict[]).map((e, j) => (
+                        <Button
+                          type="link"
+                          size="small"
+                          key={j}
+                          onClick={() => setSource(e as Evidence)}
+                        >
+                          View source {j + 1}
+                        </Button>
+                      ))}
+                    </Space>
+                  )}
+                  {typeof finding.rule_url === "string" &&
+                    /^https:\/\//.test(finding.rule_url) && (
+                      <p>
+                        <a
+                          href={finding.rule_url}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Read official guidance
+                        </a>
+                      </p>
+                    )}
+                </article>
+              ))
+            )}
+            {review.status === "Awaiting Human Review" && (
+              <Alert
+                type="warning"
+                showIcon
+                title="Waiting for a reviewer"
+                description="These issues have been referred for human review. You can read the evidence and check the details while you wait."
+              />
+            )}
+            {findings.length > 0 && (
+              <div className="consent-actions">
+                <Button
+                  disabled={
+                    !reviewConsent?.consent_active ||
+                    !["Reviewed", "Questions Ready"].includes(review.status)
+                  }
+                  onClick={questions}
+                  loading={action.busy}
+                >
+                  Prepare question list
+                </Button>
+              </div>
+            )}
+            {questionList.length > 0 && (
+              <div className="contract-questions">
+                <h3>Questions to ask your landlord or agent</h3>
+                <p className="muted">These questions have not been sent.</p>
+                {questionList.map((q, i) => (
+                  <p key={i}>{text(q.text)}</p>
+                ))}
+                <Button
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(
+                        questionList.map((q) => text(q.text)).join("\n\n"),
+                      );
+                      message.success("Questions copied.");
+                    } catch {
+                      message.error(
+                        "Could not copy the questions. Select the text and copy it manually.",
+                      );
+                    }
+                  }}
+                >
+                  Copy questions
+                </Button>
+              </div>
+            )}
+          </section>
+          <section className="panel" aria-label="Contract details">
+            <div className="contract-section-heading">
+              <h2>Contract details</h2>
+              <Button
+                type="link"
+                disabled={!reviewConsent?.consent_active}
+                onClick={editDetails}
+              >
+                Edit details
+              </Button>
+            </div>
+            <Descriptions
+              column={1}
+              size="small"
+              items={[
+                "address",
+                "landlord",
+                "tenant",
+                "rent_amount",
+                "bond",
+                "start_date",
+                "end_date",
+                ...(review.fields.signed_date?.value ? ["signed_date"] : []),
+              ].map((key) => ({
+                key,
+                label: label(key),
+                children: (
+                  <div className="field-value">
+                    <span>{contractValue(review, key)}</span>
+                    {review.fields[key]?.evidence && (
+                      <Button
+                        type="link"
+                        size="small"
+                        onClick={() => setSource(review.fields[key].evidence!)}
+                      >
+                        View source text
+                      </Button>
+                    )}
+                  </div>
+                ),
+              }))}
+            />
+          </section>
+          {reviewConsent?.real_context && (
+            <Collapse
+              items={[
+                {
+                  key: "comparison",
+                  label: "Compare with the selected property",
+                  children: (
+                    <ContractComparison context={reviewConsent.real_context} />
+                  ),
+                },
+              ]}
+            />
+          )}
           <ContractKnowledgePanel
             caseId={current.case_id}
             reviewId={review.review_id}
             reviewVersion={review.version}
             active={Boolean(reviewConsent?.consent_active)}
           />
-          <ContractAi
-            key={`${review.review_id}:${review.version}:${Boolean(reviewConsent?.consent_active)}`}
-            review={review}
-            active={Boolean(reviewConsent?.consent_active)}
-            onApplied={async (next) => {
-              // Apply can finish after selecting another review or leaving this
-              // page. Only the current owner may update its view or refresh.
-              if (
-                !mounted.current ||
-                selectedContext.current.caseId !== current.case_id ||
-                selectedContext.current.reviewId !== next.review_id
-              )
-                return;
-              // A reload or another saved action may have replaced this exact
-              // source object, including changes that keep the same version.
-              setReview((previous) => (previous === review ? next : previous));
-              await refresh();
-            }}
-          />
-          <section className="review-status">
-            <div>
-              <Status value={review.status} />
-              <strong>Review version v{review.version}</strong>
-              <p>
-                {review.status_reason ??
-                  "Check the contract against extracted fields, sources, and findings. Review completion does not approve signing."}
-              </p>
-            </div>
-            <Space wrap>
-              <Button onClick={() => setHistoryOpen(true)}>
-                View review history
-              </Button>
-              <Button onClick={consentChanged}>Load latest review state</Button>
-              <Button
-                disabled={!reviewConsent?.consent_active}
-                onClick={() => {
-                  correctionForm.setFieldsValue(
-                    Object.fromEntries(
-                      Object.entries(review.fields)
-                        .filter(([key]) =>
-                          [
-                            "address",
-                            "rent_amount",
-                            "bond",
-                            "start_date",
-                            "end_date",
-                          ].includes(key),
-                        )
-                        .map(([key, f]) => [key, f.value]),
-                    ),
-                  );
-                  setCorrect(true);
-                }}
-              >
-                Correct extracted fields
-              </Button>
-              <a
-                href={downloadUrl(
-                  `/contract-reviews/${review.review_id}/export`,
-                )}
-              >
-                Download review JSON
-              </a>
-            </Space>
-          </section>
-          {!reviewConsent?.consent_active && (
-            <Alert
-              type="warning"
-              showIcon
-              title="Review processing consent is inactive or the context has changed"
-              description="Historical results remain readable. Further analysis and edits are paused. To continue, check the processing scope, give consent again, and submit the contract."
-            />
-          )}
-          {reviewConsent?.consent_active && (
-            <div className="consent-actions">
-              <Button
-                disabled={action.busy}
-                onClick={() => {
-                  const consentId = reviewConsent.consent_id;
-                  void action.run(async () => {
-                    await post(`/cases/${current.case_id}/contract-consents`, {
-                      confirmed: false,
-                      consent_id: consentId,
-                    });
-                    consentChanged();
-                  });
-                }}
-              >
-                Revoke processing consent for this review
-              </Button>
-            </div>
-          )}
-          {reviewConsent?.real_context && (
-            <ContractComparison context={reviewConsent.real_context} />
-          )}
-          <div className="contract-result">
-            <section className="panel">
-              <h2>Extracted contract fields</h2>
-              <Descriptions
-                column={1}
-                size="small"
-                items={Object.entries(review.fields).map(([key, field]) => ({
-                  key,
-                  label: label(key),
-                  children: (
-                    <div className="field-value">
-                      <span>{text(field.value)}</span>
-                      {field.evidence && (
-                        <Button
-                          type="link"
-                          size="small"
-                          onClick={() => setSource(field.evidence!)}
-                        >
-                          View source text
-                        </Button>
-                      )}
-                    </div>
-                  ),
-                }))}
-              />
-            </section>
-            <section className="panel">
-              <h2>Findings and tasks</h2>
-              {findings.length === 0 ? (
-                <p className="muted">
-                  This review has no findings. No additional questions will be
-                  generated.
-                </p>
-              ) : (
-                findings.map((finding, i) => (
-                  <article className="finding" key={i}>
-                    <Space>
-                      <Status
-                        value={
-                          String(finding.severity) === "high"
-                            ? "Awaiting Human Review"
-                            : String(finding.severity)
-                        }
-                      />
-                      <strong>{text(finding.title)}</strong>
-                    </Space>
-                    <p>{text(finding.reason)}</p>
-                    {Array.isArray(finding.evidence) && (
-                      <Space wrap>
-                        {(finding.evidence as Dict[]).map((e, j) => (
-                          <Button
-                            type="link"
-                            size="small"
-                            key={j}
-                            onClick={() => setSource(e as Evidence)}
-                          >
-                            Evidence {j + 1}
-                          </Button>
-                        ))}
-                      </Space>
-                    )}
-                    {typeof finding.rule_url === "string" &&
-                      /^https:\/\//.test(finding.rule_url) && (
-                        <p>
-                          <a
-                            href={finding.rule_url}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            View cited rule
-                          </a>{" "}
-                          · {text(finding.rule_version)}
-                        </p>
-                      )}
-                  </article>
-                ))
-              )}
-              {review.status === "Awaiting Human Review" && (
-                <Alert
-                  type="warning"
-                  showIcon
-                  title="Awaiting local demo operator"
-                  description="Tenants cannot release high-risk findings. Question generation remains unavailable until a human decision."
-                />
-              )}
-              <div className="consent-actions">
-                <Button
-                  disabled={
-                    !reviewConsent?.consent_active ||
-                    !["Reviewed", "Questions Ready"].includes(review.status) ||
-                    findings.length === 0
-                  }
-                  onClick={questions}
-                  loading={action.busy}
-                  aria-label="Prepare question list"
-                >
-                  Prepare question list
-                </Button>
-              </div>
-              {questionList.length > 0 && (
-                <>
-                  <h3>Questions · Not sent</h3>
-                  <a
-                    href={downloadUrl(
-                      `/contract-reviews/${review.review_id}/questions/export`,
-                    )}
-                  >
-                    Download questions
-                  </a>
-                  {questionList.map((q, i) => (
-                    <div className="detail-row" key={i}>
-                      <p>{text(q.text)}</p>
-                      <small>
-                        Finding {text(q.finding_id)} · Review version{" "}
-                        {text(q.review_version)}
-                      </small>
-                    </div>
-                  ))}
-                </>
-              )}
-            </section>
-          </div>
           <Collapse
             items={[
               {
-                key: "trace",
-                label: "Review references and version history",
+                key: "ai",
+                label: "AI-assisted check",
                 children: (
-                  <JsonDetails
-                    value={{
-                      review_id: review.review_id,
-                      version: review.version,
-                      document: review.document,
-                      intake: review.intake,
-                      revisions: review.revisions,
-                      events: review.events,
+                  <ContractAi
+                    key={`${review.review_id}:${review.version}:${Boolean(reviewConsent?.consent_active)}`}
+                    review={review}
+                    active={Boolean(reviewConsent?.consent_active)}
+                    onApplied={async (next) => {
+                      if (
+                        !mounted.current ||
+                        selectedContext.current.caseId !== current.case_id ||
+                        selectedContext.current.reviewId !== next.review_id
+                      )
+                        return;
+                      setReview((previous) =>
+                        previous === review ? next : previous,
+                      );
+                      await refresh();
                     }}
                   />
                 ),
               },
             ]}
           />
+          <Collapse
+            items={[
+              {
+                key: "manage",
+                label: "Manage this contract",
+                children: (
+                  <>
+                    <Space wrap className="contract-management-actions">
+                      <Button onClick={() => setHistoryOpen(true)}>
+                        View review history
+                      </Button>
+                      <Button onClick={consentChanged}>Refresh review</Button>
+                      {reviewConsent?.consent_active && (
+                        <Button
+                          disabled={action.busy}
+                          onClick={() => {
+                            const consentId = reviewConsent.consent_id;
+                            void action.run(async () => {
+                              await post(
+                                `/cases/${current.case_id}/contract-consents`,
+                                { confirmed: false, consent_id: consentId },
+                              );
+                              consentChanged();
+                            });
+                          }}
+                        >
+                          Stop processing this contract
+                        </Button>
+                      )}
+                    </Space>
+                    <Collapse
+                      items={[
+                        {
+                          key: "upload",
+                          label: "Upload another contract",
+                          children: upload,
+                        },
+                      ]}
+                    />
+                  </>
+                ),
+              },
+            ]}
+          />
           <div className="next-action compact">
             <div>
-              <h2>Continue to aftercare services</h2>
+              <h2>Ready for the next step?</h2>
               <p>
-                Complete and confirm lease details first. Contract review
-                results serve only as candidate facts.
+                Confirm your tenancy details to start using aftercare services.
               </p>
             </div>
             <Button onClick={() => go("aftercare")}>
               Confirm lease details
             </Button>
           </div>
-        </>
+        </section>
       )}
       {review && (
         <ReviewHistory
@@ -488,29 +454,27 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
         {source && (
           <>
             <p className="muted">
-              {source.source_name ?? source.source_ref} · Page{" "}
-              {source.page ?? "—"} · Line {source.line ?? "—"}
+              {source.source_name ?? "Contract"}
+              {source.page ? ` · Page ${source.page}` : ""}
             </p>
             <blockquote className="source-quote">
-              {source.quote ??
-                "This reference has no locatable quotation. Check the full source."}
+              {source.quote ?? "Check the original document for this detail."}
             </blockquote>
-            <JsonDetails value={source} />
           </>
         )}
       </EvidenceDrawer>
       <Modal
         open={correct}
-        title="Correct extracted fields"
-        okText="Save as a new review version"
+        title="Edit contract details"
+        okText="Save changes"
         cancelText="Cancel"
         onCancel={() => setCorrect(false)}
         onOk={saveCorrection}
         confirmLoading={action.busy}
       >
         <p>
-          Only correct fields extracted incorrectly. Changes trigger a new
-          review and invalidate earlier questions.
+          Correct details that were read incorrectly. Saving will run the checks
+          again; it does not change your original document.
         </p>
         <Form form={correctionForm} layout="vertical">
           <Form.Item

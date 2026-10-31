@@ -63,7 +63,7 @@ test("chat uploads an existing contract and shows review and source Q&A without 
   await expect(page.getByRole("dialog", { name: "Contract source evidence", exact: true })).toBeVisible();
   await page.keyboard.press("Escape");
   const panel = widget.getByRole("region", { name: "Private contract Q&A", exact: true });
-  await panel.getByRole("checkbox", { name: "I agree to create a local private search index for the current version of this contract.", exact: true }).check();
+  await panel.getByRole("checkbox", { name: "I agree to enable private search for this contract on this device.", exact: true }).check();
   await panel.getByRole("button", { name: "Enable contract search", exact: true }).click();
   await expect(panel).toContainText("Contract search ready");
   await panel.getByRole("textbox", { name: "Contract question", exact: true }).fill("合同清洁条款怎么写？");

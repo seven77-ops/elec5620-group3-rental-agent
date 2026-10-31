@@ -290,9 +290,9 @@ Does this contract allow me to keep a cat? Show me the clause that answers this.
 
 ### C05 — Remove private search permission / 撤销私有检索权限
 
-**Action test:** Choose **Delete contract search index**. Try C02 again without re-enabling search.
+**Action test:** Open **Search permissions** and choose **Turn off contract search**. Try C02 again without re-enabling search.
 
-**中文说明：** 点击 **Delete contract search index（删除合同检索索引）**。不重新启用检索，再尝试 C02。
+**中文说明：** 打开 **Search permissions（检索权限）**，点击 **Turn off contract search（关闭合同检索）**。不重新启用检索，再尝试 C02。
 
 **Check:** The private search index is no longer usable until the required consent/indexing flow is completed again. The assistant does not present an old private answer as a fresh search. Previously saved review records may still exist.
 

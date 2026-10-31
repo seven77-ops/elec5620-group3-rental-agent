@@ -1,6 +1,6 @@
 # Rental assistant user guide
 
-This guide explains the reviewed rental assistant interface. The guide was checked against the implemented product on 30 October 2026. Most navigation and action labels are currently Chinese; the English explanations below include those labels where helpful. Available AI assistance depends on the configured services.
+This guide explains the reviewed rental assistant interface. The guide was checked against the implemented product on 31 October 2026. The interface and generated explanations use English. Original document quotations and supplied names retain their original text. Available AI assistance depends on the configured services.
 
 This is product help. For tenancy rights, obligations and legal deadlines, use the separately cited official guidance and check its source. A property advertisement, an estimate, a saved choice and an unsigned draft each describe different stages of your search.
 
@@ -10,7 +10,7 @@ Choose “New case” (New case) to start a rental workspace. Demonstration conf
 
 Open “AI rental assistant” (AI rental assistant). Describe your budget, whether it is per week or another period, whether it applies to a whole property, room or person, your household size, required bedrooms, bathrooms and parking, preferred areas and commute. You can start in English or Chinese. Avoid treating a monthly or per-person budget as a whole-property weekly advertisement price without checking the basis.
 
-“New conversation” (New conversation) starts another conversation within the current case. You can return to saved conversations. A new conversation and a new case are different: use a new case when you need a separate rental workspace.
+Continue in the same conversation as you move from housing requirements to recommendations, contracts and aftercare. Refreshing the page restores your saved conversation. Use “New case” when you need a separate rental workspace.
 
 The chat can show requirement proposals, listings, comparisons, area sources and links to the relevant work screens. Review a proposed change and use its confirmation action before relying on it as saved case information. A chat response alone does not confirm a property selection or save a signed agreement.
 
@@ -26,9 +26,17 @@ Open “Listing details” (Property details) for photos where available, advert
 
 ## Commute estimates
 
+Commute filtering is optional. If you have chosen a suburb such as Burwood, basic housing intake can continue without asking for a commute time or mode. If you are open to any suburb, after the basic housing details the assistant offers “Add commute filter” and “Skip commute filter”. These buttons prepare a reply in the chat box; send it to confirm your choice. Skipping keeps the search free of commute restrictions. Saving the revised rental needs confirms any removal of a previously saved commute condition. You can add a commute filter later in chat or “My rental needs”.
+
 Current rental discovery focuses on the University of Sydney Camperdown / Darlington main campus, with Fisher Library used as the displayed reference point. Choose a supported mode such as public transport, walking or cycling and a maximum one-way duration. Discovery uses no fixed arrival time; it does not require you to invent a class start time to compare properties.
 
-Read the displayed approximate duration or estimated range for your selected mode. A range is a planning reference, not a guaranteed daily journey. Transport conditions and available route evidence can differ across properties. When commute information is missing, the card says that the reference is pending rather than proving the property meets your limit.
+Choose “Public transport (any combination)” for transit, or Driving, Cycling or Walking. Public transport may use one transit mode or several: for example, walking to a train, transferring to a bus, then walking to campus. Older saved train, metro or bus preferences mean that the journey includes that mode; they do not require an exclusive single-mode trip.
+
+Property details show Public transport, Driving, Cycling and eligible Walking references as compact cards in one grid. Each card shows an approximate duration or estimated range and a Google Maps link for that travel mode. The public transport card retains the valid recorded route selected for the current mode and transfer limit. Use Google Maps to check current services, stops and transfers. Detailed itinerary and segment panels are no longer part of this screen. The catalogue's “Commute to USYD” figure is a comparison reference based on available travel options. Check the individual mode cards in property details and confirm your journey in Google Maps. Filtering continues to use the selected travel mode, duration ceiling and transfer limits.
+
+When only a neighbourhood estimate is available, the page shows its estimated range without inventing services, stops or transfers. A maximum commute requirement is checked against the upper bound of that range. Public transport directions in Google Maps can show different current services from the recorded reference.
+
+Read the displayed approximate duration or estimated range for your selected mode. A range is a planning reference, not a guaranteed daily journey. Transport conditions and available route evidence can differ across properties. When commute information is missing, the card says “Check route” rather than proving the property meets your limit.
 
 In the property details, “Google Maps” opens directions for the selected mode so you can check the journey independently. TfNSW and OpenStreetMap / FOSSGIS source references appear with the commute details. For a trip you actually intend to take, check the current route, stops and service information before travelling.
 
@@ -57,7 +65,11 @@ A favorite is not the current follow-up selection. The “Current follow-up prop
 
 Confirmed selection records the property to follow up and opens the next steps. It does not book an inspection, submit a rental application or sign a tenancy. If the requirements change and the selection is marked historical, select again under the current requirements before continuing the contract workflow.
 
-Open “Prepare inspection and enquiry” (Prepare an inspection and questions) for the “Inspection enquiry checklist” inspection question checklist. You can download the checklist and open the original advertisement. It helps you ask about:
+Open “Contact property agent” for the selected property. Use “Open listing & contact property agent” to visit the original advertisement and arrange an inspection with the advertiser. The app does not submit a booking.
+
+In “Prepare an enquiry”, optionally enter the agent name, your preferred viewing time and other questions, then choose “Prepare enquiry”. This uses a local template and requires no AI API. Edit the subject and message, then use “Copy message”. Enter one agent email address to enable “Open email app”; check and send the draft yourself. The app does not send the email. Draft text stays while this screen is mounted, but is not saved after a refresh or when you change the selected property. No personal profile is required.
+
+Expand “Inspection checklist” to read or download the questions. It helps you ask about:
 
 - Whether the property is still available and when an inspection is possible.
 - Actual rent, payment period and whether pricing is for the whole property, room or person.
@@ -66,7 +78,7 @@ Open “Prepare inspection and enquiry” (Prepare an inspection and questions) 
 - Which bedrooms, bathrooms and parking spaces are included.
 - Application documents, the proposed contract and landlord or agent details.
 
-Contact the advertiser yourself and record the verified contract information in the contract screen. This checklist is a preparation aid; the screen does not provide an inspection booking or an agent-reply form. From here you can choose “Generate lease draft” (Generate lease draft) or “Review an existing contract” (Review an existing contract).
+Contact the advertiser yourself and record the verified contract information in the contract screen. This checklist is a preparation aid; the screen does not provide an inspection booking or an agent-reply form. In chat, the selected property address and “Contact property agent” appear beside “Current housing criteria”. Close the contact drawer and use “Contract assistant” in the sidebar, then choose “Generate lease draft” or “Upload contract for review”.
 
 ## Lease draft form, AI assistance and PDF preview
 
@@ -86,7 +98,7 @@ Use “Review an existing contract” to work on a contract supplied to you. You
 
 The upload control accepts TXT, DOCX and PDF up to 2,000,000 bytes. The selection-bound real-listing workflow supports text PDFs up to 30 pages; standalone and scanned PDFs support up to 10 pages. The upload control displays the applicable limit. Scanned documents depend on local OCR support.
 
-The review first extracts fields locally. Standalone review does not infer or create a selected property. A selection-bound review additionally compares the property and recorded information. In chat, the summary shows extracted fields, findings and original evidence; the full contract page provides correction and history controls. Inspect the result and original text, including missing, uncertain or conflicting fields; correct extracted information through the available review controls after checking the source. Optional AI analysis has its own consent. Review history lets you revisit saved review versions.
+The review first extracts fields locally. Standalone review does not infer or create a selected property. A selection-bound review additionally compares the property and recorded information. In chat, the summary shows extracted fields, findings and original evidence; the full contract page provides correction and history controls. The review starts with a summary, Items to check and Contract details. Use View source text to check a value against the original, or Edit contract details to correct something that was read incorrectly. Open AI-assisted check for optional AI suggestions; only verified suggestions are shown and you choose and confirm which details to save. AI failure does not replace the saved review. Manage this contract contains review history, refresh, Stop processing this contract and Upload another contract.
 
 “Revoke consent” (Revoke consent) withdraws permission for subsequent contract processing. This action should not be treated as deleting every previously saved case or review record. If you need private contract search as well, use its separate controls described below.
 
@@ -94,10 +106,10 @@ The review first extracts fields locally. Standalone review does not infer or cr
 
 Expand “Ask more about this contract” (Ask about this contract) on the selected uploaded-contract review to search its clauses and pages. The original contract-processing permission must remain active. This contract's wording is kept separate from public product help and general NSW guidance.
 
-- Check “I agree to create a local private search index for the current version of this contract.” and choose “Enable contract search” (Enable contract search). Rebuilding search uses the selected review version.
-- The separate cloud checkbox allows the configured AI services to process the contract for embeddings and relevant excerpts for reranking and answers. Leave it unchecked for local search.
+- Check “I agree to enable private search for this contract on this device.” and choose “Enable contract search” (Enable contract search). Search uses the selected review version. Once enabled, Search permissions lets you update processing permission or turn search off.
+- The separate checkbox “I also allow the AI service to process this contract for search and answers.” permits cloud processing. Leave it unchecked for local search.
 - Enter a question and use “Find contract text” (Find contract sources) for source excerpts. “Use AI for this question and relevant contract excerpts” is an additional per-question choice, available only when cloud processing is permitted.
-- Use “Delete contract search index” (Forget contract search) to withdraw the contract-search permission and remove its search index. After changes to a review, reload and check the version before asking further questions.
+- Open Search permissions and use “Turn off contract search” to withdraw contract-search permission and remove its search index. After changes to a review, reload and check the version before asking further questions.
 
 Contract upload consent, local search consent, cloud search consent and per-question AI use are independent choices. A contract clause describes the uploaded contract's wording; it does not by itself establish the applicable law. Use the public official guidance separately when checking a legal question.
 
@@ -135,6 +147,8 @@ For bond follow-up, establish the record and supply a bond reference or linked d
 
 ## Read sources and handle changes
 
-“Ask rental knowledge” searches public knowledge separately from private contract search. “Find sources” can show relevant source excerpts without choosing the optional AI consent. If you allow the question and relevant public excerpts to be sent to the configured AI services, read the returned citations and any stated uncertainty. Public product documentation explains controls; official guidance supplies tenancy information.
+Ask general rental questions or questions about using the product directly in “AI rental assistant”. For example, ask “How do I request repairs?” Relevant public documents are retrieved automatically, and the answer and citations appear in the conversation. Open “Read source excerpts” to inspect the supporting passages and check any stated uncertainty. You can ask a knowledge question while recording housing requirements and then continue the same conversation. Public product documentation explains controls; official guidance supplies tenancy information.
+
+Public knowledge is separate from uploaded private contracts. To ask about a particular contract, open its review and enable the relevant document search and AI processing permissions. A general rental question does not enable access to a private contract.
 
 Saved data and current form input can differ. If you see a stale-version warning or a failed-save message, use the offered reload or retry action, compare the latest information with your retained input and confirm again. A visible proposed value or an unsaved preview is not proof that a write completed. “Case progress” (Case progress) helps you revisit the recorded stages.

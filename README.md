@@ -2,6 +2,8 @@
 
 An English rental assistant integrating the group's four agents through a React/TypeScript frontend and a local FastAPI service. The current team trial is **`codex/group-trial-20261022` / draft PR #7**. Do not merge into `main` yet.
 
+Read the [31 October functional update](docs/frontend/2026-10-31-trial-update.md) for optional commute filtering, the compact weighted display, contact enquiries and the revised contract/knowledge flow. Earlier release notes retain their original stage.
+
 Read the [30 October trial handoff](docs/frontend/2026-10-30-trial-update.md) for installation, optional model configuration, current verification and known limits. The [English manual test prompts](docs/frontend/english-manual-test-questions.md) provide a reproducible checklist; they describe expected behaviour, not completed team acceptance.
 
 ## Run locally

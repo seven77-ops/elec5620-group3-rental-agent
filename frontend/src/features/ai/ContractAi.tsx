@@ -1,11 +1,10 @@
-import { Alert, App, Button, Checkbox, Space, Tag } from "antd";
+import { Alert, App, Button, Checkbox, Space } from "antd";
 import { useEffect, useState } from "react";
 import { aiPost, useAiResource, type AiAnalysis } from "../../api/ai";
 import { newRequestId } from "../../api/client";
 import type { Review } from "../../api/types";
 import { Failure, label, text } from "../../components/Common";
 import { useAction } from "../../components/useAction";
-import AiCallDetails, { AiSetup } from "./AiCallDetails";
 export default function ContractAi({
   review,
   active,
@@ -62,12 +61,15 @@ export default function ContractAi({
       await onApplied(result.review);
       message.success(
         result.review.version > previousVersion
-          ? "Checked fields applied and a new review version saved."
-          : "Selected fields match the existing values. No new version is needed.",
+          ? "Selected details saved and checked again."
+          : "The selected details already match your saved contract.",
       );
     });
   };
-  const candidates = record?.result?.candidates ?? [];
+  const candidates = (record?.result?.candidates ?? []).filter(
+    (candidate) =>
+      candidate.field && candidate.valid && candidate.value !== null,
+  );
   const stale =
     record &&
     (record.binding.review_version !== review.version ||
@@ -76,25 +78,35 @@ export default function ContractAi({
         record.status !== "failed" &&
         candidates.some((c) => c.valid)));
   return (
-    <section className="panel ai-panel" aria-label="AI contract analysis">
-      <div className="ai-title">
-        <h2>AI contract analysis</h2>
-        <span className="muted">
-          Candidate extraction, source quotations, and difference explanations
-        </span>
-      </div>
+    <section
+      className="ai-panel contract-ai-check"
+      aria-label="AI contract analysis"
+    >
+      <h2>Check details with AI</h2>
       <p>
-        AI helps extract rent, address, and lease dates. Check each candidate
-        value. Confirming applies them and updates the review.
+        Use AI for a second look at the details read from your contract. Review
+        any suggestions before saving.
       </p>
-      <AiSetup config={config} />
+      {!config ? (
+        <p className="muted" role="status">
+          Checking availability…
+        </p>
+      ) : (
+        !config.configured && (
+          <Alert
+            type="info"
+            showIcon
+            title="AI checking is currently unavailable"
+            description="You can still read your review and edit the contract details yourself."
+          />
+        )
+      )}
       <Checkbox
         checked={consent}
         disabled={busy || !active}
-        onChange={(e) => setConsent(e.target.checked)}
+        onChange={(event) => setConsent(event.target.checked)}
       >
-        I agree to send this contract text and review information to the
-        configured model for this AI analysis.
+        I agree to send this contract to the AI service for this check.
       </Checkbox>
       <Space wrap>
         <Button
@@ -104,179 +116,157 @@ export default function ContractAi({
           }
           loading={action.busy}
           onClick={generate}
-          aria-label="Analyse contract with AI"
         >
           Analyse contract with AI
         </Button>
-        <Button disabled={busy} onClick={reload}>
-          Load latest AI analysis
-        </Button>
+        {record && (
+          <Button disabled={busy} onClick={reload}>
+            Refresh AI suggestions
+          </Button>
+        )}
       </Space>
       <Failure
         error={action.error || loadError}
         retry={
           loadError ? reload : consent && active ? action.retry : undefined
         }
+        showDetails={false}
       />
       <Failure
         error={applyAction.error}
         retry={active && confirmed ? applyAction.retry : undefined}
+        showDetails={false}
       />
       {!active && (
         <p className="muted">
-          Separate contract consent is inactive or the selected property has
-          changed. AI analysis and field application are paused.
+          Permission to process this contract is inactive. Your saved results
+          remain available to read.
         </p>
       )}
       {record && (
         <>
-          {record.error && (
+          {(record.error || record.status === "failed") && (
             <Alert
               showIcon
               type="warning"
-              title={record.error.message}
-              description={`Status: ${record.status} · ${record.error.code}`}
+              title="AI could not confirm any changes"
+              description="Your saved review is unchanged. You can edit the contract details yourself or try the AI check again."
             />
           )}
           {stale && (
             <Alert
               showIcon
-              type="warning"
-              title="The review linked to these AI candidates has changed. Historical analysis remains readable. Analyse the current version again."
+              type="info"
+              title="These suggestions are from an earlier review"
+              description="Run AI analysis again before using them. Your saved contract details are shown in the review above."
             />
           )}
-          {record.result && (
+          {candidates.length > 0 && record.status !== "failed" && (
             <>
-              <h3>AI candidate fields</h3>
+              <h3>Suggested details</h3>
               <p className="muted">
-                Analysis for review v{record.binding.review_version}. Unknown
-                fields or fields that failed evidence validation remain
-                unconfirmed.
+                Compare each suggestion with the quoted contract text. Only
+                selected and confirmed details will be saved.
               </p>
               <div className="ai-candidates">
-                {candidates.map((candidate, i) => {
-                  const field = candidate.field;
-                  const usable = Boolean(
-                    field && candidate.valid && candidate.value !== null,
-                  );
+                {candidates.map((candidate, index) => {
+                  const field = candidate.field!;
                   return (
-                    <article className="ai-candidate" key={`${field}:${i}`}>
-                      <div className="ai-candidate-heading">
-                        <strong>
-                          {field ? label(field) : "Unknown field"}
-                        </strong>
-                        <Tag color={usable ? "cyan" : "default"}>
-                          {usable
-                            ? "Source validation passed"
-                            : "To be confirmed"}
-                        </Tag>
-                      </div>
+                    <article className="ai-candidate" key={`${field}:${index}`}>
+                      <strong>{label(field)}</strong>
                       <p className="ai-candidate-value">
-                        {candidate.value === null
-                          ? "Uncertain"
-                          : text(candidate.value)}
+                        {text(candidate.value)}
                       </p>
                       {candidate.evidence && (
                         <>
                           <p className="muted">
-                            {candidate.evidence.source_name} · Page{" "}
-                            {candidate.evidence.page} · Source line{" "}
-                            {candidate.evidence.line} line
+                            {candidate.evidence.source_name}
+                            {candidate.evidence.page
+                              ? ` · Page ${candidate.evidence.page}`
+                              : ""}
                           </p>
                           <blockquote className="ai-quote">
                             {candidate.evidence.quote}
                           </blockquote>
                         </>
                       )}
-                      {!usable && (
-                        <p className="muted">
-                          {candidate.reason === "unknown"
-                            ? "The model could not determine this. Human review is needed."
-                            : (candidate.reason ?? "No verifiable candidates.")}
-                        </p>
-                      )}
-                      {usable && field && (
-                        <Checkbox
-                          aria-label={`Select AI field: ${label(field)}`}
-                          checked={selected.includes(field)}
-                          disabled={busy || !active || !record.can_apply}
-                          onChange={(e) => {
-                            setSelected((list) =>
-                              e.target.checked
-                                ? [...list, field]
-                                : list.filter((x) => x !== field),
-                            );
-                            setConfirmed(false);
-                            applyAction.clear();
-                          }}
-                        >
-                          Apply this field
-                        </Checkbox>
-                      )}
+                      <Checkbox
+                        aria-label={`Use suggestion: ${label(field)}`}
+                        checked={selected.includes(field)}
+                        disabled={
+                          busy || !active || !record.can_apply || Boolean(stale)
+                        }
+                        onChange={(event) => {
+                          setSelected((list) =>
+                            event.target.checked
+                              ? [...list, field]
+                              : list.filter((item) => item !== field),
+                          );
+                          setConfirmed(false);
+                          applyAction.clear();
+                        }}
+                      >
+                        Use this detail
+                      </Checkbox>
                     </article>
                   );
                 })}
               </div>
-              <h3>Rule checks preview using candidate values</h3>
-              <p className="muted">
-                This is an assisted preview. The saved version remains the
-                official review state. Human review is handled through the
-                operator workflow.
-              </p>
-              {(record.result.preview_findings ?? []).length === 0 ? (
-                <p>
-                  The current preview has no findings. No additional risk
-                  explanation is generated.
-                </p>
-              ) : (
-                record.result.preview_findings?.map((finding) => (
-                  <article className="ai-finding" key={finding.id}>
-                    <strong>
-                      {finding.id} · {text(finding.title)}
-                    </strong>
-                    <p>{finding.reason}</p>
-                    {record.result?.explanations
-                      ?.filter((e) => e.finding_id === finding.id)
-                      .map((e) => (
-                        <p key={e.finding_id}>AI explanation: {e.text}</p>
-                      ))}
-                  </article>
-                ))
-              )}
-              {record.result.explanation_status === "failed" && (
-                <Alert
-                  type="warning"
-                  title="Risk explanation could not be completed. Validated candidates and original rule checks are preserved."
-                />
+              {(record.result?.preview_findings ?? []).length > 0 && (
+                <>
+                  <h3>What these suggestions would change</h3>
+                  {record.result?.preview_findings?.map((finding) => (
+                    <article className="ai-finding" key={finding.id}>
+                      <strong>{finding.title}</strong>
+                      <p>{finding.reason}</p>
+                      {record.result?.explanations
+                        ?.filter((item) => item.finding_id === finding.id)
+                        .map((item) => (
+                          <p key={item.finding_id}>{item.text}</p>
+                        ))}
+                    </article>
+                  ))}
+                </>
               )}
               <Checkbox
                 checked={confirmed}
                 disabled={
-                  busy || !active || !record.can_apply || selected.length === 0
+                  busy ||
+                  !active ||
+                  !record.can_apply ||
+                  Boolean(stale) ||
+                  selected.length === 0
                 }
-                onChange={(e) => setConfirmed(e.target.checked)}
+                onChange={(event) => setConfirmed(event.target.checked)}
               >
-                I have checked the source for each selected field and confirm
-                applying them to the current review.
+                I have checked the original text and want to save the selected
+                details.
               </Checkbox>
               <Button
                 type="primary"
                 disabled={
                   !active ||
                   !record.can_apply ||
+                  Boolean(stale) ||
                   !confirmed ||
                   selected.length === 0 ||
                   action.busy
                 }
                 loading={applyAction.busy}
-                aria-label="Confirm selected fields"
                 onClick={apply}
               >
-                Confirm selected fields
+                Save selected details
               </Button>
             </>
           )}
-          <AiCallDetails record={record} />
+          {!record.error &&
+            record.status !== "failed" &&
+            candidates.length === 0 && (
+              <p className="muted">
+                No suggested changes are available. Check your contract details
+                in the review above.
+              </p>
+            )}
         </>
       )}
     </section>

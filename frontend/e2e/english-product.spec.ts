@@ -119,7 +119,7 @@ test("English shell navigation, favorites and empty repair records", async ({
     .getByRole("tab", { name: "Upload contract for review", exact: true })
     .click();
   await expect(
-    page.getByText("Upload an existing contract directly", { exact: true }),
+    page.getByRole("heading", { name: "Upload your contract", exact: true }),
   ).toBeVisible();
   await page
     .getByRole("menuitem", { name: "Aftercare services", exact: true })
@@ -195,7 +195,8 @@ test("English knowledge answers expose official citations without changing case 
     exact: true,
   });
   await expect(evidence).toBeVisible();
-  await expect(evidence).toContainText("English rental sources");
+  await expect(evidence).not.toContainText("English rental sources");
+  await expect(evidence).toContainText("Cited answer");
   await expect(evidence.locator(".knowledge-answer")).toContainText(
     /landlord|agent/i,
   );
@@ -330,7 +331,7 @@ test("English standalone contract upload supports private source Q&A without hou
     .click();
   await expect(
     page.getByRole("heading", {
-      name: "Extracted contract fields",
+      name: "Contract details",
       exact: true,
     }),
   ).toBeVisible();
@@ -344,7 +345,7 @@ test("English standalone contract upload supports private source Q&A without hou
   });
   await panel
     .getByRole("checkbox", {
-      name: "I agree to create a local private search index for the current version of this contract.",
+      name: "I agree to enable private search for this contract on this device.",
       exact: true,
     })
     .check();

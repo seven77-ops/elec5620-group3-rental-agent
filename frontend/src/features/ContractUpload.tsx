@@ -132,21 +132,18 @@ export default function ContractUpload({
   };
   return (
     <section className="panel upload-panel">
-      <h2>Separate consent and contract upload</h2>
+      <h2>Upload your contract</h2>
       <p className="muted">
-        {scope === "document"
-          ? "Upload an existing contract without selecting a property. Key fields, clauses, and items to check are extracted locally first."
-          : real
-            ? "Fields are extracted locally after upload and compared with the current property and supplementary records."
-            : "Only synthetic contracts are processed. Fields are extracted and checked locally after upload."}
-        AI analysis requires separate consent.
+        Upload a PDF, Word document or text file. We will highlight key details
+        and items that need checking. AI assistance is optional.
       </p>
       <Failure
         error={action.error || loadError}
         retry={loadError ? onConsentChange : action.retry}
+        showDetails={false}
       />
       {loading ? (
-        <p role="status">Checking saved consent records…</p>
+        <p role="status">Checking your permission…</p>
       ) : !consent ? (
         <>
           <Checkbox
@@ -176,7 +173,7 @@ export default function ContractUpload({
           <Alert
             type="success"
             showIcon
-            title="Contract processing consent recorded"
+            title="Ready to upload"
             action={
               <Button size="small" disabled={action.busy} onClick={revoke}>
                 Revoke consent
@@ -242,9 +239,8 @@ export default function ContractUpload({
         </>
       )}
       <p className="muted small">
-        TXT / DOCX / PDF, up to 2,000,000 bytes. Text PDFs: up to{" "}
-        {real ? 30 : 10} pages; scanned PDFs: up to 10 pages. Scans require
-        local OCR support.
+        PDF, DOCX or TXT · Up to 2 MB · {real ? 30 : 10} pages for text PDFs.
+        Scanned PDFs: up to 10 pages; clear text works best.
       </p>
       {syntheticOnly && (
         <Space wrap>
@@ -258,11 +254,6 @@ export default function ContractUpload({
           ))}
         </Space>
       )}
-      <p className="muted small">
-        {actualContract
-          ? "Rule currency is checked against the actual review date. If fields cannot be reliably extracted, check the source and correct them or separately use AI analysis."
-          : `Contract rule reference date: ${config.clocks.contract}, independent of the property snapshot date.`}
-      </p>
     </section>
   );
 }

@@ -1,4 +1,3 @@
-import KnowledgePanel from "../knowledge/KnowledgePanel";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Space, Spin, Tabs } from "antd";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -180,7 +179,6 @@ export default function LivingHub() {
       <header className="living-heading">
         <div>
           <h1>Living and aftercare services</h1>
-          <KnowledgePanel />
         </div>
         <Button
           disabled={action.busy}
