@@ -7,7 +7,7 @@ const legacySystemCopy: Record<string, string> = {
   原始房源: "Original listing",
   房源: "Listing",
   租房新计划: "New rental plan",
-  记录回复与看房安排: "View inspection enquiry checklist",
+  记录回复与看房安排: "Contact property agent",
   保存找房条件: "Save rental needs",
   我的租房需求: "My rental needs",
   选定并跟进: "Select and follow up",

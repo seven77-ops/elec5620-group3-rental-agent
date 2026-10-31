@@ -20,7 +20,7 @@ import {
   pendingNeeds,
   approximateNeeds,
 } from "./needs";
-import { commuteModes } from "../real-data/UsydCommute";
+import { commuteChoices } from "../real-data/UsydCommute";
 import { lifestyleTopics } from "../../api/areas";
 
 type Fields = Omit<RentalBrief, "suburb"> & { suburb?: string };
@@ -113,7 +113,21 @@ export default function RentalNeeds({
     await onReload();
   };
   const submit = (fields: Fields) => {
-    const brief = { ...seed, ...briefFrom(fields) };
+    const commute_preference =
+      fields.commute_mode ||
+      fields.commute_max_minutes ||
+      fields.max_transfers != null
+        ? "include"
+        : seed.commute_mode ||
+            seed.commute_max_minutes ||
+            seed.commute_preference === "skip"
+          ? "skip"
+          : seed.commute_preference;
+    const brief = approximateNeeds({
+      ...seed,
+      ...briefFrom({ ...fields, commute_preference }),
+      commute_preference,
+    });
     const requestId = newRequestId();
     let target = conversation;
     void execute(async () => {
@@ -301,34 +315,46 @@ export default function RentalNeeds({
         <div className="assistant-needs-counts">
           {(
             [
-              ["min_bedrooms", "Minimum bedrooms"],
-              ["min_bathrooms", "Minimum bathrooms"],
-              ["min_car_spaces", "Minimum car spaces"],
+              ["min_bedrooms", "Min. beds", "Minimum bedrooms"],
+              ["min_bathrooms", "Min. baths", "Minimum bathrooms"],
+              ["min_car_spaces", "Min. parking", "Minimum car spaces"],
             ] as const
-          ).map(([name, label]) => (
+          ).map(([name, label, accessibleLabel]) => (
             <Form.Item key={name} name={name} label={label} rules={required}>
-              <InputNumber min={0} max={100} precision={0} />
+              <InputNumber
+                aria-label={accessibleLabel}
+                min={0}
+                max={100}
+                precision={0}
+              />
             </Form.Item>
           ))}
         </div>
-        <h3>Commute to USYD main campus</h3>
-        <p className="muted small">Camperdown / Darlington · Fisher Library</p>
-        <div className="form-grid">
+        <h3>Commute to USYD main campus (optional)</h3>
+        <p className="muted small">
+          Add a commute limit if it helps you choose a home. Otherwise, leave
+          these fields blank.
+        </p>
+        <div className="assistant-needs-grid">
           <Form.Item name="commute_mode" label="Commute mode">
             <Select
               allowClear
               placeholder="Optional; you can also mention it in chat"
-              options={commuteModes}
+              options={commuteChoices(
+                values?.commute_mode ?? seed.commute_mode,
+              )}
             />
           </Form.Item>
-          <Form.Item
-            name="commute_max_minutes"
-            label="Maximum one-way commute (minutes)"
-          >
-            <InputNumber min={1} max={240} precision={0} />
+          <Form.Item name="commute_max_minutes" label="Max. one-way (min)">
+            <InputNumber
+              aria-label="Maximum one-way commute (minutes)"
+              min={1}
+              max={240}
+              precision={0}
+            />
           </Form.Item>
         </div>
-        <div className="form-grid">
+        <div className="assistant-needs-grid">
           <Form.Item name="max_transfers" label="Maximum transfers (optional)">
             <InputNumber min={0} max={5} precision={0} />
           </Form.Item>

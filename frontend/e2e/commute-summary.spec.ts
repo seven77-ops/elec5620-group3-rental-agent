@@ -1,6 +1,10 @@
 import { test, expect } from "@playwright/test";
+import {
+  commuteDuration,
+  commuteOverview,
+} from "../src/features/real-data/commuteSummary";
 
-test("commute cards use selected transport mode and suburb buttons filter houses without technical copy", async ({
+test("commute cards and favorites share weighted durations while suburb filters and mode details remain intact", async ({
   page,
   request,
 }) => {
@@ -17,7 +21,7 @@ test("commute cards use selected transport mode and suburb buttons filter houses
   ).items[0];
   home.usyd_commute.modes = Object.fromEntries(
     Object.entries({
-      public_transport: 13,
+      public_transport: 12,
       train: null,
       metro: null,
       bus: 12,
@@ -108,7 +112,11 @@ test("commute cards use selected transport mode and suburb buttons filter houses
   const card = results.locator(".commute-home").filter({
     has: page.getByRole("heading", { name: home.address, exact: true }),
   });
-  await expect(card).toContainText("Public transport Approx. 13 minutes");
+  await expect(card.locator(".commute-route .commute-time")).toHaveText(
+    "Commute 9 min",
+  );
+  await expect(card.locator(".commute-route")).not.toContainText("Transit");
+  await expect(card).toContainText("Transit · ~12 min");
   await expect(
     card.getByRole("link", { name: "Google Maps ↗", exact: true }),
   ).toHaveAttribute("href", /google.com\/maps\/dir/);
@@ -132,13 +140,13 @@ test("commute cards use selected transport mode and suburb buttons filter houses
   await expect(results.locator(".commute-homes .commute-home")).toHaveCount(1);
   await expect(results.locator(".commute-homes")).toContainText(other.address);
   await expect(results.locator(".commute-homes")).toContainText(
-    "Public transport Approx. 13 minutes",
+    "Transit · ~12 min",
   );
   await results
     .getByRole("button", { name: "Listing details", exact: true })
     .click();
   const farDetails = page.getByTestId("usyd-commute");
-  await expect(farDetails).toContainText("Public transport Approx. 13 minutes");
+  await expect(farDetails).toContainText("~12 min");
   await expect(farDetails.getByText("Walking", { exact: true })).toHaveCount(0);
   await expect(
     farDetails.getByRole("link", {
@@ -154,15 +162,52 @@ test("commute cards use selected transport mode and suburb buttons filter houses
   await expect(results.locator(".commute-homes .commute-home")).toHaveCount(1);
   await suburbs.getByRole("button", { name: "All", exact: true }).click();
   await expect(results.locator(".commute-homes .commute-home")).toHaveCount(2);
+  for (const count of [1, 2]) {
+    await results
+      .getByRole("button", { name: "Save listing", exact: true })
+      .first()
+      .click();
+    await expect(
+      results.getByRole("button", { name: "Remove favorite", exact: true }),
+    ).toHaveCount(count);
+  }
+  await page
+    .getByRole("button", { name: "My favorites (2)", exact: true })
+    .click();
+  const favorites = page.getByRole("dialog", {
+    name: "My favorites",
+    exact: true,
+  });
+  await favorites.getByRole("checkbox").nth(0).check();
+  await favorites.getByRole("checkbox").nth(1).check();
+  const comparison = favorites.getByRole("table", {
+    name: "Saved listing comparison",
+    exact: true,
+  });
+  const commuteRow = comparison
+    .getByRole("row")
+    .filter({ hasText: "Commute to USYD" });
+  // Favorites retain current catalogue snapshots rather than the synthetic chat values.
+  const savedFavorites = await (
+    await request.get(`/api/v1/cases/${c.case_id}/favorites`)
+  ).json();
+  await expect(commuteRow.locator(".commute-time")).toHaveText(
+    savedFavorites.items.map(({ listing }: { listing: typeof home }) =>
+      commuteDuration(commuteOverview(listing.usyd_commute).average!).replace(/^~/, ""),
+    ),
+  );
+  await expect(commuteRow).not.toContainText("Transit");
+  await page.keyboard.press("Escape");
+  await expect(favorites).not.toBeVisible();
   await page.screenshot({ path: "/tmp/commute-summary-desktop.png" });
   await card
     .getByRole("button", { name: "Listing details", exact: true })
     .click();
   const details = page.getByTestId("usyd-commute");
-  await expect(details).toContainText("Public transport Approx. 13 minutes");
+  await expect(details).toContainText("~12 min");
   for (const text of ["房屋资料", "房屋类型", "待确认事项"])
     await expect(page.getByRole("dialog")).not.toContainText(text);
-  await expect(details.locator(".usyd-mode-grid > div")).toHaveCount(5);
+  await expect(details.locator(".usyd-mode-grid > div")).toHaveCount(4);
   for (const mode of ["Train", "Metro"])
     await expect(details.getByText(mode, { exact: true })).toHaveCount(0);
   for (const text of [
@@ -177,7 +222,7 @@ test("commute cards use selected transport mode and suburb buttons filter houses
     await expect(details).not.toContainText(text);
   await expect(
     details.getByRole("link", { name: /View .+ route in Google Maps/ }),
-  ).toHaveCount(5);
+  ).toHaveCount(3);
   await details.scrollIntoViewIfNeeded();
   await page.screenshot({ path: "/tmp/commute-summary-detail.png" });
   await page.setViewportSize({ width: 390, height: 844 });

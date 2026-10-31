@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Alert, Button, Drawer, Space, Tag } from "antd";
-import { ArrowRightOutlined, CalendarOutlined } from "@ant-design/icons";
+import { Alert, Button, Collapse, Drawer, Space, Tag } from "antd";
+import {
+  ArrowRightOutlined,
+  MailOutlined,
+  ExportOutlined,
+} from "@ant-design/icons";
 import { currentConfirmation, useCase } from "../../app/context";
 import { downloadUrl } from "../../api/client";
 import { housingCopy } from "../real-data/listingPresentation";
+import InspectionEnquiry from "./InspectionEnquiry";
+import { listingContactUrl } from "./enquiryTemplate";
 
 const questions = [
   "Is the property still available, and when can I inspect it?",
@@ -32,6 +38,7 @@ export default function CandidateFollowup({
     selection.profile_fingerprint === confirmation.fingerprint,
   );
   const identity = JSON.stringify(selection);
+  const sourceUrl = listingContactUrl(selection?.listing_snapshot.source_url);
   useEffect(() => {
     if (params.get("followup") === "1" && selection) {
       setOpen(true);
@@ -62,30 +69,35 @@ export default function CandidateFollowup({
           </strong>
           {!compact && (
             <p className="muted">
-              Prepare an inspection or go straight to lease drafting and review.
+              Contact the agent about a viewing, or continue to lease drafting
+              and review.
             </p>
           )}
         </div>
         <Space wrap>
           <Button
-            aria-label="Prepare inspection and enquiry"
-            icon={<CalendarOutlined />}
+            aria-label="Contact property agent"
+            icon={<MailOutlined />}
             type={compact ? "default" : "primary"}
             onClick={() => setOpen(true)}
           >
-            Prepare inspection and enquiry
+            Contact property agent
           </Button>
-          <Button disabled={!isCurrent} onClick={() => contract("draft")}>
-            Generate lease draft
-          </Button>
-          <Button
-            disabled={!isCurrent}
-            onClick={() => contract("review")}
-            aria-label="Review an existing contract"
-            icon={<ArrowRightOutlined />}
-          >
-            Review an existing contract
-          </Button>
+          {!compact && (
+            <>
+              <Button disabled={!isCurrent} onClick={() => contract("draft")}>
+                Generate lease draft
+              </Button>
+              <Button
+                disabled={!isCurrent}
+                onClick={() => contract("review")}
+                aria-label="Review an existing contract"
+                icon={<ArrowRightOutlined />}
+              >
+                Review an existing contract
+              </Button>
+            </>
+          )}
         </Space>
         {!isCurrent && (
           <Alert
@@ -96,20 +108,11 @@ export default function CandidateFollowup({
         )}
       </section>
       <Drawer
-        title="Inspection enquiry checklist"
+        title="Contact property agent"
         open={open}
         onClose={() => setOpen(false)}
         size={560}
         className="candidate-followup-drawer"
-        extra={
-          <a
-            href={downloadUrl(
-              `/cases/${current.case_id}/candidate-followup/questions`,
-            )}
-          >
-            Download enquiry checklist
-          </a>
-        }
       >
         <div className="candidate-followup-heading">
           <h2>{String(selection.listing_snapshot.address)}</h2>
@@ -118,36 +121,63 @@ export default function CandidateFollowup({
               Listed at AUD {String(selection.listing_snapshot.weekly_rent)}
               /week
             </Tag>
-            <a
-              href={String(selection.listing_snapshot.source_url)}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              View original listing ↗
-            </a>
           </Space>
         </div>
-        <h3>Questions to ask before an inspection</h3>
-        <ol className="candidate-questions">
-          {questions.map((q) => (
-            <li key={q}>{housingCopy(q)}</li>
-          ))}
-        </ol>
-        <p className="muted">
-          Enter rent, bond and tenancy party details on the contract page.
-        </p>
-        <Space wrap>
+        {sourceUrl ? (
           <Button
             type="primary"
-            disabled={!isCurrent}
-            onClick={() => contract("draft")}
+            size="large"
+            block
+            aria-label="Open listing & contact property agent"
+            href={sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            icon={<ExportOutlined />}
           >
-            Enter lease details
+            Open listing &amp; contact property agent
           </Button>
-          <Button disabled={!isCurrent} onClick={() => contract("review")}>
-            Review an existing contract
-          </Button>
-        </Space>
+        ) : (
+          <Alert
+            type="info"
+            showIcon
+            title="The original listing link is unavailable."
+          />
+        )}
+        <p className="muted small inspection-contact-note">
+          View inspection times or contact the agent on the listing website.
+          Bookings are arranged there.
+        </p>
+        <InspectionEnquiry
+          key={`${current.case_id}:${selection.listing_id}`}
+          address={String(
+            selection.listing_snapshot.address ?? selection.listing_id,
+          )}
+        />
+        <Collapse
+          className="inspection-checklist"
+          items={[
+            {
+              key: "checklist",
+              label: "Inspection checklist",
+              children: (
+                <>
+                  <ol className="candidate-questions">
+                    {questions.map((q) => (
+                      <li key={q}>{housingCopy(q)}</li>
+                    ))}
+                  </ol>
+                  <a
+                    href={downloadUrl(
+                      `/cases/${current.case_id}/candidate-followup/questions`,
+                    )}
+                  >
+                    Download enquiry checklist
+                  </a>
+                </>
+              ),
+            },
+          ]}
+        />
       </Drawer>
     </>
   );

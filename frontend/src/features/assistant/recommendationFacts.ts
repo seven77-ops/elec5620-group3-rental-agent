@@ -1,6 +1,9 @@
 import type { HousingAd, HousingFilters } from "../../api/catalog.ts";
 import type { RentalBrief } from "../../api/assistant.ts";
-import { selectedCommute } from "../real-data/commuteSummary.ts";
+import {
+  compactCommute,
+  selectedCommute,
+} from "../real-data/commuteSummary.ts";
 
 export function listingReasons(
   listing: HousingAd,
@@ -26,7 +29,7 @@ export function listingReasons(
     filters.usyd_mode || criteria.commute_mode || listing.recommendation_mode;
   if (mode) {
     const summary = selectedCommute(listing.usyd_commute, mode);
-    if (summary) reasons.push(summary.text);
+    if (summary) reasons.push(compactCommute(summary));
   }
   const bedrooms = filters.min_bedrooms ?? criteria.min_bedrooms;
   const bathrooms = filters.min_bathrooms ?? criteria.min_bathrooms;

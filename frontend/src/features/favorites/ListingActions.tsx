@@ -9,11 +9,15 @@ export default function ListingActions({
   onSelect,
   disabled = false,
   selectDisabled = false,
+  layout = "inline",
+  onDetails,
 }: {
   listing: HousingAd;
   onSelect?: (listing: HousingAd) => void;
   disabled?: boolean;
   selectDisabled?: boolean;
+  layout?: "inline" | "card";
+  onDetails?: () => void;
 }) {
   const { current } = useCase();
   const favorites = useFavorites();
@@ -24,34 +28,50 @@ export default function ListingActions({
     current.selection?.listing_id === listing.listing_id &&
     current.selection.profile_fingerprint ===
       currentConfirmation(current)?.fingerprint;
+  const saveButton = (
+    <Button
+      size={layout === "card" ? "middle" : "small"}
+      icon={saved ? <HeartFilled /> : <HeartOutlined />}
+      aria-label={saved ? "Remove favorite" : "Save listing"}
+      aria-pressed={saved}
+      disabled={
+        disabled ||
+        favorites.loading ||
+        favorites.busy ||
+        Boolean(favorites.error)
+      }
+      onClick={() => favorites.toggle(listing)}
+    >
+      {saved ? "Remove favorite" : "Save listing"}
+    </Button>
+  );
+  const selectButton = selected ? (
+    <Tag color="blue">Current follow-up property</Tag>
+  ) : (
+    <Button
+      size={layout === "card" ? "middle" : "small"}
+      type={layout === "card" ? "primary" : "default"}
+      disabled={disabled || selectDisabled}
+      onClick={() => (onSelect ?? favorites.choose)(listing)}
+    >
+      Select and follow up
+    </Button>
+  );
+  if (layout === "card") {
+    return (
+      <div className="listing-card-actions">
+        <div className="listing-card-secondary-actions">
+          {onDetails && <Button onClick={onDetails}>Listing details</Button>}
+          {saveButton}
+        </div>
+        {selectButton}
+      </div>
+    );
+  }
   return (
     <>
-      <Button
-        size="small"
-        icon={saved ? <HeartFilled /> : <HeartOutlined />}
-        aria-label={saved ? "Remove favorite" : "Save listing"}
-        aria-pressed={saved}
-        disabled={
-          disabled ||
-          favorites.loading ||
-          favorites.busy ||
-          Boolean(favorites.error)
-        }
-        onClick={() => favorites.toggle(listing)}
-      >
-        {saved ? "Remove favorite" : "Save listing"}
-      </Button>
-      {selected ? (
-        <Tag color="blue">Current follow-up property</Tag>
-      ) : (
-        <Button
-          size="small"
-          disabled={disabled || selectDisabled}
-          onClick={() => (onSelect ?? favorites.choose)(listing)}
-        >
-          Select and follow up
-        </Button>
-      )}
+      {saveButton}
+      {selectButton}
     </>
   );
 }

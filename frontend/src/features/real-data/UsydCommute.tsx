@@ -2,9 +2,15 @@ import type { HousingAd } from "../../api/catalog";
 import { useContext } from "react";
 import { CaseContext, currentConfirmation } from "../../app/context";
 import { usydDirections } from "./directions";
-import { commuteSummary, selectedCommute } from "./commuteSummary";
+import {
+  compactCommute,
+  commuteOverview,
+  commuteDuration,
+  commuteSummary,
+  selectedCommute,
+} from "./commuteSummary";
 import "./usydCommute.css";
-export { commuteModes } from "./commuteSummary";
+export { commuteModes, commuteChoices } from "./commuteSummary";
 
 function useMode(listing: HousingAd, mode?: string) {
   const context = useContext(CaseContext);
@@ -20,39 +26,68 @@ function useMode(listing: HousingAd, mode?: string) {
 export function UsydCommuteMini({
   listing,
   mode,
+  overview = true,
+  showLabel = false,
 }: {
   listing: HousingAd;
   mode?: string;
+  overview?: boolean;
+  showLabel?: boolean;
 }) {
-  const chosen = useMode(listing, mode);
-  const summary = selectedCommute(listing.usyd_commute, chosen);
+  const selectedMode = useMode(listing, mode);
+  const summary = selectedCommute(listing.usyd_commute, selectedMode);
+  if (overview) {
+    const result = commuteOverview(listing.usyd_commute, selectedMode);
+    if (!result.average)
+      return (
+        <span className="usyd-commute-mini">
+          <small>Check route</small>
+        </span>
+      );
+    return (
+      <div
+        role="group"
+        className="usyd-commute-mini usyd-commute-overview"
+        aria-label="Commute to USYD"
+      >
+        <strong className="commute-time">
+          {showLabel ? "Commute " : ""}
+          {commuteDuration(result.average).replace(/^~/, "")}
+        </strong>
+      </div>
+    );
+  }
   return (
-    <span className="usyd-commute-mini">
+    <span className="usyd-commute-mini" aria-label={summary?.text}>
       {summary ? (
-        <strong className="commute-time">{summary.text}</strong>
+        <strong className="commute-time">{compactCommute(summary)}</strong>
       ) : (
-        <small>Commute reference needed</small>
+        <small>Check route</small>
       )}
     </span>
   );
 }
-
 export default function UsydCommute({ listing }: { listing: HousingAd }) {
-  const data = listing.usyd_commute;
-  const { items: references } = commuteSummary(data);
-  const mode = useMode(listing);
+  const data = listing.usyd_commute,
+    mode = useMode(listing);
   const summary = selectedCommute(data, mode);
-  const items = references.flatMap((item) => {
-    const current = selectedCommute(data, item.value);
-    return current ? [{ ...item, selected: current }] : [];
-  });
-  if (summary && !items.some((item) => item.value === mode))
-    items.push({
+  const transitSummary = selectedCommute(
+    data,
+    ["train", "metro", "bus"].includes(mode) ? mode : "public_transport",
+  );
+  const roads = commuteSummary(data).items.filter(
+    (item) => item.value !== "public_transport",
+  );
+  if (
+    ["walk", "bike", "drive"].includes(mode) &&
+    summary &&
+    !roads.some((item) => item.value === mode)
+  )
+    roads.push({
       value: mode,
       label: summary.label,
       minutes: summary.upper,
       estimated: summary.estimated,
-      selected: summary,
     });
   return (
     <section
@@ -60,44 +95,61 @@ export default function UsydCommute({ listing }: { listing: HousingAd }) {
       data-testid="usyd-commute"
     >
       <div className="usyd-commute-title">
-        <h3>Commute to USYD main campus</h3>
-        {summary && <span>{summary.text}</span>}
+        <h3>Commute to USYD</h3>
       </div>
-      <p className="muted small">Camperdown / Darlington · Fisher Library</p>
       <dl className="usyd-mode-grid">
-        {items.map((mode) => (
-          <div key={mode.value}>
-            <dt>{mode.label}</dt>
-            <dd>
-              <strong>
-                {mode.selected?.estimated
-                  ? `Estimated ${mode.selected.lower}–${mode.selected.upper}`
-                  : `Approx. ${mode.minutes}`}
-                <small> minutes</small>
-              </strong>
-              <a
-                className="usyd-map-link"
-                href={usydDirections(listing, mode.value)}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`View ${mode.label.toLowerCase()} route in Google Maps`}
-              >
-                Google Maps ↗
-              </a>
-            </dd>
-          </div>
-        ))}
+        <div data-mode="public_transport">
+          <dt>Public transport</dt>
+          <dd>
+            <strong>
+              {transitSummary ? commuteDuration(transitSummary) : "Check route"}
+            </strong>
+            {["train", "metro", "bus"].includes(mode) && (
+              <small>Includes {mode}</small>
+            )}
+            <a
+              className="usyd-map-link"
+              href={usydDirections(listing, "public_transport")}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Check public transport directions in Google Maps"
+            >
+              Google Maps ↗
+            </a>
+          </dd>
+        </div>
+        {roads.map((item) => {
+          const current = selectedCommute(data, item.value)!;
+          return (
+            <div key={item.value} data-mode={item.value}>
+              <dt>{item.label}</dt>
+              <dd>
+                <strong>{commuteDuration(current)}</strong>
+                <a
+                  className="usyd-map-link"
+                  href={usydDirections(listing, item.value)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`View ${item.label.toLowerCase()} route in Google Maps`}
+                >
+                  Google Maps ↗
+                </a>
+              </dd>
+            </div>
+          );
+        })}
       </dl>
-      {!items.length && (
-        <a
-          className="usyd-map-link"
-          href={usydDirections(listing, "public_transport")}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Google Maps ↗
-        </a>
-      )}
+      <details className="usyd-route-notes">
+        <summary>Route information</summary>
+        {transitSummary?.estimated && (
+          <p>Nearby-route estimate; services and transfers unverified.</p>
+        )}
+        <p>
+          Destination: USYD Camperdown / Darlington · Fisher Library. Times are
+          approximate, per journey, and include recorded walking, waiting and
+          transfers. Check your departure time in Google Maps.
+        </p>
+      </details>
       <div className="usyd-commute-sources">
         <a
           href="https://opendata.transport.nsw.gov.au/dataset/trip-planner-apis"

@@ -70,12 +70,10 @@ test("推荐可直接选定，无需收藏或重复同步需求；取消不写�
     selected.address,
   );
   await expect(
-    page
-      .getByTestId("candidate-next")
-      .getByRole("button", {
-        name: "Prepare inspection and enquiry",
-        exact: true,
-      }),
+    page.getByTestId("candidate-next").getByRole("button", {
+      name: "Contact property agent",
+      exact: true,
+    }),
   ).toBeVisible();
   const saved = await (await request.get(root)).json();
   expect(saved.confirmations).toHaveLength(1);
@@ -127,6 +125,12 @@ test("房源推荐目录也可以直接选定，按当前筛选保存需求且�
   const c = await (await request.post("/api/v1/cases", { data: {} })).json();
   const root = `/api/v1/cases/${c.case_id}`;
   await page.goto(`/cases/${c.case_id}/recommendations`);
+  await expect(
+    page
+      .getByTestId("real-catalog")
+      .getByRole("button", { name: "Select and follow up", exact: true })
+      .first(),
+  ).toBeEnabled();
   await page
     .getByLabel("Maximum weekly rent (AUD)", { exact: true })
     .fill("900");

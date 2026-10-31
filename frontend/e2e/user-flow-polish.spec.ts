@@ -91,7 +91,7 @@ test("aftercare keeps the heading and actions without decorative captions", asyn
   const c = await (await request.post("/api/v1/cases", { data: {} })).json();
   await page.goto(`/cases/${c.case_id}/aftercare`);
   await expect(page.locator(".living-heading")).toHaveText(
-    "Living and aftercare servicesAsk rental knowledgeUser guideReload latest details",
+    "Living and aftercare servicesLoad latest information",
   );
   await expect(page.locator(".case-caption,.living-eyebrow")).toHaveCount(0);
   await expect(
@@ -163,7 +163,7 @@ test("aftercare initial load failure does not expose the backend message", async
   ).toBeVisible();
 });
 
-for (const source of ["attachments", "tenancy-source"] as const) {
+for (const source of ["tenancy-source"] as const) {
   test(`aftercare ${source} errors stay readable`, async ({
     page,
     request,

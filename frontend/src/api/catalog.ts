@@ -23,11 +23,17 @@ export interface HousingPhoto {
     | "same_property_history";
 }
 export interface UsydRoute {
+  mode?: string;
+  services?: string[];
+  departure_at?: string | null;
+  arrival_at?: string | null;
   legs?: {
     mode: string;
     duration_minutes: number;
     service?: string | null;
     from?: string | null;
+    from_stop_id?: string | null;
+    to_stop_id?: string | null;
     to?: string | null;
     departure_at?: string | null;
     arrival_at?: string | null;
@@ -59,6 +65,8 @@ export interface CommuteEstimate {
   reference_arrival_at?: string;
 }
 export interface UsydCommute {
+  transit_options?: UsydRoute[];
+  selected_transit_route?: UsydRoute;
   estimates?: Record<string, CommuteEstimate>;
   origin: {
     latitude: number;

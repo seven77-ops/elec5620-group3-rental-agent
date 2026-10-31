@@ -25,7 +25,7 @@ test("reasons use actual rent difference, selected mode and supplied room condit
   });
   assert.deepEqual(reasons, [
     "Below budget by AUD 80/week",
-    "Public transport Approx. 28 minutes",
+    "Transit · ~28 min",
     "2 bed, meets your layout needs",
   ]);
 });

@@ -2,6 +2,8 @@ import { test, expect } from "@playwright/test";
 import {
   commuteSummary,
   selectedCommute,
+  commuteDuration,
+  commuteOverview,
 } from "../src/features/real-data/commuteSummary";
 
 test("all houses have seven mode records and the webpage enforces walk twenty minutes", async ({
@@ -45,6 +47,30 @@ test("all houses have seven mode records and the webpage enforces walk twenty mi
       exact: true,
     }),
   ).toBeVisible();
+  const commuteCell = page.locator(".usyd-commute-mini").first();
+  await expect(
+    page.getByRole("table").locator(".recommendation-reasons"),
+  ).toHaveCount(0);
+  await expect(commuteCell.locator(".commute-time")).toHaveCSS(
+    "font-size",
+    "17px",
+  );
+  await expect(page.locator(".housing-weekly-rent").first()).toHaveCSS(
+    "font-size",
+    "17px",
+  );
+  const overview = commuteOverview(data.items[0].usyd_commute, "walk");
+  await expect(commuteCell.locator(".commute-time")).toHaveText(
+    commuteDuration(overview.average!).replace(/^~/, ""),
+  );
+  await expect(commuteCell.locator("details")).toHaveCount(0);
+  await page
+    .getByRole("table")
+    .locator("tbody tr.ant-table-row")
+    .first()
+    .screenshot({
+      path: "/tmp/rental-commute-table-clean.png",
+    });
   await page
     .getByRole("button", { name: "View listing details", exact: true })
     .first()
@@ -52,13 +78,21 @@ test("all houses have seven mode records and the webpage enforces walk twenty mi
   const details = page.getByTestId("usyd-commute");
   await expect(details).toContainText("Fisher Library");
   const summary = commuteSummary(data.items[0].usyd_commute);
-  for (const mode of summary.items)
+  for (const mode of summary.items.filter(
+    (item) => item.value !== "public_transport",
+  ))
     await expect(details.getByText(mode.label, { exact: true })).toBeVisible();
+  await expect(
+    details
+      .locator(".usyd-mode-grid dt")
+      .getByText("Public transport", { exact: true }),
+  ).toBeVisible();
   await expect(details.locator(".usyd-mode-grid > div")).toHaveCount(
-    summary.items.length,
+    1 +
+      summary.items.filter((item) => item.value !== "public_transport").length,
   );
   await expect(details).toContainText(
-    selectedCommute(data.items[0].usyd_commute, "walk")!.text,
+    commuteDuration(selectedCommute(data.items[0].usyd_commute, "walk")!),
   );
   await details.scrollIntoViewIfNeeded();
   await page.screenshot({
@@ -66,6 +100,9 @@ test("all houses have seven mode records and the webpage enforces walk twenty mi
     fullPage: true,
   });
   await page.setViewportSize({ width: 390, height: 844 });
+  await expect(
+    page.locator(".usyd-listing-drawer .ant-drawer-content-wrapper"),
+  ).toHaveCSS("width", "390px");
   await details.scrollIntoViewIfNeeded();
   const grid = await page.locator(".usyd-mode-grid").boundingBox();
   expect(grid?.x).toBeGreaterThanOrEqual(0);
@@ -104,9 +141,7 @@ test("chat uses the main campus without school questions and syncs the actual co
     .allTextContents();
   expect(times.length).toBeGreaterThan(0);
   for (const time of times)
-    expect(time).toMatch(
-      /^Walking (?:Approx\. \d+|Estimated \d+–\d+) minutes$/,
-    );
+    expect(time).toMatch(/^(?:~\d+|Est\. \d+–\d+) min$/);
   const estimates = page.getByRole("region", {
     name: "Street and area commute estimates",
   });
@@ -152,9 +187,10 @@ test("chat uses the main campus without school questions and syncs the actual co
       exact: true,
     }),
   ).toHaveValue("20");
-  await expect(page.locator(".usyd-commute-mini").first()).toContainText(
-    "Walking",
-  );
+  const overview = page.locator(".usyd-commute-overview").first();
+  await expect(overview.locator(".commute-time")).toContainText("min");
+  await expect(overview).not.toContainText("Avg.");
+  await expect(overview.locator("details")).toHaveCount(0);
 });
 
 test("unlocated houses show a labelled range and cannot use its midpoint to pass twenty minutes", async ({
@@ -213,7 +249,8 @@ test("unlocated houses show a labelled range and cannot use its midpoint to pass
     .getByTestId("real-catalog")
     .locator("tbody tr.ant-table-row")
     .filter({ hasText: listing.address });
-  await expect(row).toContainText("Public transport");
+  await expect(row.locator(".usyd-commute-overview")).toContainText("min");
+  await expect(row.locator(".usyd-commute-overview details")).toHaveCount(0);
   await row
     .getByRole("button", { name: "View listing details", exact: true })
     .click();
@@ -245,6 +282,8 @@ test("historical unlocated cards open the newly refined house routes inside deta
   const old = structuredClone(current);
   old.usyd_commute.origin = null;
   old.usyd_commute.straight_line_distance_m = null;
+  delete old.usyd_commute.transit_options;
+  delete old.usyd_commute.selected_transit_route;
   for (const mode of Object.keys(old.usyd_commute.modes))
     old.usyd_commute.modes[mode] = {
       status: "unavailable",
@@ -262,9 +301,7 @@ test("historical unlocated cards open the newly refined house routes inside deta
     route.fulfill({ json: { ...catalog, total: 1, items: [old] } }),
   );
   await page.goto(`/cases/${c.case_id}/recommendations`);
-  await expect(page.getByTestId("real-catalog")).toContainText(
-    "Public transport Estimated 4–20 minutes",
-  );
+  await expect(page.getByTestId("real-catalog")).toContainText("Est. 4–20 min");
   await expect(
     page.getByRole("link", { name: "Original listing ↗" }),
   ).toHaveCount(0);
@@ -282,7 +319,11 @@ test("historical unlocated cards open the newly refined house routes inside deta
   );
   await expect(
     details.getByRole("link", { name: /View .+ route in Google Maps/ }),
-  ).toHaveCount(commuteSummary(current.usyd_commute).items.length);
+  ).toHaveCount(
+    commuteSummary(current.usyd_commute).items.filter(
+      (item) => item.value !== "public_transport",
+    ).length,
+  );
   await details.scrollIntoViewIfNeeded();
   await expect
     .poll(async () => {

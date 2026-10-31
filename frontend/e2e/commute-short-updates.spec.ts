@@ -68,7 +68,7 @@ test("聊天短句将步行10分钟改为公共交通20分钟，并保留预算�
   const result = page.locator(".commute-results").last();
   await expect(
     result.getByRole("list", { name: "Recommendation reasons" }).first(),
-  ).toContainText("Public transport");
+  ).toContainText("Transit ·");
   const updated = await (await request.get(chat)).json();
   expect(updated.rental_brief).toMatchObject({
     budget_amount: 900,

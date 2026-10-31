@@ -28,7 +28,7 @@ async function seed(request: APIRequestContext) {
   return { c, root, row };
 }
 
-test("viewing checklist has no reply form; existing saved facts remain available to contract review", async ({
+test("contact drawer has no agent reply record form; existing saved facts remain available to contract review", async ({
   page,
   request,
 }) => {
@@ -61,27 +61,33 @@ test("viewing checklist has no reply form; existing saved facts remain available
   ).toHaveCount(0);
   await next
     .getByRole("button", {
-      name: "Prepare inspection and enquiry",
+      name: "Contact property agent",
       exact: true,
     })
     .click();
   const drawer = page.getByRole("dialog", {
-    name: "Inspection enquiry checklist",
+    name: "Contact property agent",
     exact: true,
   });
+  await drawer
+    .getByRole("button", { name: "Inspection checklist", exact: true })
+    .click();
   await expect(
     drawer.getByText(
       "Is the property still available, and when can I inspect it?",
       { exact: true },
     ),
   ).toBeVisible();
-  await expect(drawer.locator("input, textarea")).toHaveCount(0);
+  await expect(
+    drawer.getByLabel("Agent name (optional)", { exact: true }),
+  ).toBeVisible();
   await expect(drawer.getByRole("combobox")).toHaveCount(0);
-  await drawer
+  await drawer.getByRole("button", { name: "Close", exact: true }).click();
+  await next
     .getByRole("button", { name: "Review an existing contract", exact: true })
     .click();
   await expect(
-    page.getByText("Review an existing contract directly", { exact: true }),
+    page.getByRole("heading", { name: "Upload your contract", exact: true }),
   ).toBeVisible();
   await expect(
     page.getByRole("button", {
@@ -116,6 +122,12 @@ test("viewing checklist has no reply form; existing saved facts remain available
   await page
     .getByRole("button", { name: "Upload and review", exact: true })
     .click();
+  await page
+    .getByRole("button", {
+      name: "Compare with the selected property",
+      exact: true,
+    })
+    .click();
   const comparison = page.getByTestId("real-contract-comparison");
   await expect(comparison).toContainText("10月22日中介邮件");
   await expect(page.getByTestId("comparison-recorded_rent")).toContainText(
@@ -131,6 +143,12 @@ test("viewing checklist has no reply form; existing saved facts remain available
     "Confirm pricing basis",
   );
   await page.reload();
+  await page
+    .getByRole("button", {
+      name: "Compare with the selected property",
+      exact: true,
+    })
+    .click();
   await expect(comparison).toContainText(row.address);
 });
 
@@ -159,14 +177,12 @@ test("chat follow-up intent routes to the saved candidate without inventing veri
     page.getByText(new RegExp("For your saved listing")),
   ).toContainText(row.address);
   await page
-    .getByRole("button", {
-      name: "View inspection enquiry checklist",
-      exact: true,
-    })
+    .locator(".assistant-message")
+    .getByRole("button", { name: "Contact property agent", exact: true })
     .click();
   await expect(
     page.getByRole("dialog", {
-      name: "Inspection enquiry checklist",
+      name: "Contact property agent",
       exact: true,
     }),
   ).toBeVisible();
@@ -175,7 +191,7 @@ test("chat follow-up intent routes to the saved candidate without inventing veri
   ).toBe(true);
 });
 
-test("mobile viewing checklist fits the viewport and never creates follow-up records", async ({
+test("mobile contact drawer fits the viewport and never creates follow-up records", async ({
   page,
   request,
 }, info) => {
@@ -185,16 +201,21 @@ test("mobile viewing checklist fits the viewport and never creates follow-up rec
   await page
     .getByTestId("candidate-next")
     .getByRole("button", {
-      name: "Prepare inspection and enquiry",
+      name: "Contact property agent",
       exact: true,
     })
     .click();
   const drawer = page.getByRole("dialog", {
-    name: "Inspection enquiry checklist",
+    name: "Contact property agent",
     exact: true,
   });
   await expect(drawer).toBeVisible();
-  await expect(drawer.locator("input, textarea")).toHaveCount(0);
+  await expect(
+    drawer.getByLabel("Agent name (optional)", { exact: true }),
+  ).toBeVisible();
+  await drawer
+    .getByRole("button", { name: "Inspection checklist", exact: true })
+    .click();
   await expect(
     drawer.getByRole("link", {
       name: "Download enquiry checklist",
@@ -212,7 +233,7 @@ test("mobile viewing checklist fits the viewport and never creates follow-up rec
     ),
   ).toBe(true);
   await drawer
-    .getByRole("button", { name: "Enter lease details", exact: true })
+    .getByRole("link", { name: "Download enquiry checklist", exact: true })
     .hover();
   const image = info.outputPath("viewing-checklist-mobile.png");
   await page.screenshot({ path: image, animations: "disabled" });
@@ -221,6 +242,125 @@ test("mobile viewing checklist fits the viewport and never creates follow-up rec
     contentType: "image/png",
   });
   await drawer.getByRole("button", { name: "Close", exact: true }).click();
+  expect(
+    (await (await request.get(root + "/candidate-followup")).json()).version,
+  ).toBe(0);
+});
+
+test("contact agent prepares an editable enquiry locally without booking or saving facts", async ({
+  page,
+  request,
+  context,
+}, info) => {
+  const { c, root, row } = await seed(request);
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  const mutations: string[] = [];
+  page.on("request", (r) => {
+    if (r.url().includes("/api/") && r.method() === "POST")
+      mutations.push(r.url());
+  });
+  await page.goto(`/cases/${c.case_id}/recommendations`);
+  await page
+    .getByTestId("candidate-next")
+    .getByRole("button", { name: "Contact property agent", exact: true })
+    .click();
+  const drawer = page.getByRole("dialog", {
+    name: "Contact property agent",
+    exact: true,
+  });
+  const link = drawer.getByRole("link", {
+    name: "Open listing & contact property agent",
+    exact: true,
+  });
+  await expect(link).toHaveAttribute("href", row.source_url);
+  await expect(link).toHaveAttribute("target", "_blank");
+  await expect(
+    drawer.getByText(
+      "Is the property still available, and when can I inspect it?",
+      { exact: true },
+    ),
+  ).not.toBeVisible();
+  await expect(
+    drawer.getByRole("link", { name: "Open email app", exact: true }),
+  ).toHaveCount(0);
+  await drawer
+    .getByLabel("Agent name (optional)", { exact: true })
+    .fill("Alex Example");
+  await drawer
+    .getByLabel("Preferred viewing time (optional)", { exact: true })
+    .fill("Saturday afternoon");
+  await drawer
+    .getByLabel("Other questions (optional)", { exact: true })
+    .fill("Is there bicycle storage?");
+  await drawer
+    .getByRole("button", { name: "Prepare enquiry", exact: true })
+    .click();
+  const body = drawer.getByLabel("Message", { exact: true });
+  expect(await body.inputValue()).toContain(row.address);
+  await expect(body).toHaveValue(/Hi Alex Example,/);
+  await expect(body).toHaveValue(/Saturday afternoon/);
+  await expect(body).toHaveValue(/Is there bicycle storage\?/);
+  await drawer.getByLabel("Subject", { exact: true }).fill("My edited enquiry");
+  await body.fill("My edited message & preferred time.");
+  await drawer
+    .getByLabel("Agent email (optional)", { exact: true })
+    .fill("not-an-email");
+  await expect(
+    drawer.getByRole("link", { name: "Open email app", exact: true }),
+  ).toHaveCount(0);
+  await drawer
+    .getByLabel("Agent email (optional)", { exact: true })
+    .fill("alex@example.com");
+  await expect(
+    drawer.getByRole("link", { name: "Open email app", exact: true }),
+  ).toHaveAttribute(
+    "href",
+    "mailto:alex@example.com?subject=My%20edited%20enquiry&body=My%20edited%20message%20%26%20preferred%20time.",
+  );
+  await drawer
+    .getByRole("button", { name: "Copy message", exact: true })
+    .click();
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(
+    "Subject: My edited enquiry\n\nMy edited message & preferred time.",
+  );
+  await drawer
+    .getByRole("button", { name: "Prepare enquiry", exact: true })
+    .click();
+  const confirm = page.getByRole("dialog", {
+    name: "Replace this draft?",
+    exact: true,
+  });
+  await confirm
+    .getByRole("button", { name: "Keep editing", exact: true })
+    .click();
+  await expect(body).toHaveValue("My edited message & preferred time.");
+  await drawer.getByRole("button", { name: "Close", exact: true }).click();
+  await page
+    .getByTestId("candidate-next")
+    .getByRole("button", { name: "Contact property agent", exact: true })
+    .click();
+  await expect(body).toHaveValue("My edited message & preferred time.");
+  await page.evaluate(() => {
+    Object.defineProperty(navigator.clipboard, "writeText", {
+      configurable: true,
+      value: async () => {
+        throw new Error("denied");
+      },
+    });
+  });
+  await drawer
+    .getByRole("button", { name: "Copy message", exact: true })
+    .click();
+  await expect(
+    drawer.getByText("Could not copy. Select and copy the message manually.", {
+      exact: true,
+    }),
+  ).toBeVisible();
+  await page.screenshot({
+    path: info.outputPath("contact-agent-desktop.png"),
+    animations: "disabled",
+  });
+  expect(mutations).toEqual([]);
   expect(
     (await (await request.get(root + "/candidate-followup")).json()).version,
   ).toBe(0);

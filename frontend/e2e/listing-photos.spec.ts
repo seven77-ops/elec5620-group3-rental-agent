@@ -109,7 +109,7 @@ test("real-photo thumbnail opens details by keyboard, previews and retains obser
       "Bathrooms",
       "Car spaces",
       "Weekly rent",
-      "To USYD",
+      "Commute to USYD",
       "Actions",
     ],
   );

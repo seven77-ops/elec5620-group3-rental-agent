@@ -117,6 +117,18 @@ input:focus-visible {
 .ant-menu .anticon {
   font-size: 18px !important;
 }
+.desktop-sidebar .ant-menu .ant-menu-item {
+  height: auto;
+  min-height: 48px;
+  padding: 10px 12px !important;
+  line-height: 22px;
+}
+.desktop-sidebar .ant-menu-title-content {
+  white-space: normal;
+  overflow: visible;
+  overflow-wrap: break-word;
+  text-overflow: clip;
+}
 .sidebar-bottom {
   position: absolute;
   bottom: 20px;
@@ -600,6 +612,70 @@ input:focus-visible {
   grid-template-columns: 1fr 1fr;
   gap: 24px;
 }
+.contract-review-results {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+.contract-review-results > .panel,
+.contract-review-results > .next-action {
+  margin: 0;
+}
+.contract-review-picker {
+  width: min(100%, 300px);
+  margin-bottom: 16px;
+}
+.contract-overview.review-status {
+  margin: 0;
+}
+.contract-overview .contract-filename {
+  margin: 0 0 10px;
+  overflow-wrap: anywhere;
+}
+.contract-overview h2 {
+  margin: 10px 0;
+}
+.contract-overview p:last-child {
+  max-width: 760px;
+}
+.contract-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.contract-section-heading h2 {
+  margin: 0;
+}
+.contract-management-actions {
+  margin-bottom: 16px;
+}
+.contract-ai-check,
+.contract-questions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+.contract-ai-check > h2,
+.contract-ai-check > h3,
+.contract-ai-check > p {
+  margin: 0;
+}
+.contract-ai-check > .ant-btn {
+  align-self: flex-start;
+}
+@media (max-width: 600px) {
+  .contract-overview.review-status {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .contract-review-results .field-value {
+    flex-wrap: wrap;
+  }
+}
 .field-value {
   display: flex;
   align-items: flex-start;
@@ -693,6 +769,21 @@ input:focus-visible {
 }
 .ant-table-wrapper {
   max-width: 100%;
+}
+.housing-results-table .ant-table-tbody > tr > td {
+  font-size: 16px;
+}
+.housing-results-table .listing-photo-address .muted {
+  font-size: 13px;
+}
+.housing-results-table .housing-weekly-rent,
+.housing-results-table .usyd-commute-mini .commute-time {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.housing-results-table .housing-weekly-rent {
+  white-space: nowrap;
 }
 .ant-drawer-body {
   overflow-wrap: anywhere;
@@ -1246,55 +1337,10 @@ li {
 }
 .assistant-shell {
   display: grid;
-  grid-template-columns: 196px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   height: calc(100dvh - 68px);
   min-height: 540px;
   background: #fff;
-}
-.assistant-history {
-  border-right: 1px solid #e8edf4;
-  padding: 26px 16px 20px;
-  background: #fafbfd;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-.assistant-history > .ant-btn {
-  background: #fff;
-  border-color: #dae3ef;
-  color: #174ea6;
-}
-.assistant-history-label {
-  color: #7b889b;
-  font-size: 11px;
-  letter-spacing: 1px;
-  margin: 30px 8px 12px;
-}
-.assistant-history-list {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  overflow: auto;
-  flex: 1;
-}
-.assistant-history-list .ant-btn {
-  width: 100%;
-  justify-content: flex-start;
-  font-size: 13px;
-  text-align: left;
-  height: auto;
-  min-height: 40px;
-  padding: 10px;
-  overflow: hidden;
-}
-.assistant-history-list .ant-btn > span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.assistant-history-list .is-active {
-  background: #eaf1fc;
-  color: #174ea6;
 }
 .assistant-workspace {
   display: flex;
@@ -1320,9 +1366,6 @@ li {
   color: #111111;
   font-size: 14px;
 }
-.assistant-history-toggle {
-  display: none;
-}
 .assistant-needs-intro {
   margin-bottom: 20px;
 }
@@ -1340,6 +1383,7 @@ li {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: 14px;
+  align-items: end;
 }
 .assistant-needs-counts {
   display: grid;
@@ -1654,25 +1698,11 @@ li {
   margin-bottom: 0;
 }
 @media (max-width: 1100px) {
-  .assistant-shell {
-    grid-template-columns: 170px minmax(0, 1fr);
-  }
   .assistant-heading {
     padding: 20px 24px;
   }
   .assistant-listings {
     grid-template-columns: minmax(0, 1fr);
-  }
-}
-@media (max-width: 900px) {
-  .assistant-shell {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .assistant-history {
-    display: none;
-  }
-  .assistant-history-toggle {
-    display: inline-flex;
   }
 }
 @media (max-width: 767px) {
@@ -1986,7 +2016,7 @@ li {
 }
 @media (max-width: 600px) {
   .lease-fields-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .lease-field-wide {
     grid-column: auto;
@@ -2123,4 +2153,108 @@ li {
 }
 .progress-body p {
   margin: 6px 0;
+}
+
+/* Keep property actions aligned across chat, comparison and commute cards. */
+.listing-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  margin-top: auto;
+  padding-top: 12px;
+}
+.listing-card-secondary-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.listing-card-actions .ant-btn {
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  height: auto;
+  padding: 8px;
+  white-space: normal;
+  line-height: 1.4;
+}
+.listing-card-actions > .ant-tag {
+  margin: 0;
+  padding: 10px;
+  text-align: center;
+  white-space: normal;
+}
+.assistant-commute-choice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.assistant-commute-choice .ant-btn {
+  min-height: 40px;
+}
+
+.inspection-contact-note {
+  margin: 10px 0 26px;
+  line-height: 1.6;
+}
+.inspection-enquiry {
+  border-top: 1px solid #edf1f7;
+  padding-top: 20px;
+}
+.inspection-enquiry h3 {
+  margin: 0 0 8px;
+}
+.inspection-enquiry > p {
+  line-height: 1.6;
+  margin: 0 0 18px;
+}
+.inspection-enquiry-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.inspection-enquiry-details > * {
+  min-width: 0;
+}
+.inspection-enquiry-draft {
+  margin-top: 22px;
+  padding: 18px;
+  background: #f7f9fd;
+  border: 1px solid #e0e7f2;
+  border-radius: 12px;
+}
+.inspection-enquiry-draft-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.inspection-enquiry-draft-heading h3 {
+  margin: 0;
+}
+.inspection-enquiry-feedback {
+  margin-top: 10px;
+}
+.inspection-enquiry-draft p {
+  line-height: 1.6;
+  margin: 12px 0 0;
+}
+.inspection-checklist {
+  margin-top: 24px;
+}
+.candidate-followup-heading h2 {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 600px) {
+  .inspection-enquiry-details {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .inspection-enquiry-draft {
+    padding: 14px;
+  }
 }

@@ -75,7 +75,7 @@ test("zero-result alternatives apply one real change, expose reasons and keep wo
   await expect(result).not.toContainText("Average commute");
   await expect(
     result.getByRole("list", { name: "Recommendation reasons" }).first(),
-  ).toContainText("Public transport");
+  ).toContainText(/Public transport|Transit/);
   await expect(
     page.getByRole("status", { name: "Filter changes" }).last(),
   ).toContainText(`Listings 0 → ${option.count} properties`);
@@ -196,7 +196,7 @@ test("catalogue zero results offer computed single-filter alternatives and keep 
     .click();
   await page
     .locator(".ant-select-dropdown:visible .ant-select-item-option-content")
-    .getByText("Public transport", { exact: true })
+    .getByText("Public transport (any combination)", { exact: true })
     .click();
   await page
     .getByRole("spinbutton", {
@@ -231,12 +231,12 @@ test("catalogue zero results offer computed single-filter alternatives and keep 
     page.getByRole("spinbutton", { name: "Minimum bedrooms", exact: true }),
   ).toHaveValue("2");
   await expect(page.getByTestId("real-catalog")).toContainText(
-    "Public transport",
+    "Commute to USYD",
   );
   await expect(
     page
       .getByTestId("real-catalog")
-      .getByRole("list", { name: "Recommendation reasons" })
+      .getByRole("cell", { name: /Commute to USYD/ })
       .first(),
   ).toBeVisible();
 });

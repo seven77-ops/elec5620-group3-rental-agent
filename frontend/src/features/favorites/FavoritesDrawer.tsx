@@ -125,7 +125,7 @@ export default function FavoritesDrawer({
                     </tr>
                   ))}
                   <tr>
-                    <th>To USYD</th>
+                    <th>Commute to USYD</th>
                     {compare.map(({ listing }) => (
                       <td key={listing.listing_id}>
                         <UsydCommuteMini listing={listing} mode={commuteMode} />

@@ -59,14 +59,16 @@
   display: flex;
   flex-direction: column;
   gap: 3px;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
 }
 .usyd-commute-mini > strong {
   color: #1b52a8;
   font-variant-numeric: tabular-nums;
 }
 .usyd-commute-mini .commute-time {
-  font-size: 17px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
 }
 .usyd-commute-mini > small {
   color: #7a8ba5;
@@ -83,4 +85,18 @@
 .usyd-listing-drawer .ant-drawer-content-wrapper {
   width: min(760px, 100vw) !important;
   max-width: 100vw;
+}
+.usyd-route-notes > summary {
+  cursor: pointer;
+  color: #1b52a8;
+  font-size: 13px;
+  padding: 8px 0;
+}
+.usyd-route-notes {
+  margin: 8px 0;
+  font-size: 13px;
+  color: #52647c;
+}
+.usyd-route-notes p {
+  margin: 4px 0 10px;
 }

@@ -130,6 +130,7 @@ export interface AssistantAction {
   summary?: string[];
 }
 export interface AssistantMessage {
+  commute_preference_question?: boolean;
   repair_email?: {
     subject: string;
     body: string;
@@ -200,6 +201,7 @@ export interface Conversation {
   dialogue_mode?: string;
 }
 export interface RentalBrief {
+  commute_preference?: "include" | "skip";
   lifestyle_priorities?: LifestyleTopic[];
   recommend_areas?: boolean;
   destination_query?: string;

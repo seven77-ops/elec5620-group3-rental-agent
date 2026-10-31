@@ -96,11 +96,10 @@ export default function TaskResults({
                   <Points label="Trade-offs" items={item.tradeoffs} />
                   {listing && (
                     <div className="task-result-actions">
-                      <Button size="small" onClick={() => onView?.(listing)}>
-                        Listing details
-                      </Button>
                       <ListingActions
                         listing={listing}
+                        layout="card"
+                        onDetails={onView ? () => onView(listing) : undefined}
                         onSelect={onSave}
                         disabled={disabled}
                       />

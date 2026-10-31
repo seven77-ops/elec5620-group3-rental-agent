@@ -1,5 +1,4 @@
 import { SoftPreferenceEvidence } from "./SoftPreferenceEvidence";
-import KnowledgePanel from "../knowledge/KnowledgePanel";
 import PublicKnowledgeReply from "../knowledge/PublicKnowledgeReply";
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -17,8 +16,6 @@ import {
 import {
   ArrowUpOutlined,
   CommentOutlined,
-  HistoryOutlined,
-  PlusOutlined,
 } from "@ant-design/icons";
 import {
   applyAssistantProposal,
@@ -32,7 +29,6 @@ import type {
   AssistantAction,
   AssistantTurn,
   Conversation,
-  ConversationSummary,
 } from "../../api/assistant";
 import type { HousingAd } from "../../api/catalog";
 import { ApiError, newRequestId, post } from "../../api/client";
@@ -78,9 +74,9 @@ const recommendationChangeValue = (field: string, value: unknown) => {
 };
 const commuteModeLabels: Record<string, string> = {
   public_transport: "Public transport",
-  train: "Train",
-  metro: "Metro",
-  bus: "Bus",
+  train: "Includes train",
+  metro: "Includes metro",
+  bus: "Includes bus",
   drive: "Driving",
   bike: "Cycling",
   walk: "Walking",
@@ -129,14 +125,12 @@ const agentNames = {
 export default function Assistant() {
   const { current, refresh, go } = useCase();
   const { modal, message: toast } = App.useApp();
-  const [items, setItems] = useState<ConversationSummary[]>([]);
   const [conversation, setConversation] = useState<Conversation | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectionIssue, setSelectionIssue] = useState<string | null>(null);
   const [text, setText] = useState("");
-  const [historyOpen, setHistoryOpen] = useState(false);
   const [detail, setDetail] = useState<HousingAd | null>(null);
   const [selected, setSelected] = useState<string[]>([]);
   const [pending, setPending] = useState<string | null>(null);
@@ -166,18 +160,6 @@ export default function Assistant() {
   const update = (value: Conversation) => {
     active.current = value;
     setConversation(value);
-    setItems((previous) => [
-      {
-        conversation_id: value.conversation_id,
-        title: value.title,
-        updated_at:
-          value.messages.at(-1)?.created_at ?? new Date().toISOString(),
-        message_count: value.messages.length,
-      },
-      ...previous.filter(
-        (item) => item.conversation_id !== value.conversation_id,
-      ),
-    ]);
   };
   useEffect(() => {
     const token = ++generation.current;
@@ -185,7 +167,6 @@ export default function Assistant() {
     listConversations(caseId)
       .then(async (result) => {
         if (generation.current !== token) return;
-        setItems(result.items);
         const requestedConversation = searchParams.get("conversation");
         const initialId =
           result.items.find(
@@ -274,11 +255,9 @@ export default function Assistant() {
     setPending(null);
     setSelected([]);
     retryRef.current = null;
-    setHistoryOpen(false);
     try {
       const list = await listConversations(caseId);
       if (generation.current !== token) return;
-      setItems(list.items);
       const selectedId =
         id ?? active.current?.conversation_id ?? list.items[0]?.conversation_id;
       const value = selectedId
@@ -509,61 +488,8 @@ export default function Assistant() {
         update(result.conversation);
     });
   };
-  const history = (
-    <>
-      <Button
-        block
-        icon={<PlusOutlined />}
-        disabled={busy || loading || canRetry}
-        onClick={() => {
-          generation.current++;
-          active.current = null;
-          setConversation(null);
-          setSelected([]);
-          setText("");
-          setError(null);
-          setPending(null);
-          setHistoryOpen(false);
-        }}
-      >
-        New conversation
-      </Button>
-      <p className="assistant-history-label">Recent conversations</p>
-      <nav aria-label="Conversation history" className="assistant-history-list">
-        {items.map((item) => (
-          <Button
-            type="text"
-            key={item.conversation_id}
-            disabled={busy || loading}
-            className={
-              conversation?.conversation_id === item.conversation_id
-                ? "is-active"
-                : ""
-            }
-            onClick={() => void read(item.conversation_id)}
-          >
-            {housingCopy(item.title || "New rental plan")}
-          </Button>
-        ))}
-        {!items.length && (
-          <span className="muted small">
-            Your conversations will appear here
-          </span>
-        )}
-      </nav>
-    </>
-  );
   return (
     <section className="assistant-shell" aria-label="AI rental assistant">
-      <aside className="assistant-history">{history}</aside>
-      <Drawer
-        title="Conversation history"
-        open={historyOpen}
-        onClose={() => setHistoryOpen(false)}
-        size={280}
-      >
-        {history}
-      </Drawer>
       <div className="assistant-workspace">
         <header className="assistant-heading">
           <div>
@@ -599,13 +525,7 @@ export default function Assistant() {
             >
               My rental needs
             </Button>
-            <KnowledgePanel />
-            <Button
-              className="assistant-history-toggle"
-              icon={<HistoryOutlined />}
-              aria-label="Past conversations"
-              onClick={() => setHistoryOpen(true)}
-            />
+
           </Space>
         </header>
         <RecommendationControls
@@ -618,8 +538,12 @@ export default function Assistant() {
           onReload={() => void read()}
           error={error}
           onApply={applyRecommendation}
+          selectedProperty={
+            current.selection?.data_mode === "real_listings" ? (
+              <CandidateFollowup compact />
+            ) : undefined
+          }
         />
-        <CandidateFollowup compact />
         <RentalNeeds
           open={needsOpen}
           onClose={() => setNeedsOpen(false)}
@@ -698,6 +622,38 @@ export default function Assistant() {
                               ? recommendationCopy(item.content)
                               : housingCopy(item.content)
                         : item.content}
+                    </div>
+                  )}
+                  {item.commute_preference_question && (
+                    <div
+                      className="assistant-commute-choice"
+                      role="group"
+                      aria-label="Optional commute preference"
+                    >
+                      {[
+                        [
+                          "Add commute filter",
+                          "Yes, I would like to filter by commute.",
+                        ],
+                        ["Skip commute filter", "No commute filter, please."],
+                      ].map(([label, reply]) => (
+                        <Button
+                          key={label}
+                          disabled={
+                            busy ||
+                            loading ||
+                            canRetry ||
+                            item.message_id !==
+                              conversation.messages.at(-1)?.message_id
+                          }
+                          onClick={() => {
+                            setText(reply);
+                            setSelected([]);
+                          }}
+                        >
+                          {label}
+                        </Button>
+                      ))}
                     </div>
                   )}
                   {item.knowledge && (
@@ -877,19 +833,13 @@ export default function Assistant() {
                                 listingId={listing.listing_id}
                               />
                             )}
-                            <Space>
-                              <Button
-                                size="small"
-                                onClick={() => setDetail(listing)}
-                              >
-                                Listing details
-                              </Button>
-                              <ListingActions
-                                listing={listing}
-                                onSelect={saveListing}
-                                disabled={busy || canRetry}
-                              />
-                            </Space>
+                            <ListingActions
+                              listing={listing}
+                              layout="card"
+                              onDetails={() => setDetail(listing)}
+                              onSelect={saveListing}
+                              disabled={busy || canRetry}
+                            />
                           </article>
                         )}
                       </ListingResults>
@@ -950,8 +900,10 @@ export default function Assistant() {
                               : [
                                     "Record replies and inspection arrangements",
                                     "记录回复与看房安排",
+                                    "View inspection checklist",
+                                    "View inspection enquiry checklist",
                                   ].includes(action.label)
-                                ? "View inspection enquiry checklist"
+                                ? "Contact property agent"
                                 : housingCopy(action.label)}
                         </Button>
                       ))}

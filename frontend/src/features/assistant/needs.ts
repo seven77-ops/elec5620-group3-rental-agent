@@ -21,6 +21,20 @@ export const approximateNeeds = (brief: RentalBrief): RentalBrief => {
     travel_date: _date,
     ...rest
   } = brief;
+  if (rest.commute_preference === "skip") {
+    const {
+      commute_mode: _mode,
+      commute_max_minutes: _minutes,
+      max_transfers: _transfers,
+      commute_hard_limit: _hard,
+      commute_priority: _priority,
+      destination_id: _destination,
+      destination_query: _query,
+      recommend_areas: _areas,
+      ...withoutCommute
+    } = rest;
+    return withoutCommute;
+  }
   return rest;
 };
 

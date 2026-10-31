@@ -148,6 +148,15 @@ test("shared assistant sends directly, records a turn and restores server histor
   await expect(
     page.getByRole("heading", { name: "Where would you like to live?" }),
   ).toBeVisible();
+  await expect(page.getByRole("button", { name: "New conversation", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("navigation", { name: "Conversation history", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Past conversations", exact: true })).toHaveCount(0);
+  const shell = await page.locator(".assistant-shell").boundingBox();
+  const workspace = await page.locator(".assistant-workspace").boundingBox();
+  expect(shell).not.toBeNull();
+  expect(workspace).not.toBeNull();
+  expect(Math.abs(workspace!.x - shell!.x)).toBeLessThan(1);
+  expect(Math.abs(workspace!.width - shell!.width)).toBeLessThan(1);
   for (const copy of [
     "面向悉大学生",
     "尚未同步需求",
@@ -227,10 +236,9 @@ test("mobile assistant fits the viewport and IME Enter does not submit", async (
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
-  await page.getByRole("button", { name: "Past conversations" }).click();
-  await expect(
-    page.getByRole("button", { name: "New rental plan" }),
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Past conversations" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "New conversation" })).toHaveCount(0);
+  await expect(page.locator(".assistant-history")).toHaveCount(0);
 });
 
 test("retry preserves the original request and prevents a second turn", async ({

@@ -49,3 +49,24 @@ test("legacy class times never appear in effective rental needs", () => {
     { commute_mode: "bus", commute_max_minutes: 30 },
   );
 });
+
+test("skipping commute never restores saved or legacy search constraints in the needs panel", () => {
+  const saved = {
+    student_commute: { mode: "train", maximum_minutes: 40, max_transfers: 1 },
+  } as Profile;
+  const conversation = {
+    dialogue_mode: "search",
+    rental_brief: { suburb: "Burwood", commute_preference: "skip" },
+    last_search_filters: {
+      usyd_mode: "train",
+      usyd_max_minutes: 40,
+      usyd_max_transfers: 1,
+    },
+  } as Conversation;
+  const result = conversationNeeds(conversation, saved);
+  assert.equal(result.commute_preference, "skip");
+  assert.equal(result.commute_mode, undefined);
+  assert.equal(result.commute_max_minutes, undefined);
+  assert.equal(result.max_transfers, undefined);
+  assert.equal(needsMatch(result, saved), false);
+});

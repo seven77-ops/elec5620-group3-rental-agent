@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   Alert,
   App,
@@ -15,7 +15,7 @@ import type {
   RecommendationPatch,
 } from "../../api/assistant";
 import { getRecommendationContext } from "../../api/assistant";
-import { commuteModes } from "../real-data/commuteSummary";
+import { commuteModes, commuteChoices } from "../real-data/commuteSummary";
 import "./recommendationControls.css";
 
 type Group = "budget" | "rooms" | "commute" | "area";
@@ -41,6 +41,7 @@ export default function RecommendationControls({
   disabled = false,
   onReload,
   onApply,
+  selectedProperty,
 }: {
   caseId: string;
   conversationId: string | null;
@@ -49,6 +50,7 @@ export default function RecommendationControls({
   error: string | null;
   disabled?: boolean;
   onReload: () => void;
+  selectedProperty?: ReactNode;
   onApply: (
     patch: RecommendationPatch,
     context: RecommendationContext,
@@ -97,8 +99,8 @@ export default function RecommendationControls({
       valid = false;
     };
   }, [caseId, conversationId, revision, reload]);
-  if (!context)
-    return readError ? (
+  if (!context) {
+    const unavailable = readError ? (
       <Alert
         type="warning"
         title="The current filters have not loaded"
@@ -107,6 +109,25 @@ export default function RecommendationControls({
         }
       />
     ) : null;
+    return selectedProperty ? (
+      <section
+        className="recommendation-controls"
+        aria-label="Current housing criteria"
+      >
+        <div className="recommendation-controls-layout">
+          <div className="recommendation-controls-main">
+            <div className="recommendation-controls-heading">
+              <strong>Current housing criteria</strong>
+            </div>
+            {unavailable}
+          </div>
+          {selectedProperty}
+        </div>
+      </section>
+    ) : (
+      unavailable
+    );
+  }
   const { criteria: c, filters: f } = context;
   const locked =
     busy || disabled || loading || !!readError || context.revision !== revision;
@@ -165,59 +186,64 @@ export default function RecommendationControls({
       className="recommendation-controls"
       aria-label="Current housing criteria"
     >
-      <div className="recommendation-controls-heading">
-        <strong>Current housing criteria</strong>
-        <span>
-          {loading ? (
-            <Spin size="small" />
-          ) : (
-            `Filtered ${context.total} properties`
-          )}
-        </span>
-      </div>
-      <div className="recommendation-condition-buttons">
-        <Button
-          size="small"
-          icon={<EditOutlined />}
-          aria-label="Edit budget criteria"
-          disabled={locked}
-          onClick={() => open("budget")}
-        >
-          {f.max_weekly_rent != null
-            ? `Weekly rent ≤AUD ${f.max_weekly_rent}`
-            : c.budget_amount != null
-              ? `Budget AUD ${c.budget_amount} (not used to filter listings)`
-              : "Any budget"}
-        </Button>
-        <Button
-          size="small"
-          icon={<EditOutlined />}
-          aria-label="Edit housing criteria"
-          disabled={locked}
-          onClick={() => open("rooms")}
-        >
-          {roomLabel}
-        </Button>
-        <Button
-          size="small"
-          icon={<EditOutlined />}
-          aria-label="Edit commute criteria"
-          disabled={locked}
-          onClick={() => open("commute")}
-        >
-          {modeLabel
-            ? `${modeLabel}${f.usyd_max_minutes || c.commute_max_minutes ? ` ≤${f.usyd_max_minutes ?? c.commute_max_minutes} minutes` : ""}`
-            : "Add commute criteria"}
-        </Button>
-        <Button
-          size="small"
-          icon={<EditOutlined />}
-          aria-label="Edit area criteria"
-          disabled={locked}
-          onClick={() => open("area")}
-        >
-          {f.suburb || "All areas"}
-        </Button>
+      <div className="recommendation-controls-layout">
+        <div className="recommendation-controls-main">
+          <div className="recommendation-controls-heading">
+            <strong>Current housing criteria</strong>
+            <span>
+              {loading ? (
+                <Spin size="small" />
+              ) : (
+                `Filtered ${context.total} properties`
+              )}
+            </span>
+          </div>
+          <div className="recommendation-condition-buttons">
+            <Button
+              size="small"
+              icon={<EditOutlined />}
+              aria-label="Edit budget criteria"
+              disabled={locked}
+              onClick={() => open("budget")}
+            >
+              {f.max_weekly_rent != null
+                ? `Weekly rent ≤AUD ${f.max_weekly_rent}`
+                : c.budget_amount != null
+                  ? `Budget AUD ${c.budget_amount} (not used to filter listings)`
+                  : "Any budget"}
+            </Button>
+            <Button
+              size="small"
+              icon={<EditOutlined />}
+              aria-label="Edit housing criteria"
+              disabled={locked}
+              onClick={() => open("rooms")}
+            >
+              {roomLabel}
+            </Button>
+            <Button
+              size="small"
+              icon={<EditOutlined />}
+              aria-label="Edit commute criteria"
+              disabled={locked}
+              onClick={() => open("commute")}
+            >
+              {modeLabel
+                ? `${modeLabel}${f.usyd_max_minutes || c.commute_max_minutes ? ` ≤${f.usyd_max_minutes ?? c.commute_max_minutes} minutes` : ""}`
+                : "Add commute criteria"}
+            </Button>
+            <Button
+              size="small"
+              icon={<EditOutlined />}
+              aria-label="Edit area criteria"
+              disabled={locked}
+              onClick={() => open("area")}
+            >
+              {f.suburb || "All areas"}
+            </Button>
+          </div>
+        </div>
+        {selectedProperty}
       </div>
       {context.total === 0 && context.alternatives.length > 0 && (
         <div
@@ -323,7 +349,7 @@ export default function RecommendationControls({
               >
                 <Select
                   aria-label="Current travel mode"
-                  options={commuteModes}
+                  options={commuteChoices(snapshot?.criteria.commute_mode)}
                 />
               </Form.Item>
               <Form.Item

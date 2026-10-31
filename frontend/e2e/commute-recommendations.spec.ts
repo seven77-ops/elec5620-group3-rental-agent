@@ -201,10 +201,12 @@ test("commute results remain in chat and recommendations only show catalogue fil
   await expect(
     detail.getByRole("link", { name: "View Domain listing", exact: true }),
   ).toHaveAttribute("href", rows[0].source_url);
-  const directions = detail.getByRole("link", {
-    name: "View public transport route in Google Maps",
-    exact: true,
-  });
+  const directions = detail
+    .getByRole("link", {
+      name: "Check public transport directions in Google Maps",
+      exact: true,
+    })
+    .first();
   await expect(directions).toHaveAttribute("href", /travelmode=transit/);
   const href = new URL((await directions.getAttribute("href"))!);
   const point = rows[0].usyd_commute?.origin;

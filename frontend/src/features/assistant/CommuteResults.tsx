@@ -176,6 +176,7 @@ export default function CommuteResults({
                   </div>
                   <div className="commute-route">
                     <UsydCommuteMini
+                      showLabel
                       listing={listing}
                       mode={result.criteria.commute_mode}
                     />
@@ -192,13 +193,10 @@ export default function CommuteResults({
                     />
                   )}
                   <div className="commute-actions">
-                    {onView ? (
-                      <Button size="small" onClick={() => onView(listing)}>
-                        Listing details
-                      </Button>
-                    ) : null}
                     <ListingActions
                       listing={listing}
+                      layout="card"
+                      onDetails={onView ? () => onView(listing) : undefined}
                       onSelect={onSave}
                       disabled={disabled}
                     />

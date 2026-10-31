@@ -23,12 +23,11 @@ import { currentConfirmation, useCase } from "../app/context";
 import { Failure, PageTitle } from "../components/Common";
 import { ListingThumbnail } from "./real-data/ListingPhotos";
 
-import { UsydCommuteMini, commuteModes } from "./real-data/UsydCommute";
+import { UsydCommuteMini, commuteChoices } from "./real-data/UsydCommute";
 import ListingDetails from "./real-data/ListingDetails";
 import ListingActions from "./favorites/ListingActions";
 import { useFavorites } from "./favorites/FavoritesContext";
 import FavoritesDrawer from "./favorites/FavoritesDrawer";
-import ListingReasons from "./assistant/ListingReasons";
 import type { RecommendationAlternative } from "../api/assistant";
 const CandidateFollowup = lazy(() => import("./candidate/CandidateFollowup"));
 
@@ -225,8 +224,8 @@ export default function RealRecommendations() {
             virtual={false}
             aria-label="Commute mode to campus"
             allowClear
-            placeholder="Public transport"
-            options={commuteModes}
+            placeholder="Public transport (any combination)"
+            options={commuteChoices(filters.usyd_mode)}
           />
         </Form.Item>
         <Form.Item
@@ -357,10 +356,11 @@ export default function RealRecommendations() {
             </div>
           )}
         <Table<HousingAd>
+          className="housing-results-table"
           rowKey="listing_id"
           loading={loading}
           dataSource={error ? [] : (result?.items ?? [])}
-          scroll={{ x: 980 }}
+          scroll={{ x: 1280 }}
           locale={{
             emptyText: (
               <Empty description="No listings match these criteria. Adjust budget or housing needs, or explicitly increase the campus commute limit." />
@@ -397,7 +397,6 @@ export default function RealRecommendations() {
                     <div className="muted">
                       {r.suburb} · {r.postcode}
                     </div>
-                    <ListingReasons listing={r} filters={filters} />
                   </div>
                 </div>
               ),
@@ -409,19 +408,27 @@ export default function RealRecommendations() {
               render: (value, row) => row.bedroom_label ?? value,
             },
             { title: "Bathrooms", dataIndex: "bathrooms", width: 75 },
-            { title: "car spaces", dataIndex: "car_spaces", width: 75 },
+            { title: "Car spaces", dataIndex: "car_spaces", width: 75 },
             {
               title: "Weekly rent",
               dataIndex: "weekly_rent",
-              width: 140,
-              render: (value) => `AUD ${Number(value).toLocaleString()}/week`,
+              width: 160,
+              render: (value) => (
+                <strong className="housing-weekly-rent">
+                  AUD {Number(value).toLocaleString("en-AU")}/week
+                </strong>
+              ),
             },
             {
-              title: "To USYD",
+              title: "Commute to USYD",
               key: "usyd",
-              width: 150,
+              width: 180,
               render: (_, row) => (
-                <UsydCommuteMini listing={row} mode={filters.usyd_mode} />
+                <UsydCommuteMini
+                  listing={row}
+                  mode={filters.usyd_mode}
+                  overview
+                />
               ),
             },
             {
