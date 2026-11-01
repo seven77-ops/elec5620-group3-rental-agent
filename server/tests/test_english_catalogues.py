@@ -7,11 +7,12 @@ class EnglishCatalogueTests(unittest.TestCase):
     def test_public_authored_catalogue_copy_is_english(self):
         files=('server/app/living/providers.json','server/app/living/data/utility-plans.json',
                'agent2/data/areas/sydney-evidence.json','agent2/data/demo/listings.json',
-               'agent2/data/real/usyd-commutes.json')
+               'agent2/data/real/usyd-commutes.json','agent3/data/demo/corrections.json',
+               'agent3/data/demo/selected-listing-evidence.json')
         def check(value,path=()):
             if isinstance(value,str):
                 # Proper publication titles/publisher names remain original evidence.
-                if path[-1]=='address' or len(path)>1 and path[-2]=='source' and path[-1] in ('title','publisher'):return
+                if len(path)>1 and path[-2]=='source' and path[-1] in ('title','publisher'):return
                 self.assertIsNone(re.search('[\u4e00-\u9fff]',value),'.'.join(path)+': '+value)
             elif isinstance(value,dict):
                 for key,item in value.items():check(item,path+(key,))
@@ -19,6 +20,23 @@ class EnglishCatalogueTests(unittest.TestCase):
                 for n,item in enumerate(value):check(item,path+(str(n),))
         for file in files:
             with self.subTest(file=file):check(json.loads((ROOT/file).read_text()),(file,))
+    def test_bundled_demo_contract_and_selection_use_current_english_fixtures(self):
+        from rental_agent.engine import evaluate
+        from rental_agent.handoff import build_selected_listing_evidence
+        from contract_agent.handoff import validate_selection
+        packet=json.loads((ROOT/'agent3/data/demo/selected-listing-evidence.json').read_text())
+        dataset=json.loads((ROOT/'agent2/data/demo/listings.json').read_text())
+        report=evaluate(packet['profile'],dataset,as_of=dataset['as_of'])
+        current=build_selected_listing_evidence(report,dataset,packet['listing_id'],
+            selected_at=packet['selected_at'],user_confirmed=True)
+        self.assertEqual(packet,current,'Bundled handoff must be regenerated with the current English fixture and evidence fingerprints')
+        validate_selection(packet)
+        address=packet['listing_snapshot']['address']
+        agreement=(ROOT/'agent3/data/demo/agreements/selection-demo.txt').read_text()
+        self.assertIsNone(re.search('[\u4e00-\u9fff]',agreement))
+        self.assertIn('Address: '+address,agreement)
+        self.assertEqual(json.loads((ROOT/'agent3/data/demo/corrections.json').read_text())['address'],address)
+
     def test_english_display_labels_preserve_existing_commute_evidence_binding(self):
         from server.app.real_data.catalog import RealCatalog
         from server.app.commute.usyd import DESTINATION,CAMPUS_FINGERPRINT

@@ -1,5 +1,4 @@
 """Services orchestration for the local synthetic API."""
-import hmac
 
 from fastapi.responses import Response
 from ..bootstrap import ROOT
@@ -47,12 +46,6 @@ class Services:
         value = repo.get(db, kind, identifier)
         require(value is not None, 404, 'not_found', 'The saved object was not found')
         return value
-
-    def operator(self, request):
-        operator_secret = self.settings.operator_secret
-        supplied = request.headers.get('X-Operator-Key', '')
-        require(bool(operator_secret) and hmac.compare_digest(supplied, operator_secret), 403, 'access_denied',
-                'A locally configured operator key is required')
 
     def current(self, case, version=None):
         latest = case['confirmations'][-1] if case['confirmations'] else None

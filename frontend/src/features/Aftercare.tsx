@@ -1,3 +1,4 @@
+import EnglishDateInput from "../components/EnglishDateInput";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Alert,
@@ -13,6 +14,8 @@ import {
   Switch,
   Tabs,
 } from "antd";
+import { useSearchParams } from "react-router-dom";
+import AftercareIssues from "./aftercare/AftercareIssues";
 import { useCase } from "../app/context";
 import { api, downloadUrl, newRequestId, post } from "../api/client";
 import type { AftercareCase, Dict } from "../api/types";
@@ -41,13 +44,6 @@ import {
 } from "./aftercare/presentation";
 import { useTenancyPrefill } from "./aftercare/prefill";
 
-const decisionNames: Record<string, string> = {
-  annotate: "Notes",
-  return: "Return for more information",
-  hold: "Defer",
-  refer: "Refer",
-  release: "Release",
-};
 export default function Aftercare({
   embedded = false,
   initialTab = "plan",
@@ -58,6 +54,22 @@ export default function Aftercare({
   initialMoveOutDate?: string;
 }) {
   const { current, refresh, config } = useCase();
+  const [query, setQuery] = useSearchParams();
+  const [activeTab, setActiveTab] = useState<string>(
+    query.get("section") === "review" ? "review" : initialTab,
+  );
+  const [reportOpen, setReportOpen] = useState(false);
+  const changeTab = (tab: string) => {
+    setActiveTab(tab);
+    setQuery(
+      (previous) => {
+        const next = new URLSearchParams(previous);
+        next.set("section", tab);
+        return next;
+      },
+      { replace: true },
+    );
+  };
   const action = useAction();
   const { message } = App.useApp();
   const [record, setRecord] = useState<AftercareCase | null>(null);
@@ -119,7 +131,14 @@ export default function Aftercare({
         if (id) {
           setRecord(await api<AftercareCase>(`/aftercare/cases/${id}`));
         }
-        if (operation !== "poll_reminders") message.success("Action saved.");
+        if (operation !== "poll_reminders")
+          message.success(
+            operation === "report_issue"
+              ? "Report submitted to Human review."
+              : operation === "reply_review"
+                ? "Update sent to Human review."
+                : "Action saved.",
+          );
       });
     },
     [current, refresh, action, message, refreshing],
@@ -319,8 +338,34 @@ export default function Aftercare({
               </Button>
             </Space>
           </section>
+          <section className="moveout-help-strip">
+            <div>
+              <h2>Move-out support</h2>
+              <p className="muted">
+                Report bond, cleaning or repair issues and track the response.
+              </p>
+            </div>
+            <Space wrap>
+              <Button onClick={() => changeTab("review")}>
+                View reports (
+                {reviews.filter((r) => r.status === "open").length})
+              </Button>
+              <Button
+                type="primary"
+                disabled={action.busy || refreshing}
+                onClick={() => {
+                  abandon();
+                  changeTab("review");
+                  setReportOpen(true);
+                }}
+              >
+                Report a move-out issue
+              </Button>
+            </Space>
+          </section>
           <Tabs
-            defaultActiveKey={initialTab}
+            activeKey={activeTab}
+            onChange={changeTab}
             items={[
               {
                 key: "plan",
@@ -431,18 +476,17 @@ export default function Aftercare({
                           legal deadlines.
                         </p>
                         <Space wrap>
-                          <Input
-                            type="date"
+                          <EnglishDateInput
                             aria-label="Bond follow-up reminder date"
                             min={sydneyToday()}
                             value={followDate}
-                            onChange={(e) => setFollowDate(e.target.value)}
+                            onChange={setFollowDate}
                           />
-                          <Input
-                            type="time"
+                          <EnglishDateInput
+                            mode="time"
                             aria-label="Bond follow-up reminder time"
                             value={followTime}
-                            onChange={(e) => setFollowTime(e.target.value)}
+                            onChange={setFollowTime}
                           />
                           <Button
                             disabled={!followDate || !followTime}
@@ -504,35 +548,24 @@ export default function Aftercare({
               },
               {
                 key: "review",
-                label: `Review items ${reviews.filter((r) => r.status === "open").length}`,
+                label: `Issues & review (${reviews.filter((r) => r.status === "open").length})`,
                 children: (
-                  <section className="panel">
-                    <h2>Human review items</h2>
-                    <p className="muted">
-                      The local demo operator handles these in a separate view.
-                      Tenants cannot release restrictions.
-                    </p>
-                    {reviews.length === 0 ? (
-                      <p>No review items.</p>
-                    ) : (
-                      reviews.map((r, i) => (
-                        <div className="detail-row" key={i}>
-                          <Status value={String(r.status)} />
-                          <strong>{text(r.reason)}</strong>
-                          <p className="small">
-                            Submitted at {sydneyTime(r.created_at)}
-                          </p>
-                          {((r.decisions as Dict[]) ?? []).map((d, j) => (
-                            <p className="small" key={j}>
-                              {decisionNames[String(d.decision)] ??
-                                text(d.decision)}
-                              : {text(d.note)}({sydneyTime(d.at)})
-                            </p>
-                          ))}
-                        </div>
-                      ))
-                    )}
-                  </section>
+                  <AftercareIssues
+                    reviews={reviews}
+                    evidence={evidence}
+                    send={send}
+                    busy={action.busy}
+                    reportOpen={reportOpen}
+                    closeReport={() => setReportOpen(false)}
+                    recovery={{
+                      ...recovery,
+                      error: ["report_issue", "reply_review"].includes(
+                        pendingOperation,
+                      )
+                        ? recovery.error
+                        : null,
+                    }}
+                  />
                 ),
               },
             ]}

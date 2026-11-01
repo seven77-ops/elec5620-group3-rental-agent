@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Alert, App, Button, Form, Select } from "antd";
+import { Alert, App, Button, Form, Select, Space } from "antd";
 import type {
   LivingRecord,
   LivingProvider,
@@ -24,18 +24,20 @@ export default function Utilities({
   providers,
   busy,
   save,
+  onViewHome,
 }: {
   record: LivingRecord;
   providers: LivingProvider[];
   busy: boolean;
   save: LivingWrite;
+  onViewHome: () => void;
 }) {
   const [form] = Form.useForm();
   const [dirty, setDirty] = useState(false);
   const [detailsId, setDetailsId] = useState<string | null>(null);
   useEffect(() => setDetailsId(null), [record.case_id]);
   const snapshot = useRef(record);
-  const { modal } = App.useApp();
+  const { modal, message } = App.useApp();
   useEffect(() => {
     if (!dirty) {
       snapshot.current = record;
@@ -67,6 +69,7 @@ export default function Utilities({
       onOk: () =>
         save("/profile", profile, expectedVersion, () => {
           setDirty(false);
+          void message.success("Provider selection saved to My home.");
         }).then(() => undefined),
     });
   };
@@ -127,14 +130,19 @@ export default function Utilities({
             </Form.Item>
           ))}
         </div>
-        <Button
-          aria-label="Save provider selection"
-          type="primary"
-          htmlType="submit"
-          loading={busy}
-        >
-          Save provider selection
-        </Button>
+        <Space wrap>
+          <Button
+            aria-label="Save provider selection"
+            type="primary"
+            htmlType="submit"
+            loading={busy}
+          >
+            Save provider selection
+          </Button>
+          <Button onClick={onViewHome} disabled={busy}>
+            View in My home
+          </Button>
+        </Space>
       </Form>
       <div className="living-provider-grid">
         {providers

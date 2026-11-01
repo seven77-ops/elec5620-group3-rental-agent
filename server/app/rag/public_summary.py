@@ -106,7 +106,10 @@ def review_public_summary(provider,question,language,evidence,result,*,timeout=1
             # Independently check the proposed text against ONLY its cited quotation.
             # The generating pass sees all sources; it must not borrow another source's
             # fact while retaining the wrong citation. No retrieval pool or draft here.
-            remaining=min(8,deadline-monotonic())
+            # Reviewing up to three source summaries can legitimately take more
+            # than eight seconds. Use the available request budget, still capped
+            # at 15 seconds and the unchanged overall deadline.
+            remaining=min(15,deadline-monotonic())
             if remaining<1:raise ValueError('Public summary deadline exhausted')
             check_schema={'type':'object','additionalProperties':False,'required':['supported'],
                           'properties':{'supported':{'type':'array','minItems':len(accepted),'maxItems':len(accepted),

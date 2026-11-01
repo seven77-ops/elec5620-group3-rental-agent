@@ -10,7 +10,7 @@ from ..adapters.real_agent2 import RealProfilesAdapter
 from .intents import validate_intent,merge_profile,response_schema
 from ..real_data.profile import supplied_profile
 from .tools import execute,known_listings,CLARIFY,preference_summary,listing_context,history_context,search_answer
-from .dialogue import BRIEF_SCHEMA,merge_brief,brief_summary,next_question,brief_filters,brief_profile_patch,profile_brief
+from .dialogue import BRIEF_SCHEMA,merge_brief,brief_summary,next_question,brief_filters,brief_profile_patch,profile_brief,working_profile_patch
 from .living import read_snapshot, model_context, answer_living
 from ..living.service import LivingService
 from .repair_dialogue import repair_focus, focus_context
@@ -241,9 +241,14 @@ class AssistantService:
                 patch=brief_profile_patch(brief) if intent['intent']=='collect_preferences' else intent.get('preference_patch',{})
                 try:
                     require(bool(patch),422,'empty_patch','Please add your preferences.')
-                    base=deepcopy(case['draft']['profile'])
+                    base=supplied_profile(case['draft']['profile'],case.get('requirements_contract')!='supplied-only-v1')
+                    if intent['intent']=='update_preferences':
+                        # Working chat criteria can be newer than the saved profile,
+                        # or collected before the first confirmation. Apply the new
+                        # explicit patch last, preserving all other supplied fields.
+                        base=merge_profile(base,working_profile_patch(brief,c.get('last_search_filters',{})),legacy=False)
                     if brief.get('commute_preference')=='skip':base.pop('student_commute',None)
-                    profile=merge_profile(base,patch,legacy=case.get('requirements_contract')!='supplied-only-v1')
+                    profile=merge_profile(base,patch,legacy=False)
                     housing=profile.get('housing_preferences',{})
                     catalog.filters({k:v for k,v in housing.items() if k!='budget_match_mode'})
                 except (ApiError,ValueError):
@@ -408,8 +413,10 @@ class AssistantService:
             fields = ('listing_id', 'address', 'weekly_rent', 'bedrooms', 'bathrooms', 'car_spaces', 'captured_at')
             def facts(rows): return {r['listing_id']: tuple(r.get(k) for k in fields) for r in rows}
             if previous is None or effective(previous_filters) != effective(run['report']['filters']) or facts(previous['listings']) != facts(cards):
+                from .recommendation_options import metadata
                 c['messages'].append(message('assistant',f"Rental requirements saved; found {len(cards)} matching listings.",
-                    'agent2',intent='search',listings=cards))
+                    'agent2',intent='search',listings=cards,
+                    **metadata(self.catalog(),run['report']['filters'],profile_brief(p['profile']),len(cards))))
             for item in c['messages']:
                 for action in item['actions']:
                     if action['type'] == 'apply_preferences': action['applied'] = True

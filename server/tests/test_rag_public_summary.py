@@ -2,11 +2,44 @@
 from copy import deepcopy
 from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 from server.app.rag.service import KnowledgeService
 from server.tests.test_rag_answer_integrity import row
 
 
 class PublicSummaryTests(unittest.TestCase):
+    def timed_review(self, elapsed):
+        from server.app.ai.provider import ProviderError
+        from server.app.rag.public_summary import review_public_summary
+        self.review_timeouts=[]
+        source=row(text='If repairs are needed, contact the landlord or agent first.')
+        def call(context):
+            if context['task']=='rag_summary_check':
+                self.review_timeouts.append(context['transport_timeout_seconds'])
+                if elapsed==10 and context['transport_timeout_seconds']<10:
+                    raise ProviderError('ai_timeout',{'task':'rag_summary_check'})
+                return {'supported':[True],'original_supported':[True],
+                        'texts':[context['checks'][0]['claim']]},{}
+            return {'claims':[{'text':'When repairs are needed, contact the landlord or agent first.',
+                'evidence_id':'source-a','quote_ids':['p0'],'grounded':True,'conditions_preserved':True}],
+                'unknowns':[]},{}
+        base={'scope':'public','source_preserving':True,'claims':[{'evidence_id':'source-a'}],
+              'warnings':[],'citations':[],'generation_outcome':'answered'}
+        with patch('server.app.rag.public_summary.monotonic',side_effect=[0,elapsed]):
+            return review_public_summary(SimpleNamespace(call=call),'Who should I contact for repairs?',
+                'en',[source],base,timeout=30)
+
+    def test_initial_answer_review_can_use_available_budget_beyond_eight_seconds(self):
+        answer=self.timed_review(10)
+        self.assertEqual(answer['status'],'answered')
+        self.assertEqual(answer['summary_method'],'source_reviewed_summary')
+        self.assertEqual(self.review_timeouts,[15])
+
+    def test_source_review_never_exceeds_the_remaining_request_budget(self):
+        answer=self.timed_review(27.5)
+        self.assertEqual(answer['status'],'answered')
+        self.assertEqual(self.review_timeouts,[2.5])
+
     def answer(self, candidate=None, *, external=True, base=None, source=None, checked=True, revised=None, original_supported=True):
         source=source or row(text='If repairs are needed, contact the landlord or agent first. Allow 14 days for a response.')
         first={'claims':[{'text':'When repairs are needed, contact the landlord or agent first and allow 14 days for a response.','evidence_id':'source-a','quote_id':'p0'}],'unknowns':[]}

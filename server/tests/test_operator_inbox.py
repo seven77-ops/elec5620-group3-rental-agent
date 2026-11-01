@@ -43,10 +43,41 @@ class OperatorInboxTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200, response.text)
         return response.json()['items']
 
-    def test_inbox_requires_operator_key(self):
-        self.assertEqual(self.client.get('/api/v1/operator/reviews').status_code, 403)
-        self.assertEqual(self.client.get('/api/v1/operator/reviews',
-            headers={'X-Operator-Key': 'wrong'}).status_code, 403)
+    def test_local_inbox_opens_without_operator_key(self):
+        self.assertEqual(self.client.get('/api/v1/operator/reviews').status_code,200)
+
+    def test_latest_issue_is_first_when_contract_and_report_use_different_timezones(self):
+        from server.tests.test_contract_checklist import COMPLETE
+        cid=self.client.post('/api/v1/cases',json={}).json()['case_id']
+        consent=self.client.post(f'/api/v1/cases/{cid}/contract-consents',json={
+            'confirmed':True,'scope':'document'}).json()['consent_id']
+        uploaded=self.client.post(f'/api/v1/cases/{cid}/contract-reviews',
+            content=COMPLETE.replace('2027-11-01','2026-10-31').encode(),headers={
+                'Content-Type':'application/octet-stream','X-Consent-Id':consent,
+                'X-Request-Id':'sort-contract','X-Filename':'fictional-sort-contract.txt'})
+        self.assertEqual(uploaded.status_code,200,uploaded.text)
+        contract=uploaded.json()['review']
+        created=self.client.post(f'/api/v1/cases/{cid}/issue-reports',json={
+            'request_id':'sort-report','category':'rent','description':'Fictional newer bond report','attachment_ids':[]})
+        self.assertEqual(created.status_code,200,created.text)
+        report=created.json()
+        repo=self.client.app.state.repository
+        for contract_at,issue_at in (
+            ('2026-11-01T11:56:59+11:00','2026-11-01T01:01:15.991888+00:00'),
+            ('2026-11-01T11:56:59+11:00','2026-11-01T01:01:15Z'),
+            ('2026-11-01T00:05:00+11:00','2026-10-31T23:50:00+00:00'),
+        ):
+            with self.subTest(contract_at=contract_at,issue_at=issue_at):
+                with repo.transaction() as db:
+                    saved=repo.get(db,'review',contract['review_id']);saved['review']['created_at']=contract_at
+                    repo.put(db,'review',contract['review_id'],saved)
+                    issue=repo.get(db,'issue_report',report['review_id']);issue['created_at']=issue_at
+                    repo.put(db,'issue_report',report['review_id'],issue)
+                before=self.client.get(f'/api/v1/cases/{cid}').json()
+                items=self.inbox()
+                self.assertEqual([i['review_id'] for i in items],[report['review_id'],contract['review_id']])
+                self.assertEqual(self.client.get(f'/api/v1/cases/{cid}').json(),before)
+                self.assertEqual(items[0]['created_at'],issue_at,'Sorting must preserve original stored timestamps')
 
     def test_submissions_from_different_cases_are_visible_and_read_only(self):
         one, active = self.dispute('1 Inbox Test Street')

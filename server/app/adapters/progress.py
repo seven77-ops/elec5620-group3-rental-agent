@@ -3,6 +3,7 @@
 The founder/operator and the tenant can see the whole one-person-company pipeline in one place.
 Nothing here changes a case; each step only reports saved state and its references.
 """
+import json
 from ..settings import TENANT
 
 DONE, ACTIVE, WAITING, TODO = 'done', 'in_progress', 'waiting', 'not_started'
@@ -31,6 +32,9 @@ class ProgressAdapter:
         with repo.transaction() as db:
             case = self.ctx.get(db, 'case', case_id)
             reviews = [repo.get(db, 'review', r['review_id']) for r in case.get('reviews') or []]
+            issue_records = [json.loads(row[0]) for row in db.execute(
+                'SELECT body FROM objects WHERE kind=?', ('issue_report',)) if json.loads(row[0]).get('case_id') == case_id]
+            issue_count = sum(item['status'] == 'open' for item in issue_records)
             drafts = repo.get(db, 'lease_draft_index', case_id) or []
         steps = []
         confirmations = case.get('confirmations') or []
@@ -80,11 +84,11 @@ class ProgressAdapter:
         record = self.ctx.aftercare.get(aftercare_id, TENANT) if aftercare_id else None
         open_reviews = [r for r in (record or {}).get('reviews', []) if r['status'] == 'open']
         pending_contract = [r for r in reviews if r and r['review']['status'] == 'Awaiting Human Review']
-        waiting = len(open_reviews) + len(pending_contract)
+        waiting = len(open_reviews) + len(pending_contract) + issue_count
         steps.append(_step(
             'operator', 'Operator (human reviewer)', 'Human review and approval',
-            WAITING if waiting else (DONE if (record and record.get('reviews')) or reviews else TODO),
-            f'{waiting} items await human review: {len(pending_contract)} high-risk contract items and {len(open_reviews)} bond or move-out disputes.'
+            WAITING if waiting else (DONE if (record and record.get('reviews')) or reviews or issue_records else TODO),
+            f'{waiting} items await human review: {len(pending_contract)} high-risk contract items and {len(open_reviews) + issue_count} rental issue reports.'
             if waiting else 'Disputes, conflicting evidence and high-risk contracts appear here. Only explicit operator approval clears the gate.',
             (), 'operator'))
 

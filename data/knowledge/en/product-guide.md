@@ -94,24 +94,34 @@ After saving, use “PreviewSaved… contract” to preview that saved version i
 
 ## Upload a contract for review
 
-Use “Review an existing contract” to work on a contract supplied to you. You can also upload an existing contract directly in chat or in Contract assistant without selecting a property. Record independent consent to process the uploaded document. When a current property is selected, the existing selection-bound review can additionally compare its saved information. Then choose the file, confirm you have the right to submit it and use “Upload and review” (Upload and review).
+Open “Contract assistant” and choose “Upload contract for review”. Select a PDF, DOCX or TXT file up to 2 MB. Confirm that you are authorised to upload it and agree to send it to the AI service, then choose “Upload and analyse”. No property selection is required. The file is read first, then AI checks its details against the original text.
 
-The upload control accepts TXT, DOCX and PDF up to 2,000,000 bytes. The selection-bound real-listing workflow supports text PDFs up to 30 pages; standalone and scanned PDFs support up to 10 pages. The upload control displays the applicable limit. Scanned documents depend on local OCR support.
+“Contract check results” shows the actual number of checks, how many need attention and how many passed. “Needs attention” lists identified issues and details that could not be confirmed, with an explanation and a suggested question where available. “Passed” lists details found in the contract and supported consistency checks. Use “View source text” on an item to see its original wording. Counts reflect the checks actually performed; missing details, unreadable text and incomplete AI analysis are not counted as passed.
 
-The review first extracts fields locally. Standalone review does not infer or create a selected property. A selection-bound review additionally compares the property and recorded information. In chat, the summary shows extracted fields, findings and original evidence; the full contract page provides correction and history controls. The review starts with a summary, Items to check and Contract details. Use View source text to check a value against the original, or Edit contract details to correct something that was read incorrectly. Open AI-assisted check for optional AI suggestions; only verified suggestions are shown and you choose and confirm which details to save. AI failure does not replace the saved review. Manage this contract contains review history, refresh, Stop processing this contract and Upload another contract.
+If no issues are found, the result says that no issues were found in the completed checks. This does not establish the legal validity of every clause. Special clauses without a supported check remain items to confirm. If AI analysis does not complete, the document checks remain readable and you can consent to try AI again. The simplified result page does not require a human reviewer before you can read the findings.
 
-“Revoke consent” (Revoke consent) withdraws permission for subsequent contract processing. This action should not be treated as deleting every previously saved case or review record. If you need private contract search as well, use its separate controls described below.
+“Upload another contract” starts a new review. “Stop processing this contract” withdraws permission for subsequent processing while keeping existing review records readable. AI results are a source-backed preview: they do not automatically change your saved contract details, selected property, tenancy or original document.
 
 ## Private contract search and separate consent
 
-Expand “Ask more about this contract” (Ask about this contract) on the selected uploaded-contract review to search its clauses and pages. The original contract-processing permission must remain active. This contract's wording is kept separate from public product help and general NSW guidance.
+Private contract Q&A remains available separately in “AI rental assistant”. Ask to review or query your uploaded contract; if private search is not enabled, the conversation shows the contract search controls. Contract upload and AI review permission do not automatically enable private search.
 
-- Check “I agree to enable private search for this contract on this device.” and choose “Enable contract search” (Enable contract search). Search uses the selected review version. Once enabled, Search permissions lets you update processing permission or turn search off.
-- The separate checkbox “I also allow the AI service to process this contract for search and answers.” permits cloud processing. Leave it unchecked for local search.
-- Enter a question and use “Find contract text” (Find contract sources) for source excerpts. “Use AI for this question and relevant contract excerpts” is an additional per-question choice, available only when cloud processing is permitted.
-- Open Search permissions and use “Turn off contract search” to withdraw contract-search permission and remove its search index. After changes to a review, reload and check the version before asking further questions.
+- Keep the originating contract-processing permission active. Check “I agree to enable private search for this contract on this device.” and choose “Enable contract search”.
+- To allow cloud search and answers, separately check “I also allow the AI service to process this contract for search and answers.” Leave it unchecked for local search.
+- Enter a question and choose “Find contract text” for source excerpts. Per-question AI permission remains a separate choice.
+- Use “Search permissions” and “Turn off contract search” to withdraw private search permission and remove the private index.
 
-Contract upload consent, local search consent, cloud search consent and per-question AI use are independent choices. A contract clause describes the uploaded contract's wording; it does not by itself establish the applicable law. Use the public official guidance separately when checking a legal question.
+Private wording is kept separate from the public rental knowledge base. Check the cited contract text and use separately cited official guidance for legal questions.
+
+## My home and in-progress items
+
+In “Aftercare services”, use “My home” beside “Load latest information” to view the address, suburb, postcode and agent or landlord's name, email and phone. Existing saved home details take priority. If no location is saved, the selected property supplies the address, suburb and postcode; a confirmed lease source or current saved lease draft can supply a fallback. Draft contacts are shown only when they match the displayed home. Missing details remain “Not provided”. Opening the drawer is read-only and does not confirm a tenancy.
+
+Use “Edit details” and “Save details” to explicitly save these six basic fields. Other saved profile information, files and service records are retained. Cancel editing leaves saved information unchanged. If another window changes the record, “Load latest details” refreshes untouched fields while preserving your local edits for another explicit save.
+
+My home also displays saved electricity, gas, internet and water providers under “Utilities”. “Moving and cleaning” shows saved companies and service records, including their status, recorded dates, quotes and original notes. Completed services remain visible. “Change utilities” returns to provider selection, “Choose moving or cleaning” opens the company list, and “View record” opens the corresponding saved service record. These sections show saved information, not unsaved dropdown choices.
+
+“In progress” collects unresolved repairs and service records that have not been marked completed. A past service date does not automatically complete a booking. Open an item to go to its repair or service record. Missing contact details are not added as tasks. The previous To-do items, Lease and living details and Home and contacts panels are replaced by these two toolbar buttons.
 
 ## Repair emails and follow-up records
 
@@ -131,24 +141,30 @@ In “Utilities” (Utilities), open provider cards to view the provider's cover
 
 Select electricity, gas, internet and the applicable water provider in the form, then use “Save provider selection” (Save provider choices) and confirm. This stores your choices in the workspace; it does not open or switch an account. The water information is shown for the provider serving the address rather than as an unrestricted switching choice.
 
+After saving, choose “View in My home” to see all saved utility providers together with your home information. The same selections are restored after a page reload.
+
 In “Moving and cleaning” (Moving and cleaning), click a company card to open its details and official website. “Record quote or booking” (Record a quote or booking) lets you save a quote you received, a service date, status and notes. Status choices distinguish considering, contacted by you, booked by you and completed.
+
+To save a company before obtaining a quote, use “Save to My home” in its details and confirm. This creates a “Considering” service record with no invented date or quote. A company that already has a saved record offers “View in My home” instead of another quick-save. “Record quote or booking” remains available for additional records. The “View in My home” button on the company list opens all saved moving and cleaning records.
 
 Saving a service record does not submit a booking. Contact the company and arrange the work yourself; provider availability, service coverage and the quote need the company's confirmation. Return to “My service records” to update the record after your own arrangements.
 
-## Move-out plans and bond follow-up
+## Issue report and history
 
-The aftercare workspace also provides “Move-out plan” (Move-out plan) and “Bond follow-up” (Bond follow-up). Review the tenancy information and any source-based prefill before saving it. Missing home information can be completed through the provided form. You can register supporting evidence and attach its references to the appropriate tasks or facts.
+In “Aftercare services”, open “Issue report”. This page has two tabs: “Report issue” and “History”. Older Move-out and bond links open the same simplified page.
 
-For a move-out plan, choose the intended date and confirm the practical schedule. Tasks can record progress, supporting evidence and items needing human review. A date change is proposed and then explicitly confirmed; completed work and evidence remain part of the history. Plan dates are practical arrangements, not statements of legal notice deadlines. Reminders depend on the workspace settings and do not contact service providers for you.
+Under “Report issue”, choose the issue type: rent/bond, furniture, repairs, an issue during the tenancy, moving out, after moving out or other. Enter the original issue description and optionally use “Upload files” to add photos, screenshots or PDF evidence. Up to 10 files can be attached, with a maximum of 10 MB each. Choose “Submit report” to save and send it to Human review. The submission date is recorded automatically by the server. No lease setup, confirmed tenancy, move-out plan or bond activation is required to submit an issue.
 
-For bond follow-up, establish the record and supply a bond reference or linked deposit evidence before activating follow-up. Record the facts you report, their dates in Sydney time, supporting evidence and any deduction claims made by the other party. Recording a deduction claim does not mean you accept it. Disputed claims or conflicting evidence can require human review before a follow-up draft can be generated.
+“History” shows previous reports, their original descriptions, automatic dates, uploaded files, status and human review advice. It includes reports submitted through the older move-out screen. Saved amounts, requested help and supporting references for those older reports remain available under “Original report details”. Files can be previewed or downloaded. “Refresh history” reloads the latest reports and advice. Failed submissions preserve the description and selected files; “Retry original action” reuses the original request rather than creating a duplicate report.
 
-“Prepare factual draft” (Prepare factual draft) creates wording from the saved facts; optional AI assistance can help select supported points when enabled and consented to. Review and copy the draft for your own use. Drafts are not automatically sent and the workspace does not submit a bond refund or dispute application. You can record further facts, confirm the actual outcome or withdraw follow-up. Check official sources separately for the applicable process and deadlines.
+The Human review page loads the queue directly without a key or a selected tenant case. Each report shows the issue, reported details and evidence. Reviewers can inspect images and documents, enter “Review advice” and select “Save advice and complete review”. The saved advice appears in the user's History. Completed items remain available in Human review under “History”. If a report version changes while advice is being written, “Load latest report” preserves that advice and loads the new information before an explicit save.
+
+Reports and files stay in local storage; this reporting flow does not send evidence to external AI. Completing human review does not record a refund, accept a deduction or submit an external dispute. Original reports and earlier records are retained.
 
 ## Read sources and handle changes
 
 Ask general rental questions or questions about using the product directly in “AI rental assistant”. For example, ask “How do I request repairs?” Relevant public documents are retrieved automatically, and the answer and citations appear in the conversation. Open “Read source excerpts” to inspect the supporting passages and check any stated uncertainty. You can ask a knowledge question while recording housing requirements and then continue the same conversation. Public product documentation explains controls; official guidance supplies tenancy information.
 
-Public knowledge is separate from uploaded private contracts. To ask about a particular contract, open its review and enable the relevant document search and AI processing permissions. A general rental question does not enable access to a private contract.
+Public knowledge is separate from uploaded private contracts. To ask about a particular contract, use the private contract controls in chat and enable the relevant document search and AI processing permissions. A general rental question does not enable access to a private contract.
 
-Saved data and current form input can differ. If you see a stale-version warning or a failed-save message, use the offered reload or retry action, compare the latest information with your retained input and confirm again. A visible proposed value or an unsaved preview is not proof that a write completed. “Case progress” (Case progress) helps you revisit the recorded stages.
+Saved data and current form input can differ. If you see a stale-version warning or a failed-save message, use the offered reload or retry action, compare the latest information with your retained input and confirm again. A visible proposed value or an unsaved preview is not proof that a write completed. Return to the relevant feature page to view its saved results.

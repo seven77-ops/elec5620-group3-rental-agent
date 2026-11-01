@@ -161,7 +161,7 @@ export default function ChatContractReview({
               </p>
             )}
             <Button onClick={() => go("contract?mode=review")}>
-              View full review and edit fields
+              View contract check results
             </Button>
           </section>
           {!loaded?.active && (

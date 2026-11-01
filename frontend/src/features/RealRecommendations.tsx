@@ -10,7 +10,10 @@ import {
   Space,
   Table,
 } from "antd";
-import { api, post } from "../api/client";
+import { api, post, ApiError } from "../api/client";
+import { useAction } from "../components/useAction";
+import { useNavigate } from "react-router-dom";
+import type { CaseState } from "../api/types";
 import type { Evaluation } from "../api/types";
 import type {
   HousingAd,
@@ -33,6 +36,8 @@ const CandidateFollowup = lazy(() => import("./candidate/CandidateFollowup"));
 
 export default function RealRecommendations() {
   const { current, go } = useCase();
+  const navigate = useNavigate();
+  const newSearch = useAction();
   const [form] = Form.useForm<HousingFilters>();
   const [filters, setFilters] = useState<HousingFilters>({ sort: "rent_asc" });
   const filtersTouched = useRef(false);
@@ -111,7 +116,10 @@ export default function RealRecommendations() {
         `/cases/${current.case_id}/recommendation-context`,
       ),
       latest
-        ? api<Evaluation>(`/evaluations/${latest}`)
+        ? api<Evaluation>(`/evaluations/${latest}`).catch((error) => {
+            if (error instanceof ApiError && error.status === 404) return null;
+            throw error;
+          })
         : Promise.resolve(null),
     ])
       .then(([ctx, r]) => {
@@ -131,7 +139,10 @@ export default function RealRecommendations() {
         setContextReady(true);
       })
       .catch((e) => {
-        if (valid) setReportError(e);
+        if (valid) {
+          setReportError(e);
+          setLoading(false);
+        }
       });
     return () => {
       valid = false;
@@ -158,6 +169,28 @@ export default function RealRecommendations() {
           </Space>
         }
       />
+      {context?.legacy_read_only && (
+        <Alert
+          type="info"
+          showIcon
+          title="Browsing an earlier case"
+          description="You can browse, filter and save listings here. Start a new search to confirm rental needs and select a property. Your earlier records stay available."
+          action={
+            <Button
+              loading={newSearch.busy}
+              onClick={() =>
+                void newSearch.run(async () => {
+                  const next = await post<CaseState>("/cases", {});
+                  navigate(`/cases/${next.case_id}/assistant?needs=1`);
+                })
+              }
+            >
+              Start a new search
+            </Button>
+          }
+        />
+      )}
+      <Failure error={newSearch.error} retry={() => void newSearch.retry()} />
       <Form
         form={form}
         onValuesChange={() => {
@@ -182,10 +215,16 @@ export default function RealRecommendations() {
             aria-label="Listing area"
             allowClear
             showSearch
+            virtual={false}
+            optionFilterProp="label"
             placeholder="All areas"
-            options={
-              result?.catalog.suburbs.map((s) => ({ value: s, label: s })) ?? []
-            }
+            options={[
+              { value: "", label: "All areas" },
+              ...(result?.catalog.suburbs.map((s) => ({
+                value: s,
+                label: s,
+              })) ?? []),
+            ]}
           />
         </Form.Item>
         <Form.Item name="min_bedrooms" label="Minimum bedrooms">
@@ -267,6 +306,20 @@ export default function RealRecommendations() {
             onClick={() => {
               filtersTouched.current = true;
               form.resetFields();
+              form.setFieldsValue({ suburb: "", sort: "rent_asc" });
+              setFilters({ sort: "rent_asc" });
+              setPage(1);
+              setFilterDirty(false);
+              setFilterChange(null);
+              setAlternatives([]);
+            }}
+          >
+            Reset filters
+          </Button>
+          <Button
+            onClick={() => {
+              filtersTouched.current = true;
+              form.resetFields();
               form.setFieldsValue(context?.filters ?? { sort: "rent_asc" });
               setFilters(context?.filters ?? { sort: "rent_asc" });
               setFilterDirty(false);
@@ -303,7 +356,7 @@ export default function RealRecommendations() {
           Filtered results ·{" "}
           {loading
             ? "Loading"
-            : error
+            : error || reportError
               ? "Could not load"
               : (result?.total ?? 0)}{" "}
           records
@@ -451,6 +504,7 @@ export default function RealRecommendations() {
                     Details
                   </Button>
                   <ListingActions
+                    selectDisabled={Boolean(context?.legacy_read_only)}
                     listing={r}
                     onSelect={(listing) =>
                       favorites.choose(listing, { filters })

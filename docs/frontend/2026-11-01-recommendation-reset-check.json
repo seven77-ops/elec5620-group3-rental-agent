@@ -1,0 +1,21 @@
+{
+  "all_areas_option": true,
+  "total": 1000,
+  "query_keys": [
+    "case_id",
+    "page",
+    "page_size",
+    "sort"
+  ],
+  "reset_clears_all_filters": true,
+  "default_sort": "rent_asc",
+  "page": "1",
+  "verification": {
+    "reset_scenarios_passed": 2,
+    "recommendation_workbench_scenarios_passed": 2,
+    "usyd_housing_scenarios_passed": 4,
+    "frontend_unit_tests_passed": 73,
+    "build": "passed",
+    "format_and_diff": "passed"
+  }
+}

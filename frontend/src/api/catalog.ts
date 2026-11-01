@@ -144,6 +144,7 @@ export function filterKey(value: HousingFilters) {
 }
 
 export interface RecommendationContext {
+  legacy_read_only?: boolean;
   profile_version: number | null;
   profile_fingerprint?: string;
   filters: HousingFilters;

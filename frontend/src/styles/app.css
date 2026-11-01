@@ -1515,10 +1515,12 @@ li {
   font-size: 12px;
   height: 34px;
 }
-.assistant-listings {
+.assistant-housing-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+}
+.assistant-listings {
   margin-top: 18px;
 }
 .assistant-listing-results {
@@ -1701,7 +1703,7 @@ li {
   .assistant-heading {
     padding: 20px 24px;
   }
-  .assistant-listings {
+  .assistant-housing-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 }
@@ -2117,44 +2119,6 @@ li {
   align-items: flex-end;
 }
 
-/* Case progress: numbered pipeline of agents, operator and tenant decisions. */
-.progress-steps {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.progress-step {
-  display: flex;
-  gap: 14px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--line, #e5e7eb);
-}
-.progress-step:last-child {
-  border-bottom: 0;
-}
-.progress-index {
-  flex: none;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-weight: 600;
-  background: #eef2f7;
-}
-.progress-step.done .progress-index {
-  background: #d9f2f0;
-}
-.progress-step.waiting .progress-index {
-  background: #fdf0c8;
-}
-.progress-body {
-  min-width: 0;
-}
-.progress-body p {
-  margin: 6px 0;
-}
-
 /* Keep property actions aligned across chat, comparison and commute cards. */
 .listing-card-actions {
   display: flex;
@@ -2258,3 +2222,63 @@ li {
     padding: 14px;
   }
 }
+
+.moveout-help-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 20px 24px;
+  margin: 20px 0;
+  border: 1px solid #dbe5f5;
+  border-radius: 10px;
+  background: #fff;
+}
+.moveout-help-strip h2, .moveout-help-strip p { margin: 0; }
+.moveout-help-strip h2 { font-size: 18px; margin-bottom: 6px; }
+.moveout-report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.moveout-issues .section-heading { align-items: flex-start; }
+.moveout-issue-card { padding: 20px; margin-top: 16px; border: 1px solid #e0e7f2; border-radius: 10px; background: #fff; overflow-wrap: anywhere; }
+.moveout-issue-card h3 { margin: 10px 0 0; font-size: 17px; }
+.moveout-issue-card .section-heading { margin-bottom: 16px; }
+.preserve-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+.moveout-issue-facts { display: flex; flex-wrap: wrap; gap: 16px 40px; margin: 16px 0; }
+.moveout-issue-facts > div { min-width: 0; }
+.moveout-issue-facts dt { color: #637596; font-size: 13px; margin-bottom: 4px; }
+.moveout-issue-facts dd { margin: 0; }
+.moveout-issue-updates { margin-top: 20px; border-top: 1px solid #e6ecf5; }
+.moveout-issue-updates > div { padding: 16px 0 0; }
+.moveout-issue-updates p { margin: 5px 0; }
+.moveout-completed { margin-top: 28px; }
+.moveout-bond-summary { background: #f6f8fc; border-radius: 8px; padding: 14px 18px; margin: 14px 0 18px; }
+.moveout-bond-summary p { margin: 6px 0; }
+@media (max-width: 600px) {
+  .moveout-help-strip { padding: 16px; }
+  .moveout-help-strip > .ant-space { width: 100%; }
+  .moveout-help-strip > .ant-space .ant-space-item { flex: 1; }
+  .moveout-help-strip button { height: auto; min-height: 36px; white-space: normal; }
+  .moveout-report-grid { grid-template-columns: minmax(0,1fr); gap: 0; }
+  .moveout-issue-card { padding: 16px; }
+}
+
+.simple-review-card h2 { margin: 12px 0 6px; font-size: 20px; }
+.simple-review-card h3 { font-size: 14px; margin: 20px 0 10px; color: #637596; }
+.simple-review-card .ant-form { margin-top: 24px; }
+.review-record-footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 20px; padding-top: 12px; border-top: 1px solid #e6ecf5; }
+.review-saved-advice { margin-top: 20px; padding: 16px; background: #f2f7ff; border-radius: 8px; }
+.review-tenant-update { border-left: 3px solid #dbe5f5; padding-left: 14px; margin-top: 14px; }
+.review-file-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(150px,1fr)); gap: 12px; margin: 14px 0; }
+.review-file { min-width: 0; padding: 10px; border: 1px solid #dbe5f5; border-radius: 8px; overflow-wrap: anywhere; }
+.review-file .ant-image-img { height: 130px; object-fit: cover; }
+.review-file a { display: block; margin-top: 8px; }
+.review-evidence-upload { margin: 16px 0 24px; }
+.review-evidence-upload input { display: block; width: 100%; max-width: 100%; }
+.review-upload-entry { margin-top: 12px; }
+.review-upload-entry > span { display: block; overflow-wrap: anywhere; margin-bottom: 6px; }
+.review-document { display: grid; place-items: center; height: 130px; color: #184fa9; background: #f2f6fc; border-radius: 4px; }
+.flat-issue-form { max-width: 980px; }
+.flat-issue-form .ant-form-item:first-child { max-width: 420px; }
+.issue-history-actions { display: flex; justify-content: flex-end; margin: 0 0 16px; }
+.issue-history-card { overflow-wrap: anywhere; }
+.issue-history-card .section-heading { align-items: center; gap: 12px; flex-wrap: wrap; }

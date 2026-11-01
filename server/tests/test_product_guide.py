@@ -134,9 +134,10 @@ class ProductGuideTests(unittest.TestCase):
             ('Lease draft form, AI assistance and PDF preview', 'frontend/src/features/contracts/LeaseDraft.tsx', 'Confirm and save unsigned draft'),
             ('Upload a contract for review', 'frontend/src/features/ContractUpload.tsx', 'Upload and review'),
             ('Private contract search and separate consent', 'frontend/src/features/knowledge/ContractKnowledgePanel.tsx', 'Turn off contract search'),
+            ('My home and in-progress items', 'frontend/src/features/living/HomeDrawer.tsx', 'Edit details'),
             ('Repair emails and follow-up records', 'frontend/src/features/living/RepairComposer.tsx', 'Polish email with AI'),
             ('Utilities, moving and cleaning providers', 'frontend/src/features/living/Services.tsx', 'view provider details'),
-            ('Move-out plans and bond follow-up', 'frontend/src/features/AftercareBond.tsx', 'Prepare factual draft'),
+            ('Issue report and history', 'frontend/src/features/aftercare/IssueReport.tsx', 'Submit report'),
         )
         for heading, source, control in topics:
             with self.subTest(topic=heading):

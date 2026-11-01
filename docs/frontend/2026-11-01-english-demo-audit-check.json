@@ -1,0 +1,27 @@
+{
+  "backend_english_api_and_queue_tests": 72,
+  "agent2_tests": 91,
+  "agent3_tests": 41,
+  "handoff_tests": 6,
+  "frontend_unit_tests": 73,
+  "browser_other_scenarios_passed": 19,
+  "browser_preexisting_retired_flow_skipped": 1,
+  "browser_chinese_locale_dates_bounds_clear_and_string_contracts_passed": 2,
+  "build": "passed (existing large vendor chunk warning)",
+  "format_and_diff_check": "passed",
+  "live_review_history": {
+    "historical_demo_cards": 5,
+    "original_saved_addresses_preserved": 5,
+    "english_display_verified": true
+  },
+  "jev_mode_preserved": "active",
+  "unchanged_live_databases": [
+    "aftercare.sqlite3",
+    "intake.sqlite3",
+    "rag.sqlite3",
+    "utility_catalog.sqlite3",
+    "web.sqlite3"
+  ],
+  "source_preservation": "Original user records and quoted evidence remain unchanged; historical display aliases require matching bundled synthetic provenance.",
+  "browser_test_note": "Date clear regression uses the control-provided English Clear button. The focused two-scenario rerun passed after correcting the earlier test action; other browser scenarios require no product changes."
+}

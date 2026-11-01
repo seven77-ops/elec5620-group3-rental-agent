@@ -7,7 +7,6 @@ import "./commuteResults.css";
 import ListingActions from "../favorites/ListingActions";
 import { commuteModes, UsydCommuteMini } from "../real-data/UsydCommute";
 import { usydDirections } from "../real-data/directions";
-import ListingReasons from "./ListingReasons";
 
 export default function CommuteResults({
   message,
@@ -159,33 +158,30 @@ export default function CommuteResults({
               No listings from this area in the current results.
             </p>
           )}
-          <div className="commute-homes" ref={homes}>
+          <div className="commute-homes assistant-housing-grid" ref={homes}>
             {shown.map((listing) => {
               return (
                 <article key={listing.listing_id} className="commute-home">
-                  <div>
-                    <h4>{listing.address}</h4>
-                    <p className="small muted">
-                      {listing.bedroom_label} bed · {listing.bathrooms} bath ·{" "}
-                      {listing.car_spaces} car spaces
-                    </p>
-                    <strong className="commute-price">
-                      AUD {listing.weekly_rent}
-                      <small>/week</small>
-                    </strong>
+                  <div className="commute-home-heading">
+                    <div>
+                      <h4>{listing.address}</h4>
+                      <p className="small muted">
+                        {listing.bedroom_label} bed · {listing.bathrooms} bath ·{" "}
+                        {listing.car_spaces} car spaces
+                      </p>
+                      <strong className="commute-price">
+                        AUD {listing.weekly_rent}
+                        <small>/week</small>
+                      </strong>
+                    </div>
+                    <div className="commute-route">
+                      <UsydCommuteMini
+                        showLabel
+                        listing={listing}
+                        mode={result.criteria.commute_mode}
+                      />
+                    </div>
                   </div>
-                  <div className="commute-route">
-                    <UsydCommuteMini
-                      showLabel
-                      listing={listing}
-                      mode={result.criteria.commute_mode}
-                    />
-                  </div>
-                  <ListingReasons
-                    listing={listing}
-                    criteria={result.criteria}
-                    filters={message.recommendation_filters}
-                  />
                   {message.soft_preferences && (
                     <SoftPreferenceEvidence
                       report={message.soft_preferences}

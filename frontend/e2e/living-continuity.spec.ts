@@ -12,7 +12,8 @@ async function isolatedCase(request: APIRequestContext) {
   return { c, root, record };
 }
 
-test("lease source preview is read only, selected import needs actual-tenancy confirmation and survives reload", async ({
+// Historical lease-import UI; home-toolbar.spec.ts covers the replacement. Backend source tests remain active.
+test.skip("lease source preview is read only, selected import needs actual-tenancy confirmation and survives reload", async ({
   page,
   request,
 }) => {
@@ -132,7 +133,7 @@ test("lease source preview is read only, selected import needs actual-tenancy co
   );
 });
 
-test("todo focuses a saved repair, manual followup updates it and contextual chat only prefills", async ({
+test("In progress focuses a saved repair, manual followup updates it and contextual chat only prefills", async ({
   page,
   request,
 }) => {
@@ -154,10 +155,11 @@ test("todo focuses a saved repair, manual followup updates it and contextual cha
   ).json();
   const repair = created.repairs[0];
   await page.goto(`/cases/${c.case_id}/aftercare?tab=utilities`);
-  const todos = page.getByRole("region", { name: "To-do items", exact: true });
+  await page.getByRole("button", { name: /^In progress/ }).click();
+  const todos = page.getByRole("dialog", { name: "In progress", exact: true });
   await todos
     .getByRole("button", {
-      name: `Handle repair: ${repair.title}`,
+      name: `Open ${repair.title}`,
       exact: true,
     })
     .click();
@@ -228,7 +230,7 @@ test("todo focuses a saved repair, manual followup updates it and contextual cha
   expect((await (await request.get(root)).json()).repairs).toHaveLength(1);
 });
 
-test("mobile todo list is bounded and links to a specific service record", async ({
+test("mobile In progress collection is scrollable and links to a specific service record", async ({
   page,
   request,
 }) => {
@@ -272,14 +274,12 @@ test("mobile todo list is bounded and links to a specific service record", async
     route.fulfill({ json: { ...record, repairs, bookings: [booking] } }),
   );
   await page.goto(`/cases/${c.case_id}/aftercare`);
-  const todos = page.getByRole("region", { name: "To-do items", exact: true });
-  await expect(todos.locator("li")).toHaveCount(5);
-  await todos
-    .getByRole("button", { name: "View all to-do items", exact: true })
-    .click();
+  await page.getByRole("button", { name: /^In progress/ }).click();
+  const todos = page.getByRole("dialog", { name: "In progress", exact: true });
+  await expect(todos.locator(".home-progress-item")).toHaveCount(7);
   await todos
     .getByRole("button", {
-      name: `Handle service: ${provider.name}`,
+      name: `Open ${provider.name}`,
       exact: true,
     })
     .click();
@@ -295,7 +295,8 @@ test("mobile todo list is bounded and links to a specific service record", async
   ).toBe(true);
 });
 
-test("confirmed aftercare source imports through real endpoints without changing saved services", async ({
+// Historical lease-import UI; home-toolbar.spec.ts covers the replacement. Backend source tests remain active.
+test.skip("confirmed aftercare source imports through real endpoints without changing saved services", async ({
   page,
   request,
 }) => {
@@ -388,7 +389,8 @@ test("confirmed aftercare source imports through real endpoints without changing
   ).toBe(true);
 });
 
-test("failed stale import preserves choices and a refreshed stale source cannot be confirmed", async ({
+// Historical lease-import UI; home-toolbar.spec.ts covers the replacement. Backend source tests remain active.
+test.skip("failed stale import preserves choices and a refreshed stale source cannot be confirmed", async ({
   page,
   request,
 }) => {
@@ -481,7 +483,8 @@ test("failed stale import preserves choices and a refreshed stale source cannot 
   expect(imports).toBe(1);
 });
 
-test("composite tenancy labels preserve the actual aftercare and supplementary draft versions", async ({
+// Historical lease-import UI; home-toolbar.spec.ts covers the replacement. Backend source tests remain active.
+test.skip("composite tenancy labels preserve the actual aftercare and supplementary draft versions", async ({
   page,
   request,
 }) => {

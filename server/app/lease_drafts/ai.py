@@ -17,7 +17,7 @@ DURATION_WORDS={6:r'半\s*年|六\s*个\s*月',12:r'一\s*年|十二\s*个\s*月
 DURATION_NUMBER=r'(?:[零〇一二两三四五六七八九十百]+|[0-9]+)'
 CHINESE_COMPOUND=r'(?:'+DURATION_NUMBER+r'|半)\s*年\s*(?:(?:又|和|加(?:上)?|零)\s*)?(?:半(?:\s*年)?|'+DURATION_NUMBER+r'\s*(?:个\s*)?月)'
 ENGLISH_NUMBER=r'(?:[0-9]+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|a|an)'
-ENGLISH_COMPOUND=r'(?<![A-Za-z0-9])'+ENGLISH_NUMBER+r'\s*years?\s*(?:,\s*)?(?:(?:and|plus|\+)\s*)?(?:(?:a\s+)?half(?:\s*years?)?|'+ENGLISH_NUMBER+r'\s*months?)(?![A-Za-z])'
+ENGLISH_COMPOUND=r'(?<![A-Za-z0-9])'+ENGLISH_NUMBER+r'\s*years?\s*(?:,\s*)?(?:(?:and|plus|\+)\s*)?(?:(?:a\s+)?half(?:\s*years?)?|'+ENGLISH_NUMBER+r'\s*(?:calendar\s+)?months?)(?![A-Za-z])'
 COMPOUND_DURATION=re.compile('(?:'+CHINESE_COMPOUND+')|(?:'+ENGLISH_COMPOUND+')',re.I)
 DURATION_END=r'(?!\s*(?:半|多|余|餘))'
 
@@ -32,7 +32,7 @@ def duration_grounded(value,quote,message=None):
         occurrences=list(re.finditer(re.escape(quote),message))
         if not any(not any(start<match.end() and match.start()<end for start,end in compounds)
                    for match in occurrences):return False
-    patterns=[r'(?<![\d.])'+str(value)+r'\s*(?:个\s*月|months?)(?![a-z])',
+    patterns=[r'(?<![\d.])'+str(value)+r'\s*(?:个\s*月|(?:calendar\s+)?months?)(?![a-z])',
         r'(?<![零一二两三四五六七八九十百\d])(?:'+DURATION_WORDS[value]+r')']
     if value%12==0:patterns.append(r'(?<![\d.])'+str(value//12)+r'\s*(?:年|years?)(?![a-z])')
     return any(re.search('(?:'+pattern+')'+DURATION_END,quote,re.I) for pattern in patterns)
@@ -79,7 +79,8 @@ def grounded_patch(response,message):
             value='\n'.join(name.strip() for name in value)
             valid=True
         elif key in ('rent_amount','bond','max_occupants'):
-            amounts=re.findall(r'(?<![\d.])(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?(?![\d.])',quote)
+            # A sentence-ending full stop is punctuation, not a decimal digit.
+            amounts=re.findall(r'(?<![\d.])(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?(?!\d|\.\d)',quote)
             valid=type(value) in (int,float) and any(Decimal(v.replace(',',''))==Decimal(str(value)) for v in amounts)
         elif key=='postcode' or key.endswith('_postcode'):
             postal_prefix=r'(?:邮编|郵編|邮政编码|郵政編碼|postcode|postal\s+code)[\s:：=-]*(?:(?:是|为|為|is)\s*)?'
@@ -89,7 +90,7 @@ def grounded_patch(response,message):
                 re.search(state_prefix+re.escape(value)+r'(?![0-9])',quote,re.I))
         elif key=='lease_term_months':valid=duration_grounded(value,quote,message)
         elif key=='rent_period':valid=isinstance(value,str) and value in PERIOD_WORDS and re.search(PERIOD_WORDS[value],quote,re.I)
-        elif key=='rental_mode':valid=value=='whole_property' and re.search(r'整租|整套|whole property|entire property',quote,re.I)
+        elif key=='rental_mode':valid=value=='whole_property' and re.search(r'整租|整套|\b(?:whole|entire)[ -]property\b',quote,re.I)
         elif key=='lease_type':valid=isinstance(value,str) and value in ('fixed','periodic') and (re.search(r'固定|fixed|(?<!不)定期' if value=='fixed' else r'持续|不定期|periodic|无结束日期',quote,re.I) or (value=='fixed' and any(duration_grounded(months,quote,message) for months in TERM_MONTHS)))
         elif key=='payment_method':
             valid=value in ('bank_transfer','centrepay','other') and re.search({'bank_transfer':r'转账|bank transfer|direct debit|BPAY','centrepay':r'centrepay','other':r'其他|other'}[value],quote,re.I)

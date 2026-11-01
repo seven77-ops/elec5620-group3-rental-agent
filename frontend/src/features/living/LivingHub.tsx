@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { Button, Space, Spin, Tabs } from "antd";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
@@ -14,14 +14,14 @@ import type {
 import { newRequestId } from "../../api/client";
 import { useCase } from "../../app/context";
 import { useAction } from "../../components/useAction";
-import Aftercare from "../Aftercare";
+import IssueReport from "../aftercare/IssueReport";
 import { Failure } from "../../components/Common";
-import ProfileEditor from "./ProfileEditor";
+import HomeDrawer from "./HomeDrawer";
+import InProgressDrawer from "./InProgressDrawer";
+import { inProgressItems } from "./inProgress";
 import Repairs from "./Repairs";
 import Utilities from "./Utilities";
 import Services from "./Services";
-import TenancySource from "./TenancySource";
-import LivingTodos from "./LivingTodos";
 import "./living.css";
 
 export default function LivingHub() {
@@ -38,6 +38,8 @@ export default function LivingHub() {
   busyRef.current = action.busy || loading;
   const caseId = current.case_id;
   const [focusVersion, setFocusVersion] = useState(0);
+  const [homeOpen, setHomeOpen] = useState(false);
+  const [progressOpen, setProgressOpen] = useState(false);
   const openTodo = (target: string, repair?: string, booking?: string) => {
     setFocusVersion((value) => value + 1);
     setQuery({
@@ -46,12 +48,6 @@ export default function LivingHub() {
       ...(booking ? { booking } : {}),
       ...(target === "contacts" ? { section: "contacts" } : {}),
     });
-    if (target === "contacts")
-      requestAnimationFrame(() => {
-        const button = document.getElementById("living-contact-editor");
-        button?.focus({ preventScroll: true });
-        button?.scrollIntoView({ behavior: "smooth", block: "center" });
-      });
   };
   const load = useCallback(async () => {
     const token = ++generation.current;
@@ -78,9 +74,14 @@ export default function LivingHub() {
       generation.current++;
     };
   }, [load]);
-  const save: LivingWrite = (path, values, expectedVersion, onSuccess) => {
-    const requestId = newRequestId(),
-      token = generation.current;
+  const save: LivingWrite = (
+    path,
+    values,
+    expectedVersion,
+    onSuccess,
+    requestId = newRequestId(),
+  ) => {
+    const token = generation.current;
     const body = structuredClone(values);
     return action.run(async () => {
       const result = await writeLivingServices(
@@ -96,9 +97,14 @@ export default function LivingHub() {
     });
   };
   const rawTab = query.get("tab") || "repairs";
-  const tab = ["repairs", "utilities", "services", "moveout", "bond"].includes(
-    rawTab,
-  )
+  const tab = [
+    "repairs",
+    "utilities",
+    "services",
+    "moveout",
+    "bond",
+    "issues",
+  ].includes(rawTab)
     ? rawTab
     : "repairs";
   const ask = (message: string) =>
@@ -106,10 +112,90 @@ export default function LivingHub() {
       `/cases/${encodeURIComponent(caseId)}/assistant?message=${encodeURIComponent(message)}`,
     );
   const error = loadError || action.error;
+  const progressItems = record
+    ? inProgressItems(record, directory?.providers ?? [])
+    : [];
+  const toolbar = (
+    <Space wrap>
+      <Button onClick={() => setHomeOpen(true)} disabled={action.busy}>
+        My home
+      </Button>
+      <Button
+        onClick={() => setProgressOpen(true)}
+        disabled={!record || action.busy}
+      >
+        In progress ({progressItems.length})
+      </Button>
+      <Button
+        disabled={action.busy}
+        loading={loading}
+        onClick={() => {
+          if (!busyRef.current) {
+            action.clear();
+            void load();
+          }
+        }}
+      >
+        Load latest information
+      </Button>
+    </Space>
+  );
+  const drawers = (
+    <Fragment key="home-toolbar-drawers">
+      <HomeDrawer
+        caseId={caseId}
+        providers={directory?.providers ?? []}
+        onOpenService={(target) => {
+          setHomeOpen(false);
+          openTodo(target.tab, undefined, target.booking);
+        }}
+        open={homeOpen}
+        onClose={() => setHomeOpen(false)}
+        onSaved={(value) => {
+          setRecord(value);
+          void load();
+        }}
+      />
+      <InProgressDrawer
+        open={progressOpen}
+        onClose={() => setProgressOpen(false)}
+        items={progressItems}
+        onOpen={(item) => {
+          setProgressOpen(false);
+          openTodo(item.tab, item.repair, item.booking);
+        }}
+      />
+    </Fragment>
+  );
+
+  if (["issues", "moveout", "bond"].includes(tab))
+    return (
+      <section className="living-hub">
+        <header className="living-heading">
+          <h1>Issue report</h1>
+          {toolbar}
+        </header>
+        <Tabs
+          activeKey="issues"
+          onChange={(key) => setQuery({ tab: key })}
+          items={[
+            { key: "repairs", label: "Repairs" },
+            { key: "utilities", label: "Utilities" },
+            { key: "services", label: "Moving and cleaning" },
+            { key: "issues", label: "Issue report", children: <IssueReport /> },
+          ]}
+        />
+        {drawers}
+      </section>
+    );
   if (!record || !directory)
     return (
       <section className="living-hub">
-        <h1>Living and aftercare services</h1>
+        <header className="living-heading">
+          <h1>Living and aftercare services</h1>
+          {toolbar}
+        </header>
+        {drawers}
         {loading ? (
           <div className="living-loading" role="status">
             <Spin />
@@ -140,6 +226,7 @@ export default function LivingHub() {
       label: "Utilities",
       children: (
         <Utilities
+          onViewHome={() => setHomeOpen(true)}
           record={record}
           providers={directory.providers}
           busy={action.busy || loading}
@@ -152,6 +239,7 @@ export default function LivingHub() {
       label: "Moving and cleaning",
       children: (
         <Services
+          onViewHome={() => setHomeOpen(true)}
           focusedId={tab === "services" ? query.get("booking") : null}
           focusVersion={focusVersion}
           record={record}
@@ -161,18 +249,7 @@ export default function LivingHub() {
         />
       ),
     },
-    {
-      key: "moveout",
-      label: "Move-out and bond",
-      children: (
-        <Aftercare
-          key={tab === "bond" ? "bond" : "plan"}
-          embedded
-          initialMoveOutDate={record.profile.move_out_date || undefined}
-          initialTab={tab === "bond" ? "bond" : "plan"}
-        />
-      ),
-    },
+    { key: "issues", label: "Issue report", children: <IssueReport /> },
   ];
   return (
     <section className="living-hub">
@@ -180,18 +257,7 @@ export default function LivingHub() {
         <div>
           <h1>Living and aftercare services</h1>
         </div>
-        <Button
-          disabled={action.busy}
-          loading={loading}
-          onClick={() => {
-            if (!busyRef.current) {
-              action.clear();
-              void load();
-            }
-          }}
-        >
-          Load latest information
-        </Button>
+        {toolbar}
       </header>
       <Failure
         error={error}
@@ -204,23 +270,8 @@ export default function LivingHub() {
               }
         }
       />
-      <LivingTodos
-        record={record}
-        providers={directory.providers}
-        go={openTodo}
-      />
-      <TenancySource
-        record={record}
-        busy={action.busy || loading}
-        onImported={load}
-      />
-      <ProfileEditor
-        record={record}
-        busy={action.busy || loading}
-        save={save}
-      />
       <Tabs
-        activeKey={tab === "bond" ? "moveout" : tab}
+        activeKey={tab}
         onChange={(key) => setQuery({ tab: key })}
         items={tabs}
       />
@@ -273,6 +324,7 @@ export default function LivingHub() {
           </Space>
         </div>
       )}
+      {drawers}
     </section>
   );
 }

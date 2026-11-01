@@ -299,3 +299,38 @@ test("knowledge questions interrupt housing intake without changing preferences 
     budget_scope: "whole_property",
   });
 });
+
+test("public PDF excerpts reflow soft line breaks while retaining paragraphs and list entries", async ({ page, request }) => {
+  const c = await (await request.post("/api/v1/cases", { data: {} })).json();
+  const quote = "You also cannot be required to use a specific \nservice provider (such as an app) to make your payments.\n\nCan rent be increased during the tenancy?\nCheck these items:\n• The first item has a wrapped\ncontinuation\n• The second item";
+  await page.route("**/api/v1/cases/*/assistant/conversations/*/messages", async (route) => {
+    if (route.request().method() !== "POST") return route.continue();
+    const response = await route.fetch();
+    const body = await response.json();
+    const answer = body.messages.at(-1).knowledge;
+    expect(answer.citations.length).toBeGreaterThan(0);
+    answer.citations[0].quote = quote;
+    await route.fulfill({ response, json: body });
+  });
+  const reply = await askInChat(page, c.case_id, "How do I request repairs?");
+  await reply.getByText("Read source excerpts", { exact: true }).click();
+  const excerpt = reply.locator(".knowledge-source blockquote").first();
+  const paragraphs = excerpt.locator(".knowledge-excerpt-block");
+  await expect(paragraphs).toHaveCount(5);
+  await expect(paragraphs.first()).toHaveCSS("white-space", "normal");
+  await expect(paragraphs.first()).toContainText("specific service provider");
+  await expect(paragraphs.nth(1)).toHaveText("Can rent be increased during the tenancy?");
+  await expect(paragraphs.nth(3)).toHaveText("• The first item has a wrapped continuation");
+  expect((await excerpt.innerText()).replace(/\s+/g, " ").trim()).toBe(quote.replace(/\s+/g, " ").trim());
+  const wordPositions = await paragraphs.first().evaluate((element) => {
+    const text = element.firstChild!;
+    const content = text.textContent!;
+    const start = content.indexOf("specific");
+    const end = content.indexOf("provider", start) + "provider".length;
+    const range = document.createRange();
+    range.setStart(text, start);
+    range.setEnd(text, end);
+    return Array.from(range.getClientRects()).filter(rect => rect.width > 0).map(rect => rect.y);
+  });
+  expect(new Set(wordPositions).size).toBe(1);
+});

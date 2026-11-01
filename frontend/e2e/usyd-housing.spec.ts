@@ -141,7 +141,7 @@ test("chat uses the main campus without school questions and syncs the actual co
     .allTextContents();
   expect(times.length).toBeGreaterThan(0);
   for (const time of times)
-    expect(time).toMatch(/^(?:~\d+|Est\. \d+–\d+) min$/);
+    expect(time).toMatch(/^Commute (?:\d+|Est\. \d+–\d+) min$/);
   const estimates = page.getByRole("region", {
     name: "Street and area commute estimates",
   });

@@ -47,10 +47,11 @@ test("contract search needs separate consent and shows local page/section citati
   request,
 }) => {
   const { c, root } = await seed(request);
-  await page.goto(`/cases/${c.case_id}/contract?mode=review`);
+  await page.goto(`/cases/${c.case_id}/assistant`);
   await page
-    .getByRole("button", { name: "Ask more about this contract", exact: true })
-    .click();
+    .getByRole("textbox", { name: "Message to Rental Assistant", exact: true })
+    .fill("Review my uploaded contract.");
+  await page.getByRole("button", { name: "Send message", exact: true }).click();
   const panel = page.getByRole("region", {
     name: "Private contract Q&A",
     exact: true,
@@ -107,10 +108,11 @@ test("forgetting contract search during a question ignores a late private answer
   request,
 }) => {
   const { c } = await seed(request);
-  await page.goto(`/cases/${c.case_id}/contract?mode=review`);
+  await page.goto(`/cases/${c.case_id}/assistant`);
   await page
-    .getByRole("button", { name: "Ask more about this contract", exact: true })
-    .click();
+    .getByRole("textbox", { name: "Message to Rental Assistant", exact: true })
+    .fill("Review my uploaded contract.");
+  await page.getByRole("button", { name: "Send message", exact: true }).click();
   const panel = page.getByRole("region", {
     name: "Private contract Q&A",
     exact: true,

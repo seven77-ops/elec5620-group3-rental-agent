@@ -17,7 +17,7 @@ def create_app(runtime_dir=None, operator_key=None, ai_provider=None, data_provi
         finally:
             services.decision_router.close()
     app = FastAPI(title='Rental journey · real Agent2 catalogue', version='1.1', lifespan=lifespan)
-    app.router.route_class = strict_route(services.operator)
+    app.router.route_class = strict_route()
     app.state.repository = services.repo
     app.state.decision_router = services.decision_router
     install_error_handlers(app, services)

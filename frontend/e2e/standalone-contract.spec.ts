@@ -9,18 +9,7 @@ test("upload and privately query a contract before selecting housing", async ({
   const current = await created.json();
   const root = `/api/v1/cases/${current.case_id}`;
   await page.goto(`/cases/${current.case_id}/contract?mode=review`);
-  await page
-    .getByRole("checkbox", {
-      name: "I agree to process this uploaded contract independently, without linking it to a property.",
-      exact: true,
-    })
-    .check();
-  await page
-    .getByRole("button", {
-      name: "Agree to process this contract",
-      exact: true,
-    })
-    .click();
+
   await page.getByLabel("Select contract", { exact: true }).setInputFiles({
     name: "standalone-contract.txt",
     mimeType: "text/plain",
@@ -30,22 +19,24 @@ test("upload and privately query a contract before selecting housing", async ({
   });
   await page
     .getByRole("checkbox", {
-      name: "I confirm I am authorised to submit this contract for review.",
+      name: "I am authorised to upload this contract and agree to send it to the AI service for review.",
       exact: true,
     })
     .check();
   await page
-    .getByRole("button", { name: "Upload and review", exact: true })
+    .getByRole("button", { name: "Upload and analyse", exact: true })
     .click();
   await expect(
-    page.getByRole("heading", { name: "Contract details", exact: true }),
+    page.getByRole("heading", { name: "Contract check results", exact: true }),
   ).toBeVisible();
   await expect(
     page.getByText("1 Example Street, Sydney NSW 2000", { exact: true }),
   ).toBeVisible();
+  await page.goto(`/cases/${current.case_id}/assistant`);
   await page
-    .getByRole("button", { name: "Ask more about this contract", exact: true })
-    .click();
+    .getByRole("textbox", { name: "Message to Rental Assistant", exact: true })
+    .fill("Review my uploaded contract.");
+  await page.getByRole("button", { name: "Send message", exact: true }).click();
   const panel = page.getByRole("region", {
     name: "Private contract Q&A",
     exact: true,

@@ -1,3 +1,4 @@
+import EnglishDateInput from "../components/EnglishDateInput";
 import { useState } from "react";
 import {
   Alert,
@@ -146,12 +147,11 @@ export default function AftercarePlan({
         <label htmlFor="move-out-date">
           {plan ? "Propose a new move-out date" : "Planned move-out date"}
         </label>
-        <Input
+        <EnglishDateInput
           id="move-out-date"
-          type="date"
           min={sydneyToday()}
           value={date}
-          onChange={(e) => setDate(e.target.value)}
+          onChange={setDate}
         />
         <Button
           type="primary"
@@ -414,7 +414,7 @@ export default function AftercarePlan({
                 : undefined
             }
           >
-            <Input type="date" disabled={Boolean(plan?.pending_schedule)} />
+            <EnglishDateInput disabled={Boolean(plan?.pending_schedule)} />
           </Form.Item>
           <Form.Item name="evidence_refs" label="Evidence references">
             <Select

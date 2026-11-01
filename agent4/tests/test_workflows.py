@@ -224,7 +224,11 @@ class Workflows(unittest.TestCase):
         self.assertTrue(case['audit'] and case['bond']['history'])
         result = self.run_op('poll_reminders', {}, as_of='2026-11-03T09:00:00+11:00')
         self.assertEqual(result['result']['delivered'], [])
-        self.error('case_closed', self.run_op, 'add_evidence', {'evidence': self.create['payload']['evidence'][0]})
+        item = {**self.create['payload']['evidence'][0], 'evidence_id': 'post-closure-receipt'}
+        self.run_op('add_evidence', {'evidence': item})
+        self.assertEqual(self.case()['bond'], case['bond'])
+        self.assertTrue(any(e['evidence_id'] == 'post-closure-receipt' for e in self.case()['evidence']))
+        self.error('case_closed', self.run_op, 'bond_update', {'entry': self.entry()})
 
     def test_withdrawal_from_draft_is_explicit_and_preserved(self):
         self.run_op('open_bond', {'bond_reference': None, 'deposit_evidence_ref': None})

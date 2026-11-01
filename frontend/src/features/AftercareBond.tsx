@@ -1,3 +1,4 @@
+import EnglishDateInput from "../components/EnglishDateInput";
 import { useState } from "react";
 import {
   Alert,
@@ -170,18 +171,47 @@ export default function AftercareBond({
         {bond && <Status value={state} />}
       </div>
       <p className="muted">
-        Record facts reported by the tenant and deduction claims. Recording a
-        deduction does not mean you accept it. Follow-up drafts are not sent
-        automatically.
+        Track your bond and record reported deductions. Disputes can be
+        submitted using “Report a move-out issue” above.
       </p>
-      {bondAmount && (
-        <Alert
-          className="aftercare-prefill"
-          type="info"
-          showIcon
-          title={`Bond recorded in the contract: ${money(Number(bondAmount.value))}`}
-          description={`Source: ${bondAmount.label}${bondAmount.quote ? `“${bondAmount.quote}”` : ""}. Check the bond reference and actual amount against Rental Bonds Online records.`}
-        />
+      {(bondAmount || bond) && (
+        <div className="moveout-bond-summary">
+          {bondAmount && (
+            <p>
+              Contract bond <strong>{money(Number(bondAmount.value))}</strong>
+            </p>
+          )}
+          {bond && (
+            <p className="muted">Bond reference: {text(bond.bond_reference)}</p>
+          )}
+          <Collapse
+            ghost
+            size="small"
+            items={[
+              {
+                key: "source",
+                label: "Bond source and evidence",
+                children: (
+                  <>
+                    {bondAmount && (
+                      <p>
+                        Source: {bondAmount.label}
+                        {bondAmount.quote ? ` — “${bondAmount.quote}”` : ""}
+                      </p>
+                    )}
+                    {bond && (
+                      <p>Bond evidence: {text(bond.deposit_evidence_ref)}</p>
+                    )}
+                    <p className="muted small">
+                      Check the reference and actual amount against your bond
+                      records.
+                    </p>
+                  </>
+                ),
+              },
+            ]}
+          />
+        </div>
       )}
       {!bond ? (
         <div className="date-actions">
@@ -211,8 +241,6 @@ export default function AftercareBond({
         </div>
       ) : (
         <>
-          <p>Bond reference: {text(bond.bond_reference)}</p>
-          <p>Bond evidence: {text(bond.deposit_evidence_ref)}</p>
           {state === "Draft" && (
             <>
               {!bond.bond_reference && !bond.deposit_evidence_ref && (
@@ -625,7 +653,7 @@ export default function AftercareBond({
               },
             ]}
           >
-            <Input type="date" max={today} />
+            <EnglishDateInput max={today} />
           </Form.Item>
           <Form.Item name="evidence_refs" label="Linked evidence">
             <Select

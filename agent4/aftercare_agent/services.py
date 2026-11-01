@@ -113,10 +113,25 @@ def apply(case, command, *, gateway=None):
     op, p, now = command['operation'], command['payload'], command['as_of']
     require(instant(now) >= instant(case['updated_at']), 'stale_time', 'as_of precedes the last committed command')
     if case['bond'] and case['bond']['state'] in TERMINAL:
-        require(op == 'poll_reminders', 'case_closed', 'Closed cases are retained read-only')
+        require(op in {'poll_reminders', 'report_issue', 'reply_review', 'operator_decision', 'add_evidence'},
+                'case_closed', 'Closed bond records are retained read-only')
     result = {'operation': op}
     if op == 'create':
         pass
+    elif op == 'report_issue':
+        check_refs(case, p['evidence_refs'])
+        review = ensure_review(case, 'issue:' + str(len(case['reviews'])+1), p['title'],
+                               deepcopy(p['evidence_refs']), now)
+        review.update(report=deepcopy(p), updates=[])
+        result['review_id'] = review['review_id']
+    elif op == 'reply_review':
+        review = next((r for r in pending_reviews(case) if r['review_id'] == p['review_id']), None)
+        require(review is not None, 'invalid_state', 'No open review with that ID')
+        check_refs(case, p['evidence_refs'])
+        review.setdefault('updates', []).append({'text': p['text'], 'evidence_refs': deepcopy(p['evidence_refs']),
+                                                'at': now, 'actor_id': command['actor_id'],
+                                                'attachment_ids': deepcopy(p.get('attachment_ids', []))})
+        review['source_refs'] = sorted(set(review['source_refs'] + p['evidence_refs']))
     elif op == 'add_evidence':
         add_evidence(case, p['evidence'], now)
         invalidate_drafts(case, 'New evidence was registered')
@@ -212,7 +227,9 @@ def apply(case, command, *, gateway=None):
         bond.update(state='Resolved' if op == 'confirm_outcome' else 'Withdrawn',
                     outcome={**deepcopy(p), 'recorded_at': now, 'actor_id': command['actor_id']}, closed_at=now)
         for review in pending_reviews(case):
-            review.update(status='closed_by_tenant', closed_at=now, closure_reason=op)
+            # Independent issue reports remain open until an operator completes them.
+            if not review.get('report'):
+                review.update(status='closed_by_tenant', closed_at=now, closure_reason=op)
         invalidate_drafts(case, 'Tenant confirmed closure')
     elif op == 'reminder_preferences':
         if p['follow_up_at']:

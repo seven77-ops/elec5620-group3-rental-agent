@@ -64,14 +64,6 @@ export default function LivingTodos({
       });
     }
   }
-  if (record.profile.move_out_date)
-    todos.push({
-      key: "moveout",
-      title: "Move-out plan",
-      note: `Expected move-out date entered: ${record.profile.move_out_date}`,
-      label: "View move-out tasks",
-      tab: "moveout",
-    });
   if (
     (record.profile.address || record.repairs.length) &&
     !record.profile.agent_email &&

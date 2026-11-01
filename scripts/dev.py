@@ -2,7 +2,6 @@
 from pathlib import Path
 import os
 import argparse
-import secrets
 import signal
 import subprocess
 import sys
@@ -25,14 +24,6 @@ def main():
     runtime.mkdir(exist_ok=True)
     environment = load_ai_env(ROOT / '.env', os.environ)
     environment['RENTAL_DEV_API_PORT'] = str(ports.api_port)
-    if not environment.get('RENTAL_OPERATOR_KEY'):
-        key_path = runtime / 'operator-key.txt'
-        if not key_path.exists():
-            descriptor = os.open(key_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-            with os.fdopen(descriptor, 'w') as stream:
-                stream.write(secrets.token_urlsafe(32))
-        environment['RENTAL_OPERATOR_KEY'] = key_path.read_text().strip()
-        print(f'Local operator key file: {key_path}', flush=True)
     children = []
     def stop(*_):
         for child in children:

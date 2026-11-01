@@ -101,13 +101,12 @@ class BoundaryTests(unittest.TestCase):
         self.assertEqual(self.client.post(f'/api/v1/cases/{self.cid}/contract-reviews',content=b'a'*2000001,headers=headers).status_code,413)
         self.assertEqual(list(Path(self.temp.name).glob('uploads/*')),[])
 
-    def test_operator_gate_corrections_and_durable_reviews(self):
+    def test_local_review_corrections_and_durable_reviews(self):
         result,_,_=self.review(True); review=result['review']; rid=review['review_id']
         self.assertEqual(review['status'],'Awaiting Human Review')
         self.assertEqual(self.post(f'contract-reviews/{rid}/questions',{'expected_version':1}).status_code,409)
         decision={'expected_version':1,'decision':'approve','note':'Demo operator reviewed the conflict'}
-        self.assertEqual(self.post(f'contract-reviews/{rid}/decisions',decision).status_code,403)
-        approved=self.client.post(f'/api/v1/contract-reviews/{rid}/decisions',json=decision,headers={'X-Operator-Key':'test-private-key'})
+        approved=self.client.post(f'/api/v1/contract-reviews/{rid}/decisions',json=decision)
         self.assertEqual(approved.status_code,200,approved.text)
         questions=self.post(f'contract-reviews/{rid}/questions',{'expected_version':1})
         self.assertEqual(questions.json()['status'],'Questions Ready')
@@ -133,7 +132,7 @@ class BoundaryTests(unittest.TestCase):
         self.assertGreater(planned.json()['case']['updated_at'],aftercare['case']['updated_at'])
         self.assertEqual(self.post('aftercare/commands',command).json(),aftercare)
         self.assertEqual(self.post('aftercare/commands',dict(plan,request_id='wrong-version')).status_code,409)
-        self.assertEqual(self.post('aftercare/commands',dict(plan,operation='operator_decision')).status_code,403)
+        self.assertEqual(self.post('aftercare/commands',dict(plan,request_id='invalid-decision',operation='operator_decision')).status_code,422)
         self.assertEqual(self.client.get('/api/v1/aftercare/cases/arbitrary').status_code,404)
 
     def test_operator_inbox_keeps_contract_decision_history_after_correction(self):

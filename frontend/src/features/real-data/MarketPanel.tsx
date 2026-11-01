@@ -119,12 +119,13 @@ export default function MarketPanel() {
           <div className="real-stat-grid">
             <div>
               <span>Median weekly rent</span>
-              <strong>A${b.median.toLocaleString()}</strong>
+              <strong>A${b.median.toLocaleString("en-AU")}</strong>
             </div>
             <div>
               <span>Middle 50% rent range</span>
               <strong>
-                A${b.q25.toLocaleString()}–{b.q75.toLocaleString()}
+                A${b.q25.toLocaleString("en-AU")}–
+                {b.q75.toLocaleString("en-AU")}
               </strong>
             </div>
             <div>

@@ -1,3 +1,4 @@
+import EnglishDateInput from "../components/EnglishDateInput";
 import { contractValue, reviewSummary } from "./contracts/reviewPresentation";
 import ContractKnowledgePanel from "./knowledge/ContractKnowledgePanel";
 import { useEffect, useRef, useState } from "react";
@@ -492,10 +493,10 @@ export default function Contract({ embedded = false }: { embedded?: boolean }) {
               <InputNumber min={0} />
             </Form.Item>
             <Form.Item name="start_date" label="Lease start">
-              <Input type="date" />
+              <EnglishDateInput />
             </Form.Item>
             <Form.Item name="end_date" label="Lease end">
-              <Input type="date" />
+              <EnglishDateInput />
             </Form.Item>
           </div>
         </Form>

@@ -74,6 +74,14 @@ async function activate(page: Page) {
   await expect(dialog).toBeHidden();
 }
 
+// Historical UI coverage retained for reference; live replacement: issue-report.spec.ts.
+test.beforeEach(() => {
+  test.skip(
+    true,
+    "Historical planner/modal UI replaced by inline Issue report and History; backend Agent4 coverage retained.",
+  );
+});
+
 test("unknown tenancy can be completed in the same case before confirming a plan", async ({
   page,
   request,

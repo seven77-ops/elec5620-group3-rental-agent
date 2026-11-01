@@ -84,12 +84,14 @@ test("English shell navigation, favorites and empty repair records", async ({
     "Housing recommendations",
     "Contract assistant",
     "Aftercare services",
-    "Case progress",
     "Human review",
   ])
     await expect(
       page.getByRole("menuitem", { name, exact: true }),
     ).toBeVisible();
+  await expect(
+    page.getByRole("menuitem", { name: "Case progress", exact: true }),
+  ).toHaveCount(0);
   await expectEnglish(page);
   await page
     .getByRole("menuitem", { name: "Housing recommendations", exact: true })
@@ -299,18 +301,7 @@ test("English standalone contract upload supports private source Q&A without hou
 }) => {
   const c = await newCase(request);
   await page.goto(`/cases/${c.case_id}/contract?mode=review`);
-  await page
-    .getByRole("checkbox", {
-      name: "I agree to process this uploaded contract independently, without linking it to a property.",
-      exact: true,
-    })
-    .check();
-  await page
-    .getByRole("button", {
-      name: "Agree to process this contract",
-      exact: true,
-    })
-    .click();
+
   const clause =
     "The tenant must leave the premises reasonably clean, except for fair wear and tear.";
   await page.getByLabel("Select contract", { exact: true }).setInputFiles({
@@ -322,23 +313,27 @@ test("English standalone contract upload supports private source Q&A without hou
   });
   await page
     .getByRole("checkbox", {
-      name: "I confirm I am authorised to submit this contract for review.",
+      name: "I am authorised to upload this contract and agree to send it to the AI service for review.",
       exact: true,
     })
     .check();
   await page
-    .getByRole("button", { name: "Upload and review", exact: true })
+    .getByRole("button", { name: "Upload and analyse", exact: true })
     .click();
   await expect(
     page.getByRole("heading", {
-      name: "Contract details",
+      name: "Contract check results",
       exact: true,
     }),
   ).toBeVisible();
   await expect(
     page.getByText("1 Example Street, Sydney NSW 2000", { exact: true }),
   ).toBeVisible();
-  await page.getByText("Ask more about this contract", { exact: true }).click();
+  await page.goto(`/cases/${c.case_id}/assistant`);
+  await page
+    .getByRole("textbox", { name: "Message to Rental Assistant", exact: true })
+    .fill("Review my uploaded contract.");
+  await page.getByRole("button", { name: "Send message", exact: true }).click();
   const panel = page.getByRole("region", {
     name: "Private contract Q&A",
     exact: true,

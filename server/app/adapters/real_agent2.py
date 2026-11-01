@@ -66,6 +66,16 @@ class RealProfilesAdapter(ProfilesAdapter):
     def recommendation_context(self, case_id: str):
         with self.ctx.repo.transaction() as db:
             case = self.ctx.get(db, 'case', case_id)
+            if not case.get('agent1_case_id'):
+                # Historical form-only records remain readable. Do not pretend
+                # to confirm them in Agent 1 or weaken any write-side boundary.
+                draft=case['draft'];saved=case['confirmations'][-1] if case['confirmations'] else None
+                current=bool(saved and saved['fingerprint']==draft['fingerprint'] and
+                             saved['draft_revision']==draft['revision'])
+                profile=saved['profile'] if current else {}
+                return {**preference_context(profile,self.ctx.settings.catalog,legacy=True),
+                        'profile_version':saved['version'] if current else None,
+                        'legacy_read_only':True}
             try:
                 confirmed = self.ctx.current(case)
             except ApiError as exc:

@@ -1,5 +1,6 @@
-"""Operator-key protected review inbox, derived from durable cases and decisions."""
+"""Local review inbox, derived from durable cases and decisions."""
 import json
+from datetime import datetime
 
 from fastapi import Request
 
@@ -11,7 +12,6 @@ class OperatorInbox:
         self.ctx = ctx
 
     def read(self, request: Request):
-        self.ctx.operator(request)
         repo = self.ctx.repo
         items = []
         with repo.transaction() as db:
@@ -39,6 +39,11 @@ class OperatorInbox:
                         'version': review['version'], 'status': 'open' if review['status'] == 'Awaiting Human Review' else 'closed',
                         'created_at': review['created_at'], 'reason': 'High-risk contract review',
                         'decisions': decisions, 'review': review})
+            from .issue_reports import issue_view
+            for row in db.execute('SELECT body FROM objects WHERE kind=? ORDER BY rowid DESC', ('issue_report',)):
+                items.append(issue_view(self.ctx,db,json.loads(row[0])))
+            for row in db.execute('SELECT body FROM objects WHERE kind=? ORDER BY id', ('review_demo',)):
+                items.append(json.loads(row[0]))
         # Agent 4 owns a separate database. Do not hold the web writer while reading it.
         for case in cases:
             identifier = case.get('aftercare_case_id')
@@ -46,13 +51,19 @@ class OperatorInbox:
                 continue
             record = self.ctx.aftercare.get(identifier, TENANT)
             for review in record.get('reviews', []):
+                from .review_files import review_files
                 refs = set(review['source_refs'])
                 items.append({**review, 'kind': 'aftercare', 'case_id': case['case_id'],
+                    'attachments': review_files(self.ctx, case['case_id'], review),
                     'aftercare_case_id': identifier, 'address': record['tenancy']['address'],
                     'version': record['version'],
                     'claims': [claim for claim in (record.get('bond') or {}).get('claims', [])
                                if 'claim:' + claim['claim_id'] in refs],
-                    'history': (record.get('bond') or {}).get('history', [])[-3:],
-                    'evidence': record.get('evidence', [])})
-        items.sort(key=lambda item: (item['status'] == 'open', item['created_at'], item['case_id']), reverse=True)
+                    'history': [] if review.get('report') else (record.get('bond') or {}).get('history', [])[-3:],
+                    'evidence': [entry for entry in record.get('evidence', [])
+                                 if not review.get('report') or entry['evidence_id'] in refs]})
+        # Contracts and issue reports retain different ISO timezone offsets.
+        # Compare instants so a newer UTC report is not buried below older AEDT records.
+        items.sort(key=lambda item: (item['status'] == 'open',
+            datetime.fromisoformat(item['created_at'].replace('Z','+00:00')).timestamp(), item['case_id']), reverse=True)
         return {'items': items, 'pending_count': sum(item['status'] == 'open' for item in items)}

@@ -79,6 +79,27 @@ def brief_filters(brief):
     return result
 
 
+def working_profile_patch(brief,filters=None):
+    """Carry only explicit conversation fields into a partial saved-profile edit."""
+    from .recommendation_options import FIELD_MAP
+    prior={target:deepcopy(filters[source]) for target,source in FIELD_MAP.items()
+           if source in (filters or {})}
+    if 'budget_amount' in prior:prior['budget_period']='week'
+    brief=commute_choice.normalize({**prior,**brief})
+    patch={}
+    budget={target:brief[source] for source,target in
+            (('budget_amount','maximum'),('budget_period','period'),('budget_scope','scope'))
+            if source in brief and brief[source]!='unknown'}
+    if budget:patch['budget']=budget
+    housing={k:deepcopy(brief[k]) for k in ('suburb','min_bedrooms','min_bathrooms','min_car_spaces') if k in brief}
+    if housing:patch['housing_preferences']=housing
+    patch.update({k:brief[k] for k in ('occupants','rental_mode') if k in brief})
+    if brief.get('commute_mode') and brief.get('commute_max_minutes'):
+        patch['student_commute']={'mode':brief['commute_mode'],'maximum_minutes':brief['commute_max_minutes']}
+        if brief.get('max_transfers') is not None:patch['student_commute']['max_transfers']=brief['max_transfers']
+    return patch
+
+
 def brief_profile_patch(brief):
     brief=commute_choice.normalize(brief)
     patch={'budget':{'currency':'AUD','period':'week','maximum':brief['budget_amount'],'scope':brief['budget_scope']},

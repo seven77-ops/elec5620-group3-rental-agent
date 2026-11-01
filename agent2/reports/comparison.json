@@ -2,12 +2,12 @@
   "schema_version": "1.1",
   "scoring_version": "rules-1.0",
   "search_id": "demo-search-001",
-  "recommendation_run_id": "rr-683302d10dc5c0c5930be505de4d9f01589a2f26bca50f29a8b1e6429b32aae7",
+  "recommendation_run_id": "rr-6de0fd4e325c1594ced0473dc32135f8fa759b231d8a65bad8cad282fb46830e",
   "profile_fingerprint": "9a79d995fbf449804c5867839df9e84782d33e4db28a61208973a1bf970e603b",
   "profile_version": 2,
   "data_mode": "synthetic_demo",
   "as_of": "2026-09-17T09:00:00+10:00",
-  "dataset_fingerprint": "499210ec46bfb2220ca40ac67aea6f07054bb82ab829073814374176cb76f2bb",
+  "dataset_fingerprint": "4885c287b4cbeedc85853a1ef391fa0f9f5e69f83c9abb3e960c6bc3faec3289",
   "profile": {
     "schema_version": "1.0",
     "search_id": "demo-search-001",
@@ -5883,8 +5883,8 @@
   "comparison": {
     "before_profile_version": 1,
     "after_profile_version": 2,
-    "before_run_id": "rr-af6b18506b289408fbb153d03e3fc635570ab7da2637142f87d0f31bbd30e809",
-    "after_run_id": "rr-683302d10dc5c0c5930be505de4d9f01589a2f26bca50f29a8b1e6429b32aae7",
+    "before_run_id": "rr-48aa0a6aa12620fa9937f40b75699ceefa91ae33f1413ed2505d2d0646dcfc81",
+    "after_run_id": "rr-6de0fd4e325c1594ced0473dc32135f8fa759b231d8a65bad8cad282fb46830e",
     "before_weights": {
       "commute": 0.35,
       "cost": 0.3,

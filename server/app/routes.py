@@ -55,6 +55,8 @@ def register_routes(app, services):
     app.get(draft_base+'/{draft_id}')(drafts.read)
     app.get(draft_base+'/{draft_id}/pdf')(drafts.pdf)
     contracts = ContractsAdapter(services)
+    from .contracts_checklist import ContractChecklist
+    app.get('/api/v1/contract-reviews/{review_id}/checklist')(ContractChecklist(services, contracts).read)
     app.post('/api/v1/cases/{case_id}/contract-consents')(contracts.consent)
     app.get('/api/v1/cases/{case_id}/contract-consents')(contracts.list_consents)
     app.post('/api/v1/cases/{case_id}/contract-reviews', openapi_extra={
@@ -82,6 +84,11 @@ def register_routes(app, services):
     app.post('/api/v1/cases/{case_id}/aftercare/deduction-extract')(assist.extract_deductions)
     from .adapters.progress import ProgressAdapter
     app.get('/api/v1/cases/{case_id}/progress')(ProgressAdapter(services).progress)
+    from .adapters.issue_reports import IssueReports
+    issue_reports = IssueReports(services)
+    app.get('/api/v1/issue-reports')(issue_reports.list)
+    app.post('/api/v1/cases/{case_id}/issue-reports')(issue_reports.create)
+    app.post('/api/v1/issue-reports/{report_id}/advice')(issue_reports.advice)
     from .adapters.operator_inbox import OperatorInbox
     app.get('/api/v1/operator/reviews')(OperatorInbox(services).read)
 
@@ -90,6 +97,8 @@ def register_routes(app, services):
     app.get('/api/v1/living-providers')(living.directory)
     living_base = '/api/v1/cases/{case_id}/living-services'
     app.get(living_base)(living.read)
+    from .living.home import LivingHome
+    app.get(living_base+'/home')(LivingHome(services).read)
     from .living.tenancy import LivingTenancy
     tenancy = LivingTenancy(services)
     app.get(living_base+'/tenancy-source')(tenancy.preview)

@@ -40,7 +40,7 @@ export default function ListingResults({
       </div>
       {expanded && (
         <>
-          <div className="assistant-listings" ref={start}>
+          <div className="assistant-listings assistant-housing-grid" ref={start}>
             {listings
               .slice((current - 1) * pageSize, current * pageSize)
               .map(children)}

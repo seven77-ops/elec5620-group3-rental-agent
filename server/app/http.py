@@ -9,14 +9,11 @@ from .common import ApiError, require, uid
 from .adapters.business import ValidationError, ContractError, AftercareError
 
 
-def strict_route(operator):
+def strict_route():
     class StrictRoute(APIRoute):
         def get_route_handler(self):
             original = super().get_route_handler()
             async def strict(request):
-                # Operator decision routes reject before parsing their JSON body.
-                if request.url.path.endswith('/decisions'):
-                    operator(request)
                 raw_upload = self.path in {'/api/v1/cases/{case_id}/contract-reviews',
                     '/api/v1/cases/{case_id}/living-services/attachments'}
                 if not raw_upload and request.method == 'POST':

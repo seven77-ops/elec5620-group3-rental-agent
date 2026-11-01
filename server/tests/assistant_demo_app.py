@@ -40,6 +40,22 @@ class AssistantDemoProvider:
     def call(self, context):
         task = context['task']
         meta = self._meta(task)
+        if task == 'contract_extract':
+            from contract_agent.extract import extract_fields
+            document = context['document']
+            extracted, _, _ = extract_fields(document)
+            lines = document['text'].splitlines()
+            fields = []
+            for field in context['fields']:
+                entry = extracted.get(field, {})
+                evidence = entry.get('evidence') or {}
+                line = evidence.get('line')
+                if entry.get('value') is not None and isinstance(line, int) and 0 < line <= len(lines):
+                    fields.append({'field':field,'value':entry['value'],'line':line,'quote':lines[line-1]})
+            return {'fields':fields}, meta
+        if task == 'contract_explain':
+            return {'explanations':[{'finding_id':finding['id'],'text':finding['reason']}
+                                    for finding in context['findings']]}, meta
         if task == 'rag_summary_check':
             return {'supported': [True] * len(context['checks']),
                     'original_supported': [True] * len(context['checks']),
@@ -101,6 +117,8 @@ class AssistantDemoProvider:
             result={'intent':'collect_preferences','brief_patch':{'suburb':basic_intakes[message],
                 'budget_amount':900,'budget_period':'week','budget_scope':'whole_property','occupants':1,
                 'min_bedrooms':2,'min_bathrooms':2,'min_car_spaces':0,'rental_mode':'whole_property'}}
+        elif message == 'Change only my maximum budget to AUD 1000 per week. Keep all my other requirements unchanged.':
+            result = {'intent':'update_preferences','preference_patch':{'budget':{'maximum':1000}}}
         elif message in ('How do I request repairs?', '在 NSW，租客怎么报修？', 'What is my exact rent debt?', 'How can I avoid rental scams when finding accommodation near university?'):
             result = {'intent': 'knowledge'}
         elif has('网络套餐', 'internet plan'):

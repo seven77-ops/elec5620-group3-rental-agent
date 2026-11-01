@@ -153,6 +153,7 @@ export type LivingWrite = (
   values: LivingProfile | RepairValues | BookingValues | RepairUpdateValues,
   expectedVersion: number,
   onSuccess?: () => void,
+  requestId?: string,
 ) => Promise<boolean>;
 const root = (caseId: string) =>
   `/cases/${encodeURIComponent(caseId)}/living-services`;
@@ -200,7 +201,7 @@ export const uploadLivingAttachment = (
   return api<LivingAttachment>(`${root(caseId)}/attachments?${query}`, {
     method: "POST",
     headers: {
-      "Content-Type": file.type,
+      "Content-Type": file.type || "application/octet-stream",
       "X-Filename": encodeURIComponent(file.name),
       "X-Request-Id": requestId,
     },
@@ -241,3 +242,22 @@ export const importTenancySource = (
     source_token: preview.source?.token,
     fields,
   });
+
+export type BasicHome = Pick<
+  LivingProfile,
+  | "address"
+  | "suburb"
+  | "postcode"
+  | "agent_name"
+  | "agent_email"
+  | "agent_phone"
+>;
+export interface HomeSummary {
+  values: BasicHome;
+  sources: Partial<Record<keyof BasicHome, string>>;
+  profile: LivingProfile;
+  bookings: ServiceBooking[];
+  expected_version: number;
+}
+export const getHomeSummary = (caseId: string) =>
+  api<HomeSummary>(`${root(caseId)}/home`);

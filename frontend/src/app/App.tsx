@@ -12,7 +12,6 @@ import { Button, Drawer, Layout, Menu, Space } from "antd";
 import {
   CheckSquareOutlined,
   AuditOutlined,
-  NodeIndexOutlined,
   FileTextOutlined,
   FormOutlined,
   HomeOutlined,
@@ -34,7 +33,6 @@ const Contract = lazy(() => import("../features/contracts/ContractAssistant"));
 const Aftercare = lazy(() => import("../features/Aftercare"));
 const LivingHub = lazy(() => import("../features/living/LivingHub"));
 const Operator = lazy(() => import("../features/Operator"));
-const CaseProgress = lazy(() => import("../features/CaseProgress"));
 
 class ErrorBoundary extends Component<
   { children: ReactNode },
@@ -86,11 +84,6 @@ const nav = [
     icon: <CheckSquareOutlined aria-hidden="true" />,
   },
   {
-    key: "progress",
-    label: "Case progress",
-    icon: <NodeIndexOutlined aria-hidden="true" />,
-  },
-  {
     key: "operator",
     label: "Human review",
     icon: <AuditOutlined aria-hidden="true" />,
@@ -112,7 +105,9 @@ export default function App() {
   idRef.current = caseId;
   const routePage =
     parts[1] === "operator" ? "operator" : (parts[3] ?? "assistant");
-  const page = routePage === "overview" ? "assistant" : routePage;
+  const page = ["overview", "progress"].includes(routePage)
+    ? "assistant"
+    : routePage;
   useEffect(() => {
     let valid = true;
     setLoading(true);
@@ -151,7 +146,7 @@ export default function App() {
     window.scrollTo(0, 0);
   }, [location.pathname]);
   useEffect(() => {
-    if (routePage === "overview" && caseId)
+    if (["overview", "progress"].includes(routePage) && caseId)
       navigate(`/cases/${caseId}/assistant`, { replace: true });
     if (page === "real-data" && caseId)
       navigate(`/cases/${caseId}/recommendations`, { replace: true });
@@ -230,7 +225,6 @@ export default function App() {
     contract: <Contract />,
     aftercare: config?.mode === "real_listings" ? <LivingHub /> : <Aftercare />,
     operator: <Operator />,
-    progress: <CaseProgress />,
   };
   return (
     <ErrorBoundary>
@@ -241,7 +235,13 @@ export default function App() {
             <span>Rental Assistant</span>
           </div>
           <Space>
-            <Button type="link" size="small" href="/api/v1/rag/product-guide" target="_blank" rel="noreferrer">
+            <Button
+              type="link"
+              size="small"
+              href="/api/v1/rag/product-guide"
+              target="_blank"
+              rel="noreferrer"
+            >
               User guide
             </Button>
             {current && (
@@ -294,7 +294,13 @@ export default function App() {
                       : action.retry
                   }
                 />
-                {!current || !config || current.case_id !== caseId ? (
+                {page === "operator" ? (
+                  <div id="page-content">
+                    <Suspense fallback={<Loading />}>
+                      <Operator />
+                    </Suspense>
+                  </div>
+                ) : !current || !config || current.case_id !== caseId ? (
                   <div className="welcome panel">
                     <HomeOutlined className="welcome-icon" />
                     <h1>Find your next home</h1>

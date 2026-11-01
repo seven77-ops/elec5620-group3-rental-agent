@@ -77,12 +77,11 @@ export async function api<T>(
     window.clearTimeout(timeout);
   }
 }
-export function post<T>(path: string, body: unknown, operatorKey?: string) {
+export function post<T>(path: string, body: unknown) {
   return api<T>(path, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      ...(operatorKey ? { "X-Operator-Key": operatorKey } : {}),
     },
     body: JSON.stringify(body),
   });

@@ -38,3 +38,11 @@
 .knowledge-limitations summary {
   cursor: pointer;
 }
+
+.knowledge-source .knowledge-excerpt-block {
+  white-space: normal;
+  margin: 0 0 12px;
+}
+.knowledge-source .knowledge-excerpt-block:last-child {
+  margin-bottom: 0;
+}

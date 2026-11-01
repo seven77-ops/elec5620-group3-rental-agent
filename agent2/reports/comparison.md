@@ -4,7 +4,7 @@
 
 Evaluation snapshot: 2026-09-17T09:00:00+10:00; Scoring version: rules-1.0; Preference version: 2.
 
-Recommendation run ID: rr-683302d10dc5c0c5930be505de4d9f01589a2f26bca50f29a8b1e6429b32aae7
+Recommendation run ID: rr-6de0fd4e325c1594ced0473dc32135f8fa759b231d8a65bad8cad282fb46830e
 
 ## Requirements and results
 

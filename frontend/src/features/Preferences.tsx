@@ -1,3 +1,4 @@
+import EnglishDateInput from "../components/EnglishDateInput";
 import { useState } from "react";
 import {
   App,
@@ -514,7 +515,7 @@ export default function Preferences() {
                 name="arrival_time"
                 rules={[{ required: config.mode !== "real_listings" }]}
               >
-                <Input type="time" />
+                <EnglishDateInput mode="time" />
               </Form.Item>
               <Form.Item
                 label="Preferred commute (minutes)"
@@ -580,7 +581,7 @@ export default function Preferences() {
                 name={["move_in_window", "from"]}
                 rules={[{ required: config.mode !== "real_listings" }]}
               >
-                <Input type="date" />
+                <EnglishDateInput />
               </Form.Item>
               <Form.Item
                 label="Latest move-in"
@@ -602,7 +603,7 @@ export default function Preferences() {
                   },
                 ]}
               >
-                <Input type="date" />
+                <EnglishDateInput />
               </Form.Item>
               <Form.Item
                 label="Lease term (months)"

@@ -91,7 +91,7 @@ test("aftercare keeps the heading and actions without decorative captions", asyn
   const c = await (await request.post("/api/v1/cases", { data: {} })).json();
   await page.goto(`/cases/${c.case_id}/aftercare`);
   await expect(page.locator(".living-heading")).toHaveText(
-    "Living and aftercare servicesLoad latest information",
+    "Living and aftercare servicesMy homeIn progress (0)Load latest information",
   );
   await expect(page.locator(".case-caption,.living-eyebrow")).toHaveCount(0);
   await expect(
@@ -100,7 +100,7 @@ test("aftercare keeps the heading and actions without decorative captions", asyn
     }),
   ).toHaveCount(0);
   await expect(
-    page.getByRole("button", { name: "Edit home and contacts", exact: true }),
+    page.getByRole("button", { name: "My home", exact: true }),
   ).toBeVisible();
 });
 test("technical error text is hidden until diagnostics are requested", async ({
@@ -163,7 +163,7 @@ test("aftercare initial load failure does not expose the backend message", async
   ).toBeVisible();
 });
 
-for (const source of ["tenancy-source"] as const) {
+for (const source of ["home"] as const) {
   test(`aftercare ${source} errors stay readable`, async ({
     page,
     request,
@@ -182,10 +182,8 @@ for (const source of ["tenancy-source"] as const) {
       }),
     );
     await page.goto(`/cases/${c.case_id}/aftercare`);
-    if (source === "tenancy-source")
-      await page
-        .getByRole("button", { name: "View lease source", exact: true })
-        .click();
+    if (source === "home")
+      await page.getByRole("button", { name: "My home", exact: true }).click();
     await expect(
       page.getByText("Unable to complete this action", { exact: true }),
     ).toBeVisible();

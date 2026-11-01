@@ -74,8 +74,8 @@ test("zero-result alternatives apply one real change, expose reasons and keep wo
   });
   await expect(result).not.toContainText("Average commute");
   await expect(
-    result.getByRole("list", { name: "Recommendation reasons" }).first(),
-  ).toContainText(/Public transport|Transit/);
+    result.getByRole("list", { name: "Recommendation reasons" }),
+  ).toHaveCount(0);
   await expect(
     page.getByRole("status", { name: "Filter changes" }).last(),
   ).toContainText(`Listings 0 → ${option.count} properties`);

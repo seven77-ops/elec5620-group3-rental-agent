@@ -1,8 +1,10 @@
 import { api } from "./client";
+import type { LivingAttachment } from "./living";
 import type { Dict, Review } from "./types";
 
 export interface OperatorReview {
-  kind: "aftercare" | "contract";
+  is_demo?: boolean;
+  kind: "aftercare" | "contract" | "issue";
   case_id: string;
   review_id: string;
   address: string;
@@ -14,14 +16,14 @@ export interface OperatorReview {
   claims?: Dict[];
   history?: Dict[];
   evidence?: Dict[];
+  attachments?: LivingAttachment[];
+  report?: Dict;
+  updates?: Dict[];
   review?: Review;
 }
 
-export function getOperatorReviews(key: string) {
+export function getOperatorReviews() {
   return api<{ items: OperatorReview[]; pending_count: number }>(
     "/operator/reviews",
-    {
-      headers: { "X-Operator-Key": key },
-    },
   );
 }

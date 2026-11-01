@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import EnglishDateInput from "../../components/EnglishDateInput";
+import { useEffect, useRef, useState } from "react";
 import {
   Button,
+  App,
   Checkbox,
   Form,
   Input,
@@ -8,6 +10,7 @@ import {
   Modal,
   Select,
   Tag,
+  Space,
 } from "antd";
 import type {
   BookingStatus,
@@ -17,6 +20,7 @@ import type {
   LivingWrite,
   ServiceBooking,
 } from "../../api/living";
+import { newRequestId } from "../../api/client";
 import { serviceCompanyIntro } from "./serviceCompanyInfo";
 const statuses: Record<BookingStatus, string> = {
   considering: "Considering",
@@ -35,6 +39,7 @@ export default function Services({
   save,
   focusedId,
   focusVersion,
+  onViewHome,
 }: {
   record: LivingRecord;
   providers: LivingProvider[];
@@ -42,7 +47,17 @@ export default function Services({
   save: LivingWrite;
   focusedId?: string | null;
   focusVersion?: number;
+  onViewHome: () => void;
 }) {
+  const { modal, message } = App.useApp();
+  const choiceDialog = useRef<ReturnType<typeof modal.confirm> | null>(null);
+  useEffect(
+    () => () => {
+      choiceDialog.current?.destroy();
+      choiceDialog.current = null;
+    },
+    [record.case_id],
+  );
   useEffect(() => {
     if (!focusedId) return;
     const card = document.getElementById(`living-booking-${focusedId}`);
@@ -90,11 +105,61 @@ export default function Services({
           notes: values.notes || "",
         },
         version,
-        () => setSelected(null),
+        () => {
+          setSelected(null);
+          void message.success("Service record saved to My home.");
+        },
       );
     } catch {
       /* Inline validation. */
     }
+  };
+  const chooseService = () => {
+    if (!selected || busy) return;
+    const provider = selected;
+    const expectedVersion = record.version;
+    const requestId = newRequestId();
+    choiceDialog.current?.destroy();
+    choiceDialog.current = modal.confirm({
+      title: "Save this service to My home?",
+      content: (
+        <>
+          <p>{provider.name}</p>
+          <p>
+            This saves your choice only. Contact the company to arrange a
+            service.
+          </p>
+        </>
+      ),
+      okText: "Confirm and save",
+      cancelText: "Cancel",
+      onOk: async () => {
+        const saved = await save(
+          "/bookings",
+          {
+            provider_id: provider.id,
+            service_date: null,
+            quote_amount: null,
+            status: "considering",
+            notes: "",
+          },
+          expectedVersion,
+          () => {
+            setSelected(null);
+            void message.success("Service saved to My home.");
+          },
+          requestId,
+        );
+        if (!saved) {
+          void message.error(
+            "Unable to save the service. Retry, or cancel and load the latest information.",
+          );
+          throw new Error(
+            "The service was not saved. Close details to reload or retry.",
+          );
+        }
+      },
+    });
   };
   return (
     <section className="living-section">
@@ -102,6 +167,9 @@ export default function Services({
         <div>
           <h2>Moving and cleaning</h2>
         </div>
+        <Button onClick={onViewHome} disabled={busy}>
+          View in My home
+        </Button>
       </div>
       <p className="living-note">
         Confirm coverage and availability with the provider. Enter quotes you
@@ -235,6 +303,38 @@ export default function Services({
         }}
         closable={!busy}
         mask={{ closable: !busy }}
+        footer={
+          mode === "details" ? (
+            <Space wrap>
+              <Button disabled={busy} onClick={() => setSelected(null)}>
+                Close details
+              </Button>
+              <Button
+                disabled={busy}
+                onClick={() => selected && start(selected)}
+              >
+                Record quote or booking
+              </Button>
+              {selected &&
+              record.bookings.some((b) => b.provider_id === selected.id) ? (
+                <Button
+                  type="primary"
+                  disabled={busy}
+                  onClick={() => {
+                    setSelected(null);
+                    onViewHome();
+                  }}
+                >
+                  View in My home
+                </Button>
+              ) : (
+                <Button type="primary" disabled={busy} onClick={chooseService}>
+                  Save to My home
+                </Button>
+              )}
+            </Space>
+          ) : undefined
+        }
       >
         {selected && (
           <div className="living-provider-details" hidden={mode !== "details"}>
@@ -266,7 +366,7 @@ export default function Services({
               <InputNumber min={0} precision={2} />
             </Form.Item>
             <Form.Item name="service_date" label="Service date">
-              <Input type="date" aria-label="Service date" />
+              <EnglishDateInput aria-label="Service date" />
             </Form.Item>
             <Form.Item
               name="status"

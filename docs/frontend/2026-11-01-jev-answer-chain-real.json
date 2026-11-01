@@ -1,0 +1,49 @@
+{
+  "test_question": "How do I request repairs in NSW?",
+  "environment": "isolated fresh case using effective live model settings; no user records copied",
+  "http_status": 200,
+  "elapsed_seconds": 19.463,
+  "routing": {
+    "mode": "active",
+    "source": "jev",
+    "route": "knowledge",
+    "reason": "accepted"
+  },
+  "jev_decision": {
+    "route": "knowledge",
+    "confidence": 0.99,
+    "model": "typesafe/jev-1.14-20261014",
+    "duration_ms": 706
+  },
+  "audit": {
+    "decision_status": "succeeded",
+    "observed_intent": "knowledge",
+    "observed_domain": "knowledge",
+    "source": "jev",
+    "reason": "accepted"
+  },
+  "answer": {
+    "intent": "knowledge",
+    "status": "answered",
+    "generation_outcome": "answered",
+    "has_text": true,
+    "citation_count": 3,
+    "retrieval_methods": [
+      "keywords",
+      "rerank"
+    ]
+  },
+  "business_model_tasks": [
+    "rag_answer",
+    "rag_grounded_summary",
+    "rag_grounded_summary",
+    "rag_grounded_summary",
+    "rag_summary_check"
+  ],
+  "extra_intent_call_used": false,
+  "retry": {
+    "same_response": true,
+    "no_additional_model_calls": true,
+    "no_additional_routing_audit": true
+  }
+}

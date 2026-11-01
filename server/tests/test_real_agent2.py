@@ -32,6 +32,31 @@ class RealAgent2Tests(unittest.TestCase):
         if filters is not None: body['filters'] = filters
         return self.client.post(f'/api/v1/cases/{self.cid}/evaluations', json=body)
 
+    def test_legacy_case_can_browse_saved_filters_without_agent1_or_mutation(self):
+        self.confirm()
+        repo=self.client.app.state.repository
+        with repo.transaction() as db:
+            legacy=repo.get(db,'case',self.cid)
+            legacy.pop('agent1_case_id',None);legacy.pop('agent1',None)
+            legacy.pop('requirements_contract',None)
+            legacy['draft']['profile']['housing_preferences']={'suburb':'Rhodes','min_bedrooms':2}
+            legacy['confirmations'][-1]['profile']=copy.deepcopy(legacy['draft']['profile'])
+            repo.put(db,'case',self.cid,legacy)
+        before=self.client.get(f'/api/v1/cases/{self.cid}').json()
+        response=self.client.get(f'/api/v1/cases/{self.cid}/recommendation-context')
+        self.assertEqual(response.status_code,200,response.text)
+        context=response.json()
+        self.assertTrue(context['legacy_read_only'])
+        self.assertEqual(context['filters']['suburb'],'Rhodes')
+        self.assertEqual(context['filters']['min_bedrooms'],2)
+        rows=self.client.get(f'/api/v1/listings?case_id={self.cid}&suburb=Rhodes&min_bedrooms=2').json()
+        self.assertGreater(rows['total'],0)
+        self.assertEqual(self.client.get(f'/api/v1/cases/{self.cid}').json(),before)
+        change=self.client.post(f'/api/v1/cases/{self.cid}/profile-drafts',json={
+            'expected_revision':legacy['draft']['revision'],'profile':legacy['draft']['profile']})
+        self.assertEqual(change.status_code,409)
+        self.assertEqual(change.json()['error']['code'],'agent1_upgrade_required')
+
     def test_default_catalogue_is_1000_real_ads_with_four_facts(self):
         self.assertEqual(self.client.get('/api/v1/health').json()['mode'], 'real_listings')
         r = self.client.get('/api/v1/listings?page_size=100').json()

@@ -68,21 +68,28 @@
   font-weight: 400;
   color: #78889e;
 }
-.commute-homes {
-  display: grid;
-  gap: 12px;
-}
 .commute-home {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(120px, auto);
+  display: flex;
+  flex-direction: column;
   gap: 14px;
   padding: 18px;
   border: 1px solid #e5eaf2;
   border-radius: 12px;
   min-width: 0;
 }
-.commute-home .commute-actions {
-  grid-column: 1/-1;
+.commute-home-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+}
+.commute-home > .commute-actions {
+  margin-top: auto;
+  flex-direction: column;
+  align-items: stretch;
+}
+.commute-home > .commute-actions > a {
+  align-self: flex-start;
 }
 .commute-route {
   max-width: 220px;
@@ -118,7 +125,7 @@
     padding: 14px;
     border-radius: 12px;
   }
-  .commute-home {
+  .commute-home-heading {
     grid-template-columns: minmax(0, 1fr);
   }
   .commute-home {

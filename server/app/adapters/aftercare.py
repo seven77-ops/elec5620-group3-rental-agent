@@ -23,7 +23,6 @@ class AftercareAdapter:
         aftercare = self.ctx.aftercare
         fixture_clocks = self.ctx.settings.fixture_clocks
         get = self.ctx.get
-        operator = self.ctx.operator
         receipt = self.ctx.receipt
         repo = self.ctx.repo
         shape(body, ('case_id', 'request_id', 'expected_version', 'operation', 'payload'))
@@ -31,8 +30,6 @@ class AftercareAdapter:
         require(integer(body['expected_version']), 422, 'invalid_input', 'Expected version must be a nonnegative integer')
         require(isinstance(body['operation'], str) and isinstance(body['payload'], dict), 422, 'invalid_input', 'Operation and payload must be valid')
         role = 'operator' if body['operation'] == 'operator_decision' else 'tenant'
-        if role == 'operator':
-            operator(request)
         key = str(body['case_id']) + ':' + logical_id
         with repo.transaction() as db:
             case = get(db, 'case', body['case_id'])
@@ -60,6 +57,9 @@ class AftercareAdapter:
                     if body['operation'] == 'revise_tenancy' and isinstance(payload.get('tenancy'), dict):
                         previous = aftercare.get(m4_id, TENANT)
                         payload['tenancy'].update(tenant_id=TENANT, tenancy_id=previous['tenancy']['tenancy_id'])
+                if body['operation'] in ('report_issue','reply_review'):
+                    from .review_files import validate_review_files
+                    validate_review_files(self.ctx, db, body['case_id'], payload.get('attachment_ids', []))
                 if body['operation'] == 'request_draft' and payload.get('use_model') is not False:
                     require(payload.get('use_model') is True and payload.get('allow_external_ai') is True,
                             422, 'ai_consent_required', 'AI-assisted drafts need explicit consent for this request')
@@ -111,8 +111,13 @@ class AftercareAdapter:
         get = self.ctx.get
         repo = self.ctx.repo
         with repo.transaction() as db:
-            get(db, 'aftercare_mapping', aftercare_id)
-        return aftercare.get(aftercare_id, TENANT)
+            mapping = get(db, 'aftercare_mapping', aftercare_id)
+        record = aftercare.get(aftercare_id, TENANT)
+        from .review_files import review_files
+        for review in record.get('reviews', []):
+            files = review_files(self.ctx, mapping['case_id'], review)
+            if files: review['attachments'] = files
+        return record
 
     def export_aftercare(self, aftercare_id: str):
         download = self.ctx.download

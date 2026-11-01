@@ -1,5 +1,7 @@
 # 四个 Agent 的交互测试用例：输入与按钮
 
+> **2026-10-31 更新：** 按群内人员分工排练，请使用[四人演示与测试完整脚本](four-agent-group-rehearsal.md)。本文保留早期参考内容；下方 Agent 4 的退租计划、密钥审核等旧步骤不再对应当前简化页面。
+
 - 打开 <http://127.0.0.1:5191>，点击 **New case**，保存主案例网址。
 - 四个人共用这个主案例；问题合同 PDF 使用另一个新案例。
 - 复制英文代码块输入，中文仅供理解。需要使用 AI 时，按页面完成对应授权。
@@ -230,19 +232,26 @@ I have a rental contract in PDF format. Please let me upload it for review and c
 
 依次操作：
 
-1. 使用聊天中的上传入口，或打开 **Contract assistant → Upload contract for review**。
-2. 完成该文档的处理授权。
-3. 选择 [模拟问题合同 PDF](../../output/pdf/simulated-rental-contract-date-error.pdf)。
-4. 勾选有权提交文档。
-5. **Upload and review**。
-6. 找到 **End date is not after start date**。
-7. **View source 1 / View source 2**，查看两个日期原文。
+1. 打开 **Contract assistant → Upload contract for review**。
+2. **Select contract**，选择 [模拟问题合同 PDF](../../output/pdf/simulated-rental-contract-date-error.pdf)。
+3. 勾选有权上传并允许 AI 处理的授权。
+4. **Upload and analyse**，等待上传和分析完成。
+5. 查看 **Contract check results** 的实际检查总数、**Needs attention** 和 **Passed** 数量。
+6. 在 **Needs attention** 找到 **Agreement date order**，确认提示结束日期不晚于开始日期。
+7. 展开该条目的 **View source text**，核对两个原文日期。
+8. 查看 **Passed**：地址、租金、当事人等已找到的信息会列在这里。没有问题的合同显示已完成检查未发现问题，不会虚构固定 30 项或保证所有条款合法。
 
-### 4. 可选：追问合同问题
+### 4. 可选：在聊天里追问合同问题
 
-展开 **Ask more about this contract**，勾选本地私有检索授权，点击 **Enable contract search**。需要 AI 回答时，另行完成云端处理及本次问题的 AI 授权。
+回到同一个案例的 **AI rental assistant**，输入：
 
-在 **Contract question** 输入：
+```text
+Review my uploaded contract. I want to ask about its clauses.
+```
+
+中文：查看我上传的合同，我想询问其中的条款。
+
+按照聊天里的私有检索提示完成授权。上传审核授权不会自动开启私有检索；需要 AI 回答时还需单独允许云端搜索和本次问题的 AI 处理。在 **Contract question** 输入：
 
 ```text
 Are the tenancy start and end dates consistent? Cite both dates from the uploaded contract and explain the problem.

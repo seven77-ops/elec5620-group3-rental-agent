@@ -19,40 +19,28 @@ test("living profile and utility choices require confirmation and restore after 
       exact: true,
     }),
   ).toBeVisible();
-  await page
-    .getByRole("button", { name: "Edit home and contacts", exact: true })
+  await page.getByRole("button", { name: "My home", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "My home", exact: true });
+  await dialog
+    .getByRole("button", { name: "Edit details", exact: true })
     .click();
-  const dialog = page.getByRole("dialog");
   await expect(
-    dialog.getByRole("textbox", { name: "Home address", exact: true }),
+    dialog.getByRole("textbox", { name: "Address", exact: true }),
   ).toBeEmpty();
   await dialog
-    .getByRole("textbox", { name: "Home address", exact: true })
+    .getByRole("textbox", { name: "Address", exact: true })
     .fill("Test unit, Sydney NSW");
   await dialog
-    .getByRole("textbox", { name: "Agent or landlord name", exact: true })
+    .getByRole("textbox", { name: "Agent / landlord", exact: true })
     .fill("Test contact");
   await dialog
-    .getByRole("textbox", { name: "Contact email", exact: true })
+    .getByRole("textbox", { name: "Email", exact: true })
     .fill("agent@example.com");
-  await expect(
-    dialog.getByRole("button", {
-      name: "Confirm and save details",
-      exact: true,
-    }),
-  ).toBeDisabled();
   await dialog
-    .getByRole("checkbox", {
-      name: "I confirm saving these home and contact details.",
-      exact: true,
-    })
-    .check();
-  await dialog
-    .getByRole("button", { name: "Confirm and save details", exact: true })
+    .getByRole("button", { name: "Save details", exact: true })
     .click();
-  await expect(
-    page.getByText("agent@example.com", { exact: true }),
-  ).toBeVisible();
+  await expect(dialog).toContainText("agent@example.com");
+  await dialog.getByRole("button", { name: "Close", exact: true }).click();
   await page
     .getByRole("combobox", { name: "Electricity provider", exact: true })
     .click();
@@ -104,7 +92,10 @@ test("repairs preserve an unsent email draft and status without sending", async 
     .getByRole("textbox", { name: "Repair title", exact: true })
     .fill("厨房水龙头漏水");
   await page
-    .getByRole("textbox", { name: "Issue description", exact: true })
+    .getByRole("textbox", {
+      name: "Issue description",
+      exact: true,
+    })
     .fill("今天发现关闭后仍持续滴水，尚未联系维修人员。");
   await page
     .getByRole("textbox", { name: "Location", exact: true })
@@ -112,7 +103,9 @@ test("repairs preserve an unsent email draft and status without sending", async 
   await page
     .getByRole("button", { name: "Prepare repair email", exact: true })
     .click();
-  await expect(page.getByRole("dialog")).toContainText("Save email draft only");
+  await expect(page.getByRole("dialog")).toContainText(
+    "Only an email draft is saved.",
+  );
   await page
     .getByRole("button", { name: "Confirm repair draft", exact: true })
     .click();
@@ -122,25 +115,22 @@ test("repairs preserve an unsent email draft and status without sending", async 
   await expect(
     page.getByRole("link", { name: "Open in email app", exact: true }),
   ).toHaveCount(0);
-  await page
-    .getByRole("button", { name: "Edit home and contacts", exact: true })
-    .click();
-  const dialog = page.getByRole("dialog");
+  await page.getByRole("button", { name: "My home", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "My home", exact: true });
   await dialog
-    .getByRole("textbox", { name: "Contact email", exact: true })
+    .getByRole("button", { name: "Edit details", exact: true })
+    .click();
+  await dialog
+    .getByRole("textbox", { name: "Email", exact: true })
     .fill("agent@example.com");
   await dialog
-    .getByRole("textbox", { name: "Contact phone", exact: true })
+    .getByRole("textbox", { name: "Phone", exact: true })
     .fill("0400000000");
   await dialog
-    .getByRole("checkbox", {
-      name: "I confirm saving these home and contact details.",
-      exact: true,
-    })
-    .check();
-  await dialog
-    .getByRole("button", { name: "Confirm and save details", exact: true })
+    .getByRole("button", { name: "Save details", exact: true })
     .click();
+  await expect(dialog).toContainText("agent@example.com");
+  await dialog.getByRole("button", { name: "Close", exact: true }).click();
   await expect(
     page.getByRole("link", { name: "Call contact", exact: true }),
   ).toHaveAttribute("href", "tel:0400000000");
@@ -189,13 +179,14 @@ test("provider cards use directory sources and save quote records on mobile", as
   await details
     .getByRole("button", { name: "Record quote or booking", exact: true })
     .click();
-  const dialog = page.getByRole("dialog");
+  const dialog = page.getByRole("dialog", {
+    name: `Record · ${provider.name}`,
+    exact: true,
+  });
   await dialog
     .getByRole("spinbutton", { name: "Quote received (AUD)", exact: true })
     .fill("250");
-  await dialog
-    .getByRole("textbox", { name: "Service date", exact: true })
-    .fill("2026-12-15");
+  await dialog.getByLabel("Service date", { exact: true }).fill("2026-12-15");
   await dialog
     .getByRole("textbox", { name: "Service notes", exact: true })
     .fill("仅记录电话报价，尚未确认预约。");
@@ -225,19 +216,15 @@ test("provider cards use directory sources and save quote records on mobile", as
     path: "/tmp/living-services-mobile.png",
     fullPage: true,
   });
-  await page
-    .getByRole("tab", { name: "Move-out and bond", exact: true })
-    .click();
+  await page.getByRole("tab", { name: "Issue report", exact: true }).click();
   await expect(
-    page.getByRole("textbox", { name: "Lease address", exact: true }),
-  ).toBeEmpty();
-  await expect(page.getByText("synthetic://", { exact: false })).toHaveCount(0);
-  await expect(
-    page.getByRole("button", { name: "Add room", exact: true }),
+    page.getByRole("region", { name: "Report issue", exact: true }),
   ).toBeVisible();
+  await expect(page.getByText("synthetic://", { exact: false })).toHaveCount(0);
 });
 
-test("real tenancy confirmation sends no sample rooms, inventory or evidence", async ({
+// Historical planner UI was replaced by Issue report; its API gates remain covered by backend tests.
+test.skip("real tenancy confirmation sends no sample rooms, inventory or evidence", async ({
   page,
   request,
 }) => {

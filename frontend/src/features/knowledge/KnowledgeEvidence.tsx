@@ -1,6 +1,7 @@
 import { Alert, Collapse, Tag } from "antd";
 import type { KnowledgeAnswer } from "../../api/knowledge";
 import "./knowledge.css";
+import { sourceExcerptBlocks } from "./sourceExcerpt";
 const sourceLabels = {
   official_guidance: "NSW Government",
   official_template: "NSW Government · Official template",
@@ -55,7 +56,15 @@ export default function KnowledgeEvidence({
                       ? `Page ${source.page} · ${source.section} · Review v${source.review_version}`
                       : `${source.page ? `Page ${source.page} · ` : ""}${source.section} · Checked ${source.checked_at}`}
                   </p>
-                  <blockquote>{source.quote}</blockquote>
+                  <blockquote>
+                    {source.source_type === "user_contract"
+                      ? source.quote
+                      : sourceExcerptBlocks(source.quote).map((block, index) => (
+                          <p className="knowledge-excerpt-block" key={index}>
+                            {block}
+                          </p>
+                        ))}
+                  </blockquote>
                 </article>
               )),
             },

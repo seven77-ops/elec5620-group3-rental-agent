@@ -13,10 +13,7 @@ import {
   Spin,
   Tag,
 } from "antd";
-import {
-  ArrowUpOutlined,
-  CommentOutlined,
-} from "@ant-design/icons";
+import { ArrowUpOutlined, CommentOutlined } from "@ant-design/icons";
 import {
   applyAssistantProposal,
   applyAssistantLease,
@@ -52,7 +49,6 @@ import ListingResults from "./ListingResults";
 import ListingActions from "../favorites/ListingActions";
 import { useFavorites } from "../favorites/FavoritesContext";
 import RecommendationControls from "./RecommendationControls";
-import ListingReasons from "./ListingReasons";
 import { adjustRecommendation } from "../../api/assistant";
 import type {
   RecommendationPatch,
@@ -525,7 +521,6 @@ export default function Assistant() {
             >
               My rental needs
             </Button>
-
           </Space>
         </header>
         <RecommendationControls
@@ -813,7 +808,7 @@ export default function Assistant() {
                               {listing.suburb} · {listing.postcode}
                             </p>
                             <strong className="assistant-rent">
-                              AUD {listing.weekly_rent.toLocaleString()}
+                              AUD {listing.weekly_rent.toLocaleString("en-AU")}
                               <small>/week · advertised rent</small>
                             </strong>
                             <p className="assistant-listing-facts">
@@ -822,11 +817,6 @@ export default function Assistant() {
                               · {listing.bathrooms} bath · {listing.car_spaces}{" "}
                               car spaces
                             </p>
-                            <ListingReasons
-                              listing={listing}
-                              criteria={item.recommendation_criteria}
-                              filters={item.recommendation_filters}
-                            />
                             {item.soft_preferences && (
                               <SoftPreferenceEvidence
                                 report={item.soft_preferences}

@@ -70,6 +70,15 @@ class AiAnalysisTests(unittest.TestCase):
         self.assertEqual(set(context["fields"]), set(FIELDS))
         self.assertEqual(context["document"]["text"], self.document["text"])
 
+    def test_extraction_prompt_supplies_original_line_numbers_and_whitespace(self):
+        self.document['text']='[page 1]\n\n  Rent: AUD 650 per week whole property  \n[page 2]\nEnd date: 2026-10-31'
+        _, gateway = self.run_fields([])
+        self.assertEqual(gateway.calls[0]['source_lines'], [
+            {'line':3,'page':1,'quote':'  Rent: AUD 650 per week whole property  '},
+            {'line':5,'page':2,'quote':'End date: 2026-10-31'},
+        ])
+        self.assertIn('source_lines', gateway.calls[0]['instructions'])
+
     def test_missing_fields_remain_unknown_without_clearing_saved_values(self):
         result, _ = self.run_fields([])
         self.assertEqual([row["field"] for row in result["candidates"]], list(FIELDS))

@@ -1,13 +1,6 @@
+import EnglishDateInput from "../../components/EnglishDateInput";
 import { useEffect, useState } from "react";
-import {
-  Alert,
-  Button,
-  Checkbox,
-  Form,
-  Input,
-  InputNumber,
-  Select,
-} from "antd";
+import { Alert, Button, Checkbox, Form, InputNumber, Select } from "antd";
 import { post } from "../../api/client";
 import {
   mapUrl,
@@ -222,7 +215,7 @@ export function TripPanel({
             rules={[{ required: true }]}
             extra="The server converts the date and time to Australia/Sydney."
           >
-            <Input type="datetime-local" />
+            <EnglishDateInput mode="datetime" />
           </Form.Item>
         </div>
         <Checkbox

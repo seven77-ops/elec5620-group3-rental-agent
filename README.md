@@ -1,6 +1,8 @@
 # ELEC5620 Group 3 · Rental Agent
 
-An English rental assistant integrating the group's four agents through a React/TypeScript frontend and a local FastAPI service. The current team trial is **`codex/group-trial-20261022` / draft PR #7**. Do not merge into `main` yet.
+An English rental assistant integrating the group's four agents through a React/TypeScript frontend and a local FastAPI service. The final course-delivery version is published through **PR #7 into `main`**. Start from `main` for the shared submission; the trial branch remains as a development record.
+
+Read the [1 November final delivery record](docs/frontend/2026-11-01-final-release.md) for the integrated result and verification scope.
 
 Read the [31 October functional update](docs/frontend/2026-10-31-trial-update.md) for optional commute filtering, the compact weighted display, contact enquiries and the revised contract/knowledge flow. Earlier release notes retain their original stage.
 
@@ -11,7 +13,7 @@ Read the [30 October trial handoff](docs/frontend/2026-10-30-trial-update.md) fo
 Use a new directory to protect your own uncommitted work:
 
 ```sh
-git clone --branch codex/group-trial-20261022 https://github.com/seven77-ops/elec5620-group3-rental-agent.git
+git clone --branch main https://github.com/seven77-ops/elec5620-group3-rental-agent.git
 cd elec5620-group3-rental-agent
 python3 -m venv .venv
 .venv/bin/python -m pip install -r server/requirements-lock.txt
@@ -21,7 +23,7 @@ python3 -m venv .venv
 
 Open <http://127.0.0.1:5173>. Python 3.11+ is required; this publication was checked on macOS with Python 3.13 and Node 22. Windows commands are in the handoff. If ports are occupied, use `--web-port 5197 --api-port 8017`. Stop with Ctrl+C.
 
-Business cases, uploads, operator keys and local indexes live in ignored `.runtime/`; dependencies and credentials are not distributed in Git. The app does not provide production multi-user authentication.
+Business cases, uploads and local indexes live in ignored `.runtime/`; dependencies and credentials are not distributed in Git. The app does not provide production multi-user authentication.
 
 ## Optional AI and transport
 
@@ -38,7 +40,11 @@ Copy `.env.example` to your own `.env`; keep keys on the backend. New installati
 2. **Parallel choices:** save/compare favorites or select directly. A single explicit confirmation saves current needs and the selected home atomically. Inspection questions are read-only; contract facts are entered/reviewed on the contract page. The former separate agent-reply form is removed, with historical records retained.
 3. **Contract assistance:** prepare an unsigned NSW template draft or upload a TXT/DOCX/PDF for basic review, including standalone document consent without a selected listing. Review summaries and source questions are available in chat. Private search and external processing require separate consent; changes and revocation invalidate old access.
 4. **Aftercare:** source-based tenancy prefill, repair-email preview/rewrite/copy and explicit save, provider information and personal service records, move-out planning and bond-fact follow-up. Drafts are not sent, bookings are not submitted and funds are not handled.
-5. **Human review and progress:** an operator-key protected inbox shows pending reviews and durable history across local cases. Release decisions unlock system draft preparation only; they do not approve deductions or determine refunds.
+5. **Human review:** the local inbox opens directly and shows reports, uploaded evidence and saved review advice. The Issue report page contains only Report issue and History. Users choose a type, describe a rental problem and optionally attach photos, screenshots and PDFs; submission dates are automatic. Completing a review preserves its history; it does not record an actual refund.
+
+Aftercare uses compact **My home** and **In progress** buttons beside the refresh action. My home shows saved basic housing/contact details, or references the selected property when no location is saved. Opening it makes no writes; editing requires Save details and preserves other saved profile fields. In progress links to unfinished repairs and service records, including past bookings that have not been marked completed.
+
+My home also displays saved utility providers and all moving/cleaning service records, including completed records and recorded dates, quotes and notes. Save provider selection or Save to My home in company details, then use View in My home to see the result. A quick company choice records Considering without making an external booking or inventing a quote/date.
 6. **Knowledge:** 14 public documents / 153 chunks, comprising NSW guidance/template material, a University of Sydney guide and product help. Answers expose source quotations and conservative fallbacks. Local private-contract indexes stay separate. Retrieval recall and model source checks are not legal or semantic certification.
 
 Newly authored UI, replies and drafts are English. Original messages, names, documents, quotations and saved facts retain their supplied text; multilingual input remains supported. See [AGENTS.md](AGENTS.md) and the [English release record](docs/frontend/2026-10-30-english-product.md).

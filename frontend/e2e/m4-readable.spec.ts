@@ -41,6 +41,14 @@ async function seed(request: APIRequestContext, complete = false) {
   expect(r.ok(), await r.text()).toBeTruthy();
   return c.case_id as string;
 }
+// Historical UI coverage retained for reference; live replacement: issue-report.spec.ts.
+test.beforeEach(() => {
+  test.skip(
+    true,
+    "Historical planner/modal UI replaced by inline Issue report and History; backend Agent4 coverage retained.",
+  );
+});
+
 test("missing property details guide the user before sending a plan request", async ({
   page,
   request,
@@ -54,7 +62,7 @@ test("missing property details guide the user before sending a plan request", as
   await page.goto(`/cases/${cid}/aftercare?tab=moveout`);
   const plan = page.getByRole("region", { name: "Move-out plan", exact: true });
   await expect(plan).toContainText("Complete property details first");
-  await expect(plan).toContainText("Rooms");
+  await expect(plan).toContainText("Room details");
   await expect(plan).toContainText("Furniture inventory");
   await plan
     .getByRole("button", {
@@ -113,7 +121,7 @@ test("tenancy evidence drawer presents readable facts and keeps raw data collaps
     page.getByRole("dialog", { name: "Complete lease details", exact: true }),
   ).toBeVisible();
 });
-test("backend clarification is displayed in Chinese with diagnostics collapsed", async ({
+test("backend clarification is displayed in English with diagnostics collapsed", async ({
   page,
   request,
 }) => {

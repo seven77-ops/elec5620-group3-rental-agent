@@ -246,8 +246,6 @@ class ContractsAdapter:
 
     async def decision(self, review_id: str, request: Request):
         mutate_review = self.mutate_review
-        operator = self.ctx.operator
-        operator(request)
         body = await request.json()
         shape(body, ('expected_version', 'decision', 'note'))
         return mutate_review(review_id, body, lambda prior: approve_review(prior, reviewer=OPERATOR, decision=body['decision'], note=body['note']))

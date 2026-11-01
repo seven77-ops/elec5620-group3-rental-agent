@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Alert, Descriptions, Select } from "antd";
 import { api } from "../api/client";
 import type { Review } from "../api/types";
+import { contractValue } from "./contracts/reviewPresentation";
 import {
   EvidenceDrawer,
   Failure,
@@ -74,7 +75,10 @@ export default function ReviewHistory({
             items={Object.entries(snapshot.fields).map(([key, f]) => ({
               key,
               label: label(key),
-              children: text(f.value),
+              children:
+                key === "address"
+                  ? contractValue(snapshot, key)
+                  : text(f.value),
             }))}
           />
           <h3>Items to check at the time</h3>

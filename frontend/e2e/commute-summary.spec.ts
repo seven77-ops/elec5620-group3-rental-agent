@@ -116,7 +116,7 @@ test("commute cards and favorites share weighted durations while suburb filters 
     "Commute 9 min",
   );
   await expect(card.locator(".commute-route")).not.toContainText("Transit");
-  await expect(card).toContainText("Transit · ~12 min");
+  await expect(card.locator(".recommendation-reasons")).toHaveCount(0);
   await expect(
     card.getByRole("link", { name: "Google Maps ↗", exact: true }),
   ).toHaveAttribute("href", /google.com\/maps\/dir/);
@@ -139,9 +139,7 @@ test("commute cards and favorites share weighted durations while suburb filters 
   await suburbs.getByRole("button", { name: "Newtown", exact: true }).click();
   await expect(results.locator(".commute-homes .commute-home")).toHaveCount(1);
   await expect(results.locator(".commute-homes")).toContainText(other.address);
-  await expect(results.locator(".commute-homes")).toContainText(
-    "Transit · ~12 min",
-  );
+  await expect(results.locator(".commute-homes .recommendation-reasons")).toHaveCount(0);
   await results
     .getByRole("button", { name: "Listing details", exact: true })
     .click();

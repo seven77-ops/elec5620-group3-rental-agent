@@ -13,7 +13,6 @@ AFTERCARE_CLOCK = '2026-10-15T10:00:00+11:00'
 class Settings:
     def __init__(self, runtime_dir=None, operator_key=None, dataset=None):
         self.runtime_dir = runtime_dir or os.environ.get('RENTAL_RUNTIME_DIR', ROOT / '.runtime')
-        self.operator_secret = operator_key if operator_key is not None else os.environ.get('RENTAL_OPERATOR_KEY', '')
         self.expected = load('integration/agent1-to-agent2/expected.json')
         # Explicit dataset injection exists for historical regression fixtures only.
         # Normal startup always loads the real snapshot and fails if it is invalid.

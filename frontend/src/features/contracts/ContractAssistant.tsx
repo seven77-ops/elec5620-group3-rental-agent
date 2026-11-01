@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import { useCase } from "../../app/context";
 import { PageTitle, Loading } from "../../components/Common";
 import Contract from "../Contract";
+import SimpleContractReview from "./SimpleContractReview";
 const LeaseDraft = lazy(() => import("./LeaseDraft"));
 export default function ContractAssistant() {
   const { config, current } = useCase();
@@ -34,7 +35,7 @@ export default function ContractAssistant() {
           {
             key: "review",
             label: "Upload contract for review",
-            children: <Contract embedded />,
+            children: <SimpleContractReview key={current.case_id} />,
           },
         ]}
       />

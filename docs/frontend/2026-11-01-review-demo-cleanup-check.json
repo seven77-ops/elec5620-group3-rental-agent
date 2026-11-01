@@ -1,0 +1,67 @@
+{
+  "mode": "real_listings",
+  "jev_mode": "active",
+  "cleanup": {
+    "remove_objects": {
+      "aftercare_receipt": 76,
+      "review_version": 33,
+      "contract_receipt": 18,
+      "living_attachment_receipt": 3,
+      "consent": 21,
+      "ai_analysis": 6,
+      "ai_latest": 5,
+      "review": 18,
+      "ai_receipt": 6,
+      "issue_report_receipt": 2,
+      "issue_report": 2,
+      "living_attachment": 3,
+      "issue_advice_receipt": 1
+    },
+    "removed_upload_files": 21,
+    "removed_legacy_review_sets": 6,
+    "demo_examples": 5,
+    "preserved": [
+      "profiles",
+      "conversations",
+      "favorites",
+      "selected properties",
+      "saved unsigned drafts",
+      "repairs",
+      "bookings",
+      "public RAG",
+      "provider catalogue"
+    ],
+    "backup": "/Users/seven/Documents/AI_coding/5620\u623f\u4ea7Agent/.workspaces/frontend-demo/.runtime-backups/review-cleanup-20261101T015727671853Z",
+    "applied": true
+  },
+  "unrelated_records_preserved": true,
+  "public_databases_unchanged": [
+    "rag.sqlite3",
+    "utility_catalog.sqlite3"
+  ],
+  "independent_bonds_preserved": true,
+  "human_review_history_examples": 5,
+  "pending_reviews": 0,
+  "legacy_recommendations_working": true,
+  "live_browser": {
+    "history_examples": 5,
+    "distinct_demo_titles": [
+      "Bond deduction for pre-existing wall marks",
+      "Missing chair in the furniture inventory",
+      "Cleaning charge without an itemised invoice",
+      "Lease end date is before the start date",
+      "Weekly rent differs between two contract sections"
+    ],
+    "examples_read_only": true,
+    "legacy_recommendations_heading": "Filtered results \u00b7 1000 records",
+    "filters_enabled": true
+  },
+  "validation": {
+    "backend_tests_passed": 23,
+    "frontend_unit_tests_passed": 73,
+    "browser_tests_passed": 9,
+    "build": "passed",
+    "format_and_diff": "passed",
+    "retained_aftercare_schemas_valid": 20
+  }
+}

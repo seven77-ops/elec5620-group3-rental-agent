@@ -21,7 +21,7 @@ async function choose(
     .click();
 }
 
-test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租后服务 → 报修 → 退租押金", async ({
+test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租后服务 → 报修 → 问题报告与人工建议", async ({
   page,
   request,
 }, info) => {
@@ -136,8 +136,8 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
     await budget(1200);
     const results = page.locator(".commute-results").last();
     await expect(
-      results.getByRole("list", { name: "Recommendation reasons" }).first(),
-    ).toContainText("Walk ·");
+      results.getByRole("list", { name: "Recommendation reasons" }),
+    ).toHaveCount(0);
     await expect(results).not.toContainText("Average commute");
     await controls
       .getByRole("button", { name: "Edit commute criteria", exact: true })
@@ -164,8 +164,8 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
     await expect(commute).toHaveCount(0);
     await expect(controls).toContainText("Public transport ≤30 minutes");
     await expect(
-      results.getByRole("list", { name: "Recommendation reasons" }).first(),
-    ).toContainText("Transit ·");
+      results.getByRole("list", { name: "Recommendation reasons" }),
+    ).toHaveCount(0);
     await expect(results).not.toContainText("Average commute");
     const publicContext = await (await request.get(contextUrl)).json();
     const currentConversation = await (
@@ -378,27 +378,9 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
     expect((await state()).selection.contract_ready).toBe(false);
   });
 
-  await test.step("05B 上传测试合同复核，核对合同与原始房源信息", async () => {
+  await test.step("05B 上传测试合同复核，查看通过与待确认项目", async () => {
     await page
       .getByRole("tab", { name: "Upload contract for review", exact: true })
-      .click();
-    await expect(
-      page.getByRole("button", {
-        name: "Agree to process this contract",
-        exact: true,
-      }),
-    ).toBeDisabled();
-    await page
-      .getByRole("checkbox", {
-        name: "I agree to process this contract for this review and understand this consent is separate from property selection.",
-        exact: true,
-      })
-      .check();
-    await page
-      .getByRole("button", {
-        name: "Agree to process this contract",
-        exact: true,
-      })
       .click();
     const contractRent = agreedRent + 10;
     await page.locator("input[type=file]").setInputFiles({
@@ -410,70 +392,58 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
     });
     await page
       .getByRole("checkbox", {
-        name: "I confirm I am authorised to submit this contract for review.",
+        name: "I am authorised to upload this contract and agree to send it to the AI service for review.",
         exact: true,
       })
       .check();
     await page
-      .getByRole("button", { name: "Upload and review", exact: true })
+      .getByRole("button", { name: "Upload and analyse", exact: true })
       .click();
-    await page
-      .getByRole("button", {
-        name: "Compare with the selected property",
+    const results = page.getByRole("region", {
+      name: "Contract review results",
+      exact: true,
+    });
+    await expect(
+      results.getByRole("heading", {
+        name: "Contract check results",
         exact: true,
-      })
-      .click();
-    await expect(page.getByTestId("real-contract-comparison")).toContainText(
-      address,
-    );
-    const comparison = page.getByTestId("comparison-advertised_rent");
-    await expect(comparison).toContainText("Confirm pricing basis");
-    await expect(comparison).toContainText(String(contractRent));
+      }),
+    ).toBeVisible();
+    await expect(
+      results.getByRole("region", { name: "Passed checks", exact: true }),
+    ).toContainText(address);
+    await expect(results).toContainText(String(contractRent));
     expect((await state()).reviews).toHaveLength(1);
     await page.reload();
-    await page
-      .getByRole("button", {
-        name: "Compare with the selected property",
-        exact: true,
-      })
-      .click();
-    await expect(comparison).toContainText("Confirm pricing basis");
+    await expect(
+      results.getByRole("region", { name: "Passed checks", exact: true }),
+    ).toContainText(address);
   });
 
-  await test.step("06 租约资料先预览，人工确认实际资料后接入租后页面", async () => {
+  await test.step("06 Basic home information previews the selected property and saves only after explicit editing", async () => {
     await page
       .getByRole("menuitem", { name: "Aftercare services", exact: true })
       .click();
     expect((await living()).profile.address).toBe("");
-    await page
-      .getByRole("button", { name: "View lease source", exact: true })
-      .click();
-    const modal = page.getByRole("dialog", {
-      name: "Check lease source",
-      exact: true,
-    });
-    await expect(modal).toContainText(address);
+    await page.getByRole("button", { name: "My home", exact: true }).click();
+    const home = page.getByRole("dialog", { name: "My home", exact: true });
+    await expect(home).toContainText(address);
     expect((await living()).profile.address).toBe("");
-    await modal
-      .getByRole("checkbox", {
-        name: "I confirm these details correspond to my actual lease.",
-        exact: true,
-      })
-      .check();
-    await modal
-      .getByRole("button", { name: "Import selected details", exact: true })
+    await home
+      .getByRole("button", { name: "Edit details", exact: true })
       .click();
-    await page
-      .getByRole("button", { name: "Confirm lease import", exact: true })
+    await home
+      .getByRole("button", { name: "Save details", exact: true })
       .click();
-    await expect(modal).toHaveCount(0);
+    await expect(
+      home.getByRole("button", { name: "Edit details", exact: true }),
+    ).toBeVisible();
     expect((await living()).profile).toMatchObject({
       address,
       agent_name: "E2E Agency",
       agent_email: "agent@example.com",
-      lease_start_date: start,
-      lease_end_date: end,
     });
+    await home.getByRole("button", { name: "Close", exact: true }).click();
   });
 
   await test.step("07 查看供应商详情并保存水电选择；搬运与清洁分组展示", async () => {
@@ -626,153 +596,62 @@ test("完整主流程：找房 → 收藏跟进 → 合同生成复核 → 租�
     });
   });
 
-  await test.step("09 从已复核地址创建退租案件，生成计划并保存任务进度", async () => {
+  await test.step("09 Report an issue, review the evidence and return advice to History", async () => {
     await page.setViewportSize({ width: 1440, height: 1000 });
-    await page
-      .getByRole("tab", { name: "Move-out and bond", exact: true })
-      .click();
-    // The unsigned draft and review must not silently create a confirmed tenancy.
+    await page.getByRole("tab", { name: "Issue report", exact: true }).click();
     expect((await state()).aftercare_case_id).toBeNull();
-    await page
-      .getByRole("button", {
-        name: "Import existing details",
-        exact: true,
-      })
-      .click();
-    await expect(page.getByLabel("Lease address", { exact: true })).toHaveValue(
-      address,
-    );
-    for (const field of ["Has carpet", "Has outdoor area", "Furnished"])
-      await choose(page, page, field, "No");
-    await page.getByRole("button", { name: "Add room", exact: true }).click();
-    await page.getByLabel("Room name", { exact: true }).fill("E2E Bedroom");
-    await expect(
-      page.getByRole("button", {
-        name: "Confirm details and create aftercare case",
-        exact: true,
-      }),
-    ).toBeDisabled();
-    await page
-      .getByRole("checkbox", {
-        name: "I have checked and confirmed the lease, rooms, furniture, and sources above.",
-        exact: true,
-      })
-      .check();
-    await page
-      .getByRole("button", {
-        name: "Confirm details and create aftercare case",
-        exact: true,
-      })
-      .click();
-    await expect(
-      page.getByText("Confirmed lease details", { exact: true }),
-    ).toBeVisible();
-    await page.getByLabel("Planned move-out date", { exact: true }).fill(end);
-    await page
-      .getByRole("button", { name: "Generate and confirm plan", exact: true })
-      .click();
-    await page
-      .getByRole("button", { name: "Confirm plan", exact: true })
-      .click();
-    await page
-      .getByRole("button", { name: "Edit task", exact: true })
-      .first()
-      .click();
-    const modal = page.getByRole("dialog", {
-      name: "Edit task and evidence",
+    const form = page.getByRole("region", {
+      name: "Report issue",
       exact: true,
     });
-    await choose(page, modal, "Task status", "Completed");
-    await modal.getByRole("button", { name: "Save task", exact: true }).click();
-    await expect(modal).toHaveCount(0);
-    const m4 = (await state()).aftercare_case_id;
-    const saved = await (
-      await request.get(`/api/v1/aftercare/cases/${m4}`)
-    ).json();
-    expect(saved.tenancy.address).toBe(address);
-    expect(saved.plan.move_out_date).toBe(end);
-    expect(
-      saved.plan.tasks.some(
-        (task: { status: string }) => task.status === "done",
-      ),
-    ).toBe(true);
-    await screenshot("05-moveout-plan");
-  });
-
-  await test.step("10 建立押金跟进、生成未发送草稿，明确确认结果后关闭", async () => {
-    await page
-      .getByRole("tab", { name: "Bond follow-up", exact: true })
+    await choose(page, form, "Issue type", "Furniture");
+    await form
+      .getByLabel("Issue description", { exact: true })
+      .fill("Fictional broken chair, reported for review.");
+    await form
+      .getByRole("button", { name: "Submit report", exact: true })
       .click();
+    const history = page.getByRole("region", {
+      name: "Issue report history",
+      exact: true,
+    });
+    await expect(history).toContainText("Fictional broken chair");
     await page
-      .getByLabel("Bond reference (optional for now)", { exact: true })
-      .fill("E2E-BOND-001");
-    await page
-      .getByRole("button", { name: "Create bond follow-up", exact: true })
+      .getByRole("menuitem", { name: "Human review", exact: true })
       .click();
-    await page
+    const review = page.locator(
+      `[data-testid="operator-review"][data-case-id="${caseId}"]`,
+    );
+    await review
+      .getByLabel("Review advice", { exact: true })
+      .fill(
+        "Ask the agent to inspect the chair and retain a dated photograph.",
+      );
+    await review
       .getByRole("button", {
-        name: "Confirm facts and activate follow-up",
+        name: "Save advice and complete review",
         exact: true,
       })
       .click();
-    await page
-      .getByLabel("Facts reported by the tenant", { exact: true })
-      .fill("E2E 测试记录：钥匙已交还，等待押金结果。");
-    await page
-      .getByRole("button", { name: "Confirm and record", exact: true })
-      .click();
-    await page
-      .getByRole("button", { name: "Prepare follow-up draft", exact: true })
-      .click();
     await expect(
-      page.getByText("Follow-up draft · Not sent", { exact: true }),
-    ).toBeVisible();
+      page.getByRole("region", { name: "Review history", exact: true }),
+    ).toContainText("Ask the agent to inspect the chair");
     await page
-      .getByLabel("Your confirmed outcome or reason for withdrawal", {
-        exact: true,
-      })
-      .fill("E2E 测试结果：用户确认押金已退回，关闭本次跟进。");
-    await page
-      .getByRole("button", {
-        name: "Confirm outcome and close follow-up",
-        exact: true,
-      })
+      .locator(`[data-testid="operator-review"][data-case-id="${caseId}"]`)
+      .getByRole("button", { name: "View report", exact: true })
       .click();
-    await page
-      .getByRole("button", { name: "Confirm outcome and close", exact: true })
-      .click();
-    await expect(
-      page.getByText("Outcome confirmed", { exact: true }),
-    ).toBeVisible();
-    await page.reload();
-    await page
-      .getByRole("tab", { name: "Bond follow-up", exact: true })
-      .click();
-    await expect(
-      page.getByText("Outcome confirmed", { exact: true }),
-    ).toBeVisible();
-    const finalCase = await state();
-    const aftercare = await (
-      await request.get(
-        `/api/v1/aftercare/cases/${finalCase.aftercare_case_id}`,
-      )
-    ).json();
-    expect(aftercare.bond.state).toBe("Resolved");
-    expect(aftercare.bond.history).toHaveLength(1);
-    expect(aftercare.bond.drafts).toHaveLength(1);
-    const finalLiving = await living();
+    await expect(history).toContainText("Ask the agent to inspect the chair");
+    const finalCase = await state(),
+      finalLiving = await living();
+    expect(finalCase.aftercare_case_id).toBeNull();
     expect(finalLiving.profile.address).toBe(address);
     expect(finalLiving.repairs).toHaveLength(1);
     expect(finalLiving.bookings).toHaveLength(1);
     await info.attach("completed-journey-state", {
-      body: JSON.stringify(
-        { case: finalCase, living: finalLiving, aftercare },
-        null,
-        2,
-      ),
+      body: JSON.stringify({ case: finalCase, living: finalLiving }, null, 2),
       contentType: "application/json",
     });
-    await screenshot("06-bond-completed");
+    await screenshot("05-issue-history");
     expect(errors).toEqual([]);
   });
 });

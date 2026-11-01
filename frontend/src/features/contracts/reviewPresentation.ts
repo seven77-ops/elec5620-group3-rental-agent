@@ -1,4 +1,5 @@
 import type { Review } from "../../api/types";
+import { demoAddress } from "./demoAddress.ts";
 
 export function reviewSummary(review: Review) {
   if (review.status === "Awaiting Human Review")
@@ -32,6 +33,7 @@ export function contractValue(review: Review, key: string) {
   const value = review.fields[key]?.value;
   if (value === null || value === undefined || value === "")
     return "Not provided";
+  if (key === "address") return demoAddress(value, review.selection_evidence);
   if ((key === "rent_amount" || key === "bond") && typeof value === "number") {
     const bondQuote = review.fields.bond?.evidence?.quote?.match(
       /^(?:rental\s+)?bond\s*[:\-]\s*(AUD|USD|NZD|EUR|GBP|CAD|SGD|CNY)\s*\$?\s*([\d,]+(?:\.\d{1,2})?)/i,

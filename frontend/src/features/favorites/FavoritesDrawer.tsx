@@ -177,7 +177,9 @@ export default function FavoritesDrawer({
                   {listing.suburb} · {listing.bedroom_label} bed ·{" "}
                   {listing.bathrooms} bath · {listing.car_spaces} car spaces
                 </p>
-                <strong>AUD {listing.weekly_rent.toLocaleString()}/week</strong>
+                <strong>
+                  AUD {listing.weekly_rent.toLocaleString("en-AU")}/week
+                </strong>
                 <Space wrap className="favorite-home-actions">
                   <Button
                     size="small"

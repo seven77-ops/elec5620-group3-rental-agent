@@ -2,7 +2,7 @@
 
 The implementation follows `2026-10-17-frontend-handoff.md` and `2026-10-17-frontend-plan.md`. This is the agreed browser/server boundary for implementation.
 
-Base URL `/api/v1`. Responses are JSON except uploads/downloads. Errors: `{error:{code,message,request_id,fields?}}`. Tenant is a server-configured local demo identity. Operator routes require `X-Operator-Key` matching a server-only configured value, obtained by the human from local startup instructions; browsing a route or passing actor_role grants no permissions. No production auth claim.
+Base URL `/api/v1`. Responses are JSON except uploads/downloads. Errors: `{error:{code,message,request_id,fields?}}`. Tenant is a server-configured local demo identity. Human review opens directly without an operator key. The server assigns the fixed local reviewer identity; request bodies still cannot override actor_role. No production auth claim.
 
 ## Data
 
@@ -26,13 +26,13 @@ CaseState: `{case_id,search_id,draft:{draft_id,revision,profile,fingerprint},con
 `GET /contract-reviews/{reviewId}/context` returns `{case_id,consent_id,consent_active}` from the saved association. `consent_active` additionally requires current selection equality; historical reads remain allowed after revocation. Legacy unbound reviews return `consent_id:null,consent_active:false`.
 `GET /contract-reviews/{reviewId}/history` returns `{history:[{snapshot_id,review:ContractReview}]}` in insertion order, retaining snapshots of same-version question/operator changes.
 `POST /contract-reviews/{reviewId}/corrections {expected_version,corrections}` returns raw ContractReview.
-`POST /contract-reviews/{reviewId}/decisions {expected_version,decision,note}` requires operator header and returns raw ContractReview. Module's allowed decisions only.
+`POST /contract-reviews/{reviewId}/decisions {expected_version,decision,note}` returns raw ContractReview. Module's allowed decisions only.
 `POST /contract-reviews/{reviewId}/questions {expected_version}` returns raw ContractReview. Keep prepared_not_sent.
 
 ## Aftercare
 
 `GET /aftercare/cases/{aftercareCaseId}` returns raw M4 case. Only mapped cases allowed.
-`POST /aftercare/commands {case_id,request_id,expected_version,operation,payload}` uses OUTER rental case_id. Server binds actor_id, actor_role, mapped M4 IDs and server monotonic demo as_of; ignore/reject browser identity/time overrides. Create requires `payload.tenancy.confirmed===true`, nonempty required fields, uses server tenant and generated tenancy_id/case_id, validates original schema, stores mapping. Body is not a raw unchecked M4 command. operator_decision requires operator header. Responses are original `{case,result,version,...}` receipts.
+`POST /aftercare/commands {case_id,request_id,expected_version,operation,payload}` uses OUTER rental case_id. Server binds actor_id, actor_role, mapped M4 IDs and server monotonic demo as_of; ignore/reject browser identity/time overrides. Create requires `payload.tenancy.confirmed===true`, nonempty required fields, uses server tenant and generated tenancy_id/case_id, validates original schema, stores mapping. Body is not a raw unchecked M4 command. operator_decision does not require an operator header. Responses are original `{case,result,version,...}` receipts.
 `GET /aftercare/template-commands` gives allowlisted `{operation:payload}` from original synthetic fixtures without identity/request/version/time. UI can use these payloads as explicitly labeled examples and expose editing. Server still validates.
 
 ## Downloads
@@ -50,3 +50,15 @@ New CaseState adds `agent1:{case_id,session_id,state,latest_version,review_token
 Evaluation adds `agent1_task_id` and `comparison_source:"agent1_verified_versions"` to the unchanged report/comparison response. Agent1 tasks are durably reserved before actual receiver execution; retry/restart/lost-response reconciliation and current-version checks apply. Historical completed HTTP retries return their original result; an unfinished old task cannot publish over a new version.
 
 Legacy cases without Agent1 provenance remain readable and exportable; preference/search/selection writes require a new case (`409 agent1_upgrade_required`, or the existing unconfirmed gate). Existing separately confirmed aftercare records remain available. Do not fabricate historical confirmations during upgrade. Input remains a form; live LLM extraction is disabled.
+
+## Basic home information
+
+`GET /cases/{case_id}/living-services/home` returns `{values,sources,profile,bookings,expected_version}` for six basic home fields: address, suburb, postcode, agent_name, agent_email and agent_phone. This endpoint is read-only. Saved location/contact groups take priority; otherwise selected listing facts, then confirmed lease/current draft facts supply reference values. Draft contacts require the same displayed address. Sources label the origin; missing data stays blank. Saved providers come from profile.utilities and all bookings (including completed services) come from the same record/version. The drawer saves through the existing versioned `/living-services/profile` endpoint with explicit confirmation, merging basic edits into the full retained profile. Conflict reload rebases untouched fields and retains only local edits. Quick service choices use the existing confirmed `/living-services/bookings` write with status considering and null date/quote; no extra selection store or external booking is created.
+
+## Review evidence files
+
+Upload JPEG, PNG or PDF bytes to the existing case living-services attachments endpoint (10 MiB per file). `report_issue` and `reply_review` accept optional unique `attachment_ids` (at most 10), which must belong to the outer rental case. Read responses add linked saved metadata as `attachments` on reviews. Human review uses only these server-resolved links; original report data remains unchanged.
+
+## Flat issue reports
+
+`POST /cases/{case_id}/issue-reports {request_id,category,description,attachment_ids}` creates a report without tenancy setup. Allowed types are rent/furniture/repairs/tenancy/moveout/post_tenancy/other. Description is original text up to 5000 characters; attachments are up to ten same-case saved IDs. Date, report ID and version are server assigned. Exact request retries are idempotent. `GET /issue-reports` lists new and historical reports in date order. `POST /issue-reports/{report_id}/advice {request_id,expected_version,note}` saves local human advice without changing the original report; note is 1–2000 characters. Receipt, version and closed-status checks prevent duplicate or stale decisions.

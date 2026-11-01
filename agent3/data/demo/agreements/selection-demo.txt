@@ -1,6 +1,6 @@
 Landlord: Example Housing Pty Ltd
 Tenant: Alex Student
-Address: 虚构示例楼 6 号房（不存在的地址）
+Address: Fictional Example Building, Unit 6 (nonexistent demo address)
 Weekly rent: $500 per person
 Bond: $2000
 Start date: 2027-02-01

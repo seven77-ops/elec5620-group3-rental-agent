@@ -1,3 +1,4 @@
+import EnglishDateInput from "../../components/EnglishDateInput";
 import { useState } from "react";
 import {
   Button,
@@ -157,13 +158,13 @@ export default function ProfileEditor({
               <Input type="tel" />
             </Form.Item>
             <Form.Item name="lease_start_date" label="Lease start date">
-              <Input type="date" />
+              <EnglishDateInput />
             </Form.Item>
             <Form.Item name="lease_end_date" label="Lease end date">
-              <Input type="date" />
+              <EnglishDateInput />
             </Form.Item>
             <Form.Item name="move_out_date" label="Expected move-out date">
-              <Input type="date" />
+              <EnglishDateInput />
             </Form.Item>
             <Form.Item name="moving_to" label="Moving destination">
               <Input />
