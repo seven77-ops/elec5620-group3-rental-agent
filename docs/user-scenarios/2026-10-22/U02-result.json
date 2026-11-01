@@ -1,0 +1,811 @@
+{
+  "persona": {
+    "id": "U02",
+    "name": "周航和林薇",
+    "role": "共同租房的伴侣",
+    "stage": "Agent1 条件修改与 Agent2 比较",
+    "requirements": "2人整租，Rhodes起步，2卧2卫，车位不限；预算从整套每周800提高到900，再扩大至Parramatta。",
+    "expectations": [
+      "逐轮保留未修改条件",
+      "零结果时不虚构房源",
+      "比较真实广告并承认通勤和噪音数据缺失"
+    ],
+    "turns": [
+      "我们2个人，想在Rhodes整租，最高每周800澳元，按整套算，要2卧2卫，车位不限。",
+      "最高周租提高到900澳元，其他条件保持不变。",
+      "区域改成Parramatta，最高仍是整套每周900澳元，2卧2卫，2个人整租，车位不限。",
+      "把你展示的前两套比较一下，哪个广告周租更低？",
+      "哪套最安静，坐火车到学校最快？"
+    ]
+  },
+  "entries": [
+    {
+      "type": "dialogue",
+      "round": 1,
+      "user": "我们2个人，想在Rhodes整租，最高每周800澳元，按整套算，要2卧2卫，车位不限。",
+      "status": 200,
+      "intent": "collect_preferences",
+      "agent": "agent1",
+      "answer": "条件记下了：Rhodes、2人、至少2卧、至少2卫、车位不限、预算上限 800 澳元/周，整套。\n按Rhodes，至少2卧，至少2卫，车位不限，广告周租上限800澳元，当前房源库没有匹配的广告。\n保持区域、卧卫和车位要求，最低广告周租是 AUD 890，比你的上限高 AUD 90。\n保留预算、卧卫和车位要求，扩大到其他区域有 30 条，例如 Parramatta、Westmead、Carlton。\n你更愿意调整预算，还是扩大区域？我会等你选择。\n这是广告标价预览，偏好尚未修改；在租状态、账单和计价对象仍需核实。\n确认下方条件后，我再保存为你的租房偏好。",
+      "actions": [
+        {
+          "type": "suggestion",
+          "label": "看看每周 890 的选择",
+          "message": "只预览房源：Rhodes，至少2卧，至少2卫，车位不限，广告周租上限890澳元。不要修改已保存的偏好。"
+        },
+        {
+          "type": "suggestion",
+          "label": "扩大区域看看（30条）",
+          "message": "只预览房源：不限区域，至少2卧，至少2卫，车位不限，广告周租上限800澳元。不要修改已保存的偏好。"
+        },
+        {
+          "type": "apply_preferences",
+          "label": "确认偏好并生成候选",
+          "proposal_id": "proposal-874e060788fd4e758943b1b3a5f27285",
+          "summary": [
+            "预算：偏好 450，上限 800 AUD/周；整套，含账单；硬上限。",
+            "人数：2；租赁方式：整租。",
+            "区域：Rhodes；至少卧室 2、浴室 2、车位 0；按广告金额粗筛。",
+            "通勤：目的地 悉尼大学（预设目的地，待核实）；方式 公共交通、步行；偏好 25、最长 40 分钟；硬限制；到达 09:00（Australia/Sydney）。",
+            "入住：2027-02-01 至 2027-02-07；租期 12 个月。",
+            "硬要求：独立卧室；软偏好：家具 0.6、独立卫浴 0.4；权重：设施 0.15、通勤 0.35、费用 0.3、居住 0.2。",
+            "0卧开放式按1个睡眠空间计算；计价对象、账单、通勤和在租状态仍须核实。"
+          ]
+        }
+      ],
+      "listings": [],
+      "providers": [],
+      "model_calls": [
+        {
+          "task": "assistant_intent",
+          "provider": "openai_compatible",
+          "model": "qwen-plus",
+          "started_at": "2026-10-22T03:04:55.981146+00:00",
+          "duration_ms": 3891,
+          "status": "succeeded",
+          "attempted": true,
+          "usage": {
+            "prompt_tokens": 6466,
+            "total_tokens": 6530,
+            "completion_tokens": 64
+          }
+        }
+      ],
+      "elapsed_seconds": 3.91,
+      "state_before": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      },
+      "state_after": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    },
+    {
+      "type": "user_action",
+      "label": "用户核对并点击确认偏好及生成候选",
+      "details": {
+        "summary": [
+          "预算：偏好 450，上限 800 AUD/周；整套，含账单；硬上限。",
+          "人数：2；租赁方式：整租。",
+          "区域：Rhodes；至少卧室 2、浴室 2、车位 0；按广告金额粗筛。",
+          "通勤：目的地 悉尼大学（预设目的地，待核实）；方式 公共交通、步行；偏好 25、最长 40 分钟；硬限制；到达 09:00（Australia/Sydney）。",
+          "入住：2027-02-01 至 2027-02-07；租期 12 个月。",
+          "硬要求：独立卧室；软偏好：家具 0.6、独立卫浴 0.4；权重：设施 0.15、通勤 0.35、费用 0.3、居住 0.2。",
+          "0卧开放式按1个睡眠空间计算；计价对象、账单、通勤和在租状态仍须核实。"
+        ],
+        "confirmation_version": 2
+      },
+      "state": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [
+          1
+        ],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    },
+    {
+      "type": "dialogue",
+      "round": 2,
+      "user": "最高周租提高到900澳元，其他条件保持不变。",
+      "status": 200,
+      "intent": "search",
+      "agent": "agent2",
+      "answer": "按这些条件找到 1 条广告，先给你看 1 条。Rhodes，至少2卧，至少2卫，车位不限，广告周租上限900澳元。\n这是广告标价预览，偏好尚未修改；在租状态、账单和计价对象仍需核实。",
+      "actions": [],
+      "listings": [
+        {
+          "listing_id": "domain:16427173",
+          "address": "601/11 Shoreline Drive, Rhodes",
+          "bedrooms": 2,
+          "bathrooms": 2,
+          "weekly_rent": 890
+        }
+      ],
+      "providers": [],
+      "model_calls": [
+        {
+          "task": "assistant_intent",
+          "provider": "openai_compatible",
+          "model": "qwen-plus",
+          "started_at": "2026-10-22T03:04:59.913712+00:00",
+          "duration_ms": 3118,
+          "status": "succeeded",
+          "attempted": true,
+          "usage": {
+            "prompt_tokens": 7275,
+            "total_tokens": 7321,
+            "completion_tokens": 46
+          }
+        }
+      ],
+      "elapsed_seconds": 3.14,
+      "state_before": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [
+          1
+        ],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      },
+      "state_after": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [
+          1
+        ],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    },
+    {
+      "type": "dialogue",
+      "round": 3,
+      "user": "区域改成Parramatta，最高仍是整套每周900澳元，2卧2卫，2个人整租，车位不限。",
+      "status": 200,
+      "intent": "collect_preferences",
+      "agent": "agent1",
+      "answer": "条件记下了：Parramatta、2人、至少2卧、至少2卫、车位不限、预算上限 900 澳元/周，整套。\n按这些条件找到 3 条广告，先给你看 3 条。Parramatta，至少2卧，至少2卫，车位不限，广告周租上限900澳元。\n这是广告标价预览，偏好尚未修改；在租状态、账单和计价对象仍需核实。\n确认下方条件后，我再保存为你的租房偏好。",
+      "actions": [
+        {
+          "type": "apply_preferences",
+          "label": "确认偏好并生成候选",
+          "proposal_id": "proposal-0abee6b34a68476d8caa0f34d545f8b1",
+          "summary": [
+            "预算：偏好 450，上限 900 AUD/周；整套，含账单；硬上限。",
+            "人数：2；租赁方式：整租。",
+            "区域：Parramatta；至少卧室 2、浴室 2、车位 0；按广告金额粗筛。",
+            "通勤：目的地 悉尼大学（预设目的地，待核实）；方式 公共交通、步行；偏好 25、最长 40 分钟；硬限制；到达 09:00（Australia/Sydney）。",
+            "入住：2027-02-01 至 2027-02-07；租期 12 个月。",
+            "硬要求：独立卧室；软偏好：家具 0.6、独立卫浴 0.4；权重：设施 0.15、通勤 0.35、费用 0.3、居住 0.2。",
+            "0卧开放式按1个睡眠空间计算；计价对象、账单、通勤和在租状态仍须核实。"
+          ]
+        }
+      ],
+      "listings": [
+        {
+          "listing_id": "domain:18371533",
+          "address": "39/68 MacArthur Street, Parramatta",
+          "bedrooms": 2,
+          "bathrooms": 2,
+          "weekly_rent": 650
+        },
+        {
+          "listing_id": "domain:17408245",
+          "address": "33/23 Good Street, Parramatta",
+          "bedrooms": 2,
+          "bathrooms": 2,
+          "weekly_rent": 700.0
+        },
+        {
+          "listing_id": "domain:18367987",
+          "address": "206/19-21 Good Street, Parramatta",
+          "bedrooms": 2,
+          "bathrooms": 2,
+          "weekly_rent": 700.0
+        }
+      ],
+      "providers": [],
+      "model_calls": [
+        {
+          "task": "assistant_intent",
+          "provider": "openai_compatible",
+          "model": "qwen-plus",
+          "started_at": "2026-10-22T03:05:03.062148+00:00",
+          "duration_ms": 4347,
+          "status": "succeeded",
+          "attempted": true,
+          "usage": {
+            "prompt_tokens": 7679,
+            "total_tokens": 7745,
+            "completion_tokens": 66
+          }
+        }
+      ],
+      "elapsed_seconds": 4.37,
+      "state_before": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [
+          1
+        ],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      },
+      "state_after": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [
+          1
+        ],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    },
+    {
+      "type": "user_action",
+      "label": "用户核对并点击确认偏好及生成候选",
+      "details": {
+        "summary": [
+          "预算：偏好 450，上限 900 AUD/周；整套，含账单；硬上限。",
+          "人数：2；租赁方式：整租。",
+          "区域：Parramatta；至少卧室 2、浴室 2、车位 0；按广告金额粗筛。",
+          "通勤：目的地 悉尼大学（预设目的地，待核实）；方式 公共交通、步行；偏好 25、最长 40 分钟；硬限制；到达 09:00（Australia/Sydney）。",
+          "入住：2027-02-01 至 2027-02-07；租期 12 个月。",
+          "硬要求：独立卧室；软偏好：家具 0.6、独立卫浴 0.4；权重：设施 0.15、通勤 0.35、费用 0.3、居住 0.2。",
+          "0卧开放式按1个睡眠空间计算；计价对象、账单、通勤和在租状态仍须核实。"
+        ],
+        "confirmation_version": 5
+      },
+      "state": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [
+          1,
+          2
+        ],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    },
+    {
+      "type": "dialogue",
+      "round": 4,
+      "user": "把你展示的前两套比较一下，哪个广告周租更低？",
+      "status": 200,
+      "intent": "compare",
+      "agent": "agent2",
+      "answer": "39/68 MacArthur Street, Parramatta（domain:18371533）：2卧、2卫、1车位，广告 AUD 650/周。\n33/23 Good Street, Parramatta（domain:17408245）：2卧、2卫、1车位，广告 AUD 700/周。\n前两套广告周租相差 AUD 50；计价对象未核实，不能据此认定个人总费用差异。\n是否仍在租、计价对象、账单、起租日期和通勤均待核实。",
+      "actions": [],
+      "listings": [
+        {
+          "listing_id": "domain:18371533",
+          "address": "39/68 MacArthur Street, Parramatta",
+          "bedrooms": 2,
+          "bathrooms": 2,
+          "weekly_rent": 650
+        },
+        {
+          "listing_id": "domain:17408245",
+          "address": "33/23 Good Street, Parramatta",
+          "bedrooms": 2,
+          "bathrooms": 2,
+          "weekly_rent": 700.0
+        }
+      ],
+      "providers": [],
+      "model_calls": [
+        {
+          "task": "assistant_intent",
+          "provider": "openai_compatible",
+          "model": "qwen-plus",
+          "started_at": "2026-10-22T03:05:07.448536+00:00",
+          "duration_ms": 3957,
+          "status": "succeeded",
+          "attempted": true,
+          "usage": {
+            "prompt_tokens": 8821,
+            "total_tokens": 8851,
+            "completion_tokens": 30
+          }
+        }
+      ],
+      "elapsed_seconds": 3.98,
+      "state_before": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [
+          1,
+          2
+        ],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      },
+      "state_after": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [
+          1,
+          2
+        ],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    },
+    {
+      "type": "dialogue",
+      "round": 5,
+      "user": "哪套最安静，坐火车到学校最快？",
+      "status": 200,
+      "intent": "clarify",
+      "agent": "assistant",
+      "answer": "目前没有已核实的噪音、隔音、通勤、账单和在租数据。请先核实这些事实；我可以比较广告卧卫、车位和周租。",
+      "actions": [],
+      "listings": [],
+      "providers": [],
+      "model_calls": [
+        {
+          "task": "assistant_intent",
+          "provider": "openai_compatible",
+          "model": "qwen-plus",
+          "started_at": "2026-10-22T03:05:11.431891+00:00",
+          "duration_ms": 2960,
+          "status": "succeeded",
+          "attempted": true,
+          "usage": {
+            "prompt_tokens": 9077,
+            "total_tokens": 9090,
+            "completion_tokens": 13
+          }
+        }
+      ],
+      "elapsed_seconds": 2.98,
+      "state_before": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [
+          1,
+          2
+        ],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      },
+      "state_after": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [
+          1,
+          2
+        ],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    }
+  ],
+  "checks": [
+    {
+      "check": "本轮问答未自动改租后资料",
+      "round": 1,
+      "passed": true
+    },
+    {
+      "check": "本轮问答未自动改租后资料",
+      "round": 2,
+      "passed": true
+    },
+    {
+      "check": "本轮问答未自动改租后资料",
+      "round": 3,
+      "passed": true
+    },
+    {
+      "check": "本轮问答未自动改租后资料",
+      "round": 4,
+      "passed": true
+    },
+    {
+      "check": "本轮问答未自动改租后资料",
+      "round": 5,
+      "passed": true
+    }
+  ],
+  "final_state": {
+    "living_version": 0,
+    "profile": {
+      "address": "",
+      "suburb": "",
+      "postcode": "",
+      "agent_name": "",
+      "agent_email": "",
+      "agent_phone": "",
+      "emergency_phone": "",
+      "moving_to": "",
+      "own_furniture": "",
+      "landlord_furniture": "",
+      "notes": "",
+      "bedrooms": null,
+      "bathrooms": null,
+      "carpeted": null,
+      "has_pets": null,
+      "has_elevator": null,
+      "move_out_date": null,
+      "lease_start_date": null,
+      "lease_end_date": null,
+      "utilities": {
+        "electricity": null,
+        "gas": null,
+        "internet": null,
+        "water": null
+      }
+    },
+    "repairs": [],
+    "booking_count": 0,
+    "confirmation_versions": [
+      1,
+      2
+    ],
+    "selected_listing": null,
+    "aftercare_case_id": null,
+    "tenancy_source": null
+  },
+  "method": "Actual model and API; user confirmation actions reproduced through API",
+  "environment": "isolated temporary runtime",
+  "date": "2026-10-22"
+}

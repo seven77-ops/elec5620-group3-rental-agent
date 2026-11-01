@@ -1,0 +1,705 @@
+[
+  {
+    "id": "expand-001",
+    "question": "What urgent-repair trade contact fields appear in the official standard tenancy agreement?",
+    "language": "en",
+    "category": "rental_guidance",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "standard-lease",
+        "section": "Page 4",
+        "text_contains": [
+          "Nominated tradespeople for urgent repairs",
+          "Electrical repairs:"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "Electrical|Plumbing"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Describe blank fields; never invent a named contractor or filled phone number."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-002",
+    "question": "Does the official standard tenancy form have fields for each tenant’s bond contribution?",
+    "language": "en",
+    "category": "rental_guidance",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "standard-lease",
+        "section": "Page 4",
+        "text_contains": [
+          "Contribution towards bond"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "contribution"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Identify blank contribution fields, not a supplied personal bond amount."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-003",
+    "question": "According to the Tenant Information Statement, when should a tenant receive the statement?",
+    "language": "en",
+    "category": "rental_guidance",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "tenant-information",
+        "section": "Page 1",
+        "text_contains": [
+          "before signing a residential"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "before.*sign"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Statement is provided before signing; explain official source, not private lease facts."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-004",
+    "question": "According to the Tenant Information Statement, what should I do with the condition report after moving in?",
+    "language": "en",
+    "category": "rental_guidance",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "tenant-information",
+        "section": "Page 3",
+        "text_contains": [
+          "within 7 days after moving",
+          "keep a copy"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "condition report",
+      "(?:7|seven) days"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Complete and give a copy within stated period and retain a copy."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-005",
+    "question": "Should tenants take timestamped photos alongside their condition report?",
+    "language": "en",
+    "category": "rental_guidance",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "condition-reports",
+        "section": "Tenant's responsibilities",
+        "text_contains": [
+          "time stamps",
+          "keep the other copy"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "photos|images",
+      "time stamps|timestamp"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Photos supplement the report and their date matters; keep the report copy."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-006",
+    "question": "Do the same tenants need a new condition report just because they renew their tenancy?",
+    "language": "en",
+    "category": "rental_guidance",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "condition-reports",
+        "section": "Tenant's responsibilities",
+        "text_contains": [
+          "a new condition report is not needed",
+          "same people renew"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "not needed|not.*need|no new"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Preserve the same-people renewal qualification."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-007",
+    "question": "In shared housing, what responsibilities does a head tenant have towards their subtenant?",
+    "language": "en",
+    "category": "rental_guidance",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "shared-housing",
+        "section": "Sub-letting",
+        "text_contains": [
+          "head tenant",
+          "same legal responsibilities"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "head tenant|subtenant",
+      "landlord"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Head tenant has landlord-like responsibilities to subtenant and remains responsible to own landlord."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-008",
+    "question": "Do I need written landlord permission to sub-let or transfer part of a rental property?",
+    "language": "en",
+    "category": "rental_guidance",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "shared-housing",
+        "section": "Consent from the landlord",
+        "text_contains": [
+          "written permission",
+          "additional occupant"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "written permission|written consent"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Keep subletting/transferring distinct from additional occupants and capacity limits."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-009",
+    "question": "What does the University of Sydney recommend checking before paying for a private rental?",
+    "language": "en",
+    "category": "rental_guidance",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "student-off-campus",
+        "section": "Inspect the property",
+        "text_contains": [
+          "Check the place before you pay",
+          "Never pay money"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "inspect|check",
+      "pay"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "University student advice; do not certify that a particular listing is genuine."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-010",
+    "question": "What costs besides rent should a Sydney student plan for when living off campus?",
+    "language": "en",
+    "category": "rental_guidance",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "student-off-campus",
+        "section": "Factor in other costs",
+        "text_contains": [
+          "Furniture",
+          "Transportation"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "bills|electricity",
+      "furniture",
+      "transport"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Describe budgeting categories without inventing exact personal totals."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-011",
+    "question": "What must a written NSW rent increase notice state?",
+    "language": "en",
+    "category": "rental_guidance",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "rent-increases",
+        "section": "How a rent increase happens",
+        "text_contains": [
+          "proposed new amount of rent",
+          "signed, dated"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "new amount|increased rent",
+      "date"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Include proposed new rent, effective date and proper notice details; preserve notice timing conditions."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-012",
+    "question": "What factors make a renewed or replacement lease the same rental agreement for rent-increase rules?",
+    "language": "en",
+    "category": "rental_guidance",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "rent-increases",
+        "section": "Renewing or replacing your lease",
+        "text_contains": [
+          "landlord hasn’t changed",
+          "at least one of the tenants"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "landlord",
+      "tenant",
+      "moved out|move out"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Keep all three continuity conditions together."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-013",
+    "question": "How does the official guide distinguish ordinary carpet wear from carpet damage?",
+    "language": "en",
+    "category": "rental_guidance",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "wear-and-damage",
+        "section": "Carpet",
+        "text_contains": [
+          "furniture indentations",
+          "stains or burn marks"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "indentations|traffic marks",
+      "stains|burn"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Explain examples, not a finding about an unseen carpet."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-014",
+    "question": "Is a tenant who did not perpetrate domestic abuse financially responsible for damage caused by that abuse?",
+    "language": "en",
+    "category": "rental_guidance",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "wear-and-damage",
+        "section": "Property damage caused by domestic abuse",
+        "text_contains": [
+          "not the perpetrator",
+          "cannot deduct"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "not.*responsible|not.*liable",
+      "not the perpetrator|not.*perpetrator"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Preserve the non-perpetrator and domestic-abuse qualifications."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-015",
+    "question": "What notice and frequency limit does the guide give for ordinary landlord property inspections?",
+    "language": "en",
+    "category": "rental_guidance",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "landlord-access",
+        "section": "For inspections and repairs",
+        "text_contains": [
+          "7 days' written notice",
+          "up to 4 times"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "(?:7|seven) days",
+      "(?:4|four) times"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Do not use ordinary inspection timing for emergencies or different entry reasons."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-016",
+    "question": "Are rental property access notice periods always working days, including smoke alarm inspections?",
+    "language": "en",
+    "category": "rental_guidance",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "landlord-access",
+        "section": "How to count days for a notice period",
+        "text_contains": [
+          "calendar days",
+          "smoke alarms"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "calendar",
+      "business days|working days",
+      "smoke"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Calendar-day default has the stated smoke-alarm business-day exception."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-017",
+    "question": "Do I need to favorite a listing before selecting it?",
+    "language": "en",
+    "category": "product",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "product-guide",
+        "section": "Favorites, comparison and direct selection",
+        "text_contains": [
+          "two parallel choices",
+          "Favoriting is optional"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "parallel|optional|without first"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Favoriting/comparison and direct selection are parallel choices, not required sequential stages."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-018",
+    "question": "How do I edit my rental requirements in this app?",
+    "language": "en",
+    "category": "product",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "product-guide",
+        "section": "Edit rental requirements and see all matches",
+        "text_contains": [
+          "我的租房需求",
+          "Confirm changes"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "requirements",
+      "confirm|apply"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Describe controls and confirmation; do not alter user requirements while answering help."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-019",
+    "question": "Does this app need a fixed class arrival time to compare commutes?",
+    "language": "en",
+    "category": "product",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "product-guide",
+        "section": "Commute estimates",
+        "text_contains": [
+          "no fixed arrival time",
+          "Fisher Library"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "no fixed arrival time|does not require"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Approximate mode-specific main-campus commute, not a guaranteed scheduled trip."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-020",
+    "question": "How do I upload a contract in this app?",
+    "language": "en",
+    "category": "product",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "product-guide",
+        "section": "Upload a contract for review",
+        "text_contains": [
+          "独立同意与合同上传",
+          "separate from selecting"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "consent",
+      "upload"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Current selection and separate upload permission; no automatic cloud indexing consent."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-021",
+    "question": "How do I enable private contract search and allow cloud processing in this app?",
+    "language": "en",
+    "category": "product",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "product-guide",
+        "section": "Private contract search and separate consent",
+        "text_contains": [
+          "independent choices",
+          "Forget contract search"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "separate|independent",
+      "consent"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Distinguish upload, local index, cloud and per-question choices; forgetting search removes derived index."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-022",
+    "question": "Does polishing and saving a repair email in this app send it automatically?",
+    "language": "en",
+    "category": "product",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "product-guide",
+        "section": "Repair emails and follow-up records",
+        "text_contains": [
+          "Saving or polishing does not send the email",
+          "send it yourself"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "does not send|not send|send it yourself"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Draft is editable, user sends in own mail client; no silent messaging."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-023",
+    "question": "Does saving a moving booking or utility provider choice in this app contact the company?",
+    "language": "en",
+    "category": "product",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "product-guide",
+        "section": "Utilities, moving and cleaning providers",
+        "text_contains": [
+          "does not open or switch an account",
+          "does not submit a booking"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "does not|not.*automatically",
+      "booking|account"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Saving choices/records does not submit a booking or switch utilities."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-024",
+    "question": "How do I create a move-out plan in this app, and are its dates legal notice deadlines?",
+    "language": "en",
+    "category": "product",
+    "answerability": "supported",
+    "targets": [
+      {
+        "document_id": "product-guide",
+        "section": "Move-out plans and bond follow-up",
+        "text_contains": [
+          "not statements of legal notice deadlines",
+          "explicitly confirmed"
+        ]
+      }
+    ],
+    "required_claim_patterns": [
+      "practical",
+      "not.*legal notice|not statements of legal notice"
+    ],
+    "forbidden_claim_patterns": [],
+    "expected_conditions": [
+      "Practical schedule, confirm changes; official legal deadlines checked separately."
+    ],
+    "manual_review": [
+      "Verify every claim against its own exact quotation, including scope, qualifications and actual product capabilities."
+    ]
+  },
+  {
+    "id": "expand-025",
+    "question": "What exact landlord name and rent have I personally saved in this app?",
+    "language": "en",
+    "category": "product_private_unavailable",
+    "answerability": "private_unavailable",
+    "targets": [],
+    "required_claim_patterns": [],
+    "forbidden_claim_patterns": [
+      "your landlord is named",
+      "you selected (?:AGL|Origin|Telstra)"
+    ],
+    "expected_conditions": [
+      "No case history or saved personal values are supplied to public knowledge; abstain and identify missing information."
+    ],
+    "manual_review": [
+      "Confirm that general product instructions are not used to invent personal state."
+    ]
+  },
+  {
+    "id": "expand-026",
+    "question": "What electricity provider have I personally selected in this app?",
+    "language": "en",
+    "category": "product_private_unavailable",
+    "answerability": "private_unavailable",
+    "targets": [],
+    "required_claim_patterns": [],
+    "forbidden_claim_patterns": [
+      "your landlord is named",
+      "you selected (?:AGL|Origin|Telstra)"
+    ],
+    "expected_conditions": [
+      "No case history or saved personal values are supplied to public knowledge; abstain and identify missing information."
+    ],
+    "manual_review": [
+      "Confirm that general product instructions are not used to invent personal state."
+    ]
+  }
+]

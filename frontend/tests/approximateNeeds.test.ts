@@ -1,0 +1,72 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {
+  approximateNeeds,
+  profileNeeds,
+  conversationNeeds,
+  needsMatch,
+} from "../src/features/assistant/needs.ts";
+import type { Profile } from "../src/api/types.ts";
+import type { Conversation } from "../src/api/assistant.ts";
+
+test("legacy class times never appear in effective rental needs", () => {
+  const profile = {
+    student_commute: {
+      mode: "public_transport",
+      maximum_minutes: 30,
+      arrival_time: "10:00",
+      travel_day: "weekend",
+      travel_date: "2000-01-01",
+      max_transfers: 1,
+    },
+  } as Profile;
+  const current = profileNeeds(profile);
+  assert.equal(current.commute_max_minutes, 30);
+  assert.equal(current.max_transfers, 1);
+  assert.equal(current.arrival_time, undefined);
+  const conversation = {
+    dialogue_mode: "search",
+    rental_brief: { arrival_time: "10:00" },
+    last_search_filters: {
+      usyd_arrival_time: "10:00",
+      usyd_travel_date: "2000-01-01",
+    },
+  } as Conversation;
+  assert.equal(
+    conversationNeeds(conversation, profile).arrival_time,
+    undefined,
+  );
+  assert.equal(
+    needsMatch(conversationNeeds(conversation, profile), profile),
+    true,
+  );
+  assert.deepEqual(
+    approximateNeeds({
+      commute_mode: "bus",
+      commute_max_minutes: 30,
+      arrival_time: "10:00",
+    }),
+    { commute_mode: "bus", commute_max_minutes: 30 },
+  );
+});
+
+test("skipping commute never restores saved or legacy search constraints in the needs panel", () => {
+  const saved = {
+    student_commute: { mode: "train", maximum_minutes: 40, max_transfers: 1 },
+  } as Profile;
+  const conversation = {
+    dialogue_mode: "search",
+    rental_brief: { suburb: "Burwood", commute_preference: "skip" },
+    last_search_filters: {
+      usyd_mode: "train",
+      usyd_max_minutes: 40,
+      usyd_max_transfers: 1,
+    },
+  } as Conversation;
+  const result = conversationNeeds(conversation, saved);
+  assert.equal(result.commute_preference, "skip");
+  assert.equal(result.commute_mode, undefined);
+  assert.equal(result.commute_max_minutes, undefined);
+  assert.equal(result.max_transfers, undefined);
+  assert.equal(needsMatch(result, saved), false);
+});

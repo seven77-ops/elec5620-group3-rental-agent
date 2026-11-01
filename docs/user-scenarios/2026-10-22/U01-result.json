@@ -1,0 +1,487 @@
+{
+  "persona": {
+    "id": "U01",
+    "name": "陈悦",
+    "role": "刚到悉尼的留学生",
+    "stage": "Agent1 需求澄清与 Agent2 检索",
+    "requirements": "1人，Kensington，最高每人每周500澳元，独立房间，卧卫车位不限。首次表达故意遗漏预算单位。",
+    "expectations": [
+      "主动澄清预算周期及计价对象",
+      "不将广告整套价格当成人均费用",
+      "未知账单和在租情况不冒充已核实"
+    ],
+    "turns": [
+      "我是刚到悉尼的学生，想住Kensington附近，预算500。",
+      "500是每人每周的最高预算，就我1个人，想租独立房间。卧室、浴室和车位数量都不限。",
+      "先按Kensington查，预算保持最高每人每周500澳元。",
+      "这些广告价格确定是每个人承担的，而且包水电网的吗？"
+    ]
+  },
+  "entries": [
+    {
+      "type": "dialogue",
+      "round": 1,
+      "user": "我是刚到悉尼的学生，想住Kensington附近，预算500。",
+      "status": 200,
+      "intent": "collect_preferences",
+      "agent": "agent1",
+      "answer": "记下了：Kensington、预算上限 500 澳元（周期待确认），计价对象待确认。\n这 500 澳元是整套每周，还是每人每周？如果是月预算，也请告诉我。",
+      "actions": [],
+      "listings": [],
+      "providers": [],
+      "model_calls": [
+        {
+          "task": "assistant_intent",
+          "provider": "openai_compatible",
+          "model": "qwen-plus",
+          "started_at": "2026-10-22T03:04:55.981803+00:00",
+          "duration_ms": 3363,
+          "status": "succeeded",
+          "attempted": true,
+          "usage": {
+            "prompt_tokens": 6452,
+            "total_tokens": 6475,
+            "completion_tokens": 23
+          }
+        }
+      ],
+      "elapsed_seconds": 3.38,
+      "state_before": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      },
+      "state_after": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    },
+    {
+      "type": "dialogue",
+      "round": 2,
+      "user": "500是每人每周的最高预算，就我1个人，想租独立房间。卧室、浴室和车位数量都不限。",
+      "status": 200,
+      "intent": "collect_preferences",
+      "agent": "agent1",
+      "answer": "记下了：Kensington、1人、预算上限 500 澳元/周，每人。\n对卧室、浴室、车位数量有什么要求？没有要求的可以说“不限”。",
+      "actions": [],
+      "listings": [],
+      "providers": [],
+      "model_calls": [
+        {
+          "task": "assistant_intent",
+          "provider": "openai_compatible",
+          "model": "qwen-plus",
+          "started_at": "2026-10-22T03:04:59.366808+00:00",
+          "duration_ms": 3664,
+          "status": "succeeded",
+          "attempted": true,
+          "usage": {
+            "prompt_tokens": 6598,
+            "total_tokens": 6637,
+            "completion_tokens": 39
+          }
+        }
+      ],
+      "elapsed_seconds": 3.69,
+      "state_before": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      },
+      "state_after": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    },
+    {
+      "type": "dialogue",
+      "round": 3,
+      "user": "先按Kensington查，预算保持最高每人每周500澳元。",
+      "status": 200,
+      "intent": "collect_preferences",
+      "agent": "agent1",
+      "answer": "记下了：Kensington、1人、预算上限 500 澳元/周，每人。\n对卧室、浴室、车位数量有什么要求？没有要求的可以说“不限”。",
+      "actions": [],
+      "listings": [],
+      "providers": [],
+      "model_calls": [
+        {
+          "task": "assistant_intent",
+          "provider": "openai_compatible",
+          "model": "qwen-plus",
+          "started_at": "2026-10-22T03:05:03.060998+00:00",
+          "duration_ms": 2748,
+          "status": "succeeded",
+          "attempted": true,
+          "usage": {
+            "prompt_tokens": 6734,
+            "total_tokens": 6780,
+            "completion_tokens": 46
+          }
+        }
+      ],
+      "elapsed_seconds": 2.77,
+      "state_before": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      },
+      "state_after": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    },
+    {
+      "type": "dialogue",
+      "round": 4,
+      "user": "这些广告价格确定是每个人承担的，而且包水电网的吗？",
+      "status": 200,
+      "intent": "clarify",
+      "agent": "assistant",
+      "answer": "目前没有已核实的噪音、隔音、通勤、账单和在租数据。请先核实这些事实；我可以比较广告卧卫、车位和周租。",
+      "actions": [],
+      "listings": [],
+      "providers": [],
+      "model_calls": [
+        {
+          "task": "assistant_intent",
+          "provider": "openai_compatible",
+          "model": "qwen-plus",
+          "started_at": "2026-10-22T03:05:05.837202+00:00",
+          "duration_ms": 2279,
+          "status": "succeeded",
+          "attempted": true,
+          "usage": {
+            "prompt_tokens": 6837,
+            "total_tokens": 6850,
+            "completion_tokens": 13
+          }
+        }
+      ],
+      "elapsed_seconds": 2.3,
+      "state_before": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      },
+      "state_after": {
+        "living_version": 0,
+        "profile": {
+          "address": "",
+          "suburb": "",
+          "postcode": "",
+          "agent_name": "",
+          "agent_email": "",
+          "agent_phone": "",
+          "emergency_phone": "",
+          "moving_to": "",
+          "own_furniture": "",
+          "landlord_furniture": "",
+          "notes": "",
+          "bedrooms": null,
+          "bathrooms": null,
+          "carpeted": null,
+          "has_pets": null,
+          "has_elevator": null,
+          "move_out_date": null,
+          "lease_start_date": null,
+          "lease_end_date": null,
+          "utilities": {
+            "electricity": null,
+            "gas": null,
+            "internet": null,
+            "water": null
+          }
+        },
+        "repairs": [],
+        "booking_count": 0,
+        "confirmation_versions": [],
+        "selected_listing": null,
+        "aftercare_case_id": null,
+        "tenancy_source": null
+      }
+    }
+  ],
+  "checks": [
+    {
+      "check": "本轮问答未自动改租后资料",
+      "round": 1,
+      "passed": true
+    },
+    {
+      "check": "本轮问答未自动改租后资料",
+      "round": 2,
+      "passed": true
+    },
+    {
+      "check": "本轮问答未自动改租后资料",
+      "round": 3,
+      "passed": true
+    },
+    {
+      "check": "本轮问答未自动改租后资料",
+      "round": 4,
+      "passed": true
+    }
+  ],
+  "final_state": {
+    "living_version": 0,
+    "profile": {
+      "address": "",
+      "suburb": "",
+      "postcode": "",
+      "agent_name": "",
+      "agent_email": "",
+      "agent_phone": "",
+      "emergency_phone": "",
+      "moving_to": "",
+      "own_furniture": "",
+      "landlord_furniture": "",
+      "notes": "",
+      "bedrooms": null,
+      "bathrooms": null,
+      "carpeted": null,
+      "has_pets": null,
+      "has_elevator": null,
+      "move_out_date": null,
+      "lease_start_date": null,
+      "lease_end_date": null,
+      "utilities": {
+        "electricity": null,
+        "gas": null,
+        "internet": null,
+        "water": null
+      }
+    },
+    "repairs": [],
+    "booking_count": 0,
+    "confirmation_versions": [],
+    "selected_listing": null,
+    "aftercare_case_id": null,
+    "tenancy_source": null
+  },
+  "method": "Actual model and API; user confirmation actions reproduced through API",
+  "environment": "isolated temporary runtime",
+  "date": "2026-10-22"
+}

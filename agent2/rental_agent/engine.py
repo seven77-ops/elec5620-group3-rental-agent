@@ -37,32 +37,32 @@ def evaluate_listing(p, item, as_of, weights, duplicate_conflict=False):
         value = item.get(key)
         e = item.get('evidence', {}).get(key)
         if key in item.get('conflicts', []):
-            issues.append(f'{key}：来源信息冲突')
+            issues.append(f'{key}: Conflicting source information')
             return None
         if value is None:
-            issues.append(f'{key}：信息缺失')
+            issues.append(f'{key}: Missing information')
             return None
         if e is None or not recent(e['observed_at'], as_of):
-            issues.append(f'{key}：缺少有效时点内的模拟证据')
+            issues.append(f'{key}: Missing synthetic evidence within the valid time window')
             return None
         evidence_used[key] = deepcopy(e)
         return value
 
     status = fact('listing_status')
-    check('availability', None if status in (None, 'unknown') else status == 'active', '房源须为 active（仅模拟状态）')
-    check('freshness', True if recent(fact('last_checked_at'), as_of) else None, '快照核对时间须不晚于评估时点且不超过24小时')
-    check('permission', True if fact('source_permission') is True else None, '数据使用权限须明确')
-    check('conflicts', None if item.get('conflicts') or duplicate_conflict else True, '字段或同来源重复记录冲突须先核对')
+    check('availability', None if status in (None, 'unknown') else status == 'active', 'The listing must be active (synthetic status only)')
+    check('freshness', True if recent(fact('last_checked_at'), as_of) else None, 'The snapshot check must not be later than evaluation time or more than 24 hours old')
+    check('permission', True if fact('source_permission') is True else None, 'Data-use permission must be explicit')
+    check('conflicts', None if item.get('conflicts') or duplicate_conflict else True, 'Conflicting fields or duplicate records from the same source must be checked first')
     mode = fact('rental_mode')
-    check('rental_mode', None if mode is None else mode == p['rental_mode'], f"租赁方式须为 {p['rental_mode']}")
+    check('rental_mode', None if mode is None else mode == p['rental_mode'], f"Rental mode must be {p['rental_mode']}")
     earliest, latest = fact('available_from'), fact('latest_start_date')
     window = p['move_in_window']
     overlap = None if earliest is None or latest is None else max(earliest, window['from']) <= min(latest, window['to'])
-    check('move_in', overlap, f"供方接受的起租范围须与 {window['from']} 至 {window['to']} 相交")
+    check('move_in', overlap, f"The provider start-date range must overlap {window['from']} to {window['to']}")
     minimum = fact('minimum_lease_months')
-    check('lease', None if minimum is None else minimum <= p['lease_months'], f"须接受 {p['lease_months']} 个月租期")
+    check('lease', None if minimum is None else minimum <= p['lease_months'], f"A {p['lease_months']}-month lease must be accepted")
     for key in p['hard_requirements']:
-        check(key, fact(key), f'必须满足 {key}')
+        check(key, fact(key), f'Must satisfy {key}')
 
     amount, period, scope, currency = (fact(k) for k in ('rent_amount', 'rent_period', 'rent_scope', 'currency'))
     fees = fact('mandatory_fees_weekly')
@@ -77,10 +77,10 @@ def evaluate_listing(p, item, as_of, weights, duplicate_conflict=False):
                 bills = fact('bills_weekly')
                 weekly = None if bills is None else weekly + bills
     elif scope is not None and scope != p['budget']['scope']:
-        issues.append('rent_scope：计价对象不一致；不自动按人数或卧室分摊')
+        issues.append('rent_scope: Rent scopes differ; costs are not automatically divided by occupants or bedrooms')
     if p['budget']['hard_limit']:
         check('budget', None if weekly is None else weekly <= p['budget']['maximum'],
-              f"周费用须不超过 AUD {p['budget']['maximum']}（{p['budget']['scope']}）")
+              f"Weekly cost must not exceed AUD {p['budget']['maximum']} ({p['budget']['scope']})")
 
     commute = fact('commute')
     precision = fact('location_precision')
@@ -95,10 +95,10 @@ def evaluate_listing(p, item, as_of, weights, duplicate_conflict=False):
         if matches:
             duration = commute.get('duration_minutes')
         else:
-            issues.append('commute：目的地、时段、交通模式、位置精度或查询时效不匹配')
+            issues.append('commute: Destination, time, transport mode, location precision or query freshness does not match')
     if p['commute']['hard_limit']:
         check('commute', None if duration is None else duration <= p['commute']['maximum_minutes'],
-              f"模拟到校时间须不超过 {p['commute']['maximum_minutes']} 分钟")
+              f"Synthetic campus travel time must not exceed {p['commute']['maximum_minutes']} minutes")
 
     soft = {k: v for k, v in p['soft_preferences'].items() if v > 0}
     values = {k: fact(k) for k in soft}
@@ -120,20 +120,20 @@ def evaluate_listing(p, item, as_of, weights, duplicate_conflict=False):
     state = 'excluded' if 'fail' in states else ('pending' if 'unknown' in states or not score_complete else 'eligible')
     reasons, tradeoffs = [], []
     if weekly is not None:
-        reasons.append(f"可比周费用 AUD {weekly:.2f}（{p['budget']['scope']}；{'含账单' if p['budget']['includes_bills'] else '不单独加入未包含的账单'}）")
+        reasons.append(f"Comparable weekly cost AUD {weekly:.2f} ({p['budget']['scope']}; {'bills included' if p['budget']['includes_bills'] else 'excluded bills are not added separately'})")
         if weekly > p['budget']['preferred']:
-            tradeoffs.append(f"比舒适预算高 AUD {weekly - p['budget']['preferred']:.2f}/周")
+            tradeoffs.append(f"AUD {weekly - p['budget']['preferred']:.2f}/week above the preferred budget")
     if duration is not None:
-        reasons.append(f'模拟到校通勤 {duration:g} 分钟；目的地 {p["destination_id"]}')
+        reasons.append(f'Synthetic campus commute {duration:g} minutes; destination {p["destination_id"]}')
         if duration > p['commute']['preferred_minutes']:
-            tradeoffs.append(f"比期望通勤多 {duration - p['commute']['preferred_minutes']:g} 分钟")
+            tradeoffs.append(f"{duration - p['commute']['preferred_minutes']:g} minutes above the preferred commute")
     if distance is not None:
-        reasons.append(f'模拟最近超市直线距离 {distance:g} 米，不是步行时长')
+        reasons.append(f'Synthetic straight-line distance to the nearest supermarket: {distance:g} metres; not a walking duration')
     for key, value in values.items():
         if value is True:
-            reasons.append(f'满足软偏好 {key}')
+            reasons.append(f'Meets soft preference {key}')
         elif value is False:
-            tradeoffs.append(f'不满足软偏好 {key}')
+            tradeoffs.append(f'Does not meet soft preference {key}')
     return {
         'listing_id': item['listing_id'], 'status': state, 'rank': None,
         'score': round(lower, 4) if state == 'eligible' else None,
@@ -188,7 +188,7 @@ def evaluate(profile, dataset, as_of=None):
         for index, item in enumerate(group):
             if index > 0 and not conflict:
                 duplicates.append({'listing_id': item['listing_id'], 'duplicate_of': group[0]['listing_id'],
-                                   'reason': '同来源 ID 且事实相同，仅评估一条'})
+                                   'reason': 'Same source ID and identical facts; evaluated once only'})
             else:
                 evaluated.append(evaluate_listing(profile, item, instant, weights, conflict))
     eligible = sorted((r for r in evaluated if r['status'] == 'eligible'), key=lambda r: (-r['_sort_score'], r['listing_id']))
@@ -200,9 +200,9 @@ def evaluate(profile, dataset, as_of=None):
     excluded = sorted((r for r in evaluated if r['status'] == 'excluded'), key=lambda r: r['listing_id'])
     clarification = []
     if len(eligible) < 5:
-        clarification.append(f'仅有 {len(eligible)} 套符合完整条件；请确认待补信息，或由 Agent 1 询问是否调整指定条件。未自动放宽条件。')
+        clarification.append(f'Only {len(eligible)} listings meet all requirements. Confirm missing information, or ask Agent 1 about changing specific requirements. No requirements were relaxed automatically.')
     if pending:
-        clarification.append('请逐项确认待确认清单中的未知、过期或冲突字段，再重新评估。')
+        clarification.append('Confirm each unknown, expired or conflicting field in the pending list, then re-evaluate.')
     profile_hash, dataset_hash = fingerprint(profile), fingerprint(dataset)
     run_id = 'rr-' + fingerprint({'profile_fingerprint': profile_hash, 'dataset_fingerprint': dataset_hash,
                                  'as_of': as_of_text, 'scoring_version': 'rules-1.0', 'schema_version': '1.1'})
@@ -217,10 +217,10 @@ def evaluate(profile, dataset, as_of=None):
                    'excluded': len(excluded), 'duplicates': len(duplicates)},
         'recommendations': eligible[:5], 'eligible': eligible, 'pending_confirmation': pending,
         'excluded': excluded, 'duplicates': duplicates, 'clarification_requests': clarification,
-        'data_limitations': ['全部房源、路线、设施和证据均为模拟数据，不可用于真实租房决策。',
-                             '本原型仅为 Agent 2 的确定性工具核心，未接入 LLM、房源平台或 TfNSW。',
-                             'as_of 是输入快照时点，不代表今天仍可租；分数是偏好匹配，不是房屋安全或签约保证。',
-                             '不支持自动换汇、按人数分摊、真实市场租金估值或未来班次保证。'],
+        'data_limitations': ['All listings, routes, facilities and evidence are synthetic and cannot support real rental decisions.',
+                             'This prototype is the deterministic Agent 2 tool core, without an LLM, listing platform or TfNSW connection.',
+                             'as_of is the input snapshot time and does not establish current availability. Scores indicate preference fit, not property safety or approval to sign.',
+                             'Automatic currency conversion, per-person cost division, live market valuations and future service guarantees are unsupported.'],
     }
     validate_contract('RecommendationReport', report)
     return report

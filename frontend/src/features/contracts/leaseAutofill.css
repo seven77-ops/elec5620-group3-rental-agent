@@ -1,0 +1,45 @@
+.lease-address-fields {
+  min-width: 0;
+}
+.lease-address-parts {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+}
+.lease-address-parts .ant-form-item {
+  margin-bottom: 10px;
+}
+.lease-address-option {
+  display: grid;
+  gap: 3px;
+  padding: 4px 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.lease-address-option strong {
+  font-size: 13px;
+  font-weight: 500;
+}
+.lease-address-option small {
+  color: #8290a4;
+  font-size: 12px;
+}
+.lease-term-note {
+  grid-column: 1/-1;
+  background: #f6f9fe;
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #71819a;
+  font-size: 12px;
+  line-height: 1.7;
+  margin-bottom: 18px;
+}
+@media (max-width: 600px) {
+  .lease-address-parts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .lease-address-parts .ant-form-item:first-child {
+    grid-column: 1/-1;
+  }
+}

@@ -1,0 +1,330 @@
+{
+  "label_status": "proposed_baseline_for_human_review",
+  "description": "Synthetic bilingual baseline. Review labels before reporting real-world accuracy; use a separate held-out set for final evaluation.",
+  "cases": [
+    {
+      "id": "housing-01",
+      "expected_route": "housing",
+      "message": "每周800，想在Rhodes找两卧室。",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "housing-02",
+      "expected_route": "housing",
+      "message": "比较已经展示的这两套房。",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "housing-03",
+      "expected_route": "housing",
+      "message": "附近哪些区适合去悉大上课？",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "housing-04",
+      "expected_route": "housing",
+      "message": "Find a two-bedroom apartment under AUD 900 per week.",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "housing-05",
+      "expected_route": "housing",
+      "message": "Compare these two listed apartments.",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "housing-06",
+      "expected_route": "housing",
+      "message": "Show cheaper listings around Burwood.",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "contract-01",
+      "expected_route": "contract",
+      "message": "帮我准备这套房的租约草稿。",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "contract-02",
+      "expected_route": "contract",
+      "message": "解释我上传合同中的第10条。",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "contract-03",
+      "expected_route": "contract",
+      "message": "这份合同的地址和房源不一致。",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "contract-04",
+      "expected_route": "contract",
+      "message": "Prepare a lease draft for the selected property.",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "contract-05",
+      "expected_route": "contract",
+      "message": "Explain clause 10 of my uploaded agreement.",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "contract-06",
+      "expected_route": "contract",
+      "message": "Review this specific lease before I sign it.",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "aftercare-01",
+      "expected_route": "aftercare",
+      "message": "厨房水槽漏水，帮我准备报修邮件。",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "aftercare-02",
+      "expected_route": "aftercare",
+      "message": "记录我已经向官方申请退押金。",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "aftercare-03",
+      "expected_route": "aftercare",
+      "message": "把我的报修状态更新为已联系中介。",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "aftercare-04",
+      "expected_route": "aftercare",
+      "message": "Prepare a repair email about my leaking tap.",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "aftercare-05",
+      "expected_route": "aftercare",
+      "message": "Record that I lodged my bond refund claim.",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "aftercare-06",
+      "expected_route": "aftercare",
+      "message": "Set a reminder to check my bond status.",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "knowledge-01",
+      "expected_route": "knowledge",
+      "message": "押金通常怎么退？",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "knowledge-02",
+      "expected_route": "knowledge",
+      "message": "NSW租房申请通常需要什么材料？",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "knowledge-03",
+      "expected_route": "knowledge",
+      "message": "报修一般需要提供哪些信息？",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "knowledge-04",
+      "expected_route": "knowledge",
+      "message": "How do I request repairs in NSW?",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "knowledge-05",
+      "expected_route": "knowledge",
+      "message": "What is a condition report?",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "knowledge-06",
+      "expected_route": "knowledge",
+      "message": "How do bond refunds usually work?",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "mixed-01",
+      "expected_route": "mixed",
+      "message": "先比较两套房，再帮我复核合同。",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "mixed-02",
+      "expected_route": "mixed",
+      "message": "找两卧室，然后更新我现住处的报修。",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "mixed-03",
+      "expected_route": "mixed",
+      "message": "解释我的合同并安排退租跟进。",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "mixed-04",
+      "expected_route": "mixed",
+      "message": "Compare listings and then review my lease.",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "mixed-05",
+      "expected_route": "mixed",
+      "message": "Find a rental and record a repair at my current home.",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "mixed-06",
+      "expected_route": "mixed",
+      "message": "Prepare a lease draft and update my bond record.",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "unclear_or_other-01",
+      "expected_route": "unclear_or_other",
+      "message": "帮我处理一下那个。",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "unclear_or_other-02",
+      "expected_route": "unclear_or_other",
+      "message": "这个怎么样？",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "unclear_or_other-03",
+      "expected_route": "unclear_or_other",
+      "message": "推荐一台笔记本电脑。",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "unclear_or_other-04",
+      "expected_route": "unclear_or_other",
+      "message": "Can you deal with that?",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "unclear_or_other-05",
+      "expected_route": "unclear_or_other",
+      "message": "What about this one?",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    },
+    {
+      "id": "unclear_or_other-06",
+      "expected_route": "unclear_or_other",
+      "message": "Write a recipe for dinner.",
+      "conversation": {
+        "active_task": null,
+        "pending_question": null
+      }
+    }
+  ]
+}

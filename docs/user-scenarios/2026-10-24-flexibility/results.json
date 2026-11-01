@@ -1,0 +1,439 @@
+[
+  {
+    "scenario": "ashfield-food",
+    "turn": 1,
+    "question": "整套每周850，一卧。Burwood和Ashfield哪个适合我？我主要想吃饭方便。",
+    "status": 200,
+    "intent": "area_advice",
+    "brief": {
+      "budget_amount": 850,
+      "budget_period": "week",
+      "budget_scope": "whole_property",
+      "min_bedrooms": 1,
+      "lifestyle_priorities": [
+        "food"
+      ]
+    },
+    "areas": [
+      "Burwood",
+      "Ashfield"
+    ],
+    "answer": "你这次看重餐饮。\n按这次条件（整套每周上限 AUD 850 · 至少1卧）：\nBurwood：当前快照有6条符合房屋条件的候选，标价AUD 680–810/周。 Burwood Chinatown 运营方介绍这里为餐饮与零售街区，提供多种亚洲餐饮选择。\nAshfield：当前快照有7条符合房屋条件的候选，标价AUD 625–730/周。 暂缺与你这次生活偏好直接对应的已核对资料。\n按目前能核对的资料，可优先了解 Burwood 的餐饮配套；其他区域的资料缺口不代表没有这些配套。",
+    "same_text_as_previous": false,
+    "failures": []
+  },
+  {
+    "scenario": "ashfield-food",
+    "turn": 2,
+    "question": "那先看Ashfield吧，帮我找房，也看看上学方不方便。",
+    "status": 200,
+    "intent": "recommend_areas",
+    "brief": {
+      "budget_amount": 850,
+      "budget_period": "week",
+      "budget_scope": "whole_property",
+      "lifestyle_priorities": [
+        "food"
+      ],
+      "min_bedrooms": 1,
+      "suburb": "Ashfield",
+      "recommend_areas": true
+    },
+    "areas": [],
+    "answer": "你主要去哪个学校或公司？请告诉我校区、办公楼或街道地址，我会先核对具体位置。",
+    "same_text_as_previous": false,
+    "failures": []
+  },
+  {
+    "scenario": "ashfield-food",
+    "turn": 3,
+    "question": "UTS",
+    "status": 200,
+    "intent": "recommend_areas",
+    "brief": {
+      "budget_amount": 850,
+      "budget_period": "week",
+      "budget_scope": "whole_property",
+      "lifestyle_priorities": [
+        "food"
+      ],
+      "min_bedrooms": 1,
+      "recommend_areas": true,
+      "suburb": "Ashfield",
+      "destination_query": "UTS"
+    },
+    "areas": [],
+    "answer": "已记下目的地关键词：UTS，具体位置稍后核对。 通常几点需要到达学校或公司？单程最多能接受多少分钟？",
+    "same_text_as_previous": false,
+    "failures": []
+  },
+  {
+    "scenario": "eastwood-library",
+    "turn": 1,
+    "question": "整套每周最多1100，两卧一卫，对比Chatswood和Eastwood，我更看重图书馆和社区设施。",
+    "status": 200,
+    "intent": "area_advice",
+    "brief": {
+      "budget_amount": 1100,
+      "budget_period": "week",
+      "budget_scope": "whole_property",
+      "min_bedrooms": 2,
+      "min_bathrooms": 1,
+      "lifestyle_priorities": [
+        "library",
+        "community"
+      ]
+    },
+    "areas": [
+      "Chatswood",
+      "Eastwood"
+    ],
+    "answer": "你这次看重图书馆、社区设施。\n按这次条件（整套每周上限 AUD 1100 · 至少2卧 · 至少1卫）：\nChatswood：当前快照有4条符合房屋条件的候选，标价AUD 650–1000/周。 Willoughby City Library 官方网站列出 Chatswood Library，位于 The Concourse、409 Victoria Avenue 的 Lower Ground 层。\nEastwood：当前快照有6条符合房屋条件的候选，标价AUD 599–1050/周。 City of Ryde 将 Eastwood Library 的位置列为 Hillview Road 与 West Parade 路口。\nChatswood、Eastwood 有与你偏好相关的配套资料，接下来可以结合去学校或公司的实际通勤继续比较；没有对应资料的区域仍需补充核实。",
+    "same_text_as_previous": false,
+    "failures": []
+  },
+  {
+    "scenario": "eastwood-library",
+    "turn": 2,
+    "question": "我选Eastwood，接下来怎么找具体房子？",
+    "status": 200,
+    "intent": "recommend_areas",
+    "brief": {
+      "budget_amount": 1100,
+      "budget_period": "week",
+      "budget_scope": "whole_property",
+      "lifestyle_priorities": [
+        "library",
+        "community"
+      ],
+      "min_bathrooms": 1,
+      "min_bedrooms": 2,
+      "suburb": "Eastwood",
+      "recommend_areas": true
+    },
+    "areas": [],
+    "answer": "你主要去哪个学校或公司？请告诉我校区、办公楼或街道地址，我会先核对具体位置。",
+    "same_text_as_previous": false,
+    "failures": []
+  },
+  {
+    "scenario": "eastwood-library",
+    "turn": 3,
+    "question": "麦考瑞大学",
+    "status": 200,
+    "intent": "recommend_areas",
+    "brief": {
+      "budget_amount": 1100,
+      "budget_period": "week",
+      "budget_scope": "whole_property",
+      "lifestyle_priorities": [
+        "library",
+        "community"
+      ],
+      "min_bathrooms": 1,
+      "min_bedrooms": 2,
+      "recommend_areas": true,
+      "suburb": "Eastwood",
+      "destination_query": "麦考瑞大学"
+    },
+    "areas": [],
+    "answer": "已记下目的地关键词：麦考瑞大学，具体位置稍后核对。 通常几点需要到达学校或公司？单程最多能接受多少分钟？",
+    "same_text_as_previous": false,
+    "failures": []
+  },
+  {
+    "scenario": "camperdown-parks",
+    "turn": 1,
+    "question": "Glebe和Camperdown比较一下，整套周预算750，要一卧，我喜欢户外散步。",
+    "status": 200,
+    "intent": "area_advice",
+    "brief": {
+      "budget_amount": 750,
+      "budget_period": "week",
+      "budget_scope": "whole_property",
+      "min_bedrooms": 1,
+      "lifestyle_priorities": [
+        "walkability"
+      ]
+    },
+    "areas": [
+      "Glebe",
+      "Camperdown"
+    ],
+    "answer": "你这次看重散步步道。\n按这次条件（整套每周上限 AUD 750 · 至少1卧）：\nGlebe：当前快照有1条符合房屋条件的候选，标价AUD 650/周。 NSW Government 列出 Glebe Foreshore Walk，地点为 Glebe Point Road, Glebe。\nCamperdown：当前快照有1条符合房屋条件的候选，标价AUD 750/周。 暂缺与你这次生活偏好直接对应的已核对资料。\n按目前能核对的资料，可优先了解 Glebe 的散步步道配套；其他区域的资料缺口不代表没有这些配套。",
+    "same_text_as_previous": false,
+    "failures": []
+  },
+  {
+    "scenario": "camperdown-parks",
+    "turn": 2,
+    "question": "Camperdown吧，帮我按通勤继续推荐。",
+    "status": 200,
+    "intent": "recommend_areas",
+    "brief": {
+      "budget_amount": 750,
+      "budget_period": "week",
+      "budget_scope": "whole_property",
+      "lifestyle_priorities": [
+        "walkability"
+      ],
+      "min_bedrooms": 1,
+      "suburb": "Camperdown",
+      "recommend_areas": true
+    },
+    "areas": [],
+    "answer": "你主要去哪个学校或公司？请告诉我校区、办公楼或街道地址，我会先核对具体位置。",
+    "same_text_as_previous": false,
+    "failures": []
+  },
+  {
+    "scenario": "camperdown-parks",
+    "turn": 3,
+    "question": "UNSW Kensington",
+    "status": 200,
+    "intent": "recommend_areas",
+    "brief": {
+      "budget_amount": 750,
+      "budget_period": "week",
+      "budget_scope": "whole_property",
+      "lifestyle_priorities": [
+        "walkability"
+      ],
+      "min_bedrooms": 1,
+      "recommend_areas": true,
+      "suburb": "Camperdown",
+      "destination_query": "UNSW Kensington"
+    },
+    "areas": [],
+    "answer": "已记下目的地关键词：UNSW Kensington，具体位置稍后核对。 通常几点需要到达学校或公司？单程最多能接受多少分钟？",
+    "same_text_as_previous": false,
+    "failures": []
+  },
+  {
+    "scenario": "budget-changes",
+    "turn": 1,
+    "question": "Parramatta和Strathfield哪个更适合？整套每周850，两卧一卫，喜欢公园。",
+    "status": 200,
+    "intent": "area_advice",
+    "brief": {
+      "budget_amount": 850,
+      "budget_period": "week",
+      "budget_scope": "whole_property",
+      "min_bedrooms": 2,
+      "min_bathrooms": 1,
+      "lifestyle_priorities": [
+        "parks"
+      ]
+    },
+    "areas": [
+      "Parramatta",
+      "Strathfield"
+    ],
+    "answer": "你这次看重公园与户外。\n按这次条件（整套每周上限 AUD 850 · 至少2卧 · 至少1卫）：\nParramatta：当前快照有4条符合房屋条件的候选，标价AUD 580–700/周。 Greater Sydney Parklands 列出 Parramatta Park 的野餐棚、烧烤和游乐设施；Domain Creek 游乐区位于公园 Westmead 一侧。\nStrathfield：当前快照有4条符合房屋条件的候选，标价AUD 700–800/周。 Strathfield Park 的 Council 页面介绍运动和休闲设施、儿童游乐区、野餐区域及社区活动。\nParramatta、Strathfield 有与你偏好相关的配套资料，接下来可以结合去学校或公司的实际通勤继续比较；没有对应资料的区域仍需补充核实。",
+    "same_text_as_previous": false,
+    "failures": []
+  },
+  {
+    "scenario": "budget-changes",
+    "turn": 2,
+    "question": "太贵了，上限降到700，其他条件保持，还是比较这两个区。",
+    "status": 200,
+    "intent": "area_advice",
+    "brief": {
+      "budget_amount": 700,
+      "budget_period": "week",
+      "budget_scope": "whole_property",
+      "lifestyle_priorities": [
+        "parks"
+      ],
+      "min_bathrooms": 1,
+      "min_bedrooms": 2
+    },
+    "areas": [
+      "Parramatta",
+      "Strathfield"
+    ],
+    "answer": "你这次看重公园与户外。\n按这次条件（整套每周上限 AUD 700 · 至少2卧 · 至少1卫）：\nParramatta：当前快照有4条符合房屋条件的候选，标价AUD 580–700/周。 Greater Sydney Parklands 列出 Parramatta Park 的野餐棚、烧烤和游乐设施；Domain Creek 游乐区位于公园 Westmead 一侧。\nStrathfield：当前快照有2条符合房屋条件的候选，标价AUD 700/周。 Strathfield Park 的 Council 页面介绍运动和休闲设施、儿童游乐区、野餐区域及社区活动。\nParramatta、Strathfield 有与你偏好相关的配套资料，接下来可以结合去学校或公司的实际通勤继续比较；没有对应资料的区域仍需补充核实。",
+    "same_text_as_previous": false,
+    "failures": []
+  },
+  {
+    "scenario": "budget-changes",
+    "turn": 3,
+    "question": "卧室改为一间，预算还是每周700，其他不变。",
+    "status": 200,
+    "intent": "area_advice",
+    "brief": {
+      "budget_amount": 700,
+      "budget_period": "week",
+      "budget_scope": "whole_property",
+      "lifestyle_priorities": [
+        "parks"
+      ],
+      "min_bathrooms": 1,
+      "min_bedrooms": 1
+    },
+    "areas": [
+      "Parramatta",
+      "Strathfield"
+    ],
+    "answer": "你这次看重公园与户外。\n按这次条件（整套每周上限 AUD 700 · 至少1卧 · 至少1卫）：\nParramatta：当前快照有7条符合房屋条件的候选，标价AUD 580–700/周。 Greater Sydney Parklands 列出 Parramatta Park 的野餐棚、烧烤和游乐设施；Domain Creek 游乐区位于公园 Westmead 一侧。\nStrathfield：当前快照有2条符合房屋条件的候选，标价AUD 700/周。 Strathfield Park 的 Council 页面介绍运动和休闲设施、儿童游乐区、野餐区域及社区活动。\nParramatta、Strathfield 有与你偏好相关的配套资料，接下来可以结合去学校或公司的实际通勤继续比较；没有对应资料的区域仍需补充核实。",
+    "same_text_as_previous": false,
+    "failures": []
+  },
+  {
+    "scenario": "quietness-switch",
+    "turn": 1,
+    "question": "整套每周850，一卧，比较Redfern和Marrickville，喜欢公园和图书馆。",
+    "status": 200,
+    "intent": "area_advice",
+    "brief": {
+      "budget_amount": 850,
+      "budget_period": "week",
+      "budget_scope": "whole_property",
+      "min_bedrooms": 1,
+      "lifestyle_priorities": [
+        "parks",
+        "library"
+      ]
+    },
+    "areas": [
+      "Redfern",
+      "Marrickville"
+    ],
+    "answer": "你这次看重公园与户外、图书馆。\n按这次条件（整套每周上限 AUD 850 · 至少1卧）：\nRedfern：当前快照有1条符合房屋条件的候选，标价AUD 850/周。 City of Sydney 列出 Redfern Park 的游乐设施、运动场及篮球设施。\nMarrickville：当前快照有6条符合房屋条件的候选，标价AUD 595–825/周。 Marrickville Library and Pavilion 位于 Patyegarang Place、313 Marrickville Road；Council 列出轮椅及电梯无障碍设施。\nRedfern、Marrickville 有与你偏好相关的配套资料，接下来可以结合去学校或公司的实际通勤继续比较；没有对应资料的区域仍需补充核实。",
+    "same_text_as_previous": false,
+    "failures": []
+  },
+  {
+    "scenario": "quietness-switch",
+    "turn": 2,
+    "question": "公园和图书馆不重要了，我现在最在意安静。哪个更安静？",
+    "status": 200,
+    "intent": "area_advice",
+    "brief": {
+      "budget_amount": 850,
+      "budget_period": "week",
+      "budget_scope": "whole_property",
+      "lifestyle_priorities": [
+        "quiet"
+      ],
+      "min_bedrooms": 1
+    },
+    "areas": [
+      "Redfern",
+      "Marrickville"
+    ],
+    "answer": "现有资料还不能判断 Redfern、Marrickville 哪个更符合你看重的安静，不能用公园或图书馆的存在替代这类判断。 安静程度需要核对具体楼栋、临街朝向和不同时段的噪音。 下方保留房源库存和资料缺口，供你继续筛选。",
+    "same_text_as_previous": false,
+    "failures": []
+  },
+  {
+    "scenario": "coverage-gap",
+    "turn": 1,
+    "question": "Carlton和Rosebery哪个适合我？整套每周800，两卧，我想要安全、安静。",
+    "status": 200,
+    "intent": "area_advice",
+    "brief": {
+      "budget_amount": 800,
+      "budget_period": "week",
+      "budget_scope": "whole_property",
+      "min_bedrooms": 2,
+      "lifestyle_priorities": [
+        "safety",
+        "quiet"
+      ]
+    },
+    "areas": [
+      "Carlton",
+      "Rosebery"
+    ],
+    "answer": "现有资料还不能判断 Carlton、Rosebery 哪个更符合你看重的安全、安静，不能用公园或图书馆的存在替代这类判断。 安静程度需要核对具体楼栋、临街朝向和不同时段的噪音。 这几个区域的生活资料也尚未整理。 下方保留房源库存和资料缺口，供你继续筛选。",
+    "same_text_as_previous": false,
+    "failures": []
+  },
+  {
+    "scenario": "coverage-gap",
+    "turn": 2,
+    "question": "那先不判断安全，按便宜和卧室数量来比较吧。",
+    "status": 200,
+    "intent": "area_advice",
+    "brief": {
+      "budget_amount": 800,
+      "budget_period": "week",
+      "budget_scope": "whole_property",
+      "lifestyle_priorities": [
+        "quiet"
+      ],
+      "min_bedrooms": 2
+    },
+    "areas": [
+      "Carlton",
+      "Rosebery"
+    ],
+    "answer": "按这次条件（整套每周上限 AUD 800 · 至少2卧）：\nCarlton：当前快照有5条符合房屋条件的候选，标价AUD 620–800/周。\nRosebery：当前快照没有符合这次房屋条件的候选。保持房型要求，该区现有库存最低标价为 AUD 950/周，超过本次预算。\n这批符合条件的候选里，可先看 Carlton 的低标价房源；这不是全区域市场租金结论，计价对象和在租状态仍需核实。",
+    "same_text_as_previous": false,
+    "failures": []
+  },
+  {
+    "scenario": "ambiguous-rose",
+    "turn": 1,
+    "question": "我想看Rose区的房子，整套每周900，两卧。",
+    "status": 200,
+    "intent": "collect_preferences",
+    "brief": {
+      "min_bedrooms": 2,
+      "budget_amount": 900,
+      "budget_period": "week"
+    },
+    "areas": [],
+    "answer": "你说的“Rose”是哪个区的简称？请写完整英文区名；预算和房型要求先保留，我不会替你确定区域。",
+    "same_text_as_previous": false,
+    "failures": []
+  },
+  {
+    "scenario": "choose-and-change",
+    "turn": 1,
+    "question": "比较Burwood和Ashfield，整套每周850，一卧，吃饭方便。",
+    "status": 200,
+    "intent": "area_advice",
+    "brief": {
+      "budget_amount": 850,
+      "budget_period": "week",
+      "budget_scope": "whole_property",
+      "min_bedrooms": 1,
+      "lifestyle_priorities": [
+        "food"
+      ]
+    },
+    "areas": [
+      "Burwood",
+      "Ashfield"
+    ],
+    "answer": "你这次看重餐饮。\n按这次条件（整套每周上限 AUD 850 · 至少1卧）：\nBurwood：当前快照有6条符合房屋条件的候选，标价AUD 680–810/周。 Burwood Chinatown 运营方介绍这里为餐饮与零售街区，提供多种亚洲餐饮选择。\nAshfield：当前快照有7条符合房屋条件的候选，标价AUD 625–730/周。 暂缺与你这次生活偏好直接对应的已核对资料。\n按目前能核对的资料，可优先了解 Burwood 的餐饮配套；其他区域的资料缺口不代表没有这些配套。",
+    "same_text_as_previous": false,
+    "failures": []
+  },
+  {
+    "scenario": "choose-and-change",
+    "turn": 2,
+    "question": "先看Ashfield吧，预算改900，两卧，接下来按通勤帮我找房。",
+    "status": 200,
+    "intent": "recommend_areas",
+    "brief": {
+      "budget_amount": 900,
+      "budget_period": "week",
+      "budget_scope": "whole_property",
+      "lifestyle_priorities": [
+        "food"
+      ],
+      "min_bedrooms": 2,
+      "suburb": "Ashfield",
+      "recommend_areas": true
+    },
+    "areas": [],
+    "answer": "你主要去哪个学校或公司？请告诉我校区、办公楼或街道地址，我会先核对具体位置。",
+    "same_text_as_previous": false,
+    "failures": []
+  }
+]

@@ -6,7 +6,15 @@ Imported tenant text and evidence summaries remain untrusted data.
 import json
 import os
 import urllib.request
+from .contracts import instant
 from .errors import AftercareError, require
+from .planner import SYDNEY
+
+
+def sydney_date(value):
+    """Readable Sydney calendar date for prose, e.g. 28 Nov 2026."""
+    local = instant(value).astimezone(SYDNEY)
+    return f'{local.day} {local:%b %Y}'
 
 
 def configured_gateway(context):
@@ -36,7 +44,7 @@ def draft_follow_up(case, *, use_model=False, allow_external_ai=False, gateway=N
     catalogue = []
     for i, entry in enumerate(bond['history']):
         catalogue.append({'id': f'update-{i+1}', 'mandatory': i == len(bond['history']) - 1,
-                          'text': f"Tenant-reported update ({entry['occurred_at']}): {entry['text']}",
+                          'text': f"Tenant-reported update ({sydney_date(entry['occurred_at'])}): {entry['text']}",
                           'source_refs': ['history:' + entry['entry_id']]})
     for claim in bond['claims']:
         amount = f"AUD {claim['amount_cents'] // 100}.{claim['amount_cents'] % 100:02d}"

@@ -1,0 +1,32 @@
+[
+  {
+    "file": "server/app/living/providers.json",
+    "numeric_and_boolean_facts_preserved": 3,
+    "protected_ids_dates_urls_addresses_preserved": 100,
+    "translated_text_values": 66
+  },
+  {
+    "file": "server/app/living/data/utility-plans.json",
+    "numeric_and_boolean_facts_preserved": 2797,
+    "protected_ids_dates_urls_addresses_preserved": 984,
+    "translated_text_values": 665
+  },
+  {
+    "file": "agent2/data/areas/sydney-evidence.json",
+    "numeric_and_boolean_facts_preserved": 58,
+    "protected_ids_dates_urls_addresses_preserved": 32,
+    "translated_text_values": 50
+  },
+  {
+    "file": "agent2/data/demo/listings.json",
+    "numeric_and_boolean_facts_preserved": 389,
+    "protected_ids_dates_urls_addresses_preserved": 118,
+    "translated_text_values": 31
+  },
+  {
+    "file": "agent2/data/real/usyd-commutes.json",
+    "numeric_and_boolean_facts_preserved": 31573,
+    "protected_ids_dates_urls_addresses_preserved": 17717,
+    "translated_text_values": 6710
+  }
+]

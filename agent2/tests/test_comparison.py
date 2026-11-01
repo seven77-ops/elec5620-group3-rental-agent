@@ -25,7 +25,7 @@ class ComparisonExplanationTests(unittest.TestCase):
         cost = row['score_contributions']['cost']
         self.assertEqual(cost, {'before': 21.6, 'after': 43.2, 'change': 21.6})
         self.assertAlmostEqual(sum(v['change'] for v in row['score_contributions'].values()), row['score_change'], places=3)
-        self.assertIn('费用', '；'.join(row['change_reasons']))
+        self.assertIn('Cost', '；'.join(row['change_reasons']))
         self.assertIn('30.0%', '；'.join(row['change_reasons']))
         validate_contract('RecommendationReport', report)
 
@@ -36,7 +36,7 @@ class ComparisonExplanationTests(unittest.TestCase):
         row = comparison['rows'][0]
         self.assertIn('change_reasons', row, '资格变化须有具体原因')
         reason = '；'.join(row['change_reasons'])
-        self.assertIn('合格 → 排除', reason)
+        self.assertIn('Eligible → Excluded', reason)
         self.assertIn('budget', reason)
         self.assertIn('550', reason)
         self.assertIn('500', reason)
@@ -49,7 +49,7 @@ class ComparisonExplanationTests(unittest.TestCase):
         comparison, _ = self.compare(p, q, dataset(listing()))
         row = comparison['rows'][0]
         self.assertIn('change_reasons', row)
-        self.assertIn('排除 → 合格', '；'.join(row['change_reasons']))
+        self.assertIn('Excluded → Eligible', '；'.join(row['change_reasons']))
         self.assertIn('budget', '；'.join(row['change_reasons']))
 
     def test_new_destination_explains_pending_route(self):
@@ -59,7 +59,7 @@ class ComparisonExplanationTests(unittest.TestCase):
         row = comparison['rows'][0]
         self.assertIn('change_reasons', row)
         self.assertIn('commute', '；'.join(row['change_reasons']))
-        self.assertIn('目的地', '；'.join(row['change_reasons']))
+        self.assertIn('Destination', '；'.join(row['change_reasons']))
         self.assertIsNone(row['after_score'])
 
     def test_missing_dimension_is_not_zero_but_zero_weight_is_zero(self):
@@ -69,7 +69,7 @@ class ComparisonExplanationTests(unittest.TestCase):
         row = comparison['rows'][0]
         self.assertIn('score_contributions', row)
         self.assertEqual(row['score_contributions']['amenities'], {'before': None, 'after': 0.0, 'change': None})
-        self.assertIn('未知', '；'.join(row['change_reasons']))
+        self.assertIn('Unknown', '；'.join(row['change_reasons']))
         self.assertEqual(row['after_status'], 'eligible')
 
     def test_peer_only_rank_change_is_explained_as_relative(self):
@@ -80,7 +80,7 @@ class ComparisonExplanationTests(unittest.TestCase):
         row = next(r for r in comparison['rows'] if r['listing_id'] == 'Z')
         self.assertEqual((row['rank_change'], row['score_change']), (1, 0))
         self.assertIn('change_reasons', row)
-        self.assertIn('其他候选', '；'.join(row['change_reasons']))
+        self.assertIn('other candidates', '；'.join(row['change_reasons']))
 
     def test_unchanged_and_duplicate_rows_have_honest_explanations(self):
         p = profile()
@@ -89,13 +89,13 @@ class ComparisonExplanationTests(unittest.TestCase):
         for row in comparison['rows']:
             self.assertIn('change_reasons', row)
             self.assertTrue(row['change_reasons'])
-        self.assertIn('不变', '；'.join(comparison['rows'][0]['change_reasons']))
-        self.assertIn('重复', '；'.join(comparison['rows'][1]['change_reasons']))
+        self.assertIn('unchanged', '；'.join(comparison['rows'][0]['change_reasons']))
+        self.assertIn('Duplicate', '；'.join(comparison['rows'][1]['change_reasons']))
 
     def test_different_searches_cannot_be_compared(self):
         p, q = profile(), profile()
         q['search_id'] = 'another-search'
-        with self.assertRaisesRegex(ValidationError, '任务'):
+        with self.assertRaisesRegex(ValidationError, 'rental search'):
             self.compare(p, q, dataset(listing()))
 
     def test_markdown_has_escaped_per_listing_reasons(self):
@@ -103,7 +103,7 @@ class ComparisonExplanationTests(unittest.TestCase):
         q['budget']['maximum'] = 500
         _, report = self.compare(p, q, dataset(listing()))
         output = render_markdown(report)
-        self.assertIn('变化原因', output)
+        self.assertIn('Reasons for change', output)
         report['comparison']['rows'][0]['change_reasons'] = ['<script>|[link](bad)']
         output = render_markdown(report)
         self.assertNotIn('<script>', output)
@@ -116,7 +116,7 @@ class ComparisonExplanationTests(unittest.TestCase):
             row.pop('change_reasons', None)
             row.pop('score_contributions', None)
         validate_contract('RecommendationReport', report)
-        self.assertIn('旧报告未记录变化原因', render_markdown(report))
+        self.assertIn('The older report has no reasons for change', render_markdown(report))
 
     def test_explanation_schema_rejects_wrong_type(self):
         p = profile()

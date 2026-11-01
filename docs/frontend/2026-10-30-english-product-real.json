@@ -1,0 +1,54 @@
+{
+  "status": "succeeded",
+  "scope": "English synthetic messages/document and temporary cases; real Jev, Alibaba email generation, private contract Q&A and public retrieval",
+  "results": {
+    "repair": {
+      "status": "succeeded",
+      "routing": {
+        "mode": "active",
+        "source": "jev",
+        "route": "aftercare",
+        "reason": "accepted"
+      },
+      "language": "en",
+      "tone": "polite",
+      "subject": "Request for Repair: Leaking Kitchen Sink",
+      "body": "Dear Sir or Madam,\n\nI hope this message finds you well. I am writing to kindly request a repair for a leaking kitchen sink, which has been dripping since last night.\n\nThis issue is located in the kitchen and, while not urgent, would be appreciated if addressed at your earliest convenience.\n\nPlease let me know if you need any further details or if access arrangements are required.\n\nThank you for your attention to this matter.\n\nBest regards,\n[Your Name]",
+      "exact_preview_saved": true,
+      "sent": false
+    },
+    "contract": {
+      "status": "succeeded",
+      "routing": {
+        "mode": "active",
+        "source": "jev",
+        "route": "contract",
+        "reason": "accepted"
+      },
+      "review_status": "Reviewed",
+      "answer_status": "answered",
+      "answer": "The rent is AUD 650 per week whole property and the bond is AUD 2600, as stated in the user's contract. [1]",
+      "private_citations": 1,
+      "without_selection": true,
+      "retrieval_methods": [
+        "contract_keywords",
+        "contract_vectors",
+        "contract_rerank",
+        "public_keywords",
+        "public_rerank"
+      ]
+    },
+    "public_knowledge": {
+      "status": "succeeded",
+      "routing": {
+        "mode": "active",
+        "source": "jev",
+        "route": "knowledge",
+        "reason": "accepted"
+      },
+      "answer": "To request repairs, contact your landlord or real estate agent first; for urgent repairs, if you cannot reach them, you may arrange repairs yourself using approved or preferred tradespeople from your residential tenancy agreement and seek reimbursement up to $1,000. [1]\n\nTo organise non-urgent repairs yourself, you must first get your landlord’s written consent and agreement to pay the costs; they should reimburse you within 14 days. [2]\n\nTo request repairs, tell your landlord or agent in writing about what needs fixing, follow up any conversations in writing, and keep copies of all correspondence as evidence. [3]",
+      "answer_language": "en",
+      "citations": 3
+    }
+  }
+}

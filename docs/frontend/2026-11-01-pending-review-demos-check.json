@@ -1,0 +1,30 @@
+{
+  "pending_count": 3,
+  "history_count": 5,
+  "added_titles": [
+    "Duplicate rent demand after a recorded payment",
+    "Kitchen leak awaiting a repair appointment",
+    "Electricity charges after the keys were returned"
+  ],
+  "backup": "/Users/seven/Documents/AI_coding/5620\u623f\u4ea7Agent/.workspaces/frontend-demo/.runtime-backups/pending-review-seed-20261101",
+  "report_ids": [
+    "issue-c92f179af42149cb82076ca198d11c76",
+    "issue-168bbe4f081e40eb915c1eb7a0587fee",
+    "issue-e311644c0bb74844866c002a37e837fb"
+  ],
+  "browser": {
+    "pending": 3,
+    "history": 5,
+    "titles": [
+      "[Demo] Electricity charges after the keys were returned",
+      "[Demo] Kitchen leak awaiting a repair appointment",
+      "[Demo] Duplicate rent demand after a recorded payment"
+    ],
+    "review_advice_enabled": true
+  },
+  "verification": {
+    "isolated_browser_tests_passed": 4,
+    "frontend_build": "passed",
+    "format_and_diff": "passed"
+  }
+}

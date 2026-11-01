@@ -1,0 +1,221 @@
+{
+  "snapshot_version": "1.0",
+  "compiled_on": "2026-10-21",
+  "postcodes": [
+    "2008",
+    "2037",
+    "2042",
+    "2050"
+  ],
+  "bedrooms": [
+    1,
+    2
+  ],
+  "dwelling_type": "flat_unit",
+  "rent_scope": "whole_property",
+  "currency": "AUD",
+  "period_basis": "Bond registration period; not current advertised availability",
+  "quantile_method": "Monthly: inclusive linear interpolation, not the official Rent Check calculation",
+  "sources": [
+    {
+      "id": "nsw_bonds_2026_09",
+      "title": "NSW Fair Trading — Residential Rental Bond Lodgements, September 2026",
+      "url": "https://www.nsw.gov.au/housing-and-construction/rental-forms-surveys-and-data/rental-bond-data",
+      "download_url": "https://www.nsw.gov.au/sites/default/files/noindex/2026-10/rentalbond_lodgements_september_2026.xlsx",
+      "sha256": "7e0f4525315d0edab40f64398aa3035e4bf8f203b02eb5e22e25083a313248c3"
+    },
+    {
+      "id": "nsw_quarter_2026_06",
+      "title": "NSW DCJ — Rent tables June 2026 quarter",
+      "url": "https://dcj.nsw.gov.au/about-us/families-and-communities-statistics/housing-rent-and-sales/rent-and-sales-report.html",
+      "download_url": "https://dcj.nsw.gov.au/content/dam/dcj/dcj-website/documents/about-us/families-and-communities-statistics/housing-and-rent-sales/rent-tables-june-2026-quarter.xlsx",
+      "sha256": "34bfd9add8fdd1e41ee6c91eb8cb2714854ec6a4da219a0d99e8a43c44c35bec"
+    }
+  ],
+  "cohorts": [
+    {
+      "postcode": "2008",
+      "bedrooms": 1,
+      "period": "2026-09",
+      "sample_size": 115,
+      "q25": 800.0,
+      "median": 885.0,
+      "q75": 985.0,
+      "official_statistic": false,
+      "source_id": "nsw_bonds_2026_09"
+    },
+    {
+      "postcode": "2008",
+      "bedrooms": 2,
+      "period": "2026-09",
+      "sample_size": 21,
+      "q25": 900.0,
+      "median": 1200.0,
+      "q75": 1260.0,
+      "official_statistic": false,
+      "source_id": "nsw_bonds_2026_09"
+    },
+    {
+      "postcode": "2037",
+      "bedrooms": 1,
+      "period": "2026-09",
+      "sample_size": 42,
+      "q25": 480.0,
+      "median": 625.0,
+      "q75": 832.5,
+      "official_statistic": false,
+      "source_id": "nsw_bonds_2026_09"
+    },
+    {
+      "postcode": "2037",
+      "bedrooms": 2,
+      "period": "2026-09",
+      "sample_size": 29,
+      "q25": 875.0,
+      "median": 970.0,
+      "q75": 1100.0,
+      "official_statistic": false,
+      "source_id": "nsw_bonds_2026_09"
+    },
+    {
+      "postcode": "2042",
+      "bedrooms": 1,
+      "period": "2026-09",
+      "sample_size": 37,
+      "q25": 580.0,
+      "median": 670.0,
+      "q75": 745.0,
+      "official_statistic": false,
+      "source_id": "nsw_bonds_2026_09"
+    },
+    {
+      "postcode": "2042",
+      "bedrooms": 2,
+      "period": "2026-09",
+      "sample_size": 22,
+      "q25": 750.0,
+      "median": 810.0,
+      "q75": 887.5,
+      "official_statistic": false,
+      "source_id": "nsw_bonds_2026_09"
+    },
+    {
+      "postcode": "2050",
+      "bedrooms": 1,
+      "period": "2026-09",
+      "sample_size": 40,
+      "q25": 703.75,
+      "median": 805.0,
+      "q75": 859.25,
+      "official_statistic": false,
+      "source_id": "nsw_bonds_2026_09"
+    },
+    {
+      "postcode": "2050",
+      "bedrooms": 2,
+      "period": "2026-09",
+      "sample_size": 17,
+      "q25": 900.0,
+      "median": 970.0,
+      "q75": 1200.0,
+      "official_statistic": false,
+      "source_id": "nsw_bonds_2026_09"
+    },
+    {
+      "postcode": "2008",
+      "bedrooms": 1,
+      "period": "2026-Q2",
+      "sample_size": 418,
+      "q25": 850.0,
+      "median": 900.0,
+      "q75": 995.0,
+      "official_statistic": true,
+      "source_id": "nsw_quarter_2026_06",
+      "source_range": "Postcode!A107:L107"
+    },
+    {
+      "postcode": "2008",
+      "bedrooms": 2,
+      "period": "2026-Q2",
+      "sample_size": 74,
+      "q25": 930.0,
+      "median": 1100.0,
+      "q75": 1400.0,
+      "official_statistic": true,
+      "source_id": "nsw_quarter_2026_06",
+      "source_range": "Postcode!A109:L109"
+    },
+    {
+      "postcode": "2037",
+      "bedrooms": 1,
+      "period": "2026-Q2",
+      "sample_size": 115,
+      "q25": 583.0,
+      "median": 720.0,
+      "q75": 850.0,
+      "official_statistic": true,
+      "source_id": "nsw_quarter_2026_06",
+      "source_range": "Postcode!A982:L982"
+    },
+    {
+      "postcode": "2037",
+      "bedrooms": 2,
+      "period": "2026-Q2",
+      "sample_size": 82,
+      "q25": 896.0,
+      "median": 1145.0,
+      "q75": 1250.0,
+      "official_statistic": true,
+      "source_id": "nsw_quarter_2026_06",
+      "source_range": "Postcode!A984:L984"
+    },
+    {
+      "postcode": "2042",
+      "bedrooms": 1,
+      "period": "2026-Q2",
+      "sample_size": 97,
+      "q25": 540.0,
+      "median": 640.0,
+      "q75": 700.0,
+      "official_statistic": true,
+      "source_id": "nsw_quarter_2026_06",
+      "source_range": "Postcode!A1152:L1152"
+    },
+    {
+      "postcode": "2042",
+      "bedrooms": 2,
+      "period": "2026-Q2",
+      "sample_size": 48,
+      "q25": 778.0,
+      "median": 850.0,
+      "q75": 900.0,
+      "official_statistic": true,
+      "source_id": "nsw_quarter_2026_06",
+      "source_range": "Postcode!A1154:L1154"
+    },
+    {
+      "postcode": "2050",
+      "bedrooms": 1,
+      "period": "2026-Q2",
+      "sample_size": 93,
+      "q25": 680.0,
+      "median": 775.0,
+      "q75": 850.0,
+      "official_statistic": true,
+      "source_id": "nsw_quarter_2026_06",
+      "source_range": "Postcode!A1420:L1420"
+    },
+    {
+      "postcode": "2050",
+      "bedrooms": 2,
+      "period": "2026-Q2",
+      "sample_size": 68,
+      "q25": 945.0,
+      "median": 1000.0,
+      "q75": 1150.0,
+      "official_statistic": true,
+      "source_id": "nsw_quarter_2026_06",
+      "source_range": "Postcode!A1422:L1422"
+    }
+  ]
+}

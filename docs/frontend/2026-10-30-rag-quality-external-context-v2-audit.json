@@ -1,0 +1,633 @@
+{
+  "source_report": "docs/frontend/2026-10-30-rag-quality-external.json",
+  "source_report_sha256": "6d1d50f17e7ba360a4b4710f2052ee3318159b27429e22039d667fb6386db90e",
+  "dataset_sha256": "895fafb00a1795d576d82f987e49642a783412e790384d41c34b2c3e6ba3e148",
+  "index_version": "8b8a06a6d50ed9eff5818524eace8f2453adcf75bc6eb5e90c7418072f0657bf",
+  "scope": "Targeted manual audit of all 10 failed supported cases with offline replay, five prior unsafe outputs, and remaining source-coverage risks; not a comprehensive legal or human support pass rate.",
+  "summary": {
+    "supported_passage_recall_at_6": "72/72",
+    "automated_checks": "70/80",
+    "supported_safe_source_only_fallbacks": 6,
+    "accepted_english_source_outputs_failing_chinese_regex": 4,
+    "intentional_citation_or_cross_passage_rejections": 3,
+    "guard_heading_context_over_rejections": 3,
+    "observed_valid_model_abstentions": 8,
+    "generation_provider_failures": 0,
+    "rerank_timeout_ids": [
+      "nsw-010",
+      "nsw-027",
+      "nsw-058",
+      "nsw-068",
+      "nsw-073",
+      "nsw-074"
+    ],
+    "human_support_pass_rate": null
+  },
+  "failed_supported_cases": [
+    {
+      "id": "nsw-007",
+      "classification": "intentional_conservative_fallback",
+      "explanation": "Model invented quote ids p6/p3 for a chunk exposing only p0. First claim is valid, but service intentionally rejects the whole generated batch after an invalid citation.",
+      "final_status": "sources_only",
+      "all_targets_at_6": true,
+      "missing_regex_patterns": [
+        "receipt"
+      ],
+      "raw_claim_replay": [
+        {
+          "claim_number": 1,
+          "text": "You should keep copies of all receipts and records of conversations or letters that you have written for urgent repairs.",
+          "quote_id": "p1",
+          "available_quote_ids": [
+            "p0",
+            "p1",
+            "p2",
+            "p3",
+            "p4",
+            "p5",
+            "p6",
+            "p7",
+            "p8"
+          ],
+          "section_path": [
+            "What if things go wrong?"
+          ],
+          "result": "accepted_source_preserving"
+        },
+        {
+          "claim_number": 2,
+          "text": "Make sure you send written details of repairs, including receipts for the costs, so you can get repaid.",
+          "quote_id": "p6",
+          "available_quote_ids": [
+            "p0"
+          ],
+          "section_path": [
+            "Steps to get urgent repairs done"
+          ],
+          "result": "invalid_citation"
+        },
+        {
+          "claim_number": 3,
+          "text": "Keep a copy of any correspondence or conversations as evidence when arranging urgent repairs.",
+          "quote_id": "p3",
+          "available_quote_ids": [
+            "p0"
+          ],
+          "section_path": [
+            "Steps to get urgent repairs done"
+          ],
+          "result": "invalid_citation"
+        }
+      ]
+    },
+    {
+      "id": "nsw-014",
+      "classification": "intentional_conservative_fallback",
+      "explanation": "First two Fair Trading/NCAT claims resolve and pass guard. Third claim selects p1 from a help section exposing only p0, so service discards the batch. This is a model citation error, not transport or recall.",
+      "final_status": "sources_only",
+      "all_targets_at_6": true,
+      "missing_regex_patterns": [
+        "Fair Trading"
+      ],
+      "raw_claim_replay": [
+        {
+          "claim_number": 1,
+          "text": "If a repair issue is not able to be resolved, you can lodge a complaint to NSW Fair Trading to get help.",
+          "quote_id": "p3",
+          "available_quote_ids": [
+            "p0",
+            "p1",
+            "p2",
+            "p3",
+            "p4",
+            "p5",
+            "p6",
+            "p7",
+            "p8"
+          ],
+          "section_path": [
+            "What if things go wrong?"
+          ],
+          "result": "accepted_source_preserving"
+        },
+        {
+          "claim_number": 2,
+          "text": "If this still does not solve the issue, you can escalate the dispute to the Tribunal (NSW Civil and Administrative Tribunal (NCAT)).",
+          "quote_id": "p4",
+          "available_quote_ids": [
+            "p0",
+            "p1",
+            "p2",
+            "p3",
+            "p4",
+            "p5",
+            "p6",
+            "p7",
+            "p8"
+          ],
+          "section_path": [
+            "What if things go wrong?"
+          ],
+          "result": "accepted_source_preserving"
+        },
+        {
+          "claim_number": 3,
+          "text": "Tenants' advice and advocacy services provide assistance and advocacy for all tenants, particularly social housing tenants or the vulnerable.",
+          "quote_id": "p1",
+          "available_quote_ids": [
+            "p0"
+          ],
+          "section_path": [
+            "Getting help with resolving disputes"
+          ],
+          "result": "invalid_citation"
+        }
+      ]
+    },
+    {
+      "id": "nsw-015",
+      "classification": "language_policy_regex_mismatch",
+      "explanation": "Guard intentionally replaces Chinese paraphrases with original English evidence. English output includes reimbursement conditions, cap and receipts, so Chinese-only required regex does not match. Long duplicate excerpts remain a usability cost; do not silently mark the gold passed.",
+      "final_status": "answered",
+      "all_targets_at_6": true,
+      "missing_regex_patterns": [
+        "维修|报销|联系"
+      ],
+      "raw_claim_replay": [
+        {
+          "claim_number": 1,
+          "text": "如果无法联系到房东或中介，租客可自行安排紧急维修，并凭收据向房东或中介申请最高1000澳元的报销。",
+          "quote_id": "p0",
+          "available_quote_ids": [
+            "p0"
+          ],
+          "section_path": [
+            "How do I request a repair be made?"
+          ],
+          "result": "accepted_source_preserving"
+        },
+        {
+          "claim_number": 2,
+          "text": "房东或中介不报销维修费用的情形包括：租客造成损坏、未尝试联系房东、未给予合理时间安排维修、或维修未由持牌技工完成。",
+          "quote_id": "p0",
+          "available_quote_ids": [
+            "p0"
+          ],
+          "section_path": [
+            "Steps to get urgent repairs done"
+          ],
+          "result": "accepted_source_preserving"
+        },
+        {
+          "claim_number": 3,
+          "text": "申请报销需提供书面维修详情及费用收据，且房东或中介须在收到通知后14天内付款。",
+          "quote_id": "p0",
+          "available_quote_ids": [
+            "p0"
+          ],
+          "section_path": [
+            "Steps to get urgent repairs done"
+          ],
+          "result": "accepted_source_preserving"
+        }
+      ]
+    },
+    {
+      "id": "nsw-024",
+      "classification": "intentional_conservative_fallback",
+      "explanation": "Second claim adds 14 days to p24, which only says Fair Trading gives written notice; 14 days appears in adjacent p25. Guard correctly rejects unsupported per-claim duration. First/third claims are valid but atomic batch fallback discards them too.",
+      "final_status": "sources_only",
+      "all_targets_at_6": true,
+      "missing_regex_patterns": [
+        "still submit|submit.*without"
+      ],
+      "raw_claim_replay": [
+        {
+          "claim_number": 1,
+          "text": "If your landlord or agent fails to sign the paper 'Claim for Bond Refund' form, you can still submit it.",
+          "quote_id": "p25",
+          "available_quote_ids": [
+            "p0",
+            "p1",
+            "p2",
+            "p3",
+            "p4",
+            "p5",
+            "p6",
+            "p7",
+            "p8",
+            "p9",
+            "p10",
+            "p11",
+            "p12",
+            "p13",
+            "p14",
+            "p15",
+            "p16",
+            "p17",
+            "p18",
+            "p19",
+            "p20",
+            "p21",
+            "p22",
+            "p23",
+            "p24",
+            "p25",
+            "p26",
+            "p27"
+          ],
+          "section_path": [
+            "Getting your bond back at the end of a tenancy",
+            "What do you need to do?"
+          ],
+          "result": "accepted_source_preserving"
+        },
+        {
+          "claim_number": 2,
+          "text": "After submission of the unsigned form, Fair Trading will give the landlord or agent written notice and they are given 14 days to dispute your claim.",
+          "quote_id": "p24",
+          "available_quote_ids": [
+            "p0",
+            "p1",
+            "p2",
+            "p3",
+            "p4",
+            "p5",
+            "p6",
+            "p7",
+            "p8",
+            "p9",
+            "p10",
+            "p11",
+            "p12",
+            "p13",
+            "p14",
+            "p15",
+            "p16",
+            "p17",
+            "p18",
+            "p19",
+            "p20",
+            "p21",
+            "p22",
+            "p23",
+            "p24",
+            "p25",
+            "p26",
+            "p27"
+          ],
+          "section_path": [
+            "Getting your bond back at the end of a tenancy",
+            "What do you need to do?"
+          ],
+          "result": "guard_rejection",
+          "reason": "Unsupported duration in quoted evidence",
+          "quote": "Fair Trading will give the landlord or agent written notice that you have made a claim."
+        },
+        {
+          "claim_number": 3,
+          "text": "If the landlord or agent doesn't dispute your claim within 14 days, Fair Trading will pay your claim.",
+          "quote_id": "p26",
+          "available_quote_ids": [
+            "p0",
+            "p1",
+            "p2",
+            "p3",
+            "p4",
+            "p5",
+            "p6",
+            "p7",
+            "p8",
+            "p9",
+            "p10",
+            "p11",
+            "p12",
+            "p13",
+            "p14",
+            "p15",
+            "p16",
+            "p17",
+            "p18",
+            "p19",
+            "p20",
+            "p21",
+            "p22",
+            "p23",
+            "p24",
+            "p25",
+            "p26",
+            "p27"
+          ],
+          "section_path": [
+            "Getting your bond back at the end of a tenancy",
+            "What do you need to do?"
+          ],
+          "result": "accepted_source_preserving"
+        }
+      ]
+    },
+    {
+      "id": "nsw-027",
+      "classification": "language_policy_regex_mismatch",
+      "explanation": "English source-preserving result includes two business days after acceptance with correct details. Required Chinese 工作日 regex misses intentionally English output; no source-condition loss observed.",
+      "final_status": "answered",
+      "all_targets_at_6": true,
+      "missing_regex_patterns": [
+        "工作日"
+      ],
+      "raw_claim_replay": [
+        {
+          "claim_number": 1,
+          "text": "如果使用Rental Bonds Online且所有信息正确，押金将在房东或中介接受申请后的两个工作日内退还到指定银行账户。",
+          "quote_id": "p0",
+          "available_quote_ids": [
+            "p0"
+          ],
+          "section_path": [
+            "Getting your bond back at the end of a tenancy",
+            "When and where you will get your refund"
+          ],
+          "result": "accepted_source_preserving"
+        }
+      ]
+    },
+    {
+      "id": "nsw-044",
+      "classification": "language_policy_regex_mismatch",
+      "explanation": "English source-preserving result includes calendar days, exclusion of service day, weekends/holidays and separate 7 working-day postage allowance. Chinese-only regex misses this intentional source display.",
+      "final_status": "answered",
+      "all_targets_at_6": true,
+      "missing_regex_patterns": [
+        "自然日|日历日"
+      ],
+      "raw_claim_replay": [
+        {
+          "claim_number": 1,
+          "text": "退租通知期按日历日计算，不是工作日，包括周末和公共假日。",
+          "quote_id": "p0",
+          "available_quote_ids": [
+            "p0"
+          ],
+          "section_path": [
+            "How to count days for termination notices"
+          ],
+          "result": "accepted_source_preserving"
+        },
+        {
+          "claim_number": 2,
+          "text": "发出通知的当天不计入通知期。",
+          "quote_id": "p0",
+          "available_quote_ids": [
+            "p0"
+          ],
+          "section_path": [
+            "How to count days for termination notices"
+          ],
+          "result": "accepted_source_preserving"
+        },
+        {
+          "claim_number": 3,
+          "text": "若通过邮寄方式发送通知，需额外增加7个工作日的投递时间，但该7个工作日不包含周末、公共假日和银行假日。",
+          "quote_id": "p0",
+          "available_quote_ids": [
+            "p0"
+          ],
+          "section_path": [
+            "How to count days for termination notices",
+            "Example 1"
+          ],
+          "result": "accepted_source_preserving"
+        }
+      ]
+    },
+    {
+      "id": "nsw-045",
+      "classification": "guard_context_over_rejection",
+      "explanation": "Claim includes three-year limit and after-23-March-2020 scope explicitly present in trusted section_path, but numeric validation sees quote body only and rejects three years. This is a guard/service integration defect, not unsupported source scope.",
+      "final_status": "sources_only",
+      "all_targets_at_6": true,
+      "missing_regex_patterns": [
+        "(?:4|four)\\s+weeks?"
+      ],
+      "raw_claim_replay": [
+        {
+          "claim_number": 1,
+          "text": "For a qualifying lease of at most three years signed after 23 March 2020, the mandatory break fee is 4 weeks' rent if less than 25 per cent of the agreement has expired.",
+          "quote_id": "p0",
+          "available_quote_ids": [
+            "p0"
+          ],
+          "section_path": [
+            "When break fees apply",
+            "Tenant breaking a fixed-term agreement signed after 23 March 2020",
+            "For agreements of 3 years or less"
+          ],
+          "result": "guard_rejection",
+          "reason": "Unsupported duration in quoted evidence",
+          "quote": "Mandatory break fees may apply, which are payable based on the stage of the agreement.\n\nIf the mandatory break fee applies, the set fee payable is:\n\n*   4 weeks' rent if less than 25 per cent of the agreement has expired\n*   3 weeks' rent if 25 per cent or more but less than 50 per cent of the agreement has expired\n*   2 weeks' rent if 50 per cent or more but less than 75 per cent of the agreement has expired\n*   1 week's rent if 75 per cent or more of the agreement has expired."
+        }
+      ]
+    },
+    {
+      "id": "nsw-049",
+      "classification": "guard_context_over_rejection",
+      "explanation": "All relevant old/new >3-year and short-lease sections are retrieved. Claims name dates/term scopes in section_path; guard rejects 2020 or 3 years absent from quote body. Earlier temporal overclaim is safely blocked, but source-only fallback is over-conservative for provided metadata.",
+      "final_status": "sources_only",
+      "all_targets_at_6": true,
+      "missing_regex_patterns": [
+        "compensation|negotia"
+      ],
+      "raw_claim_replay": [
+        {
+          "claim_number": 1,
+          "text": "For fixed-term agreements longer than 3 years signed before 23 March 2020, the optional break fee clause applies automatically unless deleted, and it specifies either 6 or 4 weeks’ rent — not a four-tier structure.",
+          "quote_id": "p0",
+          "available_quote_ids": [
+            "p0"
+          ],
+          "section_path": [
+            "When break fees apply",
+            "Tenant breaking a fixed-term agreement signed before 23 March 2020",
+            "If the optional break fee is included in agreement"
+          ],
+          "result": "guard_rejection",
+          "reason": "Unsupported number in quoted evidence",
+          "quote": "The optional break fee clause will apply if the break fee clause has not been deleted from the tenancy agreement. The break fee payable will be either:\n\n*   6 weeks rent if the tenant leaves in the first half of the fixed-term agreement, or\n*   4 weeks rent if the tenant leaves in the second half of the fixed-term agreement.\n\nThe same optional break fee clause applies for fixed-term agreements of more than 3 years, unless the tenancy agreement specifies a break fee of another amount."
+        },
+        {
+          "claim_number": 2,
+          "text": "For fixed-term agreements longer than 3 years signed after 23 March 2020, no mandatory break fee applies; instead, the landlord and tenant may negotiate compensation, and if they cannot agree, the landlord may apply to NCAT.",
+          "quote_id": "p0",
+          "available_quote_ids": [
+            "p0"
+          ],
+          "section_path": [
+            "When break fees apply",
+            "Tenant breaking a fixed-term agreement signed after 23 March 2020",
+            "For agreements of more than 3 years"
+          ],
+          "result": "guard_rejection",
+          "reason": "Unsupported duration in quoted evidence",
+          "quote": "The landlord or agent may negotiate an agreed amount of compensation for their costs with the tenant.\n\nThese costs may include loss of rent, advertising, and a letting fee if the landlord uses an agent.\n\nIf the tenant and landlord are unable to agree on the amount of compensation, the landlord may claim from the bond or [apply to the NSW Civil and Administrative Tribunal](https://www.ncat.nsw.gov.au/ncat/case-types/housing-and-property/tenancy.html \"Apply for help resolving your dispute at NCAT (https://www.ncat.nsw.gov.au/ncat/case-types/housing-and-property/tenancy.html)\") (the Tribunal) for an order that the tenant pays the landlord a certain amount of compensation.\n\nThe landlord will need to show the Tribunal what (reasonable) steps they took to minimise their losses (e.g. advertising for a new tenant without delay)."
+        },
+        {
+          "claim_number": 3,
+          "text": "The four-tier break fee structure (4/3/2/1 weeks’ rent) applies only to agreements of 3 years or less signed after 23 March 2020, not to agreements longer than 3 years.",
+          "quote_id": "p0",
+          "available_quote_ids": [
+            "p0"
+          ],
+          "section_path": [
+            "When break fees apply",
+            "Tenant breaking a fixed-term agreement signed after 23 March 2020",
+            "For agreements of 3 years or less"
+          ],
+          "result": "guard_rejection",
+          "reason": "Unsupported duration in quoted evidence",
+          "quote": "Mandatory break fees may apply, which are payable based on the stage of the agreement.\n\nIf the mandatory break fee applies, the set fee payable is:\n\n*   4 weeks' rent if less than 25 per cent of the agreement has expired\n*   3 weeks' rent if 25 per cent or more but less than 50 per cent of the agreement has expired\n*   2 weeks' rent if 50 per cent or more but less than 75 per cent of the agreement has expired\n*   1 week's rent if 75 per cent or more of the agreement has expired."
+        }
+      ]
+    },
+    {
+      "id": "nsw-052",
+      "classification": "guard_context_over_rejection",
+      "explanation": "Both fee tiers are in quote and pre-2020 date scope is supplied in section_path. Guard rejects number 2020 because it occurs only in heading context. This loses a supported answer without exposing an unsafe claim.",
+      "final_status": "sources_only",
+      "all_targets_at_6": true,
+      "missing_regex_patterns": [
+        "(?:6|six)\\s+weeks?",
+        "(?:4|four)\\s+weeks?"
+      ],
+      "raw_claim_replay": [
+        {
+          "claim_number": 1,
+          "text": "Under an included pre-2020 optional break-fee clause, 6 weeks' rent applies if the tenant leaves in the first half of the fixed-term agreement.",
+          "quote_id": "p0",
+          "available_quote_ids": [
+            "p0"
+          ],
+          "section_path": [
+            "When break fees apply",
+            "Tenant breaking a fixed-term agreement signed before 23 March 2020",
+            "If the optional break fee is included in agreement"
+          ],
+          "result": "guard_rejection",
+          "reason": "Unsupported number in quoted evidence",
+          "quote": "The optional break fee clause will apply if the break fee clause has not been deleted from the tenancy agreement. The break fee payable will be either:\n\n*   6 weeks rent if the tenant leaves in the first half of the fixed-term agreement, or\n*   4 weeks rent if the tenant leaves in the second half of the fixed-term agreement.\n\nThe same optional break fee clause applies for fixed-term agreements of more than 3 years, unless the tenancy agreement specifies a break fee of another amount."
+        },
+        {
+          "claim_number": 2,
+          "text": "Under an included pre-2020 optional break-fee clause, 4 weeks' rent applies if the tenant leaves in the second half of the fixed-term agreement.",
+          "quote_id": "p0",
+          "available_quote_ids": [
+            "p0"
+          ],
+          "section_path": [
+            "When break fees apply",
+            "Tenant breaking a fixed-term agreement signed before 23 March 2020",
+            "If the optional break fee is included in agreement"
+          ],
+          "result": "guard_rejection",
+          "reason": "Unsupported number in quoted evidence",
+          "quote": "The optional break fee clause will apply if the break fee clause has not been deleted from the tenancy agreement. The break fee payable will be either:\n\n*   6 weeks rent if the tenant leaves in the first half of the fixed-term agreement, or\n*   4 weeks rent if the tenant leaves in the second half of the fixed-term agreement.\n\nThe same optional break fee clause applies for fixed-term agreements of more than 3 years, unless the tenancy agreement specifies a break fee of another amount."
+        }
+      ]
+    },
+    {
+      "id": "nsw-072",
+      "classification": "language_policy_regex_mismatch",
+      "explanation": "English quote includes may seek an extension after time limit has passed. Chinese-only 延期/延长 regex misses the intentionally retained English source. No guaranteed extension is asserted.",
+      "final_status": "answered",
+      "all_targets_at_6": true,
+      "missing_regex_patterns": [
+        "延期|延长"
+      ],
+      "raw_claim_replay": [
+        {
+          "claim_number": 1,
+          "text": "即使申请仲裁超过期限，房东、租客或其他人仍可向法庭申请延期。",
+          "quote_id": "p0",
+          "available_quote_ids": [
+            "p0"
+          ],
+          "section_path": [
+            "When to apply to the Tribunal",
+            "Either landlord or tenant"
+          ],
+          "result": "accepted_source_preserving"
+        }
+      ]
+    }
+  ],
+  "former_risk_spot_checks": [
+    {
+      "id": "nsw-023",
+      "verdict": "OR alternatives fixed",
+      "verified_literal_cue": "You can only claim a bond refund before the end of a tenancy if:",
+      "cue_present_in_output": true,
+      "notes": "Core early-refund quote retains written agreement OR full bond direction. Extra co-tenant repayment paragraph still has adjacent-exception coverage risk noted below."
+    },
+    {
+      "id": "nsw-028",
+      "verdict": "Notice contents fixed",
+      "verified_literal_cue": "include the ground for termination",
+      "cue_present_in_output": true,
+      "notes": "Full list now includes the ground requirement and periodic/end-of-term tenant exceptions; separate claim also mentions supporting documents."
+    },
+    {
+      "id": "nsw-055",
+      "verdict": "Eligibility exclusion fixed",
+      "verified_literal_cue": "the tenant cannot give an early exit notice",
+      "cue_present_in_output": true,
+      "notes": "Full early-exit source includes 14 days, 60/90-day windows and breach/unusable exclusion. The same entire quote is repeated three times: 4,213 characters."
+    },
+    {
+      "id": "nsw-058",
+      "verdict": "Mandatory notice fixed",
+      "verified_literal_cue": "21 days’ written notice to the landlord before the rent increase starts",
+      "cue_present_in_output": true,
+      "notes": "Output retains prerequisite, 2-year threshold and rent payable until possession returned."
+    },
+    {
+      "id": "nsw-071",
+      "verdict": "Fragmented table fixed",
+      "verified_literal_cue": "Resolve breach of agreement | 3 months | From the day the applicant became aware of the breach",
+      "cue_present_in_output": true,
+      "notes": "Full source table now includes row label, duration and start event; quotation alone is reviewable."
+    }
+  ],
+  "remaining_semantic_risks": [
+    {
+      "id": "nsw-020",
+      "also_affects": "nsw-023 extra claim 2",
+      "severity": "high",
+      "issue": "Adjacent exception remains outside selected quote",
+      "accepted_claim": {
+        "text": "Source context: Getting your bond back at the end of a tenancy > What do you need to do?\n\nIf a co-tenant moves out of a shared tenancy and requests their bond refund, the remaining tenant/s must pay back their bond – less any rent owed or other reasonable costs – within 14 days of the request.",
+        "evidence_id": "76fd66eb1c16ee8e2e28e792ee8d5de6",
+        "quote": "If a co-tenant moves out of a shared tenancy and requests their bond refund, the remaining tenant/s must pay back their bond – less any rent owed or other reasonable costs – within 14 days of the request.",
+        "source_preserving": true
+      },
+      "missing_adjacent_source": "This does not apply if:\n\n*   the former co-tenant’s debts exceed the amount of bond money they paid, or\n*   the former co-tenant has been excluded from the premises by a final apprehended violence order.",
+      "explanation": "Repayment within 14 days is quoted without immediately following exceptions for former tenant debt exceeding share or exclusion by final apprehended violence order. Exact quotation preservation cannot restore unselected adjacent conditions. Gold expected_conditions already mentions these exceptions; current regex does not detect their omission."
+    },
+    {
+      "id": "nsw-019",
+      "severity": "medium",
+      "issue": "Non-colon lead-in fragment still accepted",
+      "accepted_claim": {
+        "text": "The principal tenant who acts on behalf of all co-tenants submits or responds to a bond refund claim using Rental Bonds Online.",
+        "evidence_id": "76fd66eb1c16ee8e2e28e792ee8d5de6",
+        "quote": "The principal tenant who acts on behalf of all co-tenants for the shared rental should",
+        "source_preserving": false
+      },
+      "explanation": "Quote ends with should and contains no submit/respond action. Correct action is in next bullet list, selected by another claim. Answer-level source context supports the conclusion, but this claim’s own quotation is incomplete. Guard only catches colon/dangling conjunction lead-ins."
+    }
+  ],
+  "limitations": [
+    "No gold or production changes were made during this audit.",
+    "Four language-policy regex mismatches remain reported as failures; they were not silently rescored.",
+    "Zero literal-citation failures is not proof of condition coverage or entailment.",
+    "The source-preserving fallback can expose long duplicated source sections and preserve English in a Chinese conversation; this is intentional conservative behavior with a usability cost."
+  ]
+}

@@ -5,3 +5,9 @@ __pycache__/
 .env
 .env.*
 !.env.example
+.runtime/
+.runtime-backups/
+node_modules/
+frontend/dist/
+*.tsbuildinfo
+.superpowers/

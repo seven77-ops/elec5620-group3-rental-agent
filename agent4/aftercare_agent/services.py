@@ -7,6 +7,12 @@ from .planner import SYDNEY, build_plan, confirm_schedule, due_on, propose_sched
 from .reminders import TERMINAL, deliver_due, sync_reminders
 
 
+def not_past(move_out, now):
+    # A plan for a date already gone would only produce overdue tasks and a burst of reminders.
+    require(day(move_out) >= instant(now).astimezone(SYDNEY).date(), 'invalid_input',
+            'Move-out date cannot be earlier than today in Sydney')
+
+
 def check_refs(case, refs):
     known = {e['evidence_id'] for e in case['evidence']}
     require(set(refs) <= known, 'missing_evidence', 'An evidence reference is not registered in this case')
@@ -107,10 +113,25 @@ def apply(case, command, *, gateway=None):
     op, p, now = command['operation'], command['payload'], command['as_of']
     require(instant(now) >= instant(case['updated_at']), 'stale_time', 'as_of precedes the last committed command')
     if case['bond'] and case['bond']['state'] in TERMINAL:
-        require(op == 'poll_reminders', 'case_closed', 'Closed cases are retained read-only')
+        require(op in {'poll_reminders', 'report_issue', 'reply_review', 'operator_decision', 'add_evidence'},
+                'case_closed', 'Closed bond records are retained read-only')
     result = {'operation': op}
     if op == 'create':
         pass
+    elif op == 'report_issue':
+        check_refs(case, p['evidence_refs'])
+        review = ensure_review(case, 'issue:' + str(len(case['reviews'])+1), p['title'],
+                               deepcopy(p['evidence_refs']), now)
+        review.update(report=deepcopy(p), updates=[])
+        result['review_id'] = review['review_id']
+    elif op == 'reply_review':
+        review = next((r for r in pending_reviews(case) if r['review_id'] == p['review_id']), None)
+        require(review is not None, 'invalid_state', 'No open review with that ID')
+        check_refs(case, p['evidence_refs'])
+        review.setdefault('updates', []).append({'text': p['text'], 'evidence_refs': deepcopy(p['evidence_refs']),
+                                                'at': now, 'actor_id': command['actor_id'],
+                                                'attachment_ids': deepcopy(p.get('attachment_ids', []))})
+        review['source_refs'] = sorted(set(review['source_refs'] + p['evidence_refs']))
     elif op == 'add_evidence':
         add_evidence(case, p['evidence'], now)
         invalidate_drafts(case, 'New evidence was registered')
@@ -133,6 +154,7 @@ def apply(case, command, *, gateway=None):
             case['plan'] = updated
     elif op == 'create_plan':
         require(case['plan'] is None, 'invalid_state', 'A plan already exists; edit it instead')
+        not_past(p['move_out_date'], now)
         case['plan'] = build_plan(case['tenancy'], p['move_out_date'], p['schedule_confirmed'], now)
     elif op in {'confirm_plan', 'edit_task', 'propose_date', 'confirm_date', 'cancel_plan'}:
         plan = case['plan']
@@ -155,6 +177,7 @@ def apply(case, command, *, gateway=None):
             if p.get('review_reason'):
                 ensure_review(case, 'plan:' + task['task_id'], p['review_reason'], task['evidence_refs'], now)
         elif op == 'propose_date':
+            not_past(p['move_out_date'], now)
             propose_schedule(plan, p['move_out_date'])
         elif op == 'confirm_date':
             confirm_schedule(plan, p['accepted'], now)
@@ -204,7 +227,9 @@ def apply(case, command, *, gateway=None):
         bond.update(state='Resolved' if op == 'confirm_outcome' else 'Withdrawn',
                     outcome={**deepcopy(p), 'recorded_at': now, 'actor_id': command['actor_id']}, closed_at=now)
         for review in pending_reviews(case):
-            review.update(status='closed_by_tenant', closed_at=now, closure_reason=op)
+            # Independent issue reports remain open until an operator completes them.
+            if not review.get('report'):
+                review.update(status='closed_by_tenant', closed_at=now, closure_reason=op)
         invalidate_drafts(case, 'Tenant confirmed closure')
     elif op == 'reminder_preferences':
         if p['follow_up_at']:

@@ -1,0 +1,221 @@
+[server — final after 860bfad]
+test_aftercare_confirmation_identity_retries_and_clock (test_api.BoundaryTests.test_aftercare_confirmation_identity_retries_and_clock) ... ok
+test_boolean_version_rejected (test_api.BoundaryTests.test_boolean_version_rejected) ... ok
+test_changed_selection_blocks_all_review_writes_in_same_context (test_api.BoundaryTests.test_changed_selection_blocks_all_review_writes_in_same_context) ... ok
+test_concurrent_create_cannot_leave_orphan_module_case (test_api.BoundaryTests.test_concurrent_create_cannot_leave_orphan_module_case) ... ok
+test_confirmation_versions_and_restart (test_api.BoundaryTests.test_confirmation_versions_and_restart) ... ok
+test_consent_checked_before_asgi_receive (test_api.BoundaryTests.test_consent_checked_before_asgi_receive) ... ok
+test_consent_read_context_rechecks_current_confirmed_selection (test_api.BoundaryTests.test_consent_read_context_rechecks_current_confirmed_selection) ... ok
+test_consent_references_restore_after_restart_and_remain_revocable (test_api.BoundaryTests.test_consent_references_restore_after_restart_and_remain_revocable) ... ok
+test_empty_question_packet_is_prepared_not_sent (test_api.BoundaryTests.test_empty_question_packet_is_prepared_not_sent) ... ok
+test_full_aftercare_workflow_with_original_payloads (test_api.BoundaryTests.test_full_aftercare_workflow_with_original_payloads) ... ok
+test_history_exposes_immutable_original_snapshots (test_api.BoundaryTests.test_history_exposes_immutable_original_snapshots) ... ok
+test_json_media_type_and_size_limits_are_consistent (test_api.BoundaryTests.test_json_media_type_and_size_limits_are_consistent) ... ok
+test_malformed_opaque_refs_return_422 (test_api.BoundaryTests.test_malformed_opaque_refs_return_422) ... ok
+test_module_receipts_survive_adapter_receipt_recovery (test_api.BoundaryTests.test_module_receipts_survive_adapter_receipt_recovery) ... ok
+test_operator_gate_corrections_and_durable_reviews (test_api.BoundaryTests.test_operator_gate_corrections_and_durable_reviews) ... ok
+test_real_evaluate_selection_and_export (test_api.BoundaryTests.test_real_evaluate_selection_and_export) ... ok
+test_repeated_evaluation_never_overwrites_saved_run (test_api.BoundaryTests.test_repeated_evaluation_never_overwrites_saved_run) ... ok
+test_revocation_blocks_all_review_followups_preserves_reads (test_api.BoundaryTests.test_revocation_blocks_all_review_followups_preserves_reads) ... ok
+test_stale_selection_and_immutable_comparison (test_api.BoundaryTests.test_stale_selection_and_immutable_comparison) ... ok
+test_streamed_upload_limit_has_no_partial_file (test_api.BoundaryTests.test_streamed_upload_limit_has_no_partial_file) ... ok
+test_strict_json_duplicate_keys_and_nonfinite (test_api.BoundaryTests.test_strict_json_duplicate_keys_and_nonfinite) ... ok
+test_unconfirmed_profile_blocks_all_review_writes_in_same_context (test_api.BoundaryTests.test_unconfirmed_profile_blocks_all_review_writes_in_same_context) ... ok
+test_upload_limits_and_paths (test_api.BoundaryTests.test_upload_limits_and_paths) ... ok
+test_upload_retries_conflict_and_revoke (test_api.BoundaryTests.test_upload_retries_conflict_and_revoke) ... ok
+test_upload_wrong_content_type_still_authorizes_before_receive (test_api.BoundaryTests.test_upload_wrong_content_type_still_authorizes_before_receive) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 2.911s
+
+OK
+
+[agent2]
+test_bad_json_returns_error_without_output (test_cli.CLITests.test_bad_json_returns_error_without_output) ... ok
+test_duplicate_json_keys_rejected (test_cli.CLITests.test_duplicate_json_keys_rejected) ... ok
+test_help (test_cli.CLITests.test_help) ... ok
+test_uc03_uc04_export_and_no_overwrite (test_cli.CLITests.test_uc03_uc04_export_and_no_overwrite) ... ok
+test_uc04_optional_compare (test_cli.CLITests.test_uc04_optional_compare) ... ok
+test_compare_changes_and_input_not_mutated (test_cli.ReportTests.test_compare_changes_and_input_not_mutated) ... ok
+test_compare_mismatched_data_or_time_rejected (test_cli.ReportTests.test_compare_mismatched_data_or_time_rejected) ... ok
+test_escape_roundtrip (test_cli.ReportTests.test_escape_roundtrip) ... ok
+test_markdown_contains_report_and_evidence (test_cli.ReportTests.test_markdown_contains_report_and_evidence) ... ok
+test_markdown_escapes_untrusted_text (test_cli.ReportTests.test_markdown_escapes_untrusted_text) ... ok
+test_no_matches_rendered_without_fabrication (test_cli.ReportTests.test_no_matches_rendered_without_fabrication) ... ok
+test_saved_examples_match_current_code (test_cli.ReportTests.test_saved_examples_match_current_code) ... ok
+test_uc04_new_destination_does_not_reuse_old_route (test_cli.ReportTests.test_uc04_new_destination_does_not_reuse_old_route) ... ok
+test_uc04_tighter_budget_changes_eligibility (test_cli.ReportTests.test_uc04_tighter_budget_changes_eligibility) ... ok
+test_uc04_unchanged_profile_keeps_ranking (test_cli.ReportTests.test_uc04_unchanged_profile_keeps_ranking) ... ok
+test_valid_route_walk_and_transfers_are_visible (test_cli.ReportTests.test_valid_route_walk_and_transfers_are_visible) ... ok
+test_budget_change_explains_exclusion_without_inventing_score (test_comparison.ComparisonExplanationTests.test_budget_change_explains_exclusion_without_inventing_score) ... ok
+test_different_searches_cannot_be_compared (test_comparison.ComparisonExplanationTests.test_different_searches_cannot_be_compared) ... ok
+test_explanation_schema_rejects_wrong_type (test_comparison.ComparisonExplanationTests.test_explanation_schema_rejects_wrong_type) ... ok
+test_inputs_and_scores_are_unchanged (test_comparison.ComparisonExplanationTests.test_inputs_and_scores_are_unchanged) ... ok
+test_legacy_comparison_is_readable_but_has_no_fabricated_explanation (test_comparison.ComparisonExplanationTests.test_legacy_comparison_is_readable_but_has_no_fabricated_explanation) ... ok
+test_markdown_has_escaped_per_listing_reasons (test_comparison.ComparisonExplanationTests.test_markdown_has_escaped_per_listing_reasons) ... ok
+test_missing_dimension_is_not_zero_but_zero_weight_is_zero (test_comparison.ComparisonExplanationTests.test_missing_dimension_is_not_zero_but_zero_weight_is_zero) ... ok
+test_new_destination_explains_pending_route (test_comparison.ComparisonExplanationTests.test_new_destination_explains_pending_route) ... ok
+test_peer_only_rank_change_is_explained_as_relative (test_comparison.ComparisonExplanationTests.test_peer_only_rank_change_is_explained_as_relative) ... ok
+test_relaxed_budget_explains_restored_eligibility (test_comparison.ComparisonExplanationTests.test_relaxed_budget_explains_restored_eligibility) ... ok
+test_unchanged_and_duplicate_rows_have_honest_explanations (test_comparison.ComparisonExplanationTests.test_unchanged_and_duplicate_rows_have_honest_explanations) ... ok
+test_weight_change_has_recomputable_dimension_contributions (test_comparison.ComparisonExplanationTests.test_weight_change_has_recomputable_dimension_contributions) ... ok
+test_missing_unknown_fields_types_and_version_rejected (test_contracts.ContractTests.test_missing_unknown_fields_types_and_version_rejected) ... ok
+test_profile_and_report_validate (test_contracts.ContractTests.test_profile_and_report_validate) ... ok
+test_report_missing_id_and_invalid_item_rejected (test_contracts.ContractTests.test_report_missing_id_and_invalid_item_rejected) ... ok
+test_report_run_id_is_stable_and_input_sensitive (test_contracts.ContractTests.test_report_run_id_is_stable_and_input_sensitive) ... ok
+test_saved_contract_examples_validate (test_contracts.ContractTests.test_saved_contract_examples_validate) ... ok
+test_schemas_are_valid_and_self_contained (test_contracts.ContractTests.test_schemas_are_valid_and_self_contained) ... ok
+test_cli_explicit_selection_and_pair_validation (test_contracts.HandoffTests.test_cli_explicit_selection_and_pair_validation) ... ok
+test_comparison_history_is_not_exported_as_selected_evidence (test_contracts.HandoffTests.test_comparison_history_is_not_exported_as_selected_evidence) ... ok
+test_explicit_selection_contains_traceable_snapshot (test_contracts.HandoffTests.test_explicit_selection_contains_traceable_snapshot) ... ok
+test_selection_checks_comparison_destination_link (test_contracts.HandoffTests.test_selection_checks_comparison_destination_link) ... ok
+test_selection_rejects_pending_excluded_unknown_and_unconfirmed (test_contracts.HandoffTests.test_selection_rejects_pending_excluded_unknown_and_unconfirmed) ... ok
+test_selection_rejects_stale_or_past_time (test_contracts.HandoffTests.test_selection_rejects_stale_or_past_time) ... ok
+test_selection_rejects_tampered_report_or_mismatched_dataset (test_contracts.HandoffTests.test_selection_rejects_tampered_report_or_mismatched_dataset) ... ok
+test_bills_and_fees_added (test_engine.EngineTests.test_bills_and_fees_added) ... ok
+test_commute_over_limit (test_engine.EngineTests.test_commute_over_limit) ... ok
+test_conflicting_duplicates_quarantined (test_engine.EngineTests.test_conflicting_duplicates_quarantined) ... ok
+test_cost_and_time_monotonicity (test_engine.EngineTests.test_cost_and_time_monotonicity) ... ok
+test_dataset_shape_and_duplicate_internal_ids_rejected (test_engine.EngineTests.test_dataset_shape_and_duplicate_internal_ids_rejected) ... ok
+test_dedup_same_source_but_not_same_address (test_engine.EngineTests.test_dedup_same_source_but_not_same_address) ... ok
+test_demo_fixtures_and_profile_ranking_change (test_engine.EngineTests.test_demo_fixtures_and_profile_ranking_change) ... ok
+test_duplicate_uses_fresh_evidence (test_engine.EngineTests.test_duplicate_uses_fresh_evidence) ... ok
+test_empty_candidates_and_no_matches (test_engine.EngineTests.test_empty_candidates_and_no_matches) ... ok
+test_empty_soft_preferences_remove_housing_dimension (test_engine.EngineTests.test_empty_soft_preferences_remove_housing_dimension) ... ok
+test_equal_thresholds (test_engine.EngineTests.test_equal_thresholds) ... ok
+test_evidence_missing_blocks_fact (test_engine.EngineTests.test_evidence_missing_blocks_fact) ... ok
+test_extreme_numeric_values_rejected (test_engine.EngineTests.test_extreme_numeric_values_rejected) ... ok
+test_hard_failures (test_engine.EngineTests.test_hard_failures) ... ok
+test_invalid_listing_values_rejected (test_engine.EngineTests.test_invalid_listing_values_rejected) ... ok
+test_listing_order_does_not_change_ranks (test_engine.EngineTests.test_listing_order_does_not_change_ranks) ... ok
+test_override_asof_marks_stale_not_current (test_engine.EngineTests.test_override_asof_marks_stale_not_current) ... ok
+test_profile_enum_wrong_types_rejected (test_engine.EngineTests.test_profile_enum_wrong_types_rejected) ... ok
+test_profile_invalid_values_rejected (test_engine.EngineTests.test_profile_invalid_values_rejected) ... ok
+test_real_or_mixed_data_rejected (test_engine.EngineTests.test_real_or_mixed_data_rejected) ... ok
+test_rent_period_normalisation (test_engine.EngineTests.test_rent_period_normalisation) ... ok
+test_soft_limits_allow_but_penalise (test_engine.EngineTests.test_soft_limits_allow_but_penalise) ... ok
+test_spec_scores_and_determinism (test_engine.EngineTests.test_spec_scores_and_determinism) ... ok
+test_stable_top5_and_unrelated_listing (test_engine.EngineTests.test_stable_top5_and_unrelated_listing) ... ok
+test_stale_conflict_precision_permission_are_pending (test_engine.EngineTests.test_stale_conflict_precision_permission_are_pending) ... ok
+test_unknown_amenities_score_interval (test_engine.EngineTests.test_unknown_amenities_score_interval) ... ok
+test_unknown_hard_facts_are_pending (test_engine.EngineTests.test_unknown_hard_facts_are_pending) ... ok
+test_wrong_destination_or_stale_route_pending (test_engine.EngineTests.test_wrong_destination_or_stale_route_pending) ... ok
+test_zero_weight_unknown_does_not_block (test_engine.EngineTests.test_zero_weight_unknown_does_not_block) ... ok
+test_zero_weights_and_missing_required_preferences_rejected (test_engine.EngineTests.test_zero_weights_and_missing_required_preferences_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 71 tests in 2.495s
+
+OK
+
+
+[agent3]
+test_no_consent_and_no_overwrite (test_cli.CliTests.test_no_consent_and_no_overwrite) ... ok
+test_receive_is_idempotent_and_rejects_changed_payload (test_cli.CliTests.test_receive_is_idempotent_and_rejects_changed_payload) ... ok
+test_receive_needs_consent_and_valid_selection (test_cli.CliTests.test_receive_needs_consent_and_valid_selection) ... ok
+test_review_decide_questions_roundtrip (test_cli.CliTests.test_review_decide_questions_roundtrip) ... ok
+test_docx_text_and_source_are_extracted (test_document.DocumentTests.test_docx_text_and_source_are_extracted) ... ok
+test_image_only_pdf_requests_ocr_or_resubmission (test_document.DocumentTests.test_image_only_pdf_requests_ocr_or_resubmission) ... ok
+test_ocr_text_is_marked_lower_confidence (test_document.DocumentTests.test_ocr_text_is_marked_lower_confidence) ... ok
+test_text_pdf_is_read_with_page_evidence (test_document.DocumentTests.test_text_pdf_is_read_with_page_evidence) ... ok
+test_actual_agent2_packet_is_accepted (test_handoff.HandoffTests.test_actual_agent2_packet_is_accepted) ... ok
+test_bundled_contract_matches_sibling_agent2_when_present (test_handoff.HandoffTests.test_bundled_contract_matches_sibling_agent2_when_present) ... ok
+test_mismatched_identity_is_rejected (test_handoff.HandoffTests.test_mismatched_identity_is_rejected) ... ok
+test_profile_fingerprint_and_snapshot_must_be_consistent (test_handoff.HandoffTests.test_profile_fingerprint_and_snapshot_must_be_consistent) ... ok
+test_selection_must_be_confirmed_and_eligible (test_handoff.HandoffTests.test_selection_must_be_confirmed_and_eligible) ... ok
+test_agent2_selection_and_evidence (test_review.ReviewTests.test_agent2_selection_and_evidence) ... ok
+test_building_precision_address_difference_requires_human_review (test_review.ReviewTests.test_building_precision_address_difference_requires_human_review) ... ok
+test_consent_before_document_read (test_review.ReviewTests.test_consent_before_document_read) ... ok
+test_correction_creates_revision_and_invalidates_questions (test_review.ReviewTests.test_correction_creates_revision_and_invalidates_questions) ... ok
+test_edited_questions_preserve_finding_ids (test_review.ReviewTests.test_edited_questions_preserve_finding_ids) ... ok
+test_high_risk_blocks_questions_until_human_decision (test_review.ReviewTests.test_high_risk_blocks_questions_until_human_decision) ... ok
+test_listing_rent_conflict_requires_human_review (test_review.ReviewTests.test_listing_rent_conflict_requires_human_review) ... ok
+test_missing_fields_requests_resubmission (test_review.ReviewTests.test_missing_fields_requests_resubmission) ... ok
+test_model_failure_retries_once_then_uses_rule_explanation (test_review.ReviewTests.test_model_failure_retries_once_then_uses_rule_explanation) ... ok
+test_no_listing_still_reviews (test_review.ReviewTests.test_no_listing_still_reviews) ... ok
+test_rent_scope_mismatch_is_not_a_numeric_mismatch (test_review.ReviewTests.test_rent_scope_mismatch_is_not_a_numeric_mismatch) ... ok
+test_stale_rule_pack_suspends_conclusions (test_review.ReviewTests.test_stale_rule_pack_suspends_conclusions) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 2.016s
+
+OK
+
+
+[agent4]
+test_all_example_commands_validate (test_cli.CliTests.test_all_example_commands_validate) ... ok
+test_demo_generates_reproducible_snapshots_and_expected_block (test_cli.CliTests.test_demo_generates_reproducible_snapshots_and_expected_block) ... ok
+test_duplicate_json_key_is_rejected (test_cli.CliTests.test_duplicate_json_key_is_rejected) ... ok
+test_markdown_escapes_imported_links_and_pipe (test_cli.CliTests.test_markdown_escapes_imported_links_and_pipe) ... ok
+test_missing_file_has_structured_error (test_cli.CliTests.test_missing_file_has_structured_error) ... ok
+test_no_partial_export_if_second_path_is_existing (test_cli.CliTests.test_no_partial_export_if_second_path_is_existing) ... ok
+test_non_finite_json_is_rejected (test_cli.CliTests.test_non_finite_json_is_rejected) ... ok
+test_read_cannot_disclose_foreign_case (test_cli.CliTests.test_read_cannot_disclose_foreign_case) ... ok
+test_run_show_and_no_overwrite (test_cli.CliTests.test_run_show_and_no_overwrite) ... ok
+test_duplicate_statements_and_unexpected_prose_rejected (test_model_gateway.ModelGatewayTests.test_duplicate_statements_and_unexpected_prose_rejected) ... ok
+test_explicit_consent_is_required_before_gateway_call (test_model_gateway.ModelGatewayTests.test_explicit_consent_is_required_before_gateway_call) ... ok
+test_malformed_selection_rejected (test_model_gateway.ModelGatewayTests.test_malformed_selection_rejected) ... ok
+test_missing_mandatory_statement_remains_unpublished (test_model_gateway.ModelGatewayTests.test_missing_mandatory_statement_remains_unpublished) ... ok
+test_no_model_setting_means_no_network_call (test_model_gateway.ModelGatewayTests.test_no_model_setting_means_no_network_call) ... ok
+test_review_gate_precedes_any_model_call (test_model_gateway.ModelGatewayTests.test_review_gate_precedes_any_model_call) ... ok
+test_timeout_rolls_back_entire_draft_command (test_model_gateway.ModelGatewayTests.test_timeout_rolls_back_entire_draft_command) ... ok
+test_unknown_model_statement_remains_unpublished (test_model_gateway.ModelGatewayTests.test_unknown_model_statement_remains_unpublished) ... ok
+test_valid_model_only_selects_evidence_bound_statements (test_model_gateway.ModelGatewayTests.test_valid_model_only_selects_evidence_bound_statements) ... ok
+test_activation_requires_reference_or_deposit (test_workflows.Workflows.test_activation_requires_reference_or_deposit) ... ok
+test_annotation_hold_referral_and_return_do_not_release (test_workflows.Workflows.test_annotation_hold_referral_and_return_do_not_release) ... ok
+test_cancel_plan_suppresses_reminders_retains_evidence (test_workflows.Workflows.test_cancel_plan_suppresses_reminders_retains_evidence) ... ok
+test_case_persists_across_agent_instances_and_passes_schema (test_workflows.Workflows.test_case_persists_across_agent_instances_and_passes_schema) ... ok
+test_changed_request_id_payload_and_stale_version_rejected (test_workflows.Workflows.test_changed_request_id_payload_and_stale_version_rejected) ... ok
+test_close_then_poll_cannot_deliver_obsolete_reminders (test_workflows.Workflows.test_close_then_poll_cannot_deliver_obsolete_reminders) ... ok
+test_concurrent_distinct_writes_require_reload (test_workflows.Workflows.test_concurrent_distinct_writes_require_reload) ... ok
+test_concurrent_exact_retries_create_one_update (test_workflows.Workflows.test_concurrent_exact_retries_create_one_update) ... ok
+test_confirmation_cannot_be_inferred_or_performed_in_draft (test_workflows.Workflows.test_confirmation_cannot_be_inferred_or_performed_in_draft) ... ok
+test_cross_tenant_context_and_unknown_evidence_fail (test_workflows.Workflows.test_cross_tenant_context_and_unknown_evidence_fail) ... ok
+test_deposit_record_is_valid_alternative (test_workflows.Workflows.test_deposit_record_is_valid_alternative) ... ok
+test_direct_bond_entry_without_plan (test_workflows.Workflows.test_direct_bond_entry_without_plan) ... ok
+test_dispute_blocks_draft_and_keeps_claim_classification (test_workflows.Workflows.test_dispute_blocks_draft_and_keeps_claim_classification) ... ok
+test_dst_uses_local_calendar_days (test_workflows.Workflows.test_dst_uses_local_calendar_days) ... ok
+test_duplicate_claims_and_out_of_order_command_time_fail (test_workflows.Workflows.test_duplicate_claims_and_out_of_order_command_time_fail) ... ok
+test_edit_task_title_date_and_evidence (test_workflows.Workflows.test_edit_task_title_date_and_evidence) ... ok
+test_empty_rooms_and_overlong_room_ids_cannot_create_uneditable_tasks (test_workflows.Workflows.test_empty_rooms_and_overlong_room_ids_cannot_create_uneditable_tasks) ... ok
+test_evidence_is_immutable_and_future_dates_rejected (test_workflows.Workflows.test_evidence_is_immutable_and_future_dates_rejected) ... ok
+test_exact_replay_returns_original_result_even_after_newer_commands (test_workflows.Workflows.test_exact_replay_returns_original_result_even_after_newer_commands) ... ok
+test_explicit_release_requires_all_review_gates_cleared (test_workflows.Workflows.test_explicit_release_requires_all_review_gates_cleared) ... ok
+test_follow_up_utc_is_displayed_in_sydney_time (test_workflows.Workflows.test_follow_up_utc_is_displayed_in_sydney_time) ... ok
+test_foreign_tenant_and_unauthorised_operator_denied (test_workflows.Workflows.test_foreign_tenant_and_unauthorised_operator_denied) ... ok
+test_furnished_empty_inventory_cannot_be_confirmed (test_workflows.Workflows.test_furnished_empty_inventory_cannot_be_confirmed) ... ok
+test_invalid_money_types_dates_and_extra_fields_fail (test_workflows.Workflows.test_invalid_money_types_dates_and_extra_fields_fail) ... ok
+test_inventory_named_check_does_not_collide_with_verification_task (test_workflows.Workflows.test_inventory_named_check_does_not_collide_with_verification_task) ... ok
+test_missing_baseline_is_visible_but_does_not_block (test_workflows.Workflows.test_missing_baseline_is_visible_but_does_not_block) ... ok
+test_new_evidence_invalidates_old_draft_without_deleting_history (test_workflows.Workflows.test_new_evidence_invalidates_old_draft_without_deleting_history) ... ok
+test_opt_in_and_disable_and_completion_control_delivery (test_workflows.Workflows.test_opt_in_and_disable_and_completion_control_delivery) ... ok
+test_outcome_closes_reviews_retains_audit_and_suppresses_all_reminders (test_workflows.Workflows.test_outcome_closes_reviews_retains_audit_and_suppresses_all_reminders) ... ok
+test_plan_conflict_creates_review_before_bond_entry (test_workflows.Workflows.test_plan_conflict_creates_review_before_bond_entry) ... ok
+test_proposed_and_confirmed_reschedule_preserves_done_and_evidence (test_workflows.Workflows.test_proposed_and_confirmed_reschedule_preserves_done_and_evidence) ... ok
+test_rejected_date_restores_reminders_without_duplicate_ids (test_workflows.Workflows.test_rejected_date_restores_reminders_without_duplicate_ids) ... ok
+test_release_without_resolved_gate_fails (test_workflows.Workflows.test_release_without_resolved_gate_fails) ... ok
+test_review_storage_failure_never_reports_routed_success (test_workflows.Workflows.test_review_storage_failure_never_reports_routed_success) ... ok
+test_storage_failure_rolls_back_case_and_receipt (test_workflows.Workflows.test_storage_failure_rolls_back_case_and_receipt) ... ok
+test_tailored_plan_inventory_and_practical_dates (test_workflows.Workflows.test_tailored_plan_inventory_and_practical_dates) ... ok
+test_unflagged_update_cannot_clear_previous_dispute (test_workflows.Workflows.test_unflagged_update_cannot_clear_previous_dispute) ... ok
+test_unknown_property_stays_draft_until_corrected (test_workflows.Workflows.test_unknown_property_stays_draft_until_corrected) ... ok
+test_withdrawal_from_draft_is_explicit_and_preserved (test_workflows.Workflows.test_withdrawal_from_draft_is_explicit_and_preserved) ... ok
+
+----------------------------------------------------------------------
+Ran 57 tests in 2.422s
+
+OK
+
+
+[integration]
+test_agent1_example_keeps_confirmation_outside_profile (test_handoffs.HandoffIntegrationTests.test_agent1_example_keeps_confirmation_outside_profile) ... ok
+test_agent3_readme_directory_runs (test_handoffs.HandoffIntegrationTests.test_agent3_readme_directory_runs) ... ok
+test_changed_contract_cannot_reuse_request_id (test_handoffs.HandoffIntegrationTests.test_changed_contract_cannot_reuse_request_id) ... ok
+test_fresh_agent2_packet_is_received_and_replayed (test_handoffs.HandoffIntegrationTests.test_fresh_agent2_packet_is_received_and_replayed) ... ok
+test_listing_contract_conflict_waits_for_human_and_blocks_questions (test_handoffs.HandoffIntegrationTests.test_listing_contract_conflict_waits_for_human_and_blocks_questions) ... ok
+test_no_consent_rejects_before_receipt_or_review_is_written (test_handoffs.HandoffIntegrationTests.test_no_consent_rejects_before_receipt_or_review_is_written) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 2.547s
+
+OK

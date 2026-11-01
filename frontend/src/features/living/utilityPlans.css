@@ -1,0 +1,65 @@
+.utility-plan-list {
+  margin: 18px 0;
+  font-size: 13px;
+  min-width: 0;
+}
+.utility-plan {
+  padding: 18px 0;
+  border-top: 1px solid #e2e8f1;
+  overflow-wrap: anywhere;
+}
+.utility-plan-heading,
+.utility-plan-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  justify-content: space-between;
+  color: #71819b;
+  font-size: 11px;
+}
+.utility-plan h4 {
+  margin: 8px 0;
+  font-size: 15px;
+  color: #20395c;
+}
+.utility-plan p {
+  margin: 7px 0;
+  line-height: 1.7;
+}
+.utility-plan .utility-plan-price {
+  color: #1b53a4;
+  font-weight: 600;
+  font-size: 14px;
+}
+.utility-plan-network {
+  color: #71819b;
+  font-size: 12px;
+}
+.utility-plan-details {
+  margin: 12px 0;
+}
+.utility-plan-details summary,
+.utility-plan-more > summary {
+  cursor: pointer;
+  color: #245aa4;
+  padding: 8px 0;
+}
+.utility-plan-details ul {
+  padding-left: 18px;
+  line-height: 1.8;
+}
+.utility-plan-sources {
+  justify-content: flex-start;
+  margin-top: 12px;
+}
+.utility-plan-more {
+  border-top: 1px solid #e2e8f1;
+}
+@media (max-width: 600px) {
+  .utility-plan {
+    padding: 14px 0;
+  }
+  .utility-plan-sources span {
+    flex-basis: 100%;
+  }
+}

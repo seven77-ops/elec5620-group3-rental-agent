@@ -1,0 +1,21 @@
+
+> elec5620-rental-workspace@0.1.0 test:e2e
+> playwright test
+
+
+Running 12 tests using 1 worker
+
+  ✓   1 e2e/journey.spec.ts:35:1 › tenant completes confirmed profile, true recommendation, selection, contract review and restoration (12.1s)
+  ✓   2 e2e/journey.spec.ts:148:1 › edited preferences require reconfirmation and zero-match remains a valid report with history (5.3s)
+  ✓   3 e2e/journey.spec.ts:190:1 › independent aftercare requires confirmation and supports tasks, dispute gate, operator and reminders (12.0s)
+  ✓   4 e2e/journey.spec.ts:336:3 › responsive recommendation and keyboard evidence drawer at 360px (2.3s)
+  ✓   5 e2e/journey.spec.ts:336:3 › responsive recommendation and keyboard evidence drawer at 768px (2.3s)
+  ✓   6 e2e/journey.spec.ts:336:3 › responsive recommendation and keyboard evidence drawer at 1440px (2.3s)
+  ✓   7 e2e/journey.spec.ts:367:1 › contract conflict requires operator, prepares unsent questions and retains history after correction and revoke (9.1s)
+  ✓   8 e2e/journey.spec.ts:465:1 › failed case navigation never exposes writes to the previous case (1.6s)
+  ✓   9 e2e/journey.spec.ts:502:1 › failed report selection preserves clearly labeled prior data and disables mixed report actions (2.0s)
+  ✓  10 e2e/journey.spec.ts:557:1 › lost aftercare response preserves modal input and retry identity while reminder polling stays paused (3.0s)
+  ✓  11 e2e/journey.spec.ts:660:1 › cancelling a failed task edit cannot retry the previous task from a new edit session (3.8s)
+  ✓  12 e2e/journey.spec.ts:723:1 › an existing aftercare read failure offers recovery instead of creating a second tenancy (1.5s)
+
+  12 passed (58.3s)

@@ -1,0 +1,285 @@
+{
+  "mode": "offline_keyword_retrieval",
+  "index_version": "da80c036525e1410490ddba3c67db05f4b9b599106ce9393eb68bac7c2515ac7",
+  "passed": 20,
+  "total": 20,
+  "cases": [
+    {
+      "question": "How do I request repairs?",
+      "passed": true,
+      "expected_documents": [
+        "repairs"
+      ],
+      "retrieved_documents": [
+        "bond-refund",
+        "disputes",
+        "repairs"
+      ],
+      "elapsed_ms": 0.66
+    },
+    {
+      "question": "What counts as an urgent repair?",
+      "passed": true,
+      "expected_documents": [
+        "repairs"
+      ],
+      "retrieved_documents": [
+        "bond-refund",
+        "break-lease",
+        "disputes",
+        "ending-notice",
+        "repairs"
+      ],
+      "elapsed_ms": 0.43
+    },
+    {
+      "question": "Can I arrange non-urgent repairs myself?",
+      "passed": true,
+      "expected_documents": [
+        "repairs"
+      ],
+      "retrieved_documents": [
+        "bond-refund",
+        "break-lease",
+        "disputes",
+        "ending-notice",
+        "repairs"
+      ],
+      "elapsed_ms": 0.37
+    },
+    {
+      "question": "What records should I keep for urgent repairs?",
+      "passed": true,
+      "expected_documents": [
+        "repairs"
+      ],
+      "retrieved_documents": [
+        "bond-refund",
+        "break-lease",
+        "disputes",
+        "ending-notice",
+        "repairs"
+      ],
+      "elapsed_ms": 0.3
+    },
+    {
+      "question": "How do I get my rental bond refunded?",
+      "passed": true,
+      "expected_documents": [
+        "bond-refund"
+      ],
+      "retrieved_documents": [
+        "bond-refund",
+        "break-lease",
+        "disputes",
+        "ending-notice",
+        "repairs"
+      ],
+      "elapsed_ms": 0.36
+    },
+    {
+      "question": "How can tenants use Rental Bonds Online?",
+      "passed": true,
+      "expected_documents": [
+        "bond-refund"
+      ],
+      "retrieved_documents": [
+        "bond-refund",
+        "break-lease",
+        "disputes",
+        "ending-notice",
+        "repairs"
+      ],
+      "elapsed_ms": 0.39
+    },
+    {
+      "question": "Where is my bond refund paid?",
+      "passed": true,
+      "expected_documents": [
+        "bond-refund"
+      ],
+      "retrieved_documents": [
+        "bond-refund",
+        "break-lease",
+        "disputes",
+        "ending-notice",
+        "repairs"
+      ],
+      "elapsed_ms": 0.31
+    },
+    {
+      "question": "What if I disagree about a bond refund?",
+      "passed": true,
+      "expected_documents": [
+        "bond-refund",
+        "disputes"
+      ],
+      "retrieved_documents": [
+        "bond-refund",
+        "break-lease",
+        "disputes",
+        "ending-notice",
+        "repairs"
+      ],
+      "elapsed_ms": 0.37
+    },
+    {
+      "question": "What information goes in a termination notice?",
+      "passed": true,
+      "expected_documents": [
+        "ending-notice"
+      ],
+      "retrieved_documents": [
+        "bond-refund",
+        "break-lease",
+        "disputes",
+        "ending-notice"
+      ],
+      "elapsed_ms": 0.38
+    },
+    {
+      "question": "How do I serve a termination notice?",
+      "passed": true,
+      "expected_documents": [
+        "ending-notice"
+      ],
+      "retrieved_documents": [
+        "break-lease",
+        "disputes",
+        "ending-notice"
+      ],
+      "elapsed_ms": 0.33
+    },
+    {
+      "question": "How do I count notice days?",
+      "passed": true,
+      "expected_documents": [
+        "ending-notice"
+      ],
+      "retrieved_documents": [
+        "bond-refund",
+        "break-lease",
+        "disputes",
+        "ending-notice",
+        "repairs"
+      ],
+      "elapsed_ms": 0.5
+    },
+    {
+      "question": "What is a termination information statement?",
+      "passed": true,
+      "expected_documents": [
+        "ending-notice"
+      ],
+      "retrieved_documents": [
+        "bond-refund",
+        "break-lease",
+        "disputes",
+        "ending-notice"
+      ],
+      "elapsed_ms": 0.43
+    },
+    {
+      "question": "How do break fees apply to a fixed-term tenancy?",
+      "passed": true,
+      "expected_documents": [
+        "break-lease"
+      ],
+      "retrieved_documents": [
+        "bond-refund",
+        "break-lease",
+        "disputes",
+        "ending-notice",
+        "repairs"
+      ],
+      "elapsed_ms": 0.41
+    },
+    {
+      "question": "When do break fees not apply?",
+      "passed": true,
+      "expected_documents": [
+        "break-lease"
+      ],
+      "retrieved_documents": [
+        "bond-refund",
+        "break-lease",
+        "disputes",
+        "ending-notice"
+      ],
+      "elapsed_ms": 0.4
+    },
+    {
+      "question": "Can hardship affect ending a tenancy early?",
+      "passed": true,
+      "expected_documents": [
+        "break-lease"
+      ],
+      "retrieved_documents": [
+        "bond-refund",
+        "break-lease",
+        "disputes",
+        "ending-notice"
+      ],
+      "elapsed_ms": 0.46
+    },
+    {
+      "question": "How can tenants resolve a repair dispute?",
+      "passed": true,
+      "expected_documents": [
+        "disputes",
+        "repairs"
+      ],
+      "retrieved_documents": [
+        "bond-refund",
+        "break-lease",
+        "disputes",
+        "ending-notice",
+        "repairs"
+      ],
+      "elapsed_ms": 0.52
+    },
+    {
+      "question": "How do tenancy disputes go to the Tribunal?",
+      "passed": true,
+      "expected_documents": [
+        "disputes"
+      ],
+      "retrieved_documents": [
+        "bond-refund",
+        "break-lease",
+        "disputes",
+        "ending-notice",
+        "repairs"
+      ],
+      "elapsed_ms": 0.47
+    },
+    {
+      "question": "怎么报修？",
+      "passed": true,
+      "expected_documents": [
+        "repairs"
+      ],
+      "retrieved_documents": [
+        "bond-refund",
+        "disputes",
+        "repairs"
+      ],
+      "elapsed_ms": 0.29
+    },
+    {
+      "question": "quantum banana astrophysics",
+      "passed": true,
+      "expected_documents": [],
+      "retrieved_documents": [],
+      "elapsed_ms": 0.42
+    },
+    {
+      "question": "Mars interstellar spacecraft navigation",
+      "passed": true,
+      "expected_documents": [],
+      "retrieved_documents": [],
+      "elapsed_ms": 0.16
+    }
+  ],
+  "limits": "Tests relevant document presence in the first 20 chunks, not exact passage recall, generated claims, legal accuracy or cloud embedding/rerank quality."
+}

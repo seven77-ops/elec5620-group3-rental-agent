@@ -1,0 +1,138 @@
+.area-advice {
+  margin-top: 16px;
+  padding: 22px;
+  background: #fff;
+  border: 1px solid #dfe7f3;
+  border-radius: 16px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.area-advice h3,
+.area-advice h4 {
+  margin: 0;
+  color: #1c355a;
+}
+.area-advice h3 {
+  font-size: 18px;
+}
+.area-advice h4 {
+  font-size: 17px;
+}
+.area-advice-heading {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.area-priorities {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.area-criteria {
+  color: #425872;
+  line-height: 1.8;
+  margin: 0 0 12px;
+}
+.area-advice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+.area-advice-card {
+  min-width: 0;
+  padding: 18px;
+  background: #f8faff;
+  border: 1px solid #e3eaf5;
+  border-radius: 12px;
+}
+.area-advice-card p,
+.area-evidence-details p {
+  margin: 8px 0;
+  line-height: 1.8;
+}
+.area-inventory-rent {
+  font-size: 19px;
+  font-weight: 600;
+  color: #174ea6;
+}
+.area-inventory-rent small {
+  margin-left: 6px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #6a7e98;
+}
+.area-relevance {
+  font-size: 13px;
+  color: #174ea6;
+}
+.area-missing {
+  font-size: 13px;
+  color: #8a662b;
+}
+.area-preview {
+  font-size: 13px;
+  color: #425872;
+}
+.area-sources {
+  font-size: 12px;
+  margin: 12px 0;
+}
+.area-sources summary,
+.area-report-notes summary {
+  cursor: pointer;
+  color: #174ea6;
+  line-height: 1.8;
+}
+.area-source {
+  padding: 12px 0;
+  border-top: 1px solid #dfe7f3;
+  margin-top: 10px;
+}
+.area-source-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.area-source-limit {
+  color: #6a5e49;
+}
+.area-source a {
+  display: inline-block;
+  line-height: 1.8;
+}
+.area-report-notes {
+  margin-top: 16px;
+  font-size: 12px;
+}
+.area-report-notes ul {
+  padding-left: 18px;
+  line-height: 1.8;
+  color: #667b95;
+}
+.commute-area .area-evidence-details {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #dfe7f3;
+}
+.area-shared {
+  margin: 20px 0;
+}
+.area-shared > button {
+  margin-top: 10px;
+}
+@media (max-width: 700px) {
+  .area-advice-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .area-advice {
+    padding: 14px;
+  }
+  .area-advice-card {
+    padding: 14px;
+  }
+}

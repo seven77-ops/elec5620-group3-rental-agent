@@ -1,0 +1,162 @@
+[
+  {
+    "kind": "issue",
+    "case_id": "demo-history-bond",
+    "review_id": "demo-history-bond",
+    "address": "Unit 1, Fictional Demo Building (nonexistent address)",
+    "version": 1,
+    "status": "closed",
+    "reason": "Bond deduction for pre-existing wall marks",
+    "is_demo": true,
+    "created_at": "2026-10-26T10:00:00+11:00",
+    "decisions": [
+      {
+        "decision": "demonstration_advice",
+        "note": "Compare dated entry and exit photographs and request the itemised deduction and supporting records. The example does not establish responsibility, acceptance of a deduction or an actual refund.",
+        "at": "2026-10-26T10:00:00+11:00",
+        "operator_id": "fictional-reviewer"
+      }
+    ],
+    "report": {
+      "category": "rent",
+      "title": "Bond deduction for pre-existing wall marks",
+      "description": "The fictional tenant disputes a proposed AUD 300 deduction. The entry condition record already lists marks on the bedroom wall.",
+      "attachment_ids": []
+    },
+    "evidence": [
+      {
+        "evidence_id": "demo-bond",
+        "summary": "Entry record: \"Bedroom wall: existing scuff marks.\" Proposed deduction message: \"Wall repainting \u2014 AUD 300.\"",
+        "source_ref": "Fictional demonstration excerpt; no real document or payment"
+      }
+    ]
+  },
+  {
+    "kind": "issue",
+    "case_id": "demo-history-furniture",
+    "review_id": "demo-history-furniture",
+    "address": "Unit 2, Fictional Demo Building (nonexistent address)",
+    "version": 1,
+    "status": "closed",
+    "reason": "Missing chair in the furniture inventory",
+    "is_demo": true,
+    "created_at": "2026-10-25T10:00:00+11:00",
+    "decisions": [
+      {
+        "decision": "demonstration_advice",
+        "note": "Check the signed inventory, any later additions and dated photographs. Ask the agent to explain the four-chair count before assessing a replacement charge. No liability decision is made in this example.",
+        "at": "2026-10-25T10:00:00+11:00",
+        "operator_id": "fictional-reviewer"
+      }
+    ],
+    "report": {
+      "category": "furniture",
+      "title": "Missing chair in the furniture inventory",
+      "description": "The fictional agent reports one dining chair missing. The tenant says only three chairs were supplied at the start.",
+      "attachment_ids": []
+    },
+    "evidence": [
+      {
+        "evidence_id": "demo-furniture",
+        "summary": "Signed demonstration inventory: \"Dining table and three chairs.\" Exit checklist: \"Four chairs expected; one missing.\"",
+        "source_ref": "Fictional demonstration excerpt; no real document or payment"
+      }
+    ]
+  },
+  {
+    "kind": "issue",
+    "case_id": "demo-history-cleaning",
+    "review_id": "demo-history-cleaning",
+    "address": "Unit 3, Fictional Demo Building (nonexistent address)",
+    "version": 1,
+    "status": "closed",
+    "reason": "Cleaning charge without an itemised invoice",
+    "is_demo": true,
+    "created_at": "2026-10-24T10:00:00+11:00",
+    "decisions": [
+      {
+        "decision": "demonstration_advice",
+        "note": "Request dated exit photographs, the areas requiring work and an itemised quote or invoice. Compare them with the entry condition and tenant cleaning records. A claim alone does not demonstrate an accepted charge.",
+        "at": "2026-10-24T10:00:00+11:00",
+        "operator_id": "fictional-reviewer"
+      }
+    ],
+    "report": {
+      "category": "moveout",
+      "title": "Cleaning charge without an itemised invoice",
+      "description": "A fictional tenant receives an AUD 220 cleaning claim after returning the keys and requests a clearer explanation.",
+      "attachment_ids": []
+    },
+    "evidence": [
+      {
+        "evidence_id": "demo-cleaning",
+        "summary": "Exit note: \"Kitchen requires additional cleaning.\" Claim message: \"Cleaning fee AUD 220.\" No itemised invoice is included.",
+        "source_ref": "Fictional demonstration excerpt; no real document or payment"
+      }
+    ]
+  },
+  {
+    "kind": "issue",
+    "case_id": "demo-history-dates",
+    "review_id": "demo-history-dates",
+    "address": "Unit 4, Fictional Demo Building (nonexistent address)",
+    "version": 1,
+    "status": "closed",
+    "reason": "Lease end date is before the start date",
+    "is_demo": true,
+    "created_at": "2026-10-23T10:00:00+11:00",
+    "decisions": [
+      {
+        "decision": "demonstration_advice",
+        "note": "Return the draft for clarification of the intended term and corrected dates. Compare the replacement document before signing. Do not infer an end date or silently correct the original contract.",
+        "at": "2026-10-23T10:00:00+11:00",
+        "operator_id": "fictional-reviewer"
+      }
+    ],
+    "report": {
+      "category": "other",
+      "title": "Lease end date is before the start date",
+      "description": "The fictional contract lists a start date of 16 November 2026 and an end date of 1 November 2026. The tenant asks whether the dates are consistent.",
+      "attachment_ids": []
+    },
+    "evidence": [
+      {
+        "evidence_id": "demo-dates",
+        "summary": "Demonstration contract: \"Start date: 2026-11-16. End date: 2026-11-01.\"",
+        "source_ref": "Fictional demonstration excerpt; no real document or payment"
+      }
+    ]
+  },
+  {
+    "kind": "issue",
+    "case_id": "demo-history-rent",
+    "review_id": "demo-history-rent",
+    "address": "Unit 5, Fictional Demo Building (nonexistent address)",
+    "version": 1,
+    "status": "closed",
+    "reason": "Weekly rent differs between two contract sections",
+    "is_demo": true,
+    "created_at": "2026-10-22T10:00:00+11:00",
+    "decisions": [
+      {
+        "decision": "demonstration_advice",
+        "note": "Ask both parties to confirm the intended agreed rent and issue consistent documents. Keep the offer and draft as separate evidence; neither amount is automatically accepted. This example does not approve a lease or payment.",
+        "at": "2026-10-22T10:00:00+11:00",
+        "operator_id": "fictional-reviewer"
+      }
+    ],
+    "report": {
+      "category": "rent",
+      "title": "Weekly rent differs between two contract sections",
+      "description": "The fictional offer summary states AUD 900 per week, but the contract payment schedule states AUD 950 per week.",
+      "attachment_ids": []
+    },
+    "evidence": [
+      {
+        "evidence_id": "demo-rent",
+        "summary": "Offer summary: \"Proposed rent AUD 900/week.\" Payment schedule: \"Weekly rent AUD 950.\"",
+        "source_ref": "Fictional demonstration excerpt; no real document or payment"
+      }
+    ]
+  }
+]

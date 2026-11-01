@@ -1,0 +1,782 @@
+{
+  "schema_version": 2,
+  "created_at": "2026-10-29T22:54:35.049922+00:00",
+  "as_of": "2026-10-30",
+  "dataset_sha256": "90155529eecd7f3bc688f1cd1aaa1dde536adb5008bf0c443fadeb3ae8d75553",
+  "case_count": 1,
+  "index": {
+    "knowledge_language": "en",
+    "scope": "public",
+    "jurisdiction": "NSW",
+    "document_count": 5,
+    "chunk_count": 49,
+    "index_version": "8b8a06a6d50ed9eff5818524eace8f2453adcf75bc6eb5e90c7418072f0657bf",
+    "vector_indexes": [
+      {
+        "model": "text-embedding-v4",
+        "dimensions": 1024,
+        "chunks": 49
+      }
+    ],
+    "stale_chunks": 0
+  },
+  "models": {
+    "embedding_model": "text-embedding-v4",
+    "rerank_model": "qwen3-rerank",
+    "dimensions": 1024,
+    "generation_model": "qwen-plus"
+  },
+  "external_enabled": true,
+  "generation_enabled": true,
+  "concurrency": 2,
+  "external_calls": {
+    "embedding_requests": 1,
+    "rerank_requests": 1,
+    "generation_attempts": 1
+  },
+  "timings_ms": {
+    "query_embeddings_wall": 1394.1,
+    "keyword_retrieval_wall": 2.85,
+    "hybrid_retrieval_wall": 30.4,
+    "hybrid_rerank_retrieval_wall": 1520.21,
+    "hybrid_rerank_generation_wall": 7426.39,
+    "total_wall": 10420.09
+  },
+  "modes": {
+    "keyword": {
+      "status": "completed",
+      "cases": [
+        {
+          "id": "nsw-064",
+          "question": "What can I do about an inapplicable pet refusal reason or unreasonable consent condition?",
+          "language": "en",
+          "category": "conditions",
+          "answerability": "supported",
+          "targets": [
+            {
+              "document_id": "disputes",
+              "section": "Pet disputes",
+              "text_contains": [
+                "challenge the reason for the refusal"
+              ]
+            }
+          ],
+          "expected_conditions": [
+            "Try landlord or agent first; unresolved can challenge at Tribunal."
+          ],
+          "manual_review": [
+            "Confirm each claim answers the specific question and is fully supported by its own quotation.",
+            "Preserve every applicable condition and exception in expected_conditions; regex matches alone do not establish support."
+          ],
+          "required_claim_patterns": [
+            "Tribunal|NCAT"
+          ],
+          "forbidden_claim_patterns": [
+            "refusal is automatically invalid"
+          ],
+          "retrieved": [
+            {
+              "chunk_id": "9b707a924b3ed059c92dc3558d4af830",
+              "document_id": "disputes",
+              "title": "Resolving residential tenancy disputes",
+              "source_url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/resolving-residential-tenancy-disputes",
+              "source_type": "official_guidance",
+              "language": "en",
+              "jurisdiction": "NSW",
+              "scope": "public",
+              "checked_at": "2026-10-30",
+              "published_at": "2026-10-01",
+              "document_version": "2fc2a7b7401145344db5cc6dddb92304c564668e0590fb33c2ccfeaee82fc1b6",
+              "capture_method": "Jina Reader of official public URL",
+              "section": "Pet disputes",
+              "section_path": [
+                "Pet disputes"
+              ],
+              "embedding_input_version": "section-context-v2",
+              "embedding_text": "Resolving residential tenancy disputes > Pet disputes\nLandlords and agents cannot state in an advertisement that no pets are allowed at a rental property. If tenants see that a property is being advertised as ‘no pets allowed’, they can report this to [Fair Trading's free tenancy complaint service](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-tenancy-complaints \"Residential tenancy complaints\") for investigation.\n\nIf a landlord refuses a pet for a reason that is not applicable or a tenant believes the landlord has set an unreasonable condition for consent, they should first try and talk to their landlord or agent to resolve the dispute.\n\nIf the issue cannot be resolved, the tenant can apply to the Tribunal to challenge the reason for the refusal or the unreasonable condition.",
+              "text": "Landlords and agents cannot state in an advertisement that no pets are allowed at a rental property. If tenants see that a property is being advertised as ‘no pets allowed’, they can report this to [Fair Trading's free tenancy complaint service](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-tenancy-complaints \"Residential tenancy complaints\") for investigation.\n\nIf a landlord refuses a pet for a reason that is not applicable or a tenant believes the landlord has set an unreasonable condition for consent, they should first try and talk to their landlord or agent to resolve the dispute.\n\nIf the issue cannot be resolved, the tenant can apply to the Tribunal to challenge the reason for the refusal or the unreasonable condition.",
+              "content_hash": "d0497f9edf61d63c8180b954db9e9b82c9411e548058a45b97b73c541c13cc45"
+            },
+            {
+              "chunk_id": "cceeb399f6919a2ea2f7173f22c0cdde",
+              "document_id": "ending-notice",
+              "title": "Giving notice to end a residential tenancy",
+              "source_url": "https://www.nsw.gov.au/housing-and-construction/rules/giving-notice-to-end-a-residential-tenancy",
+              "source_type": "official_guidance",
+              "language": "en",
+              "jurisdiction": "NSW",
+              "scope": "public",
+              "checked_at": "2026-10-30",
+              "published_at": "2025-05-18",
+              "document_version": "3ea5725f29ab3eb3bf19badea0a6d71e1ea367e011f2c5ef62d271d67ea1fbd1",
+              "capture_method": "Jina Reader of official public URL",
+              "section": "Major changes to rental laws have started",
+              "section_path": [
+                "Major changes to rental laws have started"
+              ],
+              "embedding_input_version": "section-context-v2",
+              "embedding_text": "Giving notice to end a residential tenancy > Major changes to rental laws have started\nChanges limiting reasons landlords can end a lease and refuse a pet – from 19 May 2025.\n\nChanges so that tenants can choose to pay rent by Centrepay – from 2 March 2026.\n\nLaws to limit rent increases to once per year – from 31 October 2024.\n\n[Learn more about the changes](https://www.nsw.gov.au/departments-and-agencies/fair-trading/news/changes-to-rental-laws \"Changes to rental laws\")",
+              "text": "Changes limiting reasons landlords can end a lease and refuse a pet – from 19 May 2025.\n\nChanges so that tenants can choose to pay rent by Centrepay – from 2 March 2026.\n\nLaws to limit rent increases to once per year – from 31 October 2024.\n\n[Learn more about the changes](https://www.nsw.gov.au/departments-and-agencies/fair-trading/news/changes-to-rental-laws \"Changes to rental laws\")",
+              "content_hash": "2e3ebe43644bc436e01655d6cede3de2668f9e378883a8c53165d40651beeeb3"
+            },
+            {
+              "chunk_id": "842b5960e06398b8a8ab1441637929be",
+              "document_id": "repairs",
+              "title": "Getting repairs done on a rental property",
+              "source_url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-repairs-done",
+              "source_type": "official_guidance",
+              "language": "en",
+              "jurisdiction": "NSW",
+              "scope": "public",
+              "checked_at": "2026-10-30",
+              "published_at": "2026-08-03",
+              "document_version": "9e0873a31c23d0e7872870a730f46ee58c867c8fb2ddf499c54c17caf3353b97",
+              "capture_method": "Jina Reader of official public URL",
+              "section": "Can you organisenon-urgent repairs yourself?",
+              "section_path": [
+                "Can you organisenon-urgent repairs yourself?"
+              ],
+              "embedding_input_version": "section-context-v2",
+              "embedding_text": "Getting repairs done on a rental property > Can you organisenon-urgent repairs yourself?\nIf you want to organise for repairs yourself, you need to:\n\n*   have the landlord’s consent.\n*   ask the landlord to pay you for any costs.\n*   get their consent and agreement to pay in writing.\n\nThey should pay you back within 14 days.",
+              "text": "If you want to organise for repairs yourself, you need to:\n\n*   have the landlord’s consent.\n*   ask the landlord to pay you for any costs.\n*   get their consent and agreement to pay in writing.\n\nThey should pay you back within 14 days.",
+              "content_hash": "2beaaca84e87efc757371bfe6414261a916e42ba22c08289a387ab333c5963b4"
+            },
+            {
+              "chunk_id": "92b2cf652d5246ff8f9902d4416647f6",
+              "document_id": "repairs",
+              "title": "Getting repairs done on a rental property",
+              "source_url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-repairs-done",
+              "source_type": "official_guidance",
+              "language": "en",
+              "jurisdiction": "NSW",
+              "scope": "public",
+              "checked_at": "2026-10-30",
+              "published_at": "2026-08-03",
+              "document_version": "9e0873a31c23d0e7872870a730f46ee58c867c8fb2ddf499c54c17caf3353b97",
+              "capture_method": "Jina Reader of official public URL",
+              "section": "What is a 'non-urgent' repair?",
+              "section_path": [
+                "What is a 'non-urgent' repair?"
+              ],
+              "embedding_input_version": "section-context-v2",
+              "embedding_text": "Getting repairs done on a rental property > What is a 'non-urgent' repair?\n[](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-repairs-done)Non-urgent repairs are those that do not need fixing right away. For example, a broken cupboard or a cracked glass window. They are not threatening the property's structure or endangering lives, but will need to be done to keep the [property in reasonable condition](https://www.nsw.gov.au/housing-and-construction/rules/fair-wear-and-tear-versus-damage-rental-properties \"Fair wear and tear versus damage in rental properties\").\n\n![Image 2: Kneeling person holding phone camera in front of worn white painted door frame.](https://www.nsw.gov.au/sites/default/files/styles/_medium/public/2023-10/GettyImages-1437589075.jpg?itok=b3sNKbQ_)",
+              "text": "[](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-repairs-done)Non-urgent repairs are those that do not need fixing right away. For example, a broken cupboard or a cracked glass window. They are not threatening the property's structure or endangering lives, but will need to be done to keep the [property in reasonable condition](https://www.nsw.gov.au/housing-and-construction/rules/fair-wear-and-tear-versus-damage-rental-properties \"Fair wear and tear versus damage in rental properties\").\n\n![Image 2: Kneeling person holding phone camera in front of worn white painted door frame.](https://www.nsw.gov.au/sites/default/files/styles/_medium/public/2023-10/GettyImages-1437589075.jpg?itok=b3sNKbQ_)",
+              "content_hash": "133066ccaebef58cb0580cc024ee30fade75c568995510b96250d8a12b40a890"
+            },
+            {
+              "chunk_id": "76fd66eb1c16ee8e2e28e792ee8d5de6",
+              "document_id": "bond-refund",
+              "title": "Getting your bond back at the end of a tenancy",
+              "source_url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-your-bond-back",
+              "source_type": "official_guidance",
+              "language": "en",
+              "jurisdiction": "NSW",
+              "scope": "public",
+              "checked_at": "2026-10-30",
+              "published_at": "2026-09-14",
+              "document_version": "cc70678a58538f7b8bb8f76c92fb24798c89f7d21b925f035e41fc81f7a57156",
+              "capture_method": "Jina Reader of official public URL",
+              "section": "What do you need to do?",
+              "section_path": [
+                "Getting your bond back at the end of a tenancy",
+                "What do you need to do?"
+              ],
+              "embedding_input_version": "section-context-v2",
+              "embedding_text": "Getting your bond back at the end of a tenancy > Getting your bond back at the end of a tenancy > What do you need to do?\n[](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-your-bond-back)Make sure you have:\n\n*   paid your rent to and including [end of your notice period](https://www.nsw.gov.au/housing-and-construction/rules/minimum-notice-periods-for-ending-a-residential-tenancy \"Minimum notice periods for ending a residential tenancy\") or your moving date if [breaking lease early](https://www.nsw.gov.au/housing-and-construction/rules/breaking-a-fixed-term-residential-tenancy-early \"Breaking a fixed-term residential tenancy early\").\n*   cleaned your rental property to match its[original condition](https://www.nsw.gov.au/housing-and-construction/rules/rental-property-condition-reports \"Property condition at end of tenancy\").\n*   removed all [your personal things](https://www.nsw.gov.au/housing-and-construction/rules/dealing-goods-left-behind \"Dealing with goods left behind\").\n*   repaired any[damage that was beyond ‘fair wear and tear’](https://www.nsw.gov.au/housing-and-construction/rules/fair-wear-and-tear-versus-damage-rental-properties \"Fair wear and tear versus damage in rental properties\").\n*   signed off on[the condition report](https://www.nsw.gov.au/housing-and-construction/rental-forms-surveys-and-data/resources/residential-tenancy-condition-report \"Residential tenancy condition report\")with your landlord.\n*   returned all [keys and other items](https://www.nsw.gov.au/housing-and-construction/rules/keys-locks-and-security-devices-a-rental-property \"Keys, locks and security devices in a rental property\")given to you for the property when you moved in.\n\nNow you can claim your refund [using Rental Bonds Online](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-rental-bonds/rental-bonds-online-for-tenants \"Rental Bonds Online for tenants\"). Your landlord or agent has up to 14 days to accept your claim.\n\n[Log in to Rental Bonds Online](https://rbo.fairtrading.nsw.gov.au/tenant/login \"Rental Bonds Online registered tenant login (https://rbo.fairtrading.nsw.gov.au/tenant/login)\")\n\nAdditional information about getting bond back if:\n\nExpand all Collapse all\n\nYou are in a shared tenancy keyboard_arrow_down\n\nThe principal tenant who acts on behalf of all co-tenants for the shared rental should\n\n*   submit or respond to a claim for refund of bond money using Rental Bonds Online on behalf of all the tenants at the end of the tenancy.\n*   distribute the bond refund to the other tenants.\n\n[Log in to Rental Bonds Online](https://rbo.fairtrading.nsw.gov.au/tenant/login \"Rental Bonds Online registered tenant login (https://rbo.fairtrading.nsw.gov.au/tenant/login)\") if you are the principal tenant and need to claim the bond.\n\nIf a co-tenant moves out of a shared tenancy and requests their bond refund, the remaining tenant/s must pay back their bond – less any rent owed or other reasonable costs – within 14 days of the request.\n\n[Download a change of shared tenancy request form](https://www.nsw.gov.au/housing-and-construction/rental-forms-surveys-and-data/resources/change-of-shared-tenancy-arrangement-form \"Change of shared tenancy arrangement form\").\n\nThis does not apply if:\n\n*   the former co-tenant’s debts exceed the amount of bond money they paid, or\n*   the former co-tenant has been excluded from the premises by a final apprehended violence order.\n\n[Learn more about shared tenancies](https://www.nsw.gov.au/housing-and-construction/rules/sharing-a-residential-rental-property \"Sharing a residential rental property\").\n\nYou have a Rentstart bond loan keyboard_arrow_down\n\nIf you have repaid your Rentstart bond loan in full before the end of your tenancy, you can claim your bond back at the end of your tenancy.\n\nIf your tenancy ends before you have repaid the Rentstart bond loan in full:\n\n*   any funds still owed to the [Department of Communities and Justice (DCJ)](https://dcj.nsw.gov.au/housing.html)will be returned to them from the bond, and\n*   any amounts you have repaid will be returned directly to you, less any amount still owed to the agent or landlord.\n\nIf a claim is made against the bond that you do not agree with, you can still challenge this claim regardless of whether the loan has been repaid in full.\n\n[Get more information about Rentstart](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/financial-support#toc-rentstart).\n\nYou need to get the bond back before the end of your tenancy keyboard_arrow_down\n\nYou can only claim a bond refund before the end of a tenancy if:\n\n*   you have a written agreement from your landlord or agent to submit an earlier claim, or\n\n*   you are directing the full bond to go to your landlord or property agent.\n\nThere are very specific legal reasons to end a tenancy early. Otherwise, you could breach the terms of your tenancy agreement.\n\nGet more information about [ending a tenancy](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/ending-a-residential-tenancy \"Ending a residential tenancy\")and [minimum notice periods](https://www.nsw.gov.au/housing-and-construction/rules/minimum-notice-periods-for-ending-a-residential-tenancy \"Minimum notice periods for ending a residential tenancy\") that apply.\n\nYou need to claim your bond refund on paper keyboard_arrow_down\n\nIf you don't have a Rental Bonds Online account, you can fill in a ‘Claim for Bond Refund’ paper form from NSW Fair Trading.\n\n1.   [Download the Claim for Bond Refund form](https://www.nsw.gov.au/housing-and-construction/rental-forms-surveys-and-data/resources/claim-for-refund-of-bond-money-form \"NSW Fair Trading claim for refund of bond money form (https://www.fairtrading.nsw.gov.au/__data/assets/pdf_file/0009/367749/Claim-for-Bond-Refund-form.pdf)\").\n2.   Sign the completed form with the landlord or agent.\n3.   Return the form to NSW Fair Trading by \n    *   post (address on form)\n    *   email[bondclaims@customerservice.nsw.gov.au](mailto:bondclaims@customerservice.nsw.gov.au)\n    *   or in person (details of where to lodge are on the form).\n\nFair Trading will give the landlord or agent written notice that you have made a claim.\n\nIf your landlord or agent fails to sign the form, you can still submit it. They are given 14 days to dispute your claim.\n\nIf the landlord or agent doesn't dispute your claim, Fair Trading will pay your claim after 14 days.\n\nYour money will be deposited into your bank account.\n\n* * *",
+              "text": "[](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-your-bond-back)Make sure you have:\n\n*   paid your rent to and including [end of your notice period](https://www.nsw.gov.au/housing-and-construction/rules/minimum-notice-periods-for-ending-a-residential-tenancy \"Minimum notice periods for ending a residential tenancy\") or your moving date if [breaking lease early](https://www.nsw.gov.au/housing-and-construction/rules/breaking-a-fixed-term-residential-tenancy-early \"Breaking a fixed-term residential tenancy early\").\n*   cleaned your rental property to match its[original condition](https://www.nsw.gov.au/housing-and-construction/rules/rental-property-condition-reports \"Property condition at end of tenancy\").\n*   removed all [your personal things](https://www.nsw.gov.au/housing-and-construction/rules/dealing-goods-left-behind \"Dealing with goods left behind\").\n*   repaired any[damage that was beyond ‘fair wear and tear’](https://www.nsw.gov.au/housing-and-construction/rules/fair-wear-and-tear-versus-damage-rental-properties \"Fair wear and tear versus damage in rental properties\").\n*   signed off on[the condition report](https://www.nsw.gov.au/housing-and-construction/rental-forms-surveys-and-data/resources/residential-tenancy-condition-report \"Residential tenancy condition report\")with your landlord.\n*   returned all [keys and other items](https://www.nsw.gov.au/housing-and-construction/rules/keys-locks-and-security-devices-a-rental-property \"Keys, locks and security devices in a rental property\")given to you for the property when you moved in.\n\nNow you can claim your refund [using Rental Bonds Online](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-rental-bonds/rental-bonds-online-for-tenants \"Rental Bonds Online for tenants\"). Your landlord or agent has up to 14 days to accept your claim.\n\n[Log in to Rental Bonds Online](https://rbo.fairtrading.nsw.gov.au/tenant/login \"Rental Bonds Online registered tenant login (https://rbo.fairtrading.nsw.gov.au/tenant/login)\")\n\nAdditional information about getting bond back if:\n\nExpand all Collapse all\n\nYou are in a shared tenancy keyboard_arrow_down\n\nThe principal tenant who acts on behalf of all co-tenants for the shared rental should\n\n*   submit or respond to a claim for refund of bond money using Rental Bonds Online on behalf of all the tenants at the end of the tenancy.\n*   distribute the bond refund to the other tenants.\n\n[Log in to Rental Bonds Online](https://rbo.fairtrading.nsw.gov.au/tenant/login \"Rental Bonds Online registered tenant login (https://rbo.fairtrading.nsw.gov.au/tenant/login)\") if you are the principal tenant and need to claim the bond.\n\nIf a co-tenant moves out of a shared tenancy and requests their bond refund, the remaining tenant/s must pay back their bond – less any rent owed or other reasonable costs – within 14 days of the request.\n\n[Download a change of shared tenancy request form](https://www.nsw.gov.au/housing-and-construction/rental-forms-surveys-and-data/resources/change-of-shared-tenancy-arrangement-form \"Change of shared tenancy arrangement form\").\n\nThis does not apply if:\n\n*   the former co-tenant’s debts exceed the amount of bond money they paid, or\n*   the former co-tenant has been excluded from the premises by a final apprehended violence order.\n\n[Learn more about shared tenancies](https://www.nsw.gov.au/housing-and-construction/rules/sharing-a-residential-rental-property \"Sharing a residential rental property\").\n\nYou have a Rentstart bond loan keyboard_arrow_down\n\nIf you have repaid your Rentstart bond loan in full before the end of your tenancy, you can claim your bond back at the end of your tenancy.\n\nIf your tenancy ends before you have repaid the Rentstart bond loan in full:\n\n*   any funds still owed to the [Department of Communities and Justice (DCJ)](https://dcj.nsw.gov.au/housing.html)will be returned to them from the bond, and\n*   any amounts you have repaid will be returned directly to you, less any amount still owed to the agent or landlord.\n\nIf a claim is made against the bond that you do not agree with, you can still challenge this claim regardless of whether the loan has been repaid in full.\n\n[Get more information about Rentstart](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/financial-support#toc-rentstart).\n\nYou need to get the bond back before the end of your tenancy keyboard_arrow_down\n\nYou can only claim a bond refund before the end of a tenancy if:\n\n*   you have a written agreement from your landlord or agent to submit an earlier claim, or\n\n*   you are directing the full bond to go to your landlord or property agent.\n\nThere are very specific legal reasons to end a tenancy early. Otherwise, you could breach the terms of your tenancy agreement.\n\nGet more information about [ending a tenancy](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/ending-a-residential-tenancy \"Ending a residential tenancy\")and [minimum notice periods](https://www.nsw.gov.au/housing-and-construction/rules/minimum-notice-periods-for-ending-a-residential-tenancy \"Minimum notice periods for ending a residential tenancy\") that apply.\n\nYou need to claim your bond refund on paper keyboard_arrow_down\n\nIf you don't have a Rental Bonds Online account, you can fill in a ‘Claim for Bond Refund’ paper form from NSW Fair Trading.\n\n1.   [Download the Claim for Bond Refund form](https://www.nsw.gov.au/housing-and-construction/rental-forms-surveys-and-data/resources/claim-for-refund-of-bond-money-form \"NSW Fair Trading claim for refund of bond money form (https://www.fairtrading.nsw.gov.au/__data/assets/pdf_file/0009/367749/Claim-for-Bond-Refund-form.pdf)\").\n2.   Sign the completed form with the landlord or agent.\n3.   Return the form to NSW Fair Trading by \n    *   post (address on form)\n    *   email[bondclaims@customerservice.nsw.gov.au](mailto:bondclaims@customerservice.nsw.gov.au)\n    *   or in person (details of where to lodge are on the form).\n\nFair Trading will give the landlord or agent written notice that you have made a claim.\n\nIf your landlord or agent fails to sign the form, you can still submit it. They are given 14 days to dispute your claim.\n\nIf the landlord or agent doesn't dispute your claim, Fair Trading will pay your claim after 14 days.\n\nYour money will be deposited into your bank account.\n\n* * *",
+              "content_hash": "d8dd13db02352c1c2db90fe5221755a4c2f92d71a664216032ef12f3ccf43636"
+            },
+            {
+              "chunk_id": "867c0538cc05d2e4d32ffb0cc7c220b0",
+              "document_id": "ending-notice",
+              "title": "Giving notice to end a residential tenancy",
+              "source_url": "https://www.nsw.gov.au/housing-and-construction/rules/giving-notice-to-end-a-residential-tenancy",
+              "source_type": "official_guidance",
+              "language": "en",
+              "jurisdiction": "NSW",
+              "scope": "public",
+              "checked_at": "2026-10-30",
+              "published_at": "2025-05-18",
+              "document_version": "3ea5725f29ab3eb3bf19badea0a6d71e1ea367e011f2c5ef62d271d67ea1fbd1",
+              "capture_method": "Jina Reader of official public URL",
+              "section": "Serving a notice",
+              "section_path": [
+                "Serving a notice"
+              ],
+              "embedding_input_version": "section-context-v2",
+              "embedding_text": "Giving notice to end a residential tenancy > Serving a notice\nWhen serving a termination notice, it's important that the correct procedures are followed.\n\nA notice or document can be given by:\n\n*   handing it to the landlord or tenant in person\n*   handing it to somebody aged 16 or over at the tenant's or landlord's residential or business address\n*   putting it in the tenant's or landlord's letterbox, at their residential or business address, in an envelope addressed to them\n*   posting it to the tenant or landlord at the address they have specified for receiving notices (e.g. care of an agent), or, if no such address has been specified, posting it to the tenant or landlord's last known residential or business address\n*   emailing it to the tenant, landlord or agent at the email address they have specified for receiving that notice or document when giving consent to service by email\n*   if the tenant or landlord is a corporation, emailing or posting it, or handing it to a person aged 16 or over at the corporation's address.\n\nWhere there are two or more tenants or landlords, the notice or document may be given to either one. It does not need to be given to both.",
+              "text": "When serving a termination notice, it's important that the correct procedures are followed.\n\nA notice or document can be given by:\n\n*   handing it to the landlord or tenant in person\n*   handing it to somebody aged 16 or over at the tenant's or landlord's residential or business address\n*   putting it in the tenant's or landlord's letterbox, at their residential or business address, in an envelope addressed to them\n*   posting it to the tenant or landlord at the address they have specified for receiving notices (e.g. care of an agent), or, if no such address has been specified, posting it to the tenant or landlord's last known residential or business address\n*   emailing it to the tenant, landlord or agent at the email address they have specified for receiving that notice or document when giving consent to service by email\n*   if the tenant or landlord is a corporation, emailing or posting it, or handing it to a person aged 16 or over at the corporation's address.\n\nWhere there are two or more tenants or landlords, the notice or document may be given to either one. It does not need to be given to both.",
+              "content_hash": "a2aaceea1110ad0a6783a5fc4c4439ebcc0f5a9ba8efbc25e5699110cfd3be45"
+            }
+          ],
+          "retrieval": {
+            "recall_at_1": 1.0,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0,
+            "reciprocal_rank": 1.0,
+            "target_ranks": [
+              1
+            ],
+            "all_targets_at_6": true,
+            "retrieved_on_unsupported": null
+          },
+          "semantic_used": false,
+          "rerank_used": false,
+          "degradation": [],
+          "elapsed_ms": 2.56,
+          "fusion_elapsed_ms": 2.6
+        }
+      ],
+      "summary": {
+        "evaluated": 1,
+        "supported_cases": 1,
+        "unsupported_cases": 0,
+        "mean_recall_at_1": 1.0,
+        "mean_recall_at_3": 1.0,
+        "mean_recall_at_6": 1.0,
+        "mean_reciprocal_rank": 1.0,
+        "all_targets_at_6_count": 1,
+        "degraded_cases": 0,
+        "generated_cases": 0,
+        "automated_answer_checks_passed": 0,
+        "exact_citation_failures": 0,
+        "model_abstentions": 0,
+        "generation_provider_failures": 0,
+        "generation_outcomes": {},
+        "requested_language_not_delivered": 0,
+        "human_support_pass_rate": null,
+        "retrieval_latency_ms_p50": 2.56,
+        "retrieval_latency_ms_p95": 2.56
+      },
+      "failed_cases": []
+    },
+    "hybrid": {
+      "status": "completed",
+      "cases": [
+        {
+          "id": "nsw-064",
+          "question": "What can I do about an inapplicable pet refusal reason or unreasonable consent condition?",
+          "language": "en",
+          "category": "conditions",
+          "answerability": "supported",
+          "targets": [
+            {
+              "document_id": "disputes",
+              "section": "Pet disputes",
+              "text_contains": [
+                "challenge the reason for the refusal"
+              ]
+            }
+          ],
+          "expected_conditions": [
+            "Try landlord or agent first; unresolved can challenge at Tribunal."
+          ],
+          "manual_review": [
+            "Confirm each claim answers the specific question and is fully supported by its own quotation.",
+            "Preserve every applicable condition and exception in expected_conditions; regex matches alone do not establish support."
+          ],
+          "required_claim_patterns": [
+            "Tribunal|NCAT"
+          ],
+          "forbidden_claim_patterns": [
+            "refusal is automatically invalid"
+          ],
+          "retrieved": [
+            {
+              "chunk_id": "9b707a924b3ed059c92dc3558d4af830",
+              "document_id": "disputes",
+              "title": "Resolving residential tenancy disputes",
+              "source_url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/resolving-residential-tenancy-disputes",
+              "source_type": "official_guidance",
+              "language": "en",
+              "jurisdiction": "NSW",
+              "scope": "public",
+              "checked_at": "2026-10-30",
+              "published_at": "2026-10-01",
+              "document_version": "2fc2a7b7401145344db5cc6dddb92304c564668e0590fb33c2ccfeaee82fc1b6",
+              "capture_method": "Jina Reader of official public URL",
+              "section": "Pet disputes",
+              "section_path": [
+                "Pet disputes"
+              ],
+              "embedding_input_version": "section-context-v2",
+              "embedding_text": "Resolving residential tenancy disputes > Pet disputes\nLandlords and agents cannot state in an advertisement that no pets are allowed at a rental property. If tenants see that a property is being advertised as ‘no pets allowed’, they can report this to [Fair Trading's free tenancy complaint service](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-tenancy-complaints \"Residential tenancy complaints\") for investigation.\n\nIf a landlord refuses a pet for a reason that is not applicable or a tenant believes the landlord has set an unreasonable condition for consent, they should first try and talk to their landlord or agent to resolve the dispute.\n\nIf the issue cannot be resolved, the tenant can apply to the Tribunal to challenge the reason for the refusal or the unreasonable condition.",
+              "text": "Landlords and agents cannot state in an advertisement that no pets are allowed at a rental property. If tenants see that a property is being advertised as ‘no pets allowed’, they can report this to [Fair Trading's free tenancy complaint service](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-tenancy-complaints \"Residential tenancy complaints\") for investigation.\n\nIf a landlord refuses a pet for a reason that is not applicable or a tenant believes the landlord has set an unreasonable condition for consent, they should first try and talk to their landlord or agent to resolve the dispute.\n\nIf the issue cannot be resolved, the tenant can apply to the Tribunal to challenge the reason for the refusal or the unreasonable condition.",
+              "content_hash": "d0497f9edf61d63c8180b954db9e9b82c9411e548058a45b97b73c541c13cc45"
+            },
+            {
+              "chunk_id": "cceeb399f6919a2ea2f7173f22c0cdde",
+              "document_id": "ending-notice",
+              "title": "Giving notice to end a residential tenancy",
+              "source_url": "https://www.nsw.gov.au/housing-and-construction/rules/giving-notice-to-end-a-residential-tenancy",
+              "source_type": "official_guidance",
+              "language": "en",
+              "jurisdiction": "NSW",
+              "scope": "public",
+              "checked_at": "2026-10-30",
+              "published_at": "2025-05-18",
+              "document_version": "3ea5725f29ab3eb3bf19badea0a6d71e1ea367e011f2c5ef62d271d67ea1fbd1",
+              "capture_method": "Jina Reader of official public URL",
+              "section": "Major changes to rental laws have started",
+              "section_path": [
+                "Major changes to rental laws have started"
+              ],
+              "embedding_input_version": "section-context-v2",
+              "embedding_text": "Giving notice to end a residential tenancy > Major changes to rental laws have started\nChanges limiting reasons landlords can end a lease and refuse a pet – from 19 May 2025.\n\nChanges so that tenants can choose to pay rent by Centrepay – from 2 March 2026.\n\nLaws to limit rent increases to once per year – from 31 October 2024.\n\n[Learn more about the changes](https://www.nsw.gov.au/departments-and-agencies/fair-trading/news/changes-to-rental-laws \"Changes to rental laws\")",
+              "text": "Changes limiting reasons landlords can end a lease and refuse a pet – from 19 May 2025.\n\nChanges so that tenants can choose to pay rent by Centrepay – from 2 March 2026.\n\nLaws to limit rent increases to once per year – from 31 October 2024.\n\n[Learn more about the changes](https://www.nsw.gov.au/departments-and-agencies/fair-trading/news/changes-to-rental-laws \"Changes to rental laws\")",
+              "content_hash": "2e3ebe43644bc436e01655d6cede3de2668f9e378883a8c53165d40651beeeb3"
+            },
+            {
+              "chunk_id": "41038947d41a3694ac9cb2defb62e471",
+              "document_id": "disputes",
+              "title": "Resolving residential tenancy disputes",
+              "source_url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/resolving-residential-tenancy-disputes",
+              "source_type": "official_guidance",
+              "language": "en",
+              "jurisdiction": "NSW",
+              "scope": "public",
+              "checked_at": "2026-10-30",
+              "published_at": "2026-10-01",
+              "document_version": "2fc2a7b7401145344db5cc6dddb92304c564668e0590fb33c2ccfeaee82fc1b6",
+              "capture_method": "Jina Reader of official public URL",
+              "section": "Tenant",
+              "section_path": [
+                "When to apply to the Tribunal",
+                "Tenant"
+              ],
+              "embedding_input_version": "section-context-v2",
+              "embedding_text": "Resolving residential tenancy disputes > When to apply to the Tribunal > Tenant\n| Reasons for Tribunal application | Tribunal time limit | Time limit starts |\n| --- | --- | --- |\n| [Retaliatory eviction](https://www.nsw.gov.au/housing-and-construction/rules/eviction-of-a-tenant-from-a-rental-property \"Eviction of a tenant\") | 14 - 30 days | When termination notice is given to tenant |\n| Excessive rent increase | 30 days | When notice of rent increase is given to the tenant |\n| Non-compliant rent increase | 12 months | From the day rent is increased |\n| Payment of the rental bond between co-tenants | 6 months | From the termination date in the termination notice |\n\nReasons for Tribunal application\n\nTribunal time limit\n\n14 - 30 days\n\nTime limit starts\n\nWhen termination notice is given to tenant\nReasons for Tribunal application\n\nExcessive rent increase\n\nTribunal time limit\n\n30 days\n\nTime limit starts\n\nWhen notice of rent increase is given to the tenant\nReasons for Tribunal application\n\nNon-compliant rent increase\n\nTribunal time limit\n\n12 months\n\nTime limit starts\n\nFrom the day rent is increased\nReasons for Tribunal application\n\nPayment of the rental bond between co-tenants\n\nTribunal time limit\n\n6 months\n\nTime limit starts\n\nFrom the termination date in the termination notice",
+              "text": "| Reasons for Tribunal application | Tribunal time limit | Time limit starts |\n| --- | --- | --- |\n| [Retaliatory eviction](https://www.nsw.gov.au/housing-and-construction/rules/eviction-of-a-tenant-from-a-rental-property \"Eviction of a tenant\") | 14 - 30 days | When termination notice is given to tenant |\n| Excessive rent increase | 30 days | When notice of rent increase is given to the tenant |\n| Non-compliant rent increase | 12 months | From the day rent is increased |\n| Payment of the rental bond between co-tenants | 6 months | From the termination date in the termination notice |\n\nReasons for Tribunal application\n\nTribunal time limit\n\n14 - 30 days\n\nTime limit starts\n\nWhen termination notice is given to tenant\nReasons for Tribunal application\n\nExcessive rent increase\n\nTribunal time limit\n\n30 days\n\nTime limit starts\n\nWhen notice of rent increase is given to the tenant\nReasons for Tribunal application\n\nNon-compliant rent increase\n\nTribunal time limit\n\n12 months\n\nTime limit starts\n\nFrom the day rent is increased\nReasons for Tribunal application\n\nPayment of the rental bond between co-tenants\n\nTribunal time limit\n\n6 months\n\nTime limit starts\n\nFrom the termination date in the termination notice",
+              "content_hash": "40a8307601713951f2ee586df01a3d6caa8ef2cc2c0e1e669fa1e0c04ca2876a"
+            },
+            {
+              "chunk_id": "617045f49b38edecca4de84e1f0906f5",
+              "document_id": "disputes",
+              "title": "Resolving residential tenancy disputes",
+              "source_url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/resolving-residential-tenancy-disputes",
+              "source_type": "official_guidance",
+              "language": "en",
+              "jurisdiction": "NSW",
+              "scope": "public",
+              "checked_at": "2026-10-30",
+              "published_at": "2026-10-01",
+              "document_version": "2fc2a7b7401145344db5cc6dddb92304c564668e0590fb33c2ccfeaee82fc1b6",
+              "capture_method": "Jina Reader of official public URL",
+              "section": "Disputing the landlord’s reasons for termination",
+              "section_path": [
+                "Disputing the landlord’s reasons for termination"
+              ],
+              "embedding_input_version": "section-context-v2",
+              "embedding_text": "Resolving residential tenancy disputes > Disputing the landlord’s reasons for termination\nTenants or landlords may dispute a termination notice if the notice was not given correctly, the reason for the notice was not genuine, or (for tenants) if the landlord has given false or misleading supporting documents.\n\nTenants may also use Fair Trading's free [tenancy complaint service](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-tenancy-complaints \"Tenancy complaints\") to make a complaint about a termination that is not genuine, false or misleading supporting documents, or a landlord renting a property during a reletting exclusion period.\n\nA re-letting exclusion period is a set amount of time when a landlord is not allowed to enter into a new tenancy agreement after ending a previous agreement. Find out more about [re-letting exclusion periods](https://www.nsw.gov.au/housing-and-construction/rules/landlord-ending-a-tenancy-or-without-grounds \"Ending a tenancy\").",
+              "text": "Tenants or landlords may dispute a termination notice if the notice was not given correctly, the reason for the notice was not genuine, or (for tenants) if the landlord has given false or misleading supporting documents.\n\nTenants may also use Fair Trading's free [tenancy complaint service](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-tenancy-complaints \"Tenancy complaints\") to make a complaint about a termination that is not genuine, false or misleading supporting documents, or a landlord renting a property during a reletting exclusion period.\n\nA re-letting exclusion period is a set amount of time when a landlord is not allowed to enter into a new tenancy agreement after ending a previous agreement. Find out more about [re-letting exclusion periods](https://www.nsw.gov.au/housing-and-construction/rules/landlord-ending-a-tenancy-or-without-grounds \"Ending a tenancy\").",
+              "content_hash": "cd4e9a35ffad81390fa437ad69b3ec378a0211f8b44ec9b26e6ceaa38268b7c1"
+            },
+            {
+              "chunk_id": "8a3355a5a9eb5540924865762868839f",
+              "document_id": "disputes",
+              "title": "Resolving residential tenancy disputes",
+              "source_url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/resolving-residential-tenancy-disputes",
+              "source_type": "official_guidance",
+              "language": "en",
+              "jurisdiction": "NSW",
+              "scope": "public",
+              "checked_at": "2026-10-30",
+              "published_at": "2026-10-01",
+              "document_version": "2fc2a7b7401145344db5cc6dddb92304c564668e0590fb33c2ccfeaee82fc1b6",
+              "capture_method": "Jina Reader of official public URL",
+              "section": "Either landlord or tenant",
+              "section_path": [
+                "When to apply to the Tribunal",
+                "Either landlord or tenant"
+              ],
+              "embedding_input_version": "section-context-v2",
+              "embedding_text": "Resolving residential tenancy disputes > When to apply to the Tribunal > Either landlord or tenant\n| Reasons for Tribunal application | Tribunal time limit | Time limit starts |\n| --- | --- | --- |\n| Challenge termination order | 3 months | From the day the termination notice is given, up until 3 months after the termination date |\n| Resolve breach of agreement | 3 months | From the day the applicant became aware of the breach |\n| Payment of the rental bond | 6 months | From the day the rental bond was paid out |\n\nReasons for Tribunal application\n\nChallenge termination order\n\nTribunal time limit\n\n3 months\n\nTime limit starts\n\nFrom the day the termination notice is given, up until 3 months after the termination date\nReasons for Tribunal application\n\nResolve breach of agreement\n\nTribunal time limit\n\n3 months\n\nTime limit starts\n\nFrom the day the applicant became aware of the breach\nReasons for Tribunal application\n\nPayment of the rental bond\n\nTribunal time limit\n\n6 months\n\nTime limit starts\n\nFrom the day the rental bond was paid out\n\n**A landlord, tenant or other person may seek an extension from the Tribunal if the time limit has already passed.**",
+              "text": "| Reasons for Tribunal application | Tribunal time limit | Time limit starts |\n| --- | --- | --- |\n| Challenge termination order | 3 months | From the day the termination notice is given, up until 3 months after the termination date |\n| Resolve breach of agreement | 3 months | From the day the applicant became aware of the breach |\n| Payment of the rental bond | 6 months | From the day the rental bond was paid out |\n\nReasons for Tribunal application\n\nChallenge termination order\n\nTribunal time limit\n\n3 months\n\nTime limit starts\n\nFrom the day the termination notice is given, up until 3 months after the termination date\nReasons for Tribunal application\n\nResolve breach of agreement\n\nTribunal time limit\n\n3 months\n\nTime limit starts\n\nFrom the day the applicant became aware of the breach\nReasons for Tribunal application\n\nPayment of the rental bond\n\nTribunal time limit\n\n6 months\n\nTime limit starts\n\nFrom the day the rental bond was paid out\n\n**A landlord, tenant or other person may seek an extension from the Tribunal if the time limit has already passed.**",
+              "content_hash": "7669b318a68a824bdb9e95cf93b67193b8afce91f0839bbcf359bbd955350444"
+            },
+            {
+              "chunk_id": "76fd66eb1c16ee8e2e28e792ee8d5de6",
+              "document_id": "bond-refund",
+              "title": "Getting your bond back at the end of a tenancy",
+              "source_url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-your-bond-back",
+              "source_type": "official_guidance",
+              "language": "en",
+              "jurisdiction": "NSW",
+              "scope": "public",
+              "checked_at": "2026-10-30",
+              "published_at": "2026-09-14",
+              "document_version": "cc70678a58538f7b8bb8f76c92fb24798c89f7d21b925f035e41fc81f7a57156",
+              "capture_method": "Jina Reader of official public URL",
+              "section": "What do you need to do?",
+              "section_path": [
+                "Getting your bond back at the end of a tenancy",
+                "What do you need to do?"
+              ],
+              "embedding_input_version": "section-context-v2",
+              "embedding_text": "Getting your bond back at the end of a tenancy > Getting your bond back at the end of a tenancy > What do you need to do?\n[](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-your-bond-back)Make sure you have:\n\n*   paid your rent to and including [end of your notice period](https://www.nsw.gov.au/housing-and-construction/rules/minimum-notice-periods-for-ending-a-residential-tenancy \"Minimum notice periods for ending a residential tenancy\") or your moving date if [breaking lease early](https://www.nsw.gov.au/housing-and-construction/rules/breaking-a-fixed-term-residential-tenancy-early \"Breaking a fixed-term residential tenancy early\").\n*   cleaned your rental property to match its[original condition](https://www.nsw.gov.au/housing-and-construction/rules/rental-property-condition-reports \"Property condition at end of tenancy\").\n*   removed all [your personal things](https://www.nsw.gov.au/housing-and-construction/rules/dealing-goods-left-behind \"Dealing with goods left behind\").\n*   repaired any[damage that was beyond ‘fair wear and tear’](https://www.nsw.gov.au/housing-and-construction/rules/fair-wear-and-tear-versus-damage-rental-properties \"Fair wear and tear versus damage in rental properties\").\n*   signed off on[the condition report](https://www.nsw.gov.au/housing-and-construction/rental-forms-surveys-and-data/resources/residential-tenancy-condition-report \"Residential tenancy condition report\")with your landlord.\n*   returned all [keys and other items](https://www.nsw.gov.au/housing-and-construction/rules/keys-locks-and-security-devices-a-rental-property \"Keys, locks and security devices in a rental property\")given to you for the property when you moved in.\n\nNow you can claim your refund [using Rental Bonds Online](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-rental-bonds/rental-bonds-online-for-tenants \"Rental Bonds Online for tenants\"). Your landlord or agent has up to 14 days to accept your claim.\n\n[Log in to Rental Bonds Online](https://rbo.fairtrading.nsw.gov.au/tenant/login \"Rental Bonds Online registered tenant login (https://rbo.fairtrading.nsw.gov.au/tenant/login)\")\n\nAdditional information about getting bond back if:\n\nExpand all Collapse all\n\nYou are in a shared tenancy keyboard_arrow_down\n\nThe principal tenant who acts on behalf of all co-tenants for the shared rental should\n\n*   submit or respond to a claim for refund of bond money using Rental Bonds Online on behalf of all the tenants at the end of the tenancy.\n*   distribute the bond refund to the other tenants.\n\n[Log in to Rental Bonds Online](https://rbo.fairtrading.nsw.gov.au/tenant/login \"Rental Bonds Online registered tenant login (https://rbo.fairtrading.nsw.gov.au/tenant/login)\") if you are the principal tenant and need to claim the bond.\n\nIf a co-tenant moves out of a shared tenancy and requests their bond refund, the remaining tenant/s must pay back their bond – less any rent owed or other reasonable costs – within 14 days of the request.\n\n[Download a change of shared tenancy request form](https://www.nsw.gov.au/housing-and-construction/rental-forms-surveys-and-data/resources/change-of-shared-tenancy-arrangement-form \"Change of shared tenancy arrangement form\").\n\nThis does not apply if:\n\n*   the former co-tenant’s debts exceed the amount of bond money they paid, or\n*   the former co-tenant has been excluded from the premises by a final apprehended violence order.\n\n[Learn more about shared tenancies](https://www.nsw.gov.au/housing-and-construction/rules/sharing-a-residential-rental-property \"Sharing a residential rental property\").\n\nYou have a Rentstart bond loan keyboard_arrow_down\n\nIf you have repaid your Rentstart bond loan in full before the end of your tenancy, you can claim your bond back at the end of your tenancy.\n\nIf your tenancy ends before you have repaid the Rentstart bond loan in full:\n\n*   any funds still owed to the [Department of Communities and Justice (DCJ)](https://dcj.nsw.gov.au/housing.html)will be returned to them from the bond, and\n*   any amounts you have repaid will be returned directly to you, less any amount still owed to the agent or landlord.\n\nIf a claim is made against the bond that you do not agree with, you can still challenge this claim regardless of whether the loan has been repaid in full.\n\n[Get more information about Rentstart](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/financial-support#toc-rentstart).\n\nYou need to get the bond back before the end of your tenancy keyboard_arrow_down\n\nYou can only claim a bond refund before the end of a tenancy if:\n\n*   you have a written agreement from your landlord or agent to submit an earlier claim, or\n\n*   you are directing the full bond to go to your landlord or property agent.\n\nThere are very specific legal reasons to end a tenancy early. Otherwise, you could breach the terms of your tenancy agreement.\n\nGet more information about [ending a tenancy](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/ending-a-residential-tenancy \"Ending a residential tenancy\")and [minimum notice periods](https://www.nsw.gov.au/housing-and-construction/rules/minimum-notice-periods-for-ending-a-residential-tenancy \"Minimum notice periods for ending a residential tenancy\") that apply.\n\nYou need to claim your bond refund on paper keyboard_arrow_down\n\nIf you don't have a Rental Bonds Online account, you can fill in a ‘Claim for Bond Refund’ paper form from NSW Fair Trading.\n\n1.   [Download the Claim for Bond Refund form](https://www.nsw.gov.au/housing-and-construction/rental-forms-surveys-and-data/resources/claim-for-refund-of-bond-money-form \"NSW Fair Trading claim for refund of bond money form (https://www.fairtrading.nsw.gov.au/__data/assets/pdf_file/0009/367749/Claim-for-Bond-Refund-form.pdf)\").\n2.   Sign the completed form with the landlord or agent.\n3.   Return the form to NSW Fair Trading by \n    *   post (address on form)\n    *   email[bondclaims@customerservice.nsw.gov.au](mailto:bondclaims@customerservice.nsw.gov.au)\n    *   or in person (details of where to lodge are on the form).\n\nFair Trading will give the landlord or agent written notice that you have made a claim.\n\nIf your landlord or agent fails to sign the form, you can still submit it. They are given 14 days to dispute your claim.\n\nIf the landlord or agent doesn't dispute your claim, Fair Trading will pay your claim after 14 days.\n\nYour money will be deposited into your bank account.\n\n* * *",
+              "text": "[](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-your-bond-back)Make sure you have:\n\n*   paid your rent to and including [end of your notice period](https://www.nsw.gov.au/housing-and-construction/rules/minimum-notice-periods-for-ending-a-residential-tenancy \"Minimum notice periods for ending a residential tenancy\") or your moving date if [breaking lease early](https://www.nsw.gov.au/housing-and-construction/rules/breaking-a-fixed-term-residential-tenancy-early \"Breaking a fixed-term residential tenancy early\").\n*   cleaned your rental property to match its[original condition](https://www.nsw.gov.au/housing-and-construction/rules/rental-property-condition-reports \"Property condition at end of tenancy\").\n*   removed all [your personal things](https://www.nsw.gov.au/housing-and-construction/rules/dealing-goods-left-behind \"Dealing with goods left behind\").\n*   repaired any[damage that was beyond ‘fair wear and tear’](https://www.nsw.gov.au/housing-and-construction/rules/fair-wear-and-tear-versus-damage-rental-properties \"Fair wear and tear versus damage in rental properties\").\n*   signed off on[the condition report](https://www.nsw.gov.au/housing-and-construction/rental-forms-surveys-and-data/resources/residential-tenancy-condition-report \"Residential tenancy condition report\")with your landlord.\n*   returned all [keys and other items](https://www.nsw.gov.au/housing-and-construction/rules/keys-locks-and-security-devices-a-rental-property \"Keys, locks and security devices in a rental property\")given to you for the property when you moved in.\n\nNow you can claim your refund [using Rental Bonds Online](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-rental-bonds/rental-bonds-online-for-tenants \"Rental Bonds Online for tenants\"). Your landlord or agent has up to 14 days to accept your claim.\n\n[Log in to Rental Bonds Online](https://rbo.fairtrading.nsw.gov.au/tenant/login \"Rental Bonds Online registered tenant login (https://rbo.fairtrading.nsw.gov.au/tenant/login)\")\n\nAdditional information about getting bond back if:\n\nExpand all Collapse all\n\nYou are in a shared tenancy keyboard_arrow_down\n\nThe principal tenant who acts on behalf of all co-tenants for the shared rental should\n\n*   submit or respond to a claim for refund of bond money using Rental Bonds Online on behalf of all the tenants at the end of the tenancy.\n*   distribute the bond refund to the other tenants.\n\n[Log in to Rental Bonds Online](https://rbo.fairtrading.nsw.gov.au/tenant/login \"Rental Bonds Online registered tenant login (https://rbo.fairtrading.nsw.gov.au/tenant/login)\") if you are the principal tenant and need to claim the bond.\n\nIf a co-tenant moves out of a shared tenancy and requests their bond refund, the remaining tenant/s must pay back their bond – less any rent owed or other reasonable costs – within 14 days of the request.\n\n[Download a change of shared tenancy request form](https://www.nsw.gov.au/housing-and-construction/rental-forms-surveys-and-data/resources/change-of-shared-tenancy-arrangement-form \"Change of shared tenancy arrangement form\").\n\nThis does not apply if:\n\n*   the former co-tenant’s debts exceed the amount of bond money they paid, or\n*   the former co-tenant has been excluded from the premises by a final apprehended violence order.\n\n[Learn more about shared tenancies](https://www.nsw.gov.au/housing-and-construction/rules/sharing-a-residential-rental-property \"Sharing a residential rental property\").\n\nYou have a Rentstart bond loan keyboard_arrow_down\n\nIf you have repaid your Rentstart bond loan in full before the end of your tenancy, you can claim your bond back at the end of your tenancy.\n\nIf your tenancy ends before you have repaid the Rentstart bond loan in full:\n\n*   any funds still owed to the [Department of Communities and Justice (DCJ)](https://dcj.nsw.gov.au/housing.html)will be returned to them from the bond, and\n*   any amounts you have repaid will be returned directly to you, less any amount still owed to the agent or landlord.\n\nIf a claim is made against the bond that you do not agree with, you can still challenge this claim regardless of whether the loan has been repaid in full.\n\n[Get more information about Rentstart](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/financial-support#toc-rentstart).\n\nYou need to get the bond back before the end of your tenancy keyboard_arrow_down\n\nYou can only claim a bond refund before the end of a tenancy if:\n\n*   you have a written agreement from your landlord or agent to submit an earlier claim, or\n\n*   you are directing the full bond to go to your landlord or property agent.\n\nThere are very specific legal reasons to end a tenancy early. Otherwise, you could breach the terms of your tenancy agreement.\n\nGet more information about [ending a tenancy](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/ending-a-residential-tenancy \"Ending a residential tenancy\")and [minimum notice periods](https://www.nsw.gov.au/housing-and-construction/rules/minimum-notice-periods-for-ending-a-residential-tenancy \"Minimum notice periods for ending a residential tenancy\") that apply.\n\nYou need to claim your bond refund on paper keyboard_arrow_down\n\nIf you don't have a Rental Bonds Online account, you can fill in a ‘Claim for Bond Refund’ paper form from NSW Fair Trading.\n\n1.   [Download the Claim for Bond Refund form](https://www.nsw.gov.au/housing-and-construction/rental-forms-surveys-and-data/resources/claim-for-refund-of-bond-money-form \"NSW Fair Trading claim for refund of bond money form (https://www.fairtrading.nsw.gov.au/__data/assets/pdf_file/0009/367749/Claim-for-Bond-Refund-form.pdf)\").\n2.   Sign the completed form with the landlord or agent.\n3.   Return the form to NSW Fair Trading by \n    *   post (address on form)\n    *   email[bondclaims@customerservice.nsw.gov.au](mailto:bondclaims@customerservice.nsw.gov.au)\n    *   or in person (details of where to lodge are on the form).\n\nFair Trading will give the landlord or agent written notice that you have made a claim.\n\nIf your landlord or agent fails to sign the form, you can still submit it. They are given 14 days to dispute your claim.\n\nIf the landlord or agent doesn't dispute your claim, Fair Trading will pay your claim after 14 days.\n\nYour money will be deposited into your bank account.\n\n* * *",
+              "content_hash": "d8dd13db02352c1c2db90fe5221755a4c2f92d71a664216032ef12f3ccf43636"
+            }
+          ],
+          "retrieval": {
+            "recall_at_1": 1.0,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0,
+            "reciprocal_rank": 1.0,
+            "target_ranks": [
+              1
+            ],
+            "all_targets_at_6": true,
+            "retrieved_on_unsupported": null
+          },
+          "semantic_used": true,
+          "rerank_used": false,
+          "degradation": [],
+          "elapsed_ms": 1424.06,
+          "fusion_elapsed_ms": 30.22
+        }
+      ],
+      "summary": {
+        "evaluated": 1,
+        "supported_cases": 1,
+        "unsupported_cases": 0,
+        "mean_recall_at_1": 1.0,
+        "mean_recall_at_3": 1.0,
+        "mean_recall_at_6": 1.0,
+        "mean_reciprocal_rank": 1.0,
+        "all_targets_at_6_count": 1,
+        "degraded_cases": 0,
+        "generated_cases": 0,
+        "automated_answer_checks_passed": 0,
+        "exact_citation_failures": 0,
+        "model_abstentions": 0,
+        "generation_provider_failures": 0,
+        "generation_outcomes": {},
+        "requested_language_not_delivered": 0,
+        "human_support_pass_rate": null,
+        "retrieval_latency_ms_p50": 1424.06,
+        "retrieval_latency_ms_p95": 1424.06
+      },
+      "failed_cases": []
+    },
+    "hybrid_rerank": {
+      "status": "completed",
+      "cases": [
+        {
+          "id": "nsw-064",
+          "question": "What can I do about an inapplicable pet refusal reason or unreasonable consent condition?",
+          "language": "en",
+          "category": "conditions",
+          "answerability": "supported",
+          "targets": [
+            {
+              "document_id": "disputes",
+              "section": "Pet disputes",
+              "text_contains": [
+                "challenge the reason for the refusal"
+              ]
+            }
+          ],
+          "expected_conditions": [
+            "Try landlord or agent first; unresolved can challenge at Tribunal."
+          ],
+          "manual_review": [
+            "Confirm each claim answers the specific question and is fully supported by its own quotation.",
+            "Preserve every applicable condition and exception in expected_conditions; regex matches alone do not establish support."
+          ],
+          "required_claim_patterns": [
+            "Tribunal|NCAT"
+          ],
+          "forbidden_claim_patterns": [
+            "refusal is automatically invalid"
+          ],
+          "retrieved": [
+            {
+              "chunk_id": "9b707a924b3ed059c92dc3558d4af830",
+              "document_id": "disputes",
+              "title": "Resolving residential tenancy disputes",
+              "source_url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/resolving-residential-tenancy-disputes",
+              "source_type": "official_guidance",
+              "language": "en",
+              "jurisdiction": "NSW",
+              "scope": "public",
+              "checked_at": "2026-10-30",
+              "published_at": "2026-10-01",
+              "document_version": "2fc2a7b7401145344db5cc6dddb92304c564668e0590fb33c2ccfeaee82fc1b6",
+              "capture_method": "Jina Reader of official public URL",
+              "section": "Pet disputes",
+              "section_path": [
+                "Pet disputes"
+              ],
+              "embedding_input_version": "section-context-v2",
+              "embedding_text": "Resolving residential tenancy disputes > Pet disputes\nLandlords and agents cannot state in an advertisement that no pets are allowed at a rental property. If tenants see that a property is being advertised as ‘no pets allowed’, they can report this to [Fair Trading's free tenancy complaint service](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-tenancy-complaints \"Residential tenancy complaints\") for investigation.\n\nIf a landlord refuses a pet for a reason that is not applicable or a tenant believes the landlord has set an unreasonable condition for consent, they should first try and talk to their landlord or agent to resolve the dispute.\n\nIf the issue cannot be resolved, the tenant can apply to the Tribunal to challenge the reason for the refusal or the unreasonable condition.",
+              "text": "Landlords and agents cannot state in an advertisement that no pets are allowed at a rental property. If tenants see that a property is being advertised as ‘no pets allowed’, they can report this to [Fair Trading's free tenancy complaint service](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-tenancy-complaints \"Residential tenancy complaints\") for investigation.\n\nIf a landlord refuses a pet for a reason that is not applicable or a tenant believes the landlord has set an unreasonable condition for consent, they should first try and talk to their landlord or agent to resolve the dispute.\n\nIf the issue cannot be resolved, the tenant can apply to the Tribunal to challenge the reason for the refusal or the unreasonable condition.",
+              "content_hash": "d0497f9edf61d63c8180b954db9e9b82c9411e548058a45b97b73c541c13cc45"
+            },
+            {
+              "chunk_id": "bafb1138ff3afc7a15d91a7da3ace919",
+              "document_id": "disputes",
+              "title": "Resolving residential tenancy disputes",
+              "source_url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/resolving-residential-tenancy-disputes",
+              "source_type": "official_guidance",
+              "language": "en",
+              "jurisdiction": "NSW",
+              "scope": "public",
+              "checked_at": "2026-10-30",
+              "published_at": "2026-10-01",
+              "document_version": "2fc2a7b7401145344db5cc6dddb92304c564668e0590fb33c2ccfeaee82fc1b6",
+              "capture_method": "Jina Reader of official public URL",
+              "section": "When to apply to the Tribunal",
+              "section_path": [
+                "When to apply to the Tribunal"
+              ],
+              "embedding_input_version": "section-context-v2",
+              "embedding_text": "Resolving residential tenancy disputes > When to apply to the Tribunal\nAn application to the Tribunal must be lodged within a certain time limit. For most disputes you must apply within 28 days. This time limit starts from the day you become entitled to apply – this will usually be the day when the issue first happens.",
+              "text": "An application to the Tribunal must be lodged within a certain time limit. For most disputes you must apply within 28 days. This time limit starts from the day you become entitled to apply – this will usually be the day when the issue first happens.",
+              "content_hash": "4dd70886f9ab4ea0cdcbebb4760699c5b37e88aeed72e6a5c248b6357431600e"
+            },
+            {
+              "chunk_id": "cceeb399f6919a2ea2f7173f22c0cdde",
+              "document_id": "ending-notice",
+              "title": "Giving notice to end a residential tenancy",
+              "source_url": "https://www.nsw.gov.au/housing-and-construction/rules/giving-notice-to-end-a-residential-tenancy",
+              "source_type": "official_guidance",
+              "language": "en",
+              "jurisdiction": "NSW",
+              "scope": "public",
+              "checked_at": "2026-10-30",
+              "published_at": "2025-05-18",
+              "document_version": "3ea5725f29ab3eb3bf19badea0a6d71e1ea367e011f2c5ef62d271d67ea1fbd1",
+              "capture_method": "Jina Reader of official public URL",
+              "section": "Major changes to rental laws have started",
+              "section_path": [
+                "Major changes to rental laws have started"
+              ],
+              "embedding_input_version": "section-context-v2",
+              "embedding_text": "Giving notice to end a residential tenancy > Major changes to rental laws have started\nChanges limiting reasons landlords can end a lease and refuse a pet – from 19 May 2025.\n\nChanges so that tenants can choose to pay rent by Centrepay – from 2 March 2026.\n\nLaws to limit rent increases to once per year – from 31 October 2024.\n\n[Learn more about the changes](https://www.nsw.gov.au/departments-and-agencies/fair-trading/news/changes-to-rental-laws \"Changes to rental laws\")",
+              "text": "Changes limiting reasons landlords can end a lease and refuse a pet – from 19 May 2025.\n\nChanges so that tenants can choose to pay rent by Centrepay – from 2 March 2026.\n\nLaws to limit rent increases to once per year – from 31 October 2024.\n\n[Learn more about the changes](https://www.nsw.gov.au/departments-and-agencies/fair-trading/news/changes-to-rental-laws \"Changes to rental laws\")",
+              "content_hash": "2e3ebe43644bc436e01655d6cede3de2668f9e378883a8c53165d40651beeeb3"
+            },
+            {
+              "chunk_id": "3fb72cf6d40ded81a9dcd11849c3b3e2",
+              "document_id": "repairs",
+              "title": "Getting repairs done on a rental property",
+              "source_url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-repairs-done",
+              "source_type": "official_guidance",
+              "language": "en",
+              "jurisdiction": "NSW",
+              "scope": "public",
+              "checked_at": "2026-10-30",
+              "published_at": "2026-08-03",
+              "document_version": "9e0873a31c23d0e7872870a730f46ee58c867c8fb2ddf499c54c17caf3353b97",
+              "capture_method": "Jina Reader of official public URL",
+              "section": "Steps to get non-urgent repairs done",
+              "section_path": [
+                "Steps to get non-urgent repairs done"
+              ],
+              "embedding_input_version": "section-context-v2",
+              "embedding_text": "Getting repairs done on a rental property > Steps to get non-urgent repairs done\n1\n\nTell them in writing what needs fixing and by when – give a clear deadline.\n\nIf you deal with a property agent, you can:\n\n*   ask the property agency\n*   contact the agency licence holder (the principal or manager)\n*   contact your landlord direct.\n\n2\n\nFollow up if you have not heard back within a reasonable time frame.\n\n3\n\nKeep a copy of any correspondence and a record of any conversations as evidence that you told the landlord/agent.\n\n4",
+              "text": "1\n\nTell them in writing what needs fixing and by when – give a clear deadline.\n\nIf you deal with a property agent, you can:\n\n*   ask the property agency\n*   contact the agency licence holder (the principal or manager)\n*   contact your landlord direct.\n\n2\n\nFollow up if you have not heard back within a reasonable time frame.\n\n3\n\nKeep a copy of any correspondence and a record of any conversations as evidence that you told the landlord/agent.\n\n4",
+              "content_hash": "d124d3a8089bb70ddb7f835a57c2c45c25d98b10d12fb24ec62ac4938eb7ceee"
+            },
+            {
+              "chunk_id": "a2bb28353f0aadd6eae15de81076b6b1",
+              "document_id": "disputes",
+              "title": "Resolving residential tenancy disputes",
+              "source_url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/resolving-residential-tenancy-disputes",
+              "source_type": "official_guidance",
+              "language": "en",
+              "jurisdiction": "NSW",
+              "scope": "public",
+              "checked_at": "2026-10-30",
+              "published_at": "2026-10-01",
+              "document_version": "2fc2a7b7401145344db5cc6dddb92304c564668e0590fb33c2ccfeaee82fc1b6",
+              "capture_method": "Jina Reader of official public URL",
+              "section": "Resolving disputes through the Tribunal",
+              "section_path": [
+                "Resolving disputes through the Tribunal"
+              ],
+              "embedding_input_version": "section-context-v2",
+              "embedding_text": "Resolving residential tenancy disputes > Resolving disputes through the Tribunal\nThe Tribunal is an independent body that hears and decides on applications for orders from tenants and landlords.\n\nA landlord or tenant can apply directly to the Tribunal for orders relating to a residential tenancy instead of first [making a complaint to Fair Trading](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-tenancy-complaints \"Tenancy complaints\"), if they wish.\n\nA landlord or tenant can decide to lodge an application with the Tribunal if:\n\n*   Fair Trading cannot find a solution mutually agreed to by both parties.\n*   A termination order is being sought.\n*   The complaint relates to a matter for which Fair Trading is not able to offer dispute resolution, such as a dispute relating to claiming a bond.",
+              "text": "The Tribunal is an independent body that hears and decides on applications for orders from tenants and landlords.\n\nA landlord or tenant can apply directly to the Tribunal for orders relating to a residential tenancy instead of first [making a complaint to Fair Trading](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-tenancy-complaints \"Tenancy complaints\"), if they wish.\n\nA landlord or tenant can decide to lodge an application with the Tribunal if:\n\n*   Fair Trading cannot find a solution mutually agreed to by both parties.\n*   A termination order is being sought.\n*   The complaint relates to a matter for which Fair Trading is not able to offer dispute resolution, such as a dispute relating to claiming a bond.",
+              "content_hash": "6924049ac3587ddf8f442a8ae24ec98a43e10c212f13acb69f7884fde0dc36fc"
+            },
+            {
+              "chunk_id": "842b5960e06398b8a8ab1441637929be",
+              "document_id": "repairs",
+              "title": "Getting repairs done on a rental property",
+              "source_url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/getting-repairs-done",
+              "source_type": "official_guidance",
+              "language": "en",
+              "jurisdiction": "NSW",
+              "scope": "public",
+              "checked_at": "2026-10-30",
+              "published_at": "2026-08-03",
+              "document_version": "9e0873a31c23d0e7872870a730f46ee58c867c8fb2ddf499c54c17caf3353b97",
+              "capture_method": "Jina Reader of official public URL",
+              "section": "Can you organisenon-urgent repairs yourself?",
+              "section_path": [
+                "Can you organisenon-urgent repairs yourself?"
+              ],
+              "embedding_input_version": "section-context-v2",
+              "embedding_text": "Getting repairs done on a rental property > Can you organisenon-urgent repairs yourself?\nIf you want to organise for repairs yourself, you need to:\n\n*   have the landlord’s consent.\n*   ask the landlord to pay you for any costs.\n*   get their consent and agreement to pay in writing.\n\nThey should pay you back within 14 days.",
+              "text": "If you want to organise for repairs yourself, you need to:\n\n*   have the landlord’s consent.\n*   ask the landlord to pay you for any costs.\n*   get their consent and agreement to pay in writing.\n\nThey should pay you back within 14 days.",
+              "content_hash": "2beaaca84e87efc757371bfe6414261a916e42ba22c08289a387ab333c5963b4"
+            }
+          ],
+          "retrieval": {
+            "recall_at_1": 1.0,
+            "recall_at_3": 1.0,
+            "recall_at_6": 1.0,
+            "reciprocal_rank": 1.0,
+            "target_ranks": [
+              1
+            ],
+            "all_targets_at_6": true,
+            "retrieved_on_unsupported": null
+          },
+          "semantic_used": true,
+          "rerank_used": true,
+          "degradation": [],
+          "elapsed_ms": 2944.03,
+          "fusion_elapsed_ms": 1520.0,
+          "answer": {
+            "index_version": "8b8a06a6d50ed9eff5818524eace8f2453adcf75bc6eb5e90c7418072f0657bf",
+            "retrieval_methods": [
+              "hybrid_rerank"
+            ],
+            "warnings": [],
+            "knowledge_language": "en",
+            "language": "en",
+            "claims": [
+              {
+                "text": "Source context: Pet disputes\n\nLandlords and agents cannot state in an advertisement that no pets are allowed at a rental property. If tenants see that a property is being advertised as ‘no pets allowed’, they can report this to [Fair Trading's free tenancy complaint service](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-tenancy-complaints \"Residential tenancy complaints\") for investigation.\n\nIf a landlord refuses a pet for a reason that is not applicable or a tenant believes the landlord has set an unreasonable condition for consent, they should first try and talk to their landlord or agent to resolve the dispute.\n\nIf the issue cannot be resolved, the tenant can apply to the Tribunal to challenge the reason for the refusal or the unreasonable condition.",
+                "evidence_id": "9b707a924b3ed059c92dc3558d4af830",
+                "quote": "Landlords and agents cannot state in an advertisement that no pets are allowed at a rental property. If tenants see that a property is being advertised as ‘no pets allowed’, they can report this to [Fair Trading's free tenancy complaint service](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-tenancy-complaints \"Residential tenancy complaints\") for investigation.\n\nIf a landlord refuses a pet for a reason that is not applicable or a tenant believes the landlord has set an unreasonable condition for consent, they should first try and talk to their landlord or agent to resolve the dispute.\n\nIf the issue cannot be resolved, the tenant can apply to the Tribunal to challenge the reason for the refusal or the unreasonable condition.",
+                "source_preserving": true
+              },
+              {
+                "text": "Source context: When to apply to the Tribunal\n\nAn application to the Tribunal must be lodged within a certain time limit. For most disputes you must apply within 28 days. This time limit starts from the day you become entitled to apply – this will usually be the day when the issue first happens.",
+                "evidence_id": "bafb1138ff3afc7a15d91a7da3ace919",
+                "quote": "An application to the Tribunal must be lodged within a certain time limit. For most disputes you must apply within 28 days. This time limit starts from the day you become entitled to apply – this will usually be the day when the issue first happens.",
+                "source_preserving": true
+              }
+            ],
+            "citations": [
+              {
+                "evidence_id": "9b707a924b3ed059c92dc3558d4af830",
+                "document_id": "disputes",
+                "title": "Resolving residential tenancy disputes",
+                "section": "Pet disputes",
+                "source_url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/resolving-residential-tenancy-disputes",
+                "checked_at": "2026-10-30",
+                "document_version": "2fc2a7b7401145344db5cc6dddb92304c564668e0590fb33c2ccfeaee82fc1b6",
+                "quote": "Landlords and agents cannot state in an advertisement that no pets are allowed at a rental property. If tenants see that a property is being advertised as ‘no pets allowed’, they can report this to [Fair Trading's free tenancy complaint service](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-tenancy-complaints \"Residential tenancy complaints\") for investigation.\n\nIf a landlord refuses a pet for a reason that is not applicable or a tenant believes the landlord has set an unreasonable condition for consent, they should first try and talk to their landlord or agent to resolve the dispute.\n\nIf the issue cannot be resolved, the tenant can apply to the Tribunal to challenge the reason for the refusal or the unreasonable condition.",
+                "source_type": "official_guidance"
+              },
+              {
+                "evidence_id": "bafb1138ff3afc7a15d91a7da3ace919",
+                "document_id": "disputes",
+                "title": "Resolving residential tenancy disputes",
+                "section": "When to apply to the Tribunal",
+                "source_url": "https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/resolving-residential-tenancy-disputes",
+                "checked_at": "2026-10-30",
+                "document_version": "2fc2a7b7401145344db5cc6dddb92304c564668e0590fb33c2ccfeaee82fc1b6",
+                "quote": "An application to the Tribunal must be lodged within a certain time limit. For most disputes you must apply within 28 days. This time limit starts from the day you become entitled to apply – this will usually be the day when the issue first happens.",
+                "source_type": "official_guidance"
+              }
+            ],
+            "unknowns": [],
+            "generation_outcome": "answered",
+            "answer_language": "en",
+            "status": "answered",
+            "answer": "Source context: Pet disputes\n\nLandlords and agents cannot state in an advertisement that no pets are allowed at a rental property. If tenants see that a property is being advertised as ‘no pets allowed’, they can report this to [Fair Trading's free tenancy complaint service](https://www.nsw.gov.au/housing-and-construction/renting-a-place-to-live/residential-tenancy-complaints \"Residential tenancy complaints\") for investigation.\n\nIf a landlord refuses a pet for a reason that is not applicable or a tenant believes the landlord has set an unreasonable condition for consent, they should first try and talk to their landlord or agent to resolve the dispute.\n\nIf the issue cannot be resolved, the tenant can apply to the Tribunal to challenge the reason for the refusal or the unreasonable condition. [1]\n\nSource context: When to apply to the Tribunal\n\nAn application to the Tribunal must be lodged within a certain time limit. For most disputes you must apply within 28 days. This time limit starts from the day you become entitled to apply – this will usually be the day when the issue first happens. [2]",
+            "source_preserving": true,
+            "call": {
+              "task": "rag_answer",
+              "model": "qwen-plus",
+              "duration_ms": 7414,
+              "status": "succeeded",
+              "usage": {
+                "prompt_tokens": 1974,
+                "total_tokens": 2247,
+                "completion_tokens": 273
+              }
+            }
+          },
+          "answer_checks": {
+            "exact_citations": true,
+            "condition_heuristics_passed": true,
+            "generation_outcome": "answered",
+            "requested_language_not_delivered": false,
+            "missing_required_patterns": [],
+            "matched_forbidden_patterns": [],
+            "abstained": false,
+            "has_unknowns": false,
+            "automated_checks_passed": true,
+            "support_judgment": "pending_human_review"
+          },
+          "generation_observation": {
+            "attempted": true,
+            "valid_model_abstention": false,
+            "raw_response": {
+              "claims": [
+                {
+                  "text": "If a landlord refuses a pet for a reason that is not applicable or sets an unreasonable condition for consent, the tenant should first try to talk to the landlord or agent to resolve the dispute.",
+                  "evidence_id": "9b707a924b3ed059c92dc3558d4af830",
+                  "quote_id": "p0"
+                },
+                {
+                  "text": "If the issue cannot be resolved through discussion, the tenant can apply to the Tribunal to challenge the reason for the refusal or the unreasonable condition.",
+                  "evidence_id": "9b707a924b3ed059c92dc3558d4af830",
+                  "quote_id": "p0"
+                },
+                {
+                  "text": "An application to the Tribunal must generally be lodged within 28 days from the day the tenant becomes entitled to apply, usually the day the issue first happens.",
+                  "evidence_id": "bafb1138ff3afc7a15d91a7da3ace919",
+                  "quote_id": "p0"
+                }
+              ],
+              "unknowns": []
+            }
+          },
+          "generation_elapsed_ms": 7426.22
+        }
+      ],
+      "summary": {
+        "evaluated": 1,
+        "supported_cases": 1,
+        "unsupported_cases": 0,
+        "mean_recall_at_1": 1.0,
+        "mean_recall_at_3": 1.0,
+        "mean_recall_at_6": 1.0,
+        "mean_reciprocal_rank": 1.0,
+        "all_targets_at_6_count": 1,
+        "degraded_cases": 0,
+        "generated_cases": 1,
+        "automated_answer_checks_passed": 1,
+        "exact_citation_failures": 0,
+        "model_abstentions": 0,
+        "generation_provider_failures": 0,
+        "generation_outcomes": {
+          "answered": 1
+        },
+        "requested_language_not_delivered": 0,
+        "human_support_pass_rate": null,
+        "retrieval_latency_ms_p50": 2944.03,
+        "retrieval_latency_ms_p95": 2944.03
+      },
+      "failed_cases": []
+    }
+  },
+  "human_review_completed": false,
+  "limitations": "Passage recall measures annotated section plus literal passage cues in the captured NSW corpus. It is not exhaustive relevance, legal accuracy, or a current-law verification. Exact-citation checks establish literal source membership only, not entailment. Regex condition checks are fallible review aids and may miss negation, exceptions, translation or unsupported reasoning. All claim-support and legal judgments remain pending human review. Unsupported questions are excluded from recall denominators; retrieved context alone is not an answer.",
+  "inputs": {
+    "cases": "/Users/seven/Documents/AI_coding/5620房产Agent/.workspaces/frontend-demo/data/knowledge/evaluation.en.json",
+    "corpus": "/Users/seven/Documents/AI_coding/5620房产Agent/.workspaces/frontend-demo/data/knowledge/en/documents.json",
+    "persisted_index_copied": true,
+    "generation_modes_requested": [
+      "hybrid_rerank"
+    ]
+  }
+}

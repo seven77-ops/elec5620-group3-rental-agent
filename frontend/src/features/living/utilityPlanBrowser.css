@@ -1,0 +1,189 @@
+.utility-provider-modal .ant-modal-title {
+  padding-right: 28px;
+  font-size: 21px;
+  font-weight: 650;
+  line-height: 1.5;
+}
+.utility-provider-modal .ant-modal-header {
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e8edf5;
+}
+.utility-provider-modal .ant-modal-footer {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e8edf5;
+}
+.provider-overview {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px 20px;
+}
+.provider-category-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: #edf4ff;
+  color: #2458a1;
+  font-size: 12px;
+  font-weight: 500;
+}
+.provider-overview .provider-coverage {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 9px 0 0;
+  font-size: 12px;
+  color: #687a94;
+}
+.provider-contact-actions .ant-btn {
+  font-size: 12px;
+}
+.provider-facts-note {
+  margin-top: 16px;
+  padding: 10px 12px;
+  border: 1px solid #eaf0f7;
+  border-radius: 8px;
+  background: #f7f9fc;
+  color: #687a94;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.provider-plan-browser {
+  margin-top: 20px;
+  min-width: 0;
+}
+.provider-plan-browser .ant-tabs-nav {
+  margin-bottom: 14px;
+}
+.provider-plan-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(160px, 220px);
+  gap: 12px;
+}
+.provider-plan-toolbar > :only-child {
+  grid-column: 1 / -1;
+}
+.provider-plan-toolbar .ant-select {
+  width: 100%;
+}
+.provider-plan-results {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 38px;
+  color: #73829a;
+  font-size: 12px;
+}
+.provider-plan-results strong {
+  color: #244c83;
+}
+.provider-energy-note {
+  margin: 0 0 12px;
+  color: #73829a;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.provider-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 14px;
+}
+.provider-plan-grid .utility-plan.is-compact {
+  padding: 16px;
+  border: 1px solid #dfe7f2;
+  border-radius: 10px;
+  min-width: 0;
+  background: #fff;
+}
+.utility-plan.is-compact .utility-plan-heading {
+  font-size: 11px;
+}
+.utility-plan.is-compact h4 {
+  margin: 10px 0 6px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.utility-plan.is-compact .utility-plan-network {
+  display: inline-block;
+  margin: 0 0 6px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #f1f4f8;
+  color: #5f728d;
+  font-size: 11px;
+}
+.utility-plan.is-compact .utility-plan-price {
+  margin: 6px 0;
+  font-size: 16px;
+  line-height: 1.6;
+}
+.utility-plan.is-compact .utility-plan-price.is-energy {
+  color: #5f728d;
+  font-size: 12px;
+  font-weight: 400;
+}
+.utility-plan.is-compact .utility-plan-highlights {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #f5f8fd;
+}
+.utility-plan.is-compact .utility-plan-highlights p {
+  margin: 0;
+  color: #344f73;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.utility-plan.is-compact .utility-plan-highlights p + p {
+  margin-top: 6px;
+}
+.utility-plan.is-compact .utility-plan-highlights p:first-child {
+  color: #22549a;
+  font-weight: 600;
+}
+.utility-plan.is-compact .utility-plan-details {
+  margin: 12px 0 0;
+  border-top: 1px solid #edf1f7;
+  font-size: 12px;
+}
+.utility-plan.is-compact .utility-plan-details summary {
+  padding: 10px 0 0;
+}
+.utility-plan.is-compact .utility-plan-details[open] summary {
+  padding-bottom: 8px;
+}
+.provider-plan-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+.utility-provider-modal .living-provider-source {
+  margin: 16px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid #edf1f7;
+  font-size: 11px;
+}
+@media (max-width: 600px) {
+  .utility-provider-modal {
+    top: 20px;
+    padding-bottom: 20px;
+  }
+  .utility-provider-modal .ant-modal-title {
+    font-size: 18px;
+  }
+  .provider-plan-grid,
+  .provider-plan-toolbar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .provider-plan-browser .ant-tabs-tab + .ant-tabs-tab {
+    margin-left: 20px;
+  }
+  .provider-plan-browser .ant-tabs-tab {
+    font-size: 12px;
+  }
+}

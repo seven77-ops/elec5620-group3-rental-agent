@@ -1,0 +1,167 @@
+{
+  "before": [
+    {
+      "question": "What should I check before signing a rental agreement in NSW?",
+      "http_status": 200,
+      "duration_seconds": 25.464,
+      "status": "sources_only",
+      "generation_outcome": "summary_review_failed",
+      "validation_errors": [],
+      "calls": [
+        {
+          "task": "rag_answer",
+          "timeout": 18,
+          "status": "succeeded",
+          "duration_ms": 9074
+        },
+        {
+          "task": "rag_grounded_summary",
+          "timeout": 15,
+          "status": "succeeded",
+          "duration_ms": 4766
+        },
+        {
+          "task": "rag_grounded_summary",
+          "timeout": 15,
+          "status": "succeeded",
+          "duration_ms": 4481
+        },
+        {
+          "task": "rag_grounded_summary",
+          "timeout": 15,
+          "status": "succeeded",
+          "duration_ms": 5379
+        },
+        {
+          "task": "rag_summary_check",
+          "timeout": 8,
+          "status": "failed",
+          "error_code": "ai_timeout",
+          "duration_ms": 8005
+        }
+      ]
+    },
+    {
+      "question": "What should I know about rental bonds in NSW?",
+      "http_status": 200,
+      "duration_seconds": 24.297,
+      "status": "answered",
+      "generation_outcome": "answered",
+      "validation_errors": [],
+      "calls": [
+        {
+          "task": "rag_answer",
+          "timeout": 18,
+          "status": "succeeded",
+          "duration_ms": 9970
+        },
+        {
+          "task": "rag_grounded_summary",
+          "timeout": 15,
+          "status": "succeeded",
+          "duration_ms": 4656
+        },
+        {
+          "task": "rag_grounded_summary",
+          "timeout": 15,
+          "status": "succeeded",
+          "duration_ms": 4654
+        },
+        {
+          "task": "rag_grounded_summary",
+          "timeout": 15,
+          "status": "succeeded",
+          "duration_ms": 4654
+        },
+        {
+          "task": "rag_summary_check",
+          "timeout": 8,
+          "status": "succeeded",
+          "duration_ms": 7675
+        }
+      ]
+    }
+  ],
+  "after": [
+    {
+      "question": "What should I check before signing a rental agreement in NSW?",
+      "http_status": 200,
+      "duration_seconds": 25.45,
+      "status": "answered",
+      "generation_outcome": "answered",
+      "validation_errors": [],
+      "calls": [
+        {
+          "task": "rag_answer",
+          "timeout": 18,
+          "status": "succeeded",
+          "duration_ms": 9664
+        },
+        {
+          "task": "rag_grounded_summary",
+          "timeout": 15,
+          "status": "succeeded",
+          "duration_ms": 4824
+        },
+        {
+          "task": "rag_grounded_summary",
+          "timeout": 15,
+          "status": "succeeded",
+          "duration_ms": 4756
+        },
+        {
+          "task": "rag_grounded_summary",
+          "timeout": 15,
+          "status": "succeeded",
+          "duration_ms": 4933
+        },
+        {
+          "task": "rag_summary_check",
+          "timeout": 15,
+          "status": "succeeded",
+          "duration_ms": 8502
+        }
+      ]
+    },
+    {
+      "question": "What should I know about rental bonds in NSW?",
+      "http_status": 200,
+      "duration_seconds": 23.072,
+      "status": "answered",
+      "generation_outcome": "answered",
+      "validation_errors": [],
+      "calls": [
+        {
+          "task": "rag_answer",
+          "timeout": 18,
+          "status": "succeeded",
+          "duration_ms": 8822
+        },
+        {
+          "task": "rag_grounded_summary",
+          "timeout": 15,
+          "status": "succeeded",
+          "duration_ms": 4644
+        },
+        {
+          "task": "rag_grounded_summary",
+          "timeout": 15,
+          "status": "succeeded",
+          "duration_ms": 4824
+        },
+        {
+          "task": "rag_grounded_summary",
+          "timeout": 15,
+          "status": "succeeded",
+          "duration_ms": 4559
+        },
+        {
+          "task": "rag_summary_check",
+          "timeout": 15,
+          "status": "succeeded",
+          "duration_ms": 7467
+        }
+      ]
+    }
+  ]
+}

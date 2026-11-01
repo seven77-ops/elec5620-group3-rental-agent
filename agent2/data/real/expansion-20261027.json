@@ -1,0 +1,4562 @@
+{
+  "collected_at": "2026-10-27T04:47:02.475699+00:00",
+  "previous_count": 500,
+  "new_count": 700,
+  "added_count": 200,
+  "previous_catalog_fingerprint": "03302a834d238d453d6bcc880ec2d7c31d704a8cb0cb3421013252a67f6429dc",
+  "new_catalog_fingerprint": "cfa083c17d91952dc9f64a9509d7f3cc2c928d66ad4ee2c8144f205c88c35c4f",
+  "suburb_counts": {
+    "Camperdown": 32,
+    "Newtown": 19,
+    "Glebe": 19,
+    "Forest Lodge": 3,
+    "Annandale": 8,
+    "Enmore": 3,
+    "Stanmore": 7,
+    "Petersham": 7,
+    "Leichhardt": 12,
+    "Redfern": 20,
+    "Surry Hills": 9,
+    "Alexandria": 25,
+    "Erskineville": 12,
+    "Waterloo": 24
+  },
+  "records": [
+    {
+      "record_id": "domain:18384604",
+      "address": "504/7 Sterling Circuit, Camperdown",
+      "source_url": "https://www.domain.com.au/504-7-sterling-circuit-camperdown-nsw-2050-18384604",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/camperdown-nsw-2050/",
+        "search_crawl_label": "2 days ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "504/7 Sterling Circuit, Camperdown | $850 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn459view0"
+      }
+    },
+    {
+      "record_id": "domain:18382579",
+      "address": "10 Denison Street, Camperdown",
+      "source_url": "https://www.domain.com.au/10-denison-street-camperdown-nsw-2050-18382579",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/camperdown-nsw-2050/",
+        "search_crawl_label": "2 days ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "10 Denison Street, Camperdown | $850 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn459view1"
+      }
+    },
+    {
+      "record_id": "domain:18382436",
+      "address": "403/3 Sterling Circuit, Camperdown",
+      "source_url": "https://www.domain.com.au/403-3-sterling-circuit-camperdown-nsw-2050-18382436",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/camperdown-nsw-2050/",
+        "search_crawl_label": "2 days ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "403/3 Sterling Circuit, Camperdown | $900 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn459view2"
+      }
+    },
+    {
+      "record_id": "domain:18382249",
+      "address": "24/119-135 Church Street, Camperdown",
+      "source_url": "https://www.domain.com.au/24-119-135-church-street-camperdown-nsw-2050-18382249",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/camperdown-nsw-2050/",
+        "search_crawl_label": "2 days ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "24/119-135 Church Street, Camperdown | $980 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn459view3"
+      }
+    },
+    {
+      "record_id": "domain:18381432",
+      "address": "1 Sterling Circuit, Camperdown",
+      "source_url": "https://www.domain.com.au/1-sterling-circuit-camperdown-nsw-2050-18381432",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/camperdown-nsw-2050/",
+        "search_crawl_label": "2 days ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "1 Sterling Circuit, Camperdown | $900 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn459view4"
+      }
+    },
+    {
+      "record_id": "domain:18380237",
+      "address": "5/32-40 Gibbens Street, Camperdown",
+      "source_url": "https://www.domain.com.au/5-32-40-gibbens-street-camperdown-nsw-2050-18380237",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/camperdown-nsw-2050/",
+        "search_crawl_label": "2 days ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "5/32-40 Gibbens Street, Camperdown | $1200 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn459view5"
+      }
+    },
+    {
+      "record_id": "domain:17637176",
+      "address": "227/1 Missenden Road, Camperdown",
+      "source_url": "https://www.domain.com.au/227-1-missenden-road-camperdown-nsw-2050-17637176",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/camperdown-nsw-2050/",
+        "search_crawl_label": "2 days ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "227/1 Missenden Road, Camperdown | $750 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn459view6"
+      }
+    },
+    {
+      "record_id": "domain:18258821",
+      "address": "4 Sterling Circuit, Camperdown",
+      "source_url": "https://www.domain.com.au/4-sterling-circuit-camperdown-nsw-2050-18258821",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/stanmore-nsw-2048/?page=2",
+        "search_crawl_label": "2 months ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "4 Sterling Circuit, Camperdown | $850 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn459view7"
+      }
+    },
+    {
+      "record_id": "domain:15225836",
+      "address": "6/6 Barr Street, Camperdown",
+      "source_url": "https://www.domain.com.au/6-6-barr-street-camperdown-nsw-2050-15225836",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/camperdown-nsw-2050/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "6/6 Barr Street, Camperdown | $1650 per week | 3 Beds 2 Baths 1 Parking | Terrace",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn459view9"
+      }
+    },
+    {
+      "record_id": "domain:18292626",
+      "address": "402/1-3 Larkin Street, Camperdown",
+      "source_url": "https://www.domain.com.au/402-1-3-larkin-street-camperdown-nsw-2050-18292626",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/camperdown-nsw-2050/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "402/1-3 Larkin Street, Camperdown | $1500 per week | 3 Beds 3 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn464view0"
+      }
+    },
+    {
+      "record_id": "domain:18289220",
+      "address": "13/16-24 Dunblane Street, Camperdown",
+      "source_url": "https://www.domain.com.au/13-16-24-dunblane-street-camperdown-nsw-2050-18289220",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/camperdown-nsw-2050/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "13/16-24 Dunblane Street, Camperdown | $760 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn464view1"
+      }
+    },
+    {
+      "record_id": "domain:18289199",
+      "address": "44/46 Dunblane Street, Camperdown",
+      "source_url": "https://www.domain.com.au/44-46-dunblane-street-camperdown-nsw-2050-18289199",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/camperdown-nsw-2050/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "44/46 Dunblane Street, Camperdown | $980 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn464view2"
+      }
+    },
+    {
+      "record_id": "domain:18282048",
+      "address": "113/5-11 PYRMONT BRIDGE ROAD, Camperdown",
+      "source_url": "https://www.domain.com.au/113-5-11-pyrmont-bridge-road-camperdown-nsw-2050-18282048",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/camperdown-nsw-2050/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "113/5-11 PYRMONT BRIDGE ROAD, Camperdown | $1100 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn464view3"
+      }
+    },
+    {
+      "record_id": "domain:14391734",
+      "address": "15/12-14 Layton street, Camperdown",
+      "source_url": "https://www.domain.com.au/15-12-14-layton-street-camperdown-nsw-2050-14391734",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/camperdown-nsw-2050/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "15/12-14 Layton street, Camperdown | $800 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn464view4"
+      }
+    },
+    {
+      "record_id": "domain:18273072",
+      "address": "4/1 Sparkes Lane, Camperdown",
+      "source_url": "https://www.domain.com.au/4-1-sparkes-lane-camperdown-nsw-2050-18273072",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/camperdown-nsw-2050/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "4/1 Sparkes Lane, Camperdown | $1050 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn464view5"
+      }
+    },
+    {
+      "record_id": "domain:18262521",
+      "address": "15/39 Briggs Street, Camperdown",
+      "source_url": "https://www.domain.com.au/15-39-briggs-street-camperdown-nsw-2050-18262521",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/camperdown-nsw-2050/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "15/39 Briggs Street, Camperdown | $975 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn464view6"
+      }
+    },
+    {
+      "record_id": "domain:18261503",
+      "address": "25/35 Missenden Road, Camperdown",
+      "source_url": "https://www.domain.com.au/25-35-missenden-road-camperdown-nsw-2050-18261503",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/camperdown-nsw-2050/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "25/35 Missenden Road, Camperdown | $990 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn464view7"
+      }
+    },
+    {
+      "record_id": "domain:18287131",
+      "address": "20/23-25 Larkin Street, Camperdown",
+      "source_url": "https://www.domain.com.au/20-23-25-larkin-street-camperdown-nsw-2050-18287131",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/camperdown-nsw-2050/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "20/23-25 Larkin Street, Camperdown | $1200 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn464view8"
+      }
+    },
+    {
+      "record_id": "domain:18275729",
+      "address": "13/36-46 Briggs Street, Camperdown",
+      "source_url": "https://www.domain.com.au/13-36-46-briggs-street-camperdown-nsw-2050-18275729",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/camperdown-nsw-2050/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "13/36-46 Briggs Street, Camperdown | $1450 per week | 3 Beds 2 Baths 2 Parking | Penthouse",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn464view9"
+      }
+    },
+    {
+      "record_id": "domain:18258009",
+      "address": "401/113-117 Parramatta Road, Camperdown",
+      "source_url": "https://www.domain.com.au/401-113-117-parramatta-road-camperdown-nsw-2050-18258009",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/camperdown-nsw-2050/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "401/113-117 Parramatta Road, Camperdown | $880 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn464view10"
+      }
+    },
+    {
+      "record_id": "domain:18238775",
+      "address": "7/2a Pyrmont Bridge Road, Camperdown",
+      "source_url": "https://www.domain.com.au/7-2a-pyrmont-bridge-road-camperdown-nsw-2050-18238775",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/camperdown-nsw-2050/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "7/2a Pyrmont Bridge Road, Camperdown | $1650 per week | 4 Beds 3 Baths 2 Parking | Townhouse",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn465view0"
+      }
+    },
+    {
+      "record_id": "domain:17962598",
+      "address": "18/10 Pyrmont Bridge Road, Camperdown",
+      "source_url": "https://www.domain.com.au/18-10-pyrmont-bridge-road-camperdown-nsw-2050-17962598",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/forest-lodge-nsw-2037/?page=3",
+        "search_crawl_label": "8 months ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "18/10 Pyrmont Bridge Road , CAMPERDOWN | $900 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn465view1"
+      }
+    },
+    {
+      "record_id": "domain:17956724",
+      "address": "1301/2 Sterling Circuit, Camperdown",
+      "source_url": "https://www.domain.com.au/1301-2-sterling-circuit-camperdown-nsw-2050-17956724",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/forest-lodge-nsw-2037/?page=3",
+        "search_crawl_label": "8 months ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "1301/2 Sterling Circuit , CAMPERDOWN | $1100 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn465view3"
+      }
+    },
+    {
+      "record_id": "domain:17956389",
+      "address": "4/29-31 Church Street, Camperdown",
+      "source_url": "https://www.domain.com.au/4-29-31-church-street-camperdown-nsw-2050-17956389",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/forest-lodge-nsw-2037/?page=3",
+        "search_crawl_label": "8 months ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "4/29-31 Church Street , CAMPERDOWN | $1300 per week | 3 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn465view4"
+      }
+    },
+    {
+      "record_id": "domain:17983182",
+      "address": "13 Gilpin Street, Camperdown",
+      "source_url": "https://www.domain.com.au/13-gilpin-street-camperdown-nsw-2050-17983182",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/forest-lodge-nsw-2037/?page=3",
+        "search_crawl_label": "8 months ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "13 Gilpin Street , CAMPERDOWN | $1700 per week | 4 Beds 3 Baths 2 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn465view5"
+      }
+    },
+    {
+      "record_id": "domain:17980967",
+      "address": "33/5-13 Larkin Street, Camperdown",
+      "source_url": "https://www.domain.com.au/33-5-13-larkin-street-camperdown-nsw-2050-17980967",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/forest-lodge-nsw-2037/?page=3",
+        "search_crawl_label": "8 months ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "33/5-13 Larkin Street , CAMPERDOWN | $950 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn465view6"
+      }
+    },
+    {
+      "record_id": "domain:17971922",
+      "address": "51/36 Dunblane Street, Camperdown",
+      "source_url": "https://www.domain.com.au/51-36-dunblane-street-camperdown-nsw-2050-17971922",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/forest-lodge-nsw-2037/?page=3",
+        "search_crawl_label": "8 months ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "51/36 Dunblane Street , CAMPERDOWN | $985 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn465view7"
+      }
+    },
+    {
+      "record_id": "domain:15485631",
+      "address": "17/177-179 Salisbury Road, Camperdown",
+      "source_url": "https://www.domain.com.au/17-177-179-salisbury-road-camperdown-nsw-2050-15485631",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/forest-lodge-nsw-2037/?page=3",
+        "search_crawl_label": "8 months ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "17/177-179 Salisbury Road , CAMPERDOWN | $700 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn465view8"
+      }
+    },
+    {
+      "record_id": "domain:18295994",
+      "address": "2309/4 Sterling Circuit, Camperdown",
+      "source_url": "https://www.domain.com.au/2309-4-sterling-circuit-camperdown-nsw-2050-18295994",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/annandale-nsw-2038/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "2309/4 Sterling Circuit, Camperdown | $895 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn465view9"
+      }
+    },
+    {
+      "record_id": "domain:18295625",
+      "address": "409/1-3 Larkin Street, Camperdown",
+      "source_url": "https://www.domain.com.au/409-1-3-larkin-street-camperdown-nsw-2050-18295625",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/annandale-nsw-2038/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "409/1-3 Larkin Street, Camperdown | $900 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn465view10"
+      }
+    },
+    {
+      "record_id": "domain:18294597",
+      "address": "306/7 Sterling Circuit, Camperdown",
+      "source_url": "https://www.domain.com.au/306-7-sterling-circuit-camperdown-nsw-2050-18294597",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/annandale-nsw-2038/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "306/7 Sterling Circuit, Camperdown | $900 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn465view11"
+      }
+    },
+    {
+      "record_id": "domain:18330909",
+      "address": "3 Sterling Cct, Camperdown",
+      "source_url": "https://www.domain.com.au/3-sterling-cct-camperdown-nsw-2050-18330909",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/stanmore-nsw-2048/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "3 Sterling Cct, Camperdown | $850 Per Week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn466view0"
+      }
+    },
+    {
+      "record_id": "domain:16104847",
+      "address": "28/20 Fitzgerald Street, Newtown",
+      "source_url": "https://www.domain.com.au/28-20-fitzgerald-street-newtown-nsw-2042-16104847",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/newtown-nsw-2042/",
+        "search_crawl_label": "2 days ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "28/20 Fitzgerald Street, Newtown | $990 Per Week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn466view1"
+      }
+    },
+    {
+      "record_id": "domain:17416509",
+      "address": "3/195 DENISON STREET, Newtown",
+      "source_url": "https://www.domain.com.au/3-195-denison-street-newtown-nsw-2042-17416509",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/newtown-nsw-2042/",
+        "search_crawl_label": "2 days ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "3/195 DENISON STREET, Newtown | $1050 Per Week | 2 Beds 2 Baths 2 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn466view2"
+      }
+    },
+    {
+      "record_id": "domain:18354684",
+      "address": "207/63-71 Enmore Road, Newtown",
+      "source_url": "https://www.domain.com.au/207-63-71-enmore-road-newtown-nsw-2042-18354684",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/newtown-nsw-2042/?page=2",
+        "search_crawl_label": "today",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "207/63-71 Enmore Road, Newtown | $800 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn466view3"
+      }
+    },
+    {
+      "record_id": "domain:18353886",
+      "address": "16/71 Alice Street, Newtown",
+      "source_url": "https://www.domain.com.au/16-71-alice-street-newtown-nsw-2042-18353886",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/newtown-nsw-2042/?page=2",
+        "search_crawl_label": "today",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "16/71 Alice Street, Newtown | $520 per week | 0 Beds 1 Bath 1 Parking | Studio",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn466view4"
+      }
+    },
+    {
+      "record_id": "domain:18338305",
+      "address": "16/55 King Street, Newtown",
+      "source_url": "https://www.domain.com.au/16-55-king-street-newtown-nsw-2042-18338305",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/newtown-nsw-2042/?page=2",
+        "search_crawl_label": "today",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "16/55 King Street, Newtown | $760 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn466view5"
+      }
+    },
+    {
+      "record_id": "domain:16462545",
+      "address": "3/181 Missenden Rd, Newtown",
+      "source_url": "https://www.domain.com.au/3-181-missenden-rd-newtown-nsw-2042-16462545",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/newtown-nsw-2042/?page=2",
+        "search_crawl_label": "today",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "3/181 Missenden Rd, Newtown | $800 per week | 2 Beds 1 Bath 1 Parking | Townhouse",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn466view6"
+      }
+    },
+    {
+      "record_id": "domain:16591503",
+      "address": "110/655 King Street, Newtown",
+      "source_url": "https://www.domain.com.au/110-655-king-street-newtown-nsw-2042-16591503",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/newtown-nsw-2042/?page=2",
+        "search_crawl_label": "today",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "110/655 King Street, Newtown | $1195 per week | 3 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn466view7"
+      }
+    },
+    {
+      "record_id": "domain:18259038",
+      "address": "9/155 Missenden Road, Newtown",
+      "source_url": "https://www.domain.com.au/9-155-missenden-road-newtown-nsw-2042-18259038",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/stanmore-nsw-2048/?page=2",
+        "search_crawl_label": "2 months ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "9/155 Missenden Road, Newtown | $820 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn466view8"
+      }
+    },
+    {
+      "record_id": "domain:16743606",
+      "address": "21/617-627 King Street, Newtown",
+      "source_url": "https://www.domain.com.au/21-617-627-king-street-newtown-nsw-2042-16743606",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/stanmore-nsw-2048/?page=2",
+        "search_crawl_label": "2 months ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "21/617-627 King Street, Newtown | $600 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn466view9"
+      }
+    },
+    {
+      "record_id": "domain:15113495",
+      "address": "11/9 Trade Street, Newtown",
+      "source_url": "https://www.domain.com.au/11-9-trade-street-newtown-nsw-2042-15113495",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/newtown-nsw-2042/?page=3",
+        "search_crawl_label": "last week",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "11/9 Trade Street, Newtown | $465 per week | 0 Beds 1 Bath 1 Parking | Studio",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn466view10"
+      }
+    },
+    {
+      "record_id": "domain:18357711",
+      "address": "11/48-52 Darley, Newtown",
+      "source_url": "https://www.domain.com.au/11-48-52-darley-newtown-nsw-2042-18357711",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/newtown-nsw-2042/?page=3",
+        "search_crawl_label": "last week",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "11/48-52 Darley, Newtown | $820 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn466view11"
+      }
+    },
+    {
+      "record_id": "domain:14357035",
+      "address": "3/4 Kent Street, Newtown",
+      "source_url": "https://www.domain.com.au/3-4-kent-street-newtown-nsw-2042-14357035",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/newtown-nsw-2042/?page=3",
+        "search_crawl_label": "last week",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "3/4 Kent Street, Newtown | $480 per week | 1 Bed 1 Bath 1 Parking | Studio",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn467view0"
+      }
+    },
+    {
+      "record_id": "domain:18189589",
+      "address": "24 Wells Street, Newtown",
+      "source_url": "https://www.domain.com.au/24-wells-street-newtown-nsw-2042-18189589",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/newtown-nsw-2042/?page=3",
+        "search_crawl_label": "last week",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "24 Wells Street, Newtown | $1100 per week | 2 Beds 1 Bath 1 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn467view1"
+      }
+    },
+    {
+      "record_id": "domain:18299654",
+      "address": "308 Edgeware Road, Newtown",
+      "source_url": "https://www.domain.com.au/308-edgeware-road-newtown-nsw-2042-18299654",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/newtown-nsw-2042/?page=3",
+        "search_crawl_label": "last week",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "308 Edgeware Road, Newtown | $1390 per week | 4 Beds 2 Baths 1 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn467view2"
+      }
+    },
+    {
+      "record_id": "domain:18281668",
+      "address": "207 Denison Street, Newtown",
+      "source_url": "https://www.domain.com.au/207-denison-street-newtown-nsw-2042-18281668",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/newtown-nsw-2042/?page=3",
+        "search_crawl_label": "last week",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "207 Denison Street, Newtown | $1400 per week | 3 Beds 1 Bath 1 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn467view3"
+      }
+    },
+    {
+      "record_id": "domain:18252033",
+      "address": "76B Probert Street, Newtown",
+      "source_url": "https://www.domain.com.au/76b-probert-street-newtown-nsw-2042-18252033",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/enmore-nsw-2042/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "76B Probert Street, Newtown | $1390 per week | 3 Beds 2 Baths 1 Parking | Terrace",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn467view4"
+      }
+    },
+    {
+      "record_id": "domain:18248051",
+      "address": "18/1 Gladstone Street, Newtown",
+      "source_url": "https://www.domain.com.au/18-1-gladstone-street-newtown-nsw-2042-18248051",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/enmore-nsw-2042/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "18/1 Gladstone Street, Newtown | $770 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn467view5"
+      }
+    },
+    {
+      "record_id": "domain:18330352",
+      "address": "69/19-25 Queen Street, Newtown",
+      "source_url": "https://www.domain.com.au/69-19-25-queen-street-newtown-nsw-2042-18330352",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/stanmore-nsw-2048/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "69/19-25 Queen Street, Newtown | $850 Per Week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn467view6"
+      }
+    },
+    {
+      "record_id": "domain:18329499",
+      "address": "305/1 Georgina Street, Newtown",
+      "source_url": "https://www.domain.com.au/305-1-georgina-street-newtown-nsw-2042-18329499",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/stanmore-nsw-2048/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "305/1 Georgina Street, Newtown | $850 Per Week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn467view7"
+      }
+    },
+    {
+      "record_id": "domain:18387271",
+      "address": "1/2A Forsyth Street, Glebe",
+      "source_url": "https://www.domain.com.au/1-2a-forsyth-street-glebe-nsw-2037-18387271",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/glebe-nsw-2037/",
+        "search_crawl_label": "today",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "1/2A Forsyth Street, Glebe | $1200 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn467view9"
+      }
+    },
+    {
+      "record_id": "domain:17408568",
+      "address": "705/2F Wentworth Park Road, Glebe",
+      "source_url": "https://www.domain.com.au/705-2f-wentworth-park-road-glebe-nsw-2037-17408568",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/glebe-nsw-2037/",
+        "search_crawl_label": "today",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "705/2F Wentworth Park Road, Glebe | $1050 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn467view11"
+      }
+    },
+    {
+      "record_id": "domain:18385670",
+      "address": "4/94 Forsyth Street, Glebe",
+      "source_url": "https://www.domain.com.au/4-94-forsyth-street-glebe-nsw-2037-18385670",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/glebe-nsw-2037/",
+        "search_crawl_label": "today",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "4/94 Forsyth Street, Glebe | $1350 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn468view0"
+      }
+    },
+    {
+      "record_id": "domain:18385041",
+      "address": "1B Reuss Street, Glebe",
+      "source_url": "https://www.domain.com.au/1b-reuss-street-glebe-nsw-2037-18385041",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/glebe-nsw-2037/",
+        "search_crawl_label": "today",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "1B Reuss Street, Glebe | $1350 per week | 3 Beds 1 Bath 1 Parking | Townhouse",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn468view1"
+      }
+    },
+    {
+      "record_id": "domain:18370611",
+      "address": "6 Cowper Street, Glebe",
+      "source_url": "https://www.domain.com.au/6-cowper-street-glebe-nsw-2037-18370611",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/glebe-nsw-2037/",
+        "search_crawl_label": "today",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "6 Cowper Street, Glebe | $1200 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn468view2"
+      }
+    },
+    {
+      "record_id": "domain:18347115",
+      "address": "4/12-14 Queen Street, Glebe",
+      "source_url": "https://www.domain.com.au/4-12-14-queen-street-glebe-nsw-2037-18347115",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/glebe-nsw-2037/",
+        "search_crawl_label": "today",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "4/12-14 Queen Street, Glebe | $730 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn468view3"
+      }
+    },
+    {
+      "record_id": "domain:18326085",
+      "address": "3/1a Hegarty Street, Glebe",
+      "source_url": "https://www.domain.com.au/3-1a-hegarty-street-glebe-nsw-2037-18326085",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/glebe-nsw-2037/",
+        "search_crawl_label": "today",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "3/1a Hegarty Street, Glebe | $780 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn468view4"
+      }
+    },
+    {
+      "record_id": "domain:18329679",
+      "address": "4/20-24 Hereford Street, Glebe",
+      "source_url": "https://www.domain.com.au/4-20-24-hereford-street-glebe-nsw-2037-18329679",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/glebe-nsw-2037/",
+        "search_crawl_label": "today",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "4/20-24 Hereford Street, Glebe | $1600 per week | 3 Beds 2 Baths 2 Parking | Townhouse",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn468view5"
+      }
+    },
+    {
+      "record_id": "domain:18298414",
+      "address": "20/211 Wigram Road, Glebe",
+      "source_url": "https://www.domain.com.au/20-211-wigram-road-glebe-nsw-2037-18298414",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/glebe-nsw-2037/?page=2",
+        "search_crawl_label": "3 weeks ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "20/211 Wigram Road, Glebe | $800 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn468view6"
+      }
+    },
+    {
+      "record_id": "domain:18280289",
+      "address": "37/75a Ross Street, Glebe",
+      "source_url": "https://www.domain.com.au/37-75a-ross-street-glebe-nsw-2037-18280289",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/glebe-nsw-2037/?page=2",
+        "search_crawl_label": "3 weeks ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "37/75a Ross Street, Glebe | $850 per week | 2 Beds 1 Bath 2 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn468view7"
+      }
+    },
+    {
+      "record_id": "domain:18294665",
+      "address": "10/10 Avona Avenue, Glebe",
+      "source_url": "https://www.domain.com.au/10-10-avona-avenue-glebe-nsw-2037-18294665",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/glebe-nsw-2037/?page=2",
+        "search_crawl_label": "3 weeks ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "10/10 Avona Avenue, Glebe | $750 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn468view8"
+      }
+    },
+    {
+      "record_id": "domain:18291229",
+      "address": "57/215 Bridge Road, Glebe",
+      "source_url": "https://www.domain.com.au/57-215-bridge-road-glebe-nsw-2037-18291229",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/glebe-nsw-2037/?page=2",
+        "search_crawl_label": "3 weeks ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "57/215 Bridge Road, Glebe | $1250 per week | 3 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn468view9"
+      }
+    },
+    {
+      "record_id": "domain:10908712",
+      "address": "31 Westmoreland Street, Glebe",
+      "source_url": "https://www.domain.com.au/31-westmoreland-street-glebe-nsw-2037-10908712",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/glebe-nsw-2037/?page=2",
+        "search_crawl_label": "3 weeks ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "31 Westmoreland Street, Glebe | $1150 per week | 3 Beds 1 Bath 1 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn468view10"
+      }
+    },
+    {
+      "record_id": "domain:17145420",
+      "address": "7 Talfourd Street, Glebe",
+      "source_url": "https://www.domain.com.au/7-talfourd-street-glebe-nsw-2037-17145420",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/glebe-nsw-2037/?page=2",
+        "search_crawl_label": "3 weeks ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "7 Talfourd Street, Glebe | $900 per week | 2 Beds 1 Bath 1 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn468view11"
+      }
+    },
+    {
+      "record_id": "domain:14580291",
+      "address": "32/4-8 Bridge Road, Glebe",
+      "source_url": "https://www.domain.com.au/32-4-8-bridge-road-glebe-nsw-2037-14580291",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/glebe-nsw-2037/?page=2",
+        "search_crawl_label": "3 weeks ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "32/4-8 Bridge Road, Glebe | $1550 per week | 3 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn469view0"
+      }
+    },
+    {
+      "record_id": "domain:18286532",
+      "address": "5/407-409 Glebe Point Road, Glebe",
+      "source_url": "https://www.domain.com.au/5-407-409-glebe-point-road-glebe-nsw-2037-18286532",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/glebe-nsw-2037/?page=2",
+        "search_crawl_label": "3 weeks ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "5/407-409 Glebe Point Road, Glebe | $780 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn469view1"
+      }
+    },
+    {
+      "record_id": "domain:17951333",
+      "address": "1 Woolley Street, Glebe",
+      "source_url": "https://www.domain.com.au/1-woolley-street-glebe-nsw-2037-17951333",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/forest-lodge-nsw-2037/?page=3",
+        "search_crawl_label": "8 months ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "1 Woolley Street , GLEBE | $1000 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn469view2"
+      }
+    },
+    {
+      "record_id": "domain:17850897",
+      "address": "3a/131-145 Glebe Point Road, Glebe",
+      "source_url": "https://www.domain.com.au/3a-131-145-glebe-point-road-glebe-nsw-2037-17850897",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/forest-lodge-nsw-2037/?page=3",
+        "search_crawl_label": "8 months ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "3a/131-145 Glebe Point Road , GLEBE | $890 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn469view4"
+      }
+    },
+    {
+      "record_id": "domain:18297033",
+      "address": "4 Colbourne Avenue, Glebe",
+      "source_url": "https://www.domain.com.au/4-colbourne-avenue-glebe-nsw-2037-18297033",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/annandale-nsw-2038/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "4 Colbourne Avenue, Glebe | $1450 per week | 3 Beds 2 Baths 1 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn469view5"
+      }
+    },
+    {
+      "record_id": "domain:18258224",
+      "address": "6405/162 Ross Street, Forest Lodge",
+      "source_url": "https://www.domain.com.au/6405-162-ross-street-forest-lodge-nsw-2037-18258224",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/forest-lodge-nsw-2037/",
+        "search_crawl_label": "3 days ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "6405/162 Ross Street, Forest Lodge | $1520 per week | 3 Beds 2 Baths 2 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn469view7"
+      }
+    },
+    {
+      "record_id": "domain:18370264",
+      "address": "3/23-25 Ross Street, Forest Lodge",
+      "source_url": "https://www.domain.com.au/3-23-25-ross-street-forest-lodge-nsw-2037-18370264",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/forest-lodge-nsw-2037/",
+        "search_crawl_label": "3 days ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "3/23-25 Ross Street, Forest Lodge | $800 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn469view8"
+      }
+    },
+    {
+      "record_id": "domain:18163604",
+      "address": "406/136 Ross Street, Forest Lodge",
+      "source_url": "https://www.domain.com.au/406-136-ross-street-forest-lodge-nsw-2037-18163604",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/forest-lodge-nsw-2037/",
+        "search_crawl_label": "3 days ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "406/136 Ross Street, Forest Lodge | $900 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn469view9"
+      }
+    },
+    {
+      "record_id": "domain:17872410",
+      "address": "36/62 Booth Street, Annandale",
+      "source_url": "https://www.domain.com.au/36-62-booth-street-annandale-nsw-2038-17872410",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/annandale-nsw-2038/",
+        "search_crawl_label": "today",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "36/62 Booth Street, Annandale | $890 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn469view10"
+      }
+    },
+    {
+      "record_id": "domain:18362013",
+      "address": "16/47 Trafalgar Street, Annandale",
+      "source_url": "https://www.domain.com.au/16-47-trafalgar-street-annandale-nsw-2038-18362013",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/annandale-nsw-2038/",
+        "search_crawl_label": "today",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "16/47 Trafalgar Street, Annandale | $775 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn469view11"
+      }
+    },
+    {
+      "record_id": "domain:15222534",
+      "address": "25/44 Collins Street, Annandale",
+      "source_url": "https://www.domain.com.au/25-44-collins-street-annandale-nsw-2038-15222534",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/annandale-nsw-2038/",
+        "search_crawl_label": "today",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "25/44 Collins Street, Annandale | $750 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn470view0"
+      }
+    },
+    {
+      "record_id": "domain:18362015",
+      "address": "27 Taylor Street, Annandale",
+      "source_url": "https://www.domain.com.au/27-taylor-street-annandale-nsw-2038-18362015",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/annandale-nsw-2038/",
+        "search_crawl_label": "today",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "27 Taylor Street, Annandale | $1400 per week | 3 Beds 2 Baths 1 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn470view1"
+      }
+    },
+    {
+      "record_id": "domain:17977460",
+      "address": "9/27 Johnston Street, Annandale",
+      "source_url": "https://www.domain.com.au/9-27-johnston-street-annandale-nsw-2038-17977460",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/forest-lodge-nsw-2037/?page=3",
+        "search_crawl_label": "8 months ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "9/27 Johnston Street , ANNANDALE | $700 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn470view3"
+      }
+    },
+    {
+      "record_id": "domain:17973516",
+      "address": "214 Young Street, Annandale",
+      "source_url": "https://www.domain.com.au/214-young-street-annandale-nsw-2038-17973516",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/forest-lodge-nsw-2037/?page=3",
+        "search_crawl_label": "8 months ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "214 Young Street , ANNANDALE | $1200 per week | 3 Beds 2 Baths 2 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn470view4"
+      }
+    },
+    {
+      "record_id": "domain:18331612",
+      "address": "3/1 Hutchinson Street, Annandale",
+      "source_url": "https://www.domain.com.au/3-1-hutchinson-street-annandale-nsw-2038-18331612",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/stanmore-nsw-2048/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "3/1 Hutchinson Street, Annandale | $710 Per Week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn470view6"
+      }
+    },
+    {
+      "record_id": "domain:18342179",
+      "address": "55/268 Johnston Street, Annandale",
+      "source_url": "https://www.domain.com.au/55-268-johnston-street-annandale-nsw-2038-18342179",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/leichhardt-nsw-2040/?page=3",
+        "search_crawl_label": "3 weeks ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "55/268 Johnston Street, Annandale | $650 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn470view7"
+      }
+    },
+    {
+      "record_id": "domain:18357454",
+      "address": "18/21-27 Tupper Street, Enmore",
+      "source_url": "https://www.domain.com.au/18-21-27-tupper-street-enmore-nsw-2042-18357454",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/enmore-nsw-2042/",
+        "search_crawl_label": "4 days ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "18/21-27 Tupper Street, Enmore | $800 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn470view9"
+      }
+    },
+    {
+      "record_id": "domain:16765174",
+      "address": "5/278 Enmore Road, Enmore",
+      "source_url": "https://www.domain.com.au/5-278-enmore-road-enmore-nsw-2042-16765174",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/enmore-nsw-2042/",
+        "search_crawl_label": "4 days ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "5/278 Enmore Road, Enmore | $990 per week | 3 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn470view10"
+      }
+    },
+    {
+      "record_id": "domain:16895041",
+      "address": "1/200 Enmore, Enmore",
+      "source_url": "https://www.domain.com.au/1-200-enmore-enmore-nsw-2042-16895041",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/enmore-nsw-2042/",
+        "search_crawl_label": "4 days ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "1/200 Enmore, Enmore | $670 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn470view11"
+      }
+    },
+    {
+      "record_id": "domain:18384118",
+      "address": "41 Northumberland Avenue, Stanmore",
+      "source_url": "https://www.domain.com.au/41-northumberland-avenue-stanmore-nsw-2048-18384118",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/stanmore-nsw-2048/",
+        "search_crawl_label": "yesterday",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "41 Northumberland Avenue, Stanmore | $1200 per week | 3 Beds 1 Bath 1 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn471view0"
+      }
+    },
+    {
+      "record_id": "domain:18380104",
+      "address": "2/58 Clarendon Road, Stanmore",
+      "source_url": "https://www.domain.com.au/2-58-clarendon-road-stanmore-nsw-2048-18380104",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/stanmore-nsw-2048/",
+        "search_crawl_label": "yesterday",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "2/58 Clarendon Road, Stanmore | $800 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn471view1"
+      }
+    },
+    {
+      "record_id": "domain:18234477",
+      "address": "69 Cardigan Street, Stanmore",
+      "source_url": "https://www.domain.com.au/69-cardigan-street-stanmore-nsw-2048-18234477",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/stanmore-nsw-2048/",
+        "search_crawl_label": "yesterday",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "69 Cardigan Street, Stanmore | $2450 per week | 5 Beds 3 Baths 1 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn471view2"
+      }
+    },
+    {
+      "record_id": "domain:17112343",
+      "address": "13/50 Parramatta Road, Stanmore",
+      "source_url": "https://www.domain.com.au/13-50-parramatta-road-stanmore-nsw-2048-17112343",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/stanmore-nsw-2048/",
+        "search_crawl_label": "yesterday",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "13/50 Parramatta Road, Stanmore | $650 per week | 1 Bed 1 Bath 1 Parking | Studio",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn471view3"
+      }
+    },
+    {
+      "record_id": "domain:18205907",
+      "address": "88 Northumberland Avenue, Stanmore",
+      "source_url": "https://www.domain.com.au/88-northumberland-avenue-stanmore-nsw-2048-18205907",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/stanmore-nsw-2048/?page=2",
+        "search_crawl_label": "2 months ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "88 Northumberland Avenue, Stanmore | $950 per week | 2 Beds 1 Bath 1 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn471view4"
+      }
+    },
+    {
+      "record_id": "domain:18294727",
+      "address": "316/23 Corunna Road, Stanmore",
+      "source_url": "https://www.domain.com.au/316-23-corunna-road-stanmore-nsw-2048-18294727",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/annandale-nsw-2038/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "316/23 Corunna Road, Stanmore | $850 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn471view5"
+      }
+    },
+    {
+      "record_id": "domain:18347412",
+      "address": "3/252 Stanmore Road, Stanmore",
+      "source_url": "https://www.domain.com.au/3-252-stanmore-road-stanmore-nsw-2048-18347412",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/leichhardt-nsw-2040/?page=3",
+        "search_crawl_label": "3 weeks ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "3/252 Stanmore Road, Stanmore | $800 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn471view7"
+      }
+    },
+    {
+      "record_id": "domain:18378808",
+      "address": "104/16 Fisher Street, Petersham",
+      "source_url": "https://www.domain.com.au/104-16-fisher-street-petersham-nsw-2049-18378808",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/petersham-nsw-2049/",
+        "search_crawl_label": "3 days ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "104/16 Fisher Street, Petersham | $795 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn471view8"
+      }
+    },
+    {
+      "record_id": "domain:18375595",
+      "address": "7 Albert Street, Petersham",
+      "source_url": "https://www.domain.com.au/7-albert-street-petersham-nsw-2049-18375595",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/petersham-nsw-2049/",
+        "search_crawl_label": "3 days ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "7 Albert Street, Petersham | $1300 per week | 3 Beds 1 Bath 1 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn471view9"
+      }
+    },
+    {
+      "record_id": "domain:18374978",
+      "address": "12/61-63 New Canterbury Road, Petersham",
+      "source_url": "https://www.domain.com.au/12-61-63-new-canterbury-road-petersham-nsw-2049-18374978",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/petersham-nsw-2049/",
+        "search_crawl_label": "3 days ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "12/61-63 New Canterbury Road, Petersham | $820 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn471view10"
+      }
+    },
+    {
+      "record_id": "domain:18340938",
+      "address": "31B Chester Street, Petersham",
+      "source_url": "https://www.domain.com.au/31b-chester-street-petersham-nsw-2049-18340938",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/petersham-nsw-2049/",
+        "search_crawl_label": "3 days ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "31B Chester Street, Petersham | $1400 per week | 3 Beds 2 Baths 2 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn471view11"
+      }
+    },
+    {
+      "record_id": "domain:18382685",
+      "address": "324 Stanmore Road, Petersham",
+      "source_url": "https://www.domain.com.au/324-stanmore-road-petersham-nsw-2049-18382685",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/petersham-nsw-2049/",
+        "search_crawl_label": "3 days ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "324 Stanmore Road, Petersham | $900 per week | 3 Beds 1 Bath 1 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn472view2"
+      }
+    },
+    {
+      "record_id": "domain:18381859",
+      "address": "2 Napier St, Petersham",
+      "source_url": "https://www.domain.com.au/2-napier-st-petersham-nsw-2049-18381859",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/petersham-nsw-2049/",
+        "search_crawl_label": "3 days ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "2 Napier St, Petersham | $1500 per week | 4 Beds 2 Baths 1 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn472view3"
+      }
+    },
+    {
+      "record_id": "domain:18294429",
+      "address": "202 Albany Road, Petersham",
+      "source_url": "https://www.domain.com.au/202-albany-road-petersham-nsw-2049-18294429",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/annandale-nsw-2038/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "202 Albany Road, Petersham | $1595 per week | 4 Beds 2 Baths 1 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn472view4"
+      }
+    },
+    {
+      "record_id": "domain:18381921",
+      "address": "211/447-451 Parramatta Road, Leichhardt",
+      "source_url": "https://www.domain.com.au/211-447-451-parramatta-road-leichhardt-nsw-2040-18381921",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/leichhardt-nsw-2040/",
+        "search_crawl_label": "yesterday",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "211/447-451 Parramatta Road, Leichhardt | $950 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn472view5"
+      }
+    },
+    {
+      "record_id": "domain:13685396",
+      "address": "20/1 IVORY LANE, Leichhardt",
+      "source_url": "https://www.domain.com.au/20-1-ivory-lane-leichhardt-nsw-2040-13685396",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/leichhardt-nsw-2040/",
+        "search_crawl_label": "yesterday",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "20/1 IVORY LANE, Leichhardt | $900 per week | 2 Beds 2 Baths 2 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn472view7"
+      }
+    },
+    {
+      "record_id": "domain:18364234",
+      "address": "55 Catherine Street, Leichhardt",
+      "source_url": "https://www.domain.com.au/55-catherine-street-leichhardt-nsw-2040-18364234",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/leichhardt-nsw-2040/",
+        "search_crawl_label": "yesterday",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "55 Catherine Street, Leichhardt | $1150 per week | 3 Beds 1 Bath 1 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn472view8"
+      }
+    },
+    {
+      "record_id": "domain:17814038",
+      "address": "16/47-49 Burfitt Street, Leichhardt",
+      "source_url": "https://www.domain.com.au/16-47-49-burfitt-street-leichhardt-nsw-2040-17814038",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/leichhardt-nsw-2040/",
+        "search_crawl_label": "yesterday",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "16/47-49 Burfitt Street, Leichhardt | $670 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn472view9"
+      }
+    },
+    {
+      "record_id": "domain:18322413",
+      "address": "183 Marion Street, Leichhardt",
+      "source_url": "https://www.domain.com.au/183-marion-street-leichhardt-nsw-2040-18322413",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/leichhardt-nsw-2040/",
+        "search_crawl_label": "yesterday",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "183 Marion Street, Leichhardt | $945 per week | 2 Beds 1 Bath 1 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn472view11"
+      }
+    },
+    {
+      "record_id": "domain:18258902",
+      "address": "41 Hill St, Leichhardt",
+      "source_url": "https://www.domain.com.au/41-hill-st-leichhardt-nsw-2040-18258902",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/stanmore-nsw-2048/?page=2",
+        "search_crawl_label": "2 months ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "41 Hill St, Leichhardt | $1700 per week | 4 Beds 2 Baths 1 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn473view0"
+      }
+    },
+    {
+      "record_id": "domain:18258381",
+      "address": "50 Flood Street, Leichhardt",
+      "source_url": "https://www.domain.com.au/50-flood-street-leichhardt-nsw-2040-18258381",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/stanmore-nsw-2048/?page=2",
+        "search_crawl_label": "2 months ago",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "50 Flood Street, Leichhardt | $1200 per week | 3 Beds 2 Baths 2 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn473view1"
+      }
+    },
+    {
+      "record_id": "domain:18292860",
+      "address": "7/10 Emma Street, Leichhardt",
+      "source_url": "https://www.domain.com.au/7-10-emma-street-leichhardt-nsw-2040-18292860",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/leichhardt-nsw-2040/?page=2",
+        "search_crawl_label": "last week",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "7/10 Emma Street, Leichhardt | $1150 per week | 2 Beds 3 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn473view2"
+      }
+    },
+    {
+      "record_id": "domain:18370569",
+      "address": "3/12-14 Derbyshire Road, Leichhardt",
+      "source_url": "https://www.domain.com.au/3-12-14-derbyshire-road-leichhardt-nsw-2040-18370569",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/leichhardt-nsw-2040/?page=2",
+        "search_crawl_label": "last week",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "3/12-14 Derbyshire Road, Leichhardt | $490 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn473view3"
+      }
+    },
+    {
+      "record_id": "domain:18364096",
+      "address": "4/188 Flood Street, Leichhardt",
+      "source_url": "https://www.domain.com.au/4-188-flood-street-leichhardt-nsw-2040-18364096",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/leichhardt-nsw-2040/?page=2",
+        "search_crawl_label": "last week",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "4/188 Flood Street, Leichhardt | $600 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn473view4"
+      }
+    },
+    {
+      "record_id": "domain:18223642",
+      "address": "5 Norton Street, Leichhardt",
+      "source_url": "https://www.domain.com.au/5-norton-street-leichhardt-nsw-2040-18223642",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/leichhardt-nsw-2040/?page=2",
+        "search_crawl_label": "last week",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "5 Norton Street, Leichhardt | $1100 per week | 4 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn473view5"
+      }
+    },
+    {
+      "record_id": "domain:18296386",
+      "address": "17/10 Emma Street, Leichhardt",
+      "source_url": "https://www.domain.com.au/17-10-emma-street-leichhardt-nsw-2040-18296386",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/annandale-nsw-2038/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": null,
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:45:28.609413+00:00",
+        "card_facts": "17/10 Emma Street, Leichhardt | $1200 per week | 3 Beds 3 Baths 1 Parking | Townhouse",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "url_resolution_method": "public_web_index_link",
+        "url_resolution_reference": "turn473view6"
+      }
+    },
+    {
+      "record_id": "domain:18275215",
+      "address": "6/52-60 Renwick Street, Redfern",
+      "source_url": "https://www.domain.com.au/6-52-60-renwick-street-redfern-nsw-2016-18275215",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/redfern-nsw-2016/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "yesterday",
+        "detail_read": true,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "6/52-60 Renwick Street, Redfern | $1200 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": 2,
+          "bathrooms": 2,
+          "weekly_rent": 1200,
+          "bond": 4800,
+          "available_from_raw": "Available Now",
+          "car_spaces": 1
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18272172",
+      "address": "1304/157 Redfern Street, Redfern",
+      "source_url": "https://www.domain.com.au/1304-157-redfern-street-redfern-nsw-2016-18272172",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/redfern-nsw-2016/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "3 weeks ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "1304/157 Redfern Street, Redfern | $1300 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18268309",
+      "address": "1404/1b Lawson Square, Redfern",
+      "source_url": "https://www.domain.com.au/1404-1b-lawson-square-redfern-nsw-2016-18268309",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/redfern-nsw-2016/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "1404/1b Lawson Square, Redfern | $1250 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18253815",
+      "address": "8/10-38 Renwick Street, Redfern",
+      "source_url": "https://www.domain.com.au/8-10-38-renwick-street-redfern-nsw-2016-18253815",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/redfern-nsw-2016/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "8/10-38 Renwick Street, Redfern | $850 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18296455",
+      "address": "102/199 Regent Street, Redfern",
+      "source_url": "https://www.domain.com.au/102-199-regent-street-redfern-nsw-2016-18296455",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/redfern-nsw-2016/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "102/199 Regent Street, Redfern | $970 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18263122",
+      "address": "3/165-173 Cleveland Street, Redfern",
+      "source_url": "https://www.domain.com.au/3-165-173-cleveland-street-redfern-nsw-2016-18263122",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/redfern-nsw-2016/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "3/165-173 Cleveland Street, Redfern | $750 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18250584",
+      "address": "12/134-138 Redfern Street, Redfern",
+      "source_url": "https://www.domain.com.au/12-134-138-redfern-street-redfern-nsw-2016-18250584",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/redfern-nsw-2016/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "12/134-138 Redfern Street, Redfern | $795 per week | 1 Bed 1 Bath 2 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:9641484",
+      "address": "27/219 Chalmers St, Redfern",
+      "source_url": "https://www.domain.com.au/27-219-chalmers-st-redfern-nsw-2016-9641484",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/redfern-nsw-2016/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "27/219 Chalmers St, Redfern | $695 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:14222226",
+      "address": "17/146 Pitt St, Redfern",
+      "source_url": "https://www.domain.com.au/17-146-pitt-st-redfern-nsw-2016-14222226",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/redfern-nsw-2016/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "2 weeks ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "17/146 Pitt St, Redfern | $776 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18236498",
+      "address": "85/21-69 Regent Street, Redfern",
+      "source_url": "https://www.domain.com.au/85-21-69-regent-street-redfern-nsw-2016-18236498",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/redfern-nsw-2016/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last week",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "85/21-69 Regent Street, Redfern | $990 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:14451514",
+      "address": "6/146-152 Pitt Street, Redfern",
+      "source_url": "https://www.domain.com.au/6-146-152-pitt-street-redfern-nsw-2016-14451514",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/redfern-nsw-2016/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "2 days ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "6/146-152 Pitt Street, Redfern | $1250 per week | 3 Beds 2 Baths 2 Parking | Townhouse",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18162109",
+      "address": "9/137 Regent street, Redfern",
+      "source_url": "https://www.domain.com.au/9-137-regent-street-redfern-nsw-2016-18162109",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/redfern-nsw-2016/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "9/137 Regent street, Redfern | $1000 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18349462",
+      "address": "605/46 Wentworth Avenue, Surry Hills",
+      "source_url": "https://www.domain.com.au/605-46-wentworth-avenue-surry-hills-nsw-2010-18349462",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/surry-hills-nsw-2010/?page=2",
+        "search_crawl_label": "2 weeks ago",
+        "detail_crawl_label": "5 days ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "605/46 Wentworth Avenue, Surry Hills | $2150 per week | 3 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18346821",
+      "address": "17 Ridge Street, Surry Hills",
+      "source_url": "https://www.domain.com.au/17-ridge-street-surry-hills-nsw-2010-18346821",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/surry-hills-nsw-2010/?page=2",
+        "search_crawl_label": "2 weeks ago",
+        "detail_crawl_label": "last week",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "17 Ridge Street, Surry Hills | $1950 per week | 4 Beds 3 Baths 1 Parking | Terrace",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18339261",
+      "address": "107/188 Chalmers Street, Surry Hills",
+      "source_url": "https://www.domain.com.au/107-188-chalmers-street-surry-hills-nsw-2010-18339261",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/surry-hills-nsw-2010/?page=2",
+        "search_crawl_label": "2 weeks ago",
+        "detail_crawl_label": "2 weeks ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "107/188 Chalmers Street, Surry Hills | $1100 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18337175",
+      "address": "204/249 Devonshire Street, Surry Hills",
+      "source_url": "https://www.domain.com.au/204-249-devonshire-street-surry-hills-nsw-2010-18337175",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/surry-hills-nsw-2010/?page=2",
+        "search_crawl_label": "2 weeks ago",
+        "detail_crawl_label": "3 days ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "204/249 Devonshire Street, Surry Hills | $1400 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18329956",
+      "address": "1/51-53 Prospect St, Surry Hills",
+      "source_url": "https://www.domain.com.au/1-51-53-prospect-st-surry-hills-nsw-2010-18329956",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/surry-hills-nsw-2010/?page=2",
+        "search_crawl_label": "2 weeks ago",
+        "detail_crawl_label": "today",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "1/51-53 Prospect St, Surry Hills | $3000 per week | 4 Beds 3 Baths 1 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18317059",
+      "address": "1003/20 Pelican Street, Surry Hills",
+      "source_url": "https://www.domain.com.au/1003-20-pelican-street-surry-hills-nsw-2010-18317059",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/surry-hills-nsw-2010/?page=2",
+        "search_crawl_label": "2 weeks ago",
+        "detail_crawl_label": "3 days ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "1003/20 Pelican Street, Surry Hills | $1950 per week | 3 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:15398719",
+      "address": "7/1 Shirley Street, Alexandria",
+      "source_url": "https://www.domain.com.au/7-1-shirley-street-alexandria-nsw-2015-15398719",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/alexandria-nsw-2015/?page=2",
+        "search_crawl_label": "last week",
+        "detail_crawl_label": "last week",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "7/1 Shirley Street, Alexandria | $895 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18360281",
+      "address": "69 Buckland St, Alexandria",
+      "source_url": "https://www.domain.com.au/69-buckland-st-alexandria-nsw-2015-18360281",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/alexandria-nsw-2015/?page=2",
+        "search_crawl_label": "last week",
+        "detail_crawl_label": "5 days ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "69 Buckland St, Alexandria | $1150 per week | 2 Beds 1 Bath 1 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18353753",
+      "address": "4/288 Lawrence Street, Alexandria",
+      "source_url": "https://www.domain.com.au/4-288-lawrence-street-alexandria-nsw-2015-18353753",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/alexandria-nsw-2015/?page=2",
+        "search_crawl_label": "last week",
+        "detail_crawl_label": "yesterday",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "4/288 Lawrence Street, Alexandria | $1150 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18351010",
+      "address": "113/2 Mandible Street, Alexandria",
+      "source_url": "https://www.domain.com.au/113-2-mandible-street-alexandria-nsw-2015-18351010",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/alexandria-nsw-2015/?page=2",
+        "search_crawl_label": "last week",
+        "detail_crawl_label": "3 days ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "113/2 Mandible Street, Alexandria | $745 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18336068",
+      "address": "18 Huntley Street, Alexandria",
+      "source_url": "https://www.domain.com.au/18-huntley-street-alexandria-nsw-2015-18336068",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/alexandria-nsw-2015/?page=2",
+        "search_crawl_label": "last week",
+        "detail_crawl_label": "last week",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "18 Huntley Street, Alexandria | $900 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18330391",
+      "address": "301/636 Botany Road, Alexandria",
+      "source_url": "https://www.domain.com.au/301-636-botany-road-alexandria-nsw-2015-18330391",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/alexandria-nsw-2015/?page=2",
+        "search_crawl_label": "last week",
+        "detail_crawl_label": "6 days ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "301/636 Botany Road, Alexandria | $1200 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:16890760",
+      "address": "10/300-322 Mitchell Road, Alexandria",
+      "source_url": "https://www.domain.com.au/10-300-322-mitchell-road-alexandria-nsw-2015-16890760",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/alexandria-nsw-2015/?page=2",
+        "search_crawl_label": "last week",
+        "detail_crawl_label": "last week",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "10/300-322 Mitchell Road, Alexandria | $995 per week | 3 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18346541",
+      "address": "96 Mitchell Road, Alexandria",
+      "source_url": "https://www.domain.com.au/96-mitchell-road-alexandria-nsw-2015-18346541",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/alexandria-nsw-2015/?page=2",
+        "search_crawl_label": "last week",
+        "detail_crawl_label": "last week",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "96 Mitchell Road, Alexandria | $1300 per week | 3 Beds 1 Bath 2 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18371161",
+      "address": "6/46-58 Belmont Street, Alexandria",
+      "source_url": "https://www.domain.com.au/6-46-58-belmont-street-alexandria-nsw-2015-18371161",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/alexandria-nsw-2015/?page=3",
+        "search_crawl_label": "6 days ago",
+        "detail_crawl_label": "2 days ago",
+        "detail_read": true,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "6/46-58 Belmont Street, Alexandria | $1000 per week | 2 Beds 2 Baths 2 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": 2,
+          "bathrooms": 2,
+          "weekly_rent": 1000,
+          "bond": null,
+          "available_from_raw": null,
+          "car_spaces": 2
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:17444256",
+      "address": "24/654 Botany Road, Alexandria",
+      "source_url": "https://www.domain.com.au/24-654-botany-road-alexandria-nsw-2015-17444256",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/alexandria-nsw-2015/?page=3",
+        "search_crawl_label": "6 days ago",
+        "detail_crawl_label": "6 days ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "24/654 Botany Road, Alexandria | $1000 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18146924",
+      "address": "5/3 Henderson Road, Alexandria",
+      "source_url": "https://www.domain.com.au/5-3-henderson-road-alexandria-nsw-2015-18146924",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/alexandria-nsw-2015/?page=3",
+        "search_crawl_label": "6 days ago",
+        "detail_crawl_label": "2 months ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "5/3 Henderson Road, Alexandria | $1280 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18080304",
+      "address": "269 Belmont Street, Alexandria",
+      "source_url": "https://www.domain.com.au/269-belmont-street-alexandria-nsw-2015-18080304",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/alexandria-nsw-2015/?page=3",
+        "search_crawl_label": "6 days ago",
+        "detail_crawl_label": "3 weeks ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "269 Belmont Street, Alexandria | $2500 per week | 3 Beds 2 Baths 1 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:14590564",
+      "address": "550 Botany Road, Alexandria",
+      "source_url": "https://www.domain.com.au/550-botany-road-alexandria-nsw-2015-14590564",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/alexandria-nsw-2015/?page=3",
+        "search_crawl_label": "6 days ago",
+        "detail_crawl_label": "3 weeks ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "550 Botany Road, Alexandria | $850 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18377841",
+      "address": "34/20-34 Wyndham Street, Alexandria",
+      "source_url": "https://www.domain.com.au/34-20-34-wyndham-street-alexandria-nsw-2015-18377841",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/alexandria-nsw-2015/?page=3",
+        "search_crawl_label": "6 days ago",
+        "detail_crawl_label": "5 days ago",
+        "detail_read": true,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "34/20-34 Wyndham Street, Alexandria | $1500 per week | 3 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": 3,
+          "bathrooms": 2,
+          "weekly_rent": 1500,
+          "bond": null,
+          "available_from_raw": "Available Now",
+          "car_spaces": 1
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:17613376",
+      "address": "3a/11-13 William Street, Alexandria",
+      "source_url": "https://www.domain.com.au/3a-11-13-william-street-alexandria-nsw-2015-17613376",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/alexandria-nsw-2015/?page=3",
+        "search_crawl_label": "6 days ago",
+        "detail_crawl_label": "yesterday",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "3a/11-13 William Street, Alexandria | $600 per week | 1 Bed 1 Bath 1 Parking | Studio",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18284439",
+      "address": "202/2 Foundry Street, Erskineville",
+      "source_url": "https://www.domain.com.au/202-2-foundry-street-erskineville-nsw-2043-18284439",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/erskineville-nsw-2043/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "2 weeks ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "202/2 Foundry Street, Erskineville | $1150 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18276464",
+      "address": "412/4 Foundry St, Erskineville",
+      "source_url": "https://www.domain.com.au/412-4-foundry-st-erskineville-nsw-2043-18276464",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/erskineville-nsw-2043/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "412/4 Foundry St, Erskineville | $1330 per week | 3 Beds 2 Baths 2 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:14550675",
+      "address": "C415/2-6 Mandible Street, Alexandria",
+      "source_url": "https://www.domain.com.au/c415-2-6-mandible-street-alexandria-nsw-2015-14550675",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/darlington-nsw-2008/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "C415/2-6 Mandible Street, Alexandria | $750 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18285886",
+      "address": "121/362 Mitchell Road, Alexandria",
+      "source_url": "https://www.domain.com.au/121-362-mitchell-road-alexandria-nsw-2015-18285886",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/darlington-nsw-2008/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last week",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "121/362 Mitchell Road, Alexandria | $1150 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18283529",
+      "address": "708 Bourke Street, Redfern",
+      "source_url": "https://www.domain.com.au/708-bourke-street-redfern-nsw-2016-18283529",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/darlington-nsw-2008/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "708 Bourke Street, Redfern | $1950 per week | 3 Beds 2 Baths 1 Parking | Terrace",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:15521744",
+      "address": "C114/2 Mandible Street, Alexandria",
+      "source_url": "https://www.domain.com.au/c114-2-mandible-street-alexandria-nsw-2015-15521744",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/darlington-nsw-2008/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "2 weeks ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "C114/2 Mandible Street, Alexandria | $780 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18282632",
+      "address": "79/1 Shirley St, Alexandria",
+      "source_url": "https://www.domain.com.au/79-1-shirley-st-alexandria-nsw-2015-18282632",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/darlington-nsw-2008/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "79/1 Shirley St, Alexandria | $900 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18282587",
+      "address": "28/20-34 Wyndham Street, Alexandria",
+      "source_url": "https://www.domain.com.au/28-20-34-wyndham-street-alexandria-nsw-2015-18282587",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/darlington-nsw-2008/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "3 weeks ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "28/20-34 Wyndham Street, Alexandria | $900 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18307850",
+      "address": "12/1 Maddison Street, Redfern",
+      "source_url": "https://www.domain.com.au/12-1-maddison-street-redfern-nsw-2016-18307850",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/redfern-nsw-2016/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last week",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "12/1 Maddison Street, Redfern | $1230 per week | 3 Beds 2 Baths 2 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18296061",
+      "address": "7/219 Chalmers Street, Redfern",
+      "source_url": "https://www.domain.com.au/7-219-chalmers-street-redfern-nsw-2016-18296061",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/redfern-nsw-2016/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "7/219 Chalmers Street, Redfern | $1300 per week | 4 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18281281",
+      "address": "39 Gibbons Street, Redfern",
+      "source_url": "https://www.domain.com.au/39-gibbons-street-redfern-nsw-2016-18281281",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/redfern-nsw-2016/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "39 Gibbons Street, Redfern | $1050 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18272671",
+      "address": "43/8 Phillip Street, Redfern",
+      "source_url": "https://www.domain.com.au/43-8-phillip-street-redfern-nsw-2016-18272671",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/redfern-nsw-2016/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last week",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "43/8 Phillip Street, Redfern | $720 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18265198",
+      "address": "303/92 Cope Street, Redfern",
+      "source_url": "https://www.domain.com.au/303-92-cope-street-redfern-nsw-2016-18265198",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/redfern-nsw-2016/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "303/92 Cope Street, Redfern | $1180 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18128300",
+      "address": "82 Kepos Street, Redfern",
+      "source_url": "https://www.domain.com.au/82-kepos-street-redfern-nsw-2016-18128300",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/redfern-nsw-2016/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "82 Kepos Street, Redfern | $990 per week | 2 Beds 1 Bath 2 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:17120372",
+      "address": "13/146-152 Pitt St, Redfern",
+      "source_url": "https://www.domain.com.au/13-146-152-pitt-st-redfern-nsw-2016-17120372",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/redfern-nsw-2016/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "13/146-152 Pitt St, Redfern | $950 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18336091",
+      "address": "126 Mitchell Road, Alexandria",
+      "source_url": "https://www.domain.com.au/126-mitchell-road-alexandria-nsw-2015-18336091",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/redfern-nsw-2016/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "2 weeks ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "126 Mitchell Road, Alexandria | $1260 per week | 3 Beds 2 Baths 1 Parking | Terrace",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18368043",
+      "address": "1/14-40 Davies Street, Surry Hills",
+      "source_url": "https://www.domain.com.au/1-14-40-davies-street-surry-hills-nsw-2010-18368043",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/surry-hills-nsw-2010/?page=3",
+        "search_crawl_label": "last week",
+        "detail_crawl_label": "last week",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "1/14-40 Davies Street, Surry Hills | $910 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18363881",
+      "address": "107/425 Bourke Street, Surry Hills",
+      "source_url": "https://www.domain.com.au/107-425-bourke-street-surry-hills-nsw-2010-18363881",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/surry-hills-nsw-2010/?page=3",
+        "search_crawl_label": "last week",
+        "detail_crawl_label": "5 days ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "107/425 Bourke Street, Surry Hills | $940 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18336742",
+      "address": "28/628 Crown Street, Surry Hills",
+      "source_url": "https://www.domain.com.au/28-628-crown-street-surry-hills-nsw-2010-18336742",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/surry-hills-nsw-2010/?page=3",
+        "search_crawl_label": "last week",
+        "detail_crawl_label": "2 days ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "28/628 Crown Street, Surry Hills | $680 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18272453",
+      "address": "C803/2 Sam Sing Street, Waterloo",
+      "source_url": "https://www.domain.com.au/c803-2-sam-sing-street-waterloo-nsw-2017-18272453",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "C803/2 Sam Sing Street, Waterloo | $1100 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18267498",
+      "address": "106/266 Pitt Street, Waterloo",
+      "source_url": "https://www.domain.com.au/106-266-pitt-street-waterloo-nsw-2017-18267498",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "5 days ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "106/266 Pitt Street, Waterloo | $720 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18282537",
+      "address": "G06/8 Sam Sing Street, Waterloo",
+      "source_url": "https://www.domain.com.au/g06-8-sam-sing-street-waterloo-nsw-2017-18282537",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "3 weeks ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "G06/8 Sam Sing Street, Waterloo | $1250 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18282162",
+      "address": "509/850 Bourke Street, Waterloo",
+      "source_url": "https://www.domain.com.au/509-850-bourke-street-waterloo-nsw-2017-18282162",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "3 weeks ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "509/850 Bourke Street, Waterloo | $1350 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18262291",
+      "address": "640/351 George Street, Waterloo",
+      "source_url": "https://www.domain.com.au/640-351-george-street-waterloo-nsw-2017-18262291",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "640/351 George Street, Waterloo | $1100 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18260669",
+      "address": "343/2-4 Powell Street, Waterloo",
+      "source_url": "https://www.domain.com.au/343-2-4-powell-street-waterloo-nsw-2017-18260669",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "2 weeks ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "343/2-4 Powell Street, Waterloo | $1050 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18260381",
+      "address": "102/18 Amelia Street, Waterloo",
+      "source_url": "https://www.domain.com.au/102-18-amelia-street-waterloo-nsw-2017-18260381",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=2",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "3 weeks ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "102/18 Amelia Street, Waterloo | $725 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:17728112",
+      "address": "27/49 Henderson Road, Alexandria",
+      "source_url": "https://www.domain.com.au/27-49-henderson-road-alexandria-nsw-2015-17728112",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/alexandria-nsw-2015/?page=4",
+        "search_crawl_label": "3 weeks ago",
+        "detail_crawl_label": "last week",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "27/49 Henderson Road, Alexandria | $900 Per Week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:17209835",
+      "address": "132 Wyndham Street, Alexandria",
+      "source_url": "https://www.domain.com.au/132-wyndham-street-alexandria-nsw-2015-17209835",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/alexandria-nsw-2015/?page=4",
+        "search_crawl_label": "3 weeks ago",
+        "detail_crawl_label": "2 days ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "132 Wyndham Street, Alexandria | $1250 Per Week | 3 Beds 2 Baths 1 Parking | Terrace",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18222735",
+      "address": "81 Mitchell Road, Erskineville",
+      "source_url": "https://www.domain.com.au/81-mitchell-road-erskineville-nsw-2043-18222735",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/alexandria-nsw-2015/?page=4",
+        "search_crawl_label": "3 weeks ago",
+        "detail_crawl_label": "2 months ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "81 Mitchell Road, Alexandria | $820 Per Week | 2 Beds 1 Bath 1 Parking | House",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18334409",
+      "address": "202/2-24 Mitchell Road, Alexandria",
+      "source_url": "https://www.domain.com.au/202-2-24-mitchell-road-alexandria-nsw-2015-18334409",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/alexandria-nsw-2015/?page=4",
+        "search_crawl_label": "3 weeks ago",
+        "detail_crawl_label": "3 weeks ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "202/2-24 Mitchell Road, Alexandria | $1050 Per Week | 2 Beds 2 Baths 2 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18323748",
+      "address": "N609/4-6 Mandible Street, Alexandria",
+      "source_url": "https://www.domain.com.au/n609-4-6-mandible-street-alexandria-nsw-2015-18323748",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/alexandria-nsw-2015/?page=4",
+        "search_crawl_label": "3 weeks ago",
+        "detail_crawl_label": "2 weeks ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "N609/4-6 Mandible Street, Alexandria | $750 Per Week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18343390",
+      "address": "1208/177 Mitchell Rd, Erskineville",
+      "source_url": "https://www.domain.com.au/1208-177-mitchell-rd-erskineville-nsw-2043-18343390",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/alexandria-nsw-2015/?page=4",
+        "search_crawl_label": "3 weeks ago",
+        "detail_crawl_label": "2 weeks ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "1208/177 Mitchell Rd, Erskineville | $780 Per Week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18287040",
+      "address": "G04/10-20 McEvoy Street, Waterloo",
+      "source_url": "https://www.domain.com.au/g04-10-20-mcevoy-street-waterloo-nsw-2017-18287040",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "G04/10-20 McEvoy Street, Waterloo | $800 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:16899871",
+      "address": "189/11 POTTER STREET, Waterloo",
+      "source_url": "https://www.domain.com.au/189-11-potter-street-waterloo-nsw-2017-16899871",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "2 months ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "189/11 POTTER STREET, Waterloo | $1000 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18283940",
+      "address": "2P/26 Danks Street, Waterloo",
+      "source_url": "https://www.domain.com.au/2p-26-danks-street-waterloo-nsw-2017-18283940",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "2P/26 Danks Street, Waterloo | $1130 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18065568",
+      "address": "2C/811 SOUTH DOWLING STREET, Waterloo",
+      "source_url": "https://www.domain.com.au/2c-811-south-dowling-street-waterloo-nsw-2017-18065568",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "2 weeks ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "2C/811 SOUTH DOWLING STREET, Waterloo | $1140 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:17176020",
+      "address": "3D/6 Lachlan, Waterloo",
+      "source_url": "https://www.domain.com.au/3d-6-lachlan-waterloo-nsw-2017-17176020",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "5 days ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "3D/6 Lachlan, Waterloo | $1380 per week | 3 Beds 2 Baths 2 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18269540",
+      "address": "64/13-15 Potter St, Waterloo",
+      "source_url": "https://www.domain.com.au/64-13-15-potter-st-waterloo-nsw-2017-18269540",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "64/13-15 Potter St, Waterloo | $995 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:4864459",
+      "address": "101/6 Lachlan Street, Waterloo",
+      "source_url": "https://www.domain.com.au/101-6-lachlan-street-waterloo-nsw-2017-4864459",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "2 weeks ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "101/6 Lachlan Street, Waterloo | $780 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18260955",
+      "address": "2B/887 SOUTH DOWLING STREET, Waterloo",
+      "source_url": "https://www.domain.com.au/2b-887-south-dowling-street-waterloo-nsw-2017-18260955",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "today",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "2B/887 SOUTH DOWLING STREET, Waterloo | $1160 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18065612",
+      "address": "3D/811 SOUTH DOWLING STREET, Waterloo",
+      "source_url": "https://www.domain.com.au/3d-811-south-dowling-street-waterloo-nsw-2017-18065612",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "2 weeks ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "3D/811 SOUTH DOWLING STREET, Waterloo | $1350 per week | 3 Beds 2 Baths 2 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18237470",
+      "address": "2C/891 SOUTH DOWLING ST, Waterloo",
+      "source_url": "https://www.domain.com.au/2c-891-south-dowling-st-waterloo-nsw-2017-18237470",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last week",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "2C/891 SOUTH DOWLING ST, Waterloo | $1140 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:17325179",
+      "address": "2C/15 Allen Street, Waterloo",
+      "source_url": "https://www.domain.com.au/2c-15-allen-street-waterloo-nsw-2017-17325179",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "2C/15 Allen Street, Waterloo | $1180 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18276145",
+      "address": "G13/25-33 Allen Street, Waterloo",
+      "source_url": "https://www.domain.com.au/g13-25-33-allen-street-waterloo-nsw-2017-18276145",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last week",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "G13/25-33 Allen Street, Waterloo | $865 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:17000306",
+      "address": "B501/6 Thread Lane, Waterloo",
+      "source_url": "https://www.domain.com.au/b501-6-thread-lane-waterloo-nsw-2017-17000306",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "3 weeks ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "B501/6 Thread Lane, Waterloo | $1150 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:16314726",
+      "address": "819/7 Potter Street, Waterloo",
+      "source_url": "https://www.domain.com.au/819-7-potter-street-waterloo-nsw-2017-16314726",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "2 months ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "819/7 Potter Street, Waterloo | $1000 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:17718335",
+      "address": "2B/13 POTTER STREET, Waterloo",
+      "source_url": "https://www.domain.com.au/2b-13-potter-street-waterloo-nsw-2017-17718335",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "2 weeks ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "2B/13 POTTER STREET, Waterloo | $1050 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18265631",
+      "address": "423/2-4 Powell Street, Waterloo",
+      "source_url": "https://www.domain.com.au/423-2-4-powell-street-waterloo-nsw-2017-18265631",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "423/2-4 Powell Street, Waterloo | $1050 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18265568",
+      "address": "311/836 Elizabeth St, Waterloo",
+      "source_url": "https://www.domain.com.au/311-836-elizabeth-st-waterloo-nsw-2017-18265568",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/waterloo-nsw-2017/?page=3",
+        "search_crawl_label": "last month",
+        "detail_crawl_label": "last month",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "311/836 Elizabeth St, Waterloo | $1300 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18385951",
+      "address": "211/74 Macdonald Street, Erskineville",
+      "source_url": "https://www.domain.com.au/211-74-macdonald-street-erskineville-nsw-2043-18385951",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/erskineville-nsw-2043/",
+        "search_crawl_label": "today",
+        "detail_crawl_label": "today",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "211/74 Macdonald Street, Erskineville | $1100 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:17878821",
+      "address": "1508/1 Metters Street, Erskineville",
+      "source_url": "https://www.domain.com.au/1508-1-metters-street-erskineville-nsw-2043-17878821",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/erskineville-nsw-2043/",
+        "search_crawl_label": "today",
+        "detail_crawl_label": "today",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "1508/1 Metters Street, Erskineville | $1100 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:15929204",
+      "address": "709/7 Metters Street, Erskineville",
+      "source_url": "https://www.domain.com.au/709-7-metters-street-erskineville-nsw-2043-15929204",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/erskineville-nsw-2043/",
+        "search_crawl_label": "today",
+        "detail_crawl_label": "4 days ago",
+        "detail_read": true,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "709/7 Metters Street, Erskineville | $1000 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": 2,
+          "bathrooms": 2,
+          "weekly_rent": 1000,
+          "bond": 4000,
+          "available_from_raw": null,
+          "car_spaces": 1
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:16338977",
+      "address": "6/1-3 Concord St, Erskineville",
+      "source_url": "https://www.domain.com.au/6-1-3-concord-st-erskineville-nsw-2043-16338977",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/erskineville-nsw-2043/",
+        "search_crawl_label": "today",
+        "detail_crawl_label": "4 weeks ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "6/1-3 Concord St, Erskineville | $1160 per week | 3 Beds 2 Baths 1 Parking | Townhouse",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18363250",
+      "address": "A215/7 Metters Street, Erskineville",
+      "source_url": "https://www.domain.com.au/a215-7-metters-street-erskineville-nsw-2043-18363250",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/erskineville-nsw-2043/",
+        "search_crawl_label": "today",
+        "detail_crawl_label": "today",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "A215/7 Metters Street, Erskineville | $790 per week | 1 Bed 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18361926",
+      "address": "A604/72 MacDonald Street, Erskineville",
+      "source_url": "https://www.domain.com.au/a604-72-macdonald-street-erskineville-nsw-2043-18361926",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/erskineville-nsw-2043/",
+        "search_crawl_label": "today",
+        "detail_crawl_label": "2 days ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "A604/72 MacDonald Street, Erskineville | $900 per week | 2 Beds 1 Bath 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18338409",
+      "address": "10 Goddard Street, Erskineville",
+      "source_url": "https://www.domain.com.au/10-goddard-street-erskineville-nsw-2043-18338409",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/erskineville-nsw-2043/",
+        "search_crawl_label": "today",
+        "detail_crawl_label": "4 days ago",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "10 Goddard Street, Erskineville | $1000 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    },
+    {
+      "record_id": "domain:18363482",
+      "address": "AG04/11-17 Eve Street, Erskineville",
+      "source_url": "https://www.domain.com.au/ag04-11-17-eve-street-erskineville-nsw-2043-18363482",
+      "source_observation": {
+        "method": "public_web_index",
+        "search_url": "https://www.domain.com.au/rent/erskineville-nsw-2043/",
+        "search_crawl_label": "today",
+        "detail_crawl_label": "last week",
+        "detail_read": false,
+        "retrieved_at": "2026-10-27T04:46:20.561263+00:00",
+        "card_facts": "AG04/11-17 Eve Street, Erskineville | $950 per week | 2 Beds 2 Baths 1 Parking | Apartment / Unit / Flat",
+        "detail_facts": {
+          "bedrooms": null,
+          "bathrooms": null,
+          "weekly_rent": null,
+          "bond": null,
+          "available_from_raw": null
+        },
+        "link_target_resolved": true
+      }
+    }
+  ],
+  "reused_same_building_points": [
+    {
+      "listing_id": "domain:15222534",
+      "source_listing_id": "domain:18368161",
+      "address_point": "nsw:address:3246517"
+    },
+    {
+      "listing_id": "domain:18317059",
+      "source_listing_id": "domain:18377293",
+      "address_point": "nsw:address:4947531"
+    },
+    {
+      "listing_id": "domain:18351010",
+      "source_listing_id": "domain:18372999",
+      "address_point": "nsw:address:1857952"
+    },
+    {
+      "listing_id": "domain:15521744",
+      "source_listing_id": "domain:18372999",
+      "address_point": "nsw:address:1857952"
+    }
+  ]
+}

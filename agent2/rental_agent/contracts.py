@@ -19,7 +19,7 @@ SCHEMAS = {
 @lru_cache(maxsize=3)
 def validator(name):
     if not isinstance(name, str) or name not in SCHEMAS:
-        raise ValidationError('contract: 未知的数据契约名称')
+        raise ValidationError('contract: Unknown data contract name')
     path = Path(__file__).resolve().parents[1] / 'schemas' / SCHEMAS[name]
     schema = json.loads(path.read_text(encoding='utf-8'))
     Draft202012Validator.check_schema(schema)
@@ -29,11 +29,11 @@ def validator(name):
 def validate_contract(name, value):
     """Validate structure and formats, not authenticity, user identity or business intent."""
     if not isinstance(name, str):
-        raise ValidationError('contract: 未知的数据契约名称')
+        raise ValidationError('contract: Unknown data contract name')
     try:
         json.dumps(value, allow_nan=False)
     except (TypeError, ValueError) as exc:
-        raise ValidationError(f'{name}: 必须是可序列化且不含NaN/Infinity的JSON') from exc
+        raise ValidationError(f'{name}: Must be serializable JSON without NaN or Infinity') from exc
     error = next(validator(name).iter_errors(value), None)
     if error is not None:
         field = '.'.join(str(part) for part in error.absolute_path) or '$'

@@ -1,0 +1,26 @@
+# Independent notice addresses implementation plan
+
+**Goal:** Rental premises stay sourced from the chosen listing. Landlord, tenant and agent notice addresses are independent manual street inputs with editable locality/State/postcode suggestions from a separate Australian postcode reference.
+
+**Architecture:** Retain the property address search and saved draft/PDF schema. Add a local read-only postcode lookup using a pinned public reference; no address text is sent to an external service. Party street fields never query the listings catalogue. Locality/postcode selectors fill only the chosen party's metadata after explicit selection; every input remains manually editable. Typing a street or State does not erase the other metadata. Existing saved values remain untouched on load.
+
+**Constraints:** No paid service, live geocoder, fabricated streets, automatic party-address prefill, forced listing membership, implicit save, or rewritten historical drafts. Preserve State/postcode leading zeros. Reference options are assistance, not verification. Ambiguous suburbs/postcodes display State and locality so the user chooses. Manual unknown values remain valid under the existing field schema. Keep existing white/blue Ant Design UI.
+
+## Tasks
+- [x] Backend: tests first for `GET /api/v1/lease-localities?q=&state=`. Independent reference contains only suburb/state/postcode; min2/querymax80, max20 suggestions, optional exact State filter, no catalogue or network access. Preserve current listing address endpoint. Add data provenance/pinned SHA/source hash/reproducible reduction.
+- [x] Frontend: shared notice address component with plain street input, editable AutoComplete Suburb/State/postcode; selecting locality/postcode only populates metadata. Separate it from property address search. No automatic clearing when editing the street. Suggest using current suburb on postcode focus. Keep async stale-result guard/manual fallback/read-only version behavior.
+- [x] Verification: adapt the existing PDF browser scenario to explicit party manual streets and locality selection; add state ambiguity/non-catalogue locality/leading-zero/manual and no-clearing checks. Keep property stale-search/mobile coverage. Run appropriate backend, frontend build, contract browser and unit checks; inspect screenshots and actual generated PDF metadata.
+- [x] Review/preserve: scope review and snapshot45 original records. Isolated test runtime only; restart main preview after backend verification and stop test server. No commits/publishing.
+
+Reference investigated via agent-reach GitHub CLI: Matthew Proctor Australian Postcodes, pinned commit `eda59e4a987d46dbfb1d6bc644a383d322aa3d8d`, 18,559 source rows. Source CSV downloaded to `/tmp/rental-independent-postcodes.csv`; SHA in `/tmp/rental-postcodes-source-sha.txt`. Author's source page: https://www.matthewproctor.com/australian_postcodes . Author homepage describes this as a free public-domain community database: https://www.matthewproctor.com/ . Preserve attribution and its reference-only accuracy limits in source documentation. Original-case snapshot: `/tmp/notice-address-original-case.json`; code baseline: `/tmp/notice-address-baseline`.
+
+
+## Completion evidence — 2026-10-23
+
+- Backend: 18,535 distinct reference tuples retained after24duplicate removals; no invalid rows.10 focused lookup tests and223 full server tests passed. Parent independently reran lookup tests successfully. Data hashes/reducer/provenance in `server/app/lease_drafts/data/README.md`.
+- Frontend: TypeScript/Vite build passed;14 API/calendar/address unit checks passed; final10 contract/notice-address browser regressions passed in54.2s. Browser plugin not available, so existing Playwright/Chrome workflow used on isolated5195runtime.
+- Failing-first evidence: editing a notice street previously cleared manually entered suburb/State/postcode; now preserved, with no listing-address request. Actual browser also exposed State option virtual accessibility and reopening an existing same-name suburb after State change; nonvirtual8-State options and explicit popup-focus handling now pass.
+- Real browser scenarios verify same-name BurwoodNSW/VIC explicit selection, non-listing WestFootscray, DarwinNT0800, locality/postcode choice, late old-State response ignoring, lookup503 + unmatched manual suburb/0999 persistence, readonly historical versions, consented AI field filling and standard-calendar PDF behavior.
+- Actual `/tmp/notice-addresses-browser.pdf` inspected logically and visually: separate landlordWestFootscray/VIC/3012, tenantDarwin/NT/0800, agentBurwood/VIC/3125 boxes and manually entered streets. No template or PDFschema changes.
+- Desktop/mobile screenshots inspected and console checks clean; notice-only interactions produced zero `/lease-addresses` queries. Independent read-only review `/tmp/notice-addresses-review.md` clean, including final popup/ESC/blur behavior.
+- All45 original-case records remain byte-identical to `/tmp/notice-address-original-case.json`; source500-listing catalogue fingerprint unchanged. Main5191/8011 restarted and read-only original-case/mobile/API checks passed with zero writes/errors. Test5195/8015 stopped; main preview remains available. No commits/publishing.

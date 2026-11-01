@@ -21,7 +21,7 @@ class ReportTests(unittest.TestCase):
     def test_markdown_contains_report_and_evidence(self):
         report = evaluate(profile(), dataset(listing(), listing('B', rent_amount=900), listing('C', bills_included=None)))
         output = self.render(report)
-        for value in ['模拟数据', 'Top 5', '88.60', '待确认', '排除', 'fixture:A#rent_amount', '通勤', '预算', '2026-09-17']:
+        for value in ['synthetic data', 'Top 5', '88.60', 'Pending confirmation', 'Excluded', 'fixture:A#rent_amount', 'Commute', 'Budget', '2026-09-17']:
             self.assertIn(value, html.unescape(output))
         self.assertEqual(output, self.render(report))
 
@@ -37,8 +37,8 @@ class ReportTests(unittest.TestCase):
         self.assertEqual(row.get('walking_minutes'), 5)
         self.assertEqual(row.get('transfers'), 0)
         output = self.render(report)
-        self.assertIn('步行 5.00 分钟', output)
-        self.assertIn('换乘 0 次', output)
+        self.assertIn('walking 5.00 minutes', output)
+        self.assertIn('transfers 0', output)
 
     def test_escape_roundtrip(self):
         from rental_agent.report import safe
@@ -56,7 +56,7 @@ class ReportTests(unittest.TestCase):
         self.assertEqual(len(comparison['rows']), 30)
         self.assertEqual(before, original)
         after['comparison'] = comparison
-        self.assertIn('偏好调整前后', self.render(after))
+        self.assertIn('Before and after preference changes', self.render(after))
 
     def test_compare_mismatched_data_or_time_rejected(self):
         from rental_agent.validation import ValidationError
@@ -70,8 +70,8 @@ class ReportTests(unittest.TestCase):
     def test_no_matches_rendered_without_fabrication(self):
         report = evaluate(profile(), dataset(listing(rent_amount=999)))
         output = self.render(report)
-        self.assertIn('没有满足完整条件的候选', output)
-        self.assertIn('未自动放宽', output)
+        self.assertIn('No candidates meet all requirements', output)
+        self.assertIn('have not been relaxed automatically', output)
 
     def test_uc04_tighter_budget_changes_eligibility(self):
         data = dataset(listing())
@@ -158,7 +158,7 @@ class CLITests(unittest.TestCase):
             invalid.write_text('{"schema_version":"1.0", "schema_version":"2.0"}')
             result = self.command('--profile', str(invalid), '--listings', 'data/demo/listings.json', '--output', str(Path(temp) / 'result'))
             self.assertNotEqual(result.returncode, 0)
-            self.assertIn('重复', result.stderr)
+            self.assertIn('Duplicate', result.stderr)
 
     def test_help(self):
         result = self.command('--help')
